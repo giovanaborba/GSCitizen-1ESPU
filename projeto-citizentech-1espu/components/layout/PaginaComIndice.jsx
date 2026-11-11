@@ -22,6 +22,10 @@ import IndiceNestaPagina from "@/components/layout/IndiceNestaPagina";
 
   Props: titulo, resumo, itensIndice, children (seções), secaoLarga,
          acaoFinal
+
+  Fase 8: "titulo" é opcional. Na Início, o H1 e o resumo ficam na
+  abertura com a pulseira (AberturaPulseira), antes desta estrutura.
+  (Este componente é refeito para o layout novo na subfase 8.5.)
 */
 export default function PaginaComIndice({
   titulo,
@@ -34,11 +38,14 @@ export default function PaginaComIndice({
   return (
     <div className="margem-lateral py-8">
       <div className="mx-auto max-w-texto lg:grid lg:max-w-[59rem] lg:grid-cols-[minmax(0,40rem)_16rem] lg:gap-x-12">
-        <div className="lg:col-start-1 lg:row-start-1">
-          <TituloPagina titulo={titulo} resumo={resumo} />
-        </div>
+        {/* Esta parte é lógica */}
+        {titulo && (
+          <div className="lg:col-start-1 lg:row-start-1">
+            <TituloPagina titulo={titulo} resumo={resumo} />
+          </div>
+        )}
 
-        <div className="mt-8 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0">
+        <div className={`${titulo ? "mt-8" : ""} lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0`}>
           {/* Presa abaixo do cabeçalho. Se a tela for baixa, o índice
               rola por dentro em vez de ficar cortado. */}
           <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1rem)] lg:max-h-[calc(100dvh-var(--altura-cabecalho)-var(--espaco-fim)-1rem)] lg:overflow-y-auto">

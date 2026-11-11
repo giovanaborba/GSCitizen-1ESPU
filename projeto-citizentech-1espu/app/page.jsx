@@ -1,3 +1,4 @@
+import AberturaPulseira from "@/components/abertura/AberturaPulseira";
 import PaginaComIndice from "@/components/layout/PaginaComIndice";
 import Secao from "@/components/layout/Secao";
 import Cartao from "@/components/ui/Cartao";
@@ -23,9 +24,10 @@ const SECOES = [
 
 export default function PaginaInicio() {
   return (
+    <>
+      {/* Abertura com a pulseira 3D, H1 e resumo (seção 18.6) */}
+      <AberturaPulseira />
     <PaginaComIndice
-      titulo="Inovação que chega a quem precisa"
-      resumo="A Pulse é uma pulseira que guia pessoas cegas e com baixa visão pela cidade. Conheça o problema que ela resolve."
       itensIndice={SECOES}
       acaoFinal={<Botao href="/solucao">Conheça a solução</Botao>}
     >
@@ -113,5 +115,6 @@ export default function PaginaInicio() {
         </ul>
       </Secao>
     </PaginaComIndice>
+    </>
   );
 }

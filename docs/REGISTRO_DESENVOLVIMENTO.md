@@ -21,7 +21,7 @@
 | 5 | Diário completo: lista, formulário, ver, editar, excluir, desfazer | `a303670` |
 | 6 | Responsividade para tablet e computador | `37175ba` |
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
-| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.3 feitas | — |
+| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.4 feitas | — |
 
 **Em números:** 7 rotas · 33 componentes (o mínimo é 8) · 12 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras.
 
@@ -436,6 +436,60 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 **Marcadores desta subfase:** `ICONE-Pause-AQUI` e `ICONE-Play-AQUI` (botão Pausar/Retomar), em `components/solucao/FaixaODS.jsx`. O `ICONE-Pulse-AQUI` do cabeçalho continua.
 
 **Sugestão de commit:** `Adiciona transição entre páginas, rodapé novo e faixa dos ODS`
+
+### 8.4 — Pulseira 3D
+
+**Arquivos:**
+
+| Arquivo | Mudança |
+| --- | --- |
+| `lib/pulseira3d/cena.js` (novo) | Monta a cena com Three.js: tira, furos, módulo, botões, microfone, alto-falante, motores, atuador, luzes, câmera de 32°, anéis de pulso, projeção das âncoras na tela e liberação da memória |
+| `lib/pulseira3d/sinais.js` (novo) | Os 5 sinais animados (ciclo de 2,8 s), nomes dos sinais e dos movimentos, quadro apagado e destaque da parte ativa |
+| `hooks/usePulseira3D.js` (novo) | Liga a cena ao React: modos `abertura`, `sinal` e `parar`; só anima visível; pausa; quadro parado com "reduzir movimento"; entrada depois da capa; mouse; tema; tamanho; limpeza |
+| `components/pulseira/CenaPulseira.jsx` (novo) | Parte que só existe no navegador (carregada com `next/dynamic` e `ssr: false`) |
+| `components/pulseira/Pulseira3D.jsx` (novo) | Componente público; mostra a descrição em texto enquanto carrega, sem JavaScript e se o WebGL falhar |
+| `components/abertura/AberturaPulseira.jsx` (novo) | Abertura do Início, parcial: rótulo, H1, resumo, pulseira, sinal atual e "Pausar animação"/"Retomar animação" |
+| `components/layout/PaginaComIndice.jsx` | O título passa a ser opcional (na Início, o H1 está na abertura) |
+| `app/page.jsx` | A Início começa pela abertura com a pulseira |
+
+**Explicando em linguagem simples:** o Three.js desenha em 3D dentro de um `<canvas>`, usando o WebGL (a parte da placa de vídeo que o navegador libera para as páginas). Cada peça da pulseira é uma "malha" = forma (geometria) + aparência (material). Formas e materiais ocupam memória da placa de vídeo e precisam ser liberados à mão quando a pessoa sai da página.
+
+**Decisões da implementação** (seção 17 como **Implementação**):
+- **Ritmo do "Parar": um anel a cada 0,35 s** (no protótipo, 0,32 s). Assim nenhum sinal passa de 3 anéis por segundo (WCAG 2.3.1).
+- **404 sem anéis sobrando:** os últimos anéis do modo `parar` saem até 3,7 s, para tudo terminar até 4,6 s (WCAG 2.2.2).
+- **O `<canvas>` é criado pelo hook, não no JSX.** No modo de desenvolvimento, o React monta, desmonta e monta de novo cada componente; um canvas cujo WebGL já foi liberado não pode ser reaproveitado.
+- **A descrição fica na caixa, não no canvas.** A caixa tem `role="img"` e o `aria-label` da 18.7, e só ganha esse papel quando o primeiro quadro fica pronto. Antes disso, quem descreve é o texto de reserva. Assim o leitor de tela nunca lê a descrição duas vezes.
+- **Sem WebGL, sem erro no console.** O código pede o WebGL2 antes de chamar o Three.js. Se não houver, aparece a descrição, sem a mensagem de erro que o Three.js escreveria.
+- **Legenda parada** ("Sinais da Pulse" / "Veja cada sinal explicado na página Solução.") e sem botão de pausa também enquanto a cena carrega, sem JavaScript e sem WebGL. Nesses casos nada se move, e um botão sem efeito confundiria. É o mesmo texto aprovado para "reduzir movimento".
+- **Reserva no fluxo normal:** se o texto ampliado não couber na caixa da pulseira, a caixa cresce, em vez de cortar o texto ou criar uma rolagem interna.
+- **Os modos `sinal` e `parar` ficam prontos agora**, mas só entram na página na 8.6 ("Os sinais") e na 8.7 (404).
+
+**Verificação automática** (Chrome sem janela, com WebGL por software): ESLint sem problemas, `next build` sem erros e **30 de 30 testes**, mais os 45 da 8.3 de novo (sem regressão):
+- 1 canvas; caixa com `role="img"` e a descrição; canvas com `aria-hidden`; texto de reserva some quando a cena fica pronta.
+- Densidade de pixels: 1,75 numa tela 2× (o limite da 18.2).
+- Anima visível (cerca de 680 desenhos por segundo no WebGL por software); os sinais se sucedem; o nome do sinal tem `aria-hidden`.
+- "Pausar animação" vira "Retomar animação" com `aria-pressed="true"` e 0 desenhos por segundo; "Retomar" volta a animar.
+- Fora da tela: 0 desenhos por segundo; de volta à tela, anima.
+- 5 idas e voltas Início ↔ Solução: 5 contextos WebGL liberados, 1 canvas só na Início e nenhum na Solução.
+- "Reduzir movimento": um quadro desenhado e nenhum depois; legenda parada; sem botão de pausa.
+- WebGL desligado: descrição em texto (lida pelo leitor de tela), sem canvas, legenda parada, sem botão de pausa e sem erro no console.
+- Sem JavaScript: a descrição e a legenda parada já vêm no HTML do servidor, sem botão de pausa.
+- axe sem violações nos dois temas; 320 px sem rolagem lateral; console sem erros.
+
+**Como testar à mão:**
+1. `npm run dev` e abra a Início: a pulseira entra crescendo e girando, e passa pelos 5 sinais (Virar à esquerda, Virar à direita, Aguardar, Parar, Continuar). Com o mouse, ela acompanha o movimento.
+2. "Pausar animação": tudo para; o botão vira "Retomar animação".
+3. Role a página até o rodapé e volte: a pulseira só anima quando aparece.
+4. Troque o tema do aparelho: a tira acompanha (`#4F2BAB` no claro, `#5B37BA` no escuro).
+5. "Reduzir movimento" ligado: pulseira parada, legenda "Sinais da Pulse" e nenhum botão de pausa.
+6. Sem WebGL (Chrome: `chrome://settings/system` → desligar "Usar aceleração gráfica" e reiniciar; se ainda aparecer, abra com `--disable-webgl`): aparece a descrição em texto no lugar da pulseira.
+7. Leitor de tela: na pulseira, ele lê "Pulseira Pulse em 3D: uma tira roxa…", e o nome do sinal que muda não é lido.
+
+**Achado para a 8.5 (contraste sobre a textura):** a textura de piso tátil vai atrás da abertura. O contraste do texto sobre o domo mais escuro (claro) e sobre o brilho do domo (escuro) é: claro, marca 7,07:1 e texto secundário 7,82:1; escuro, **rótulo dourado 6,69:1** (abaixo de 7:1). Por isso a textura ainda não entrou na abertura; a forma de aplicar fica para a equipe decidir.
+
+**Marcadores desta subfase:** `ICONE-Pause-AQUI` e `ICONE-Play-AQUI` (botão da abertura), em `components/abertura/AberturaPulseira.jsx`. A pulseira é código, não tem marcador.
+
+**Sugestão de commit:** `Adiciona pulseira 3D na abertura`
 
 ---
 
