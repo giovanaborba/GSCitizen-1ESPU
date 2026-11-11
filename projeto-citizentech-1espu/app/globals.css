@@ -221,6 +221,11 @@
     font-size: 1.125rem; /* texto corrido: 18 px */
     line-height: 1.5;
     font-weight: 400;
+    /* Com texto muito ampliado, uma palavra longa ("Desenvolvimento")
+       pode não caber sozinha na linha. Só nesse caso ela é quebrada, em
+       vez de criar rolagem lateral (WCAG 1.4.4 e 1.4.10). Em tamanho
+       normal, nada muda. */
+    overflow-wrap: anywhere;
   }
 
   h1,
@@ -267,6 +272,15 @@
   /* Contorno de foco: 3 px, afastado 2 px, só para quem navega por
      teclado (:focus-visible). */
   :focus-visible {
+    outline: 3px solid var(--cor-foco);
+    outline-offset: 2px;
+  }
+
+  /* O campo de data tem partes internas que recebem o foco uma de cada
+     vez (dia, mês, ano e, no Chrome, o ícone de calendário). No ícone, o
+     campo deixa de ser :focus e ficaria sem contorno. :focus-within vale
+     para todas as partes, então o campo inteiro mantém o contorno. */
+  input[type="date"]:focus-within {
     outline: 3px solid var(--cor-foco);
     outline-offset: 2px;
   }

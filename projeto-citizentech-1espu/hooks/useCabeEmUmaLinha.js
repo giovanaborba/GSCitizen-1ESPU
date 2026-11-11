@@ -13,7 +13,9 @@ import { useEffect, useState } from "react";
   Como mede: soma a largura do conteúdo de cada item (o texto já reserva
   o espaço do negrito) + espaço interno + bordas + espaço entre itens, e
   compara com a largura disponível. Mede de novo quando a tela muda de
-  tamanho e quando uma fonte termina de carregar.
+  tamanho, quando uma fonte termina de carregar e quando os próprios
+  textos mudam de largura (ex.: a pessoa aumenta o espaço entre letras
+  numa extensão do navegador — WCAG 1.4.12).
 
   Devolve: null (ainda não mediu), true (cabe) ou false (não cabe).
   A partir de 768 px a barra tem outro layout, e a medição não é usada.
@@ -63,6 +65,9 @@ export function useCabeEmUmaLinha(refLista) {
 
     const observador = new ResizeObserver(medir);
     observador.observe(espacoDisponivel);
+    // O conteúdo de cada item (ícone e texto) tem a largura natural do
+    // texto: se o texto muda de largura, a medição é refeita.
+    lista.querySelectorAll("a > *").forEach((conteudo) => observador.observe(conteudo));
     document.fonts?.addEventListener("loadingdone", medir);
 
     return () => {
