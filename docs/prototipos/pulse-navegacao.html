@@ -1,0 +1,412 @@
+<title>Pulse — Navegação</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Atkinson+Hyperlegible+Next:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: prévia de navegação entre páginas (transição de piso tátil), rodapé com a faixa dos ODS (só na Solução) e página 404 "Você saiu da rota". */
+:root {
+  --bg: #F5F1E8; --surface: #FFFFFF; --fg: #1E0F4A; --fg2: #453A66; --brand: #4F2BAB;
+  --border: #6B5F94; --gold: #D4A24A; --on-gold: #120B24; --accent-text: #4F2BAB;
+  --dot: rgba(79, 43, 171, .09); --dot-hi: rgba(255, 255, 255, .7); --watermark: rgba(79, 43, 171, .07);
+  --chrome: rgba(255, 255, 255, .96); --band3d: #4F2BAB; --cortina: #4F2BAB;
+  /* rodapé: sempre escuro, nos dois temas */
+  --rod-bg: #120B24; --rod-fg: #F5F1E8; --rod-fg2: #D9D0F2; --rod-ouro: #D4A24A; --rod-borda: #8C7BC9; --rod-card: #1C1238;
+  --font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --font-body: "Atkinson Hyperlegible Next", Verdana, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #120B24; --surface: #1C1238; --fg: #F5F1E8; --fg2: #D9D0F2; --brand: #C4B5FD;
+    --border: #8C7BC9; --accent-text: #D4A24A; --dot: rgba(196, 181, 253, .07); --dot-hi: rgba(255, 255, 255, .04);
+    --watermark: rgba(79, 43, 171, .35); --chrome: rgba(28, 18, 56, .96); --band3d: #5B37BA;
+    --rod-bg: #0B0716; --rod-card: #1C1238;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #120B24; --surface: #1C1238; --fg: #F5F1E8; --fg2: #D9D0F2; --brand: #C4B5FD;
+  --border: #8C7BC9; --accent-text: #D4A24A; --dot: rgba(196, 181, 253, .07); --dot-hi: rgba(255, 255, 255, .04);
+  --watermark: rgba(79, 43, 171, .35); --chrome: rgba(28, 18, 56, .96); --band3d: #5B37BA;
+  --rod-bg: #0B0716; --rod-card: #1C1238;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 1.125rem; line-height: 1.55; overflow-x: clip; }
+a { color: var(--brand); }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 6px; }
+h1:focus { outline: none; }
+.wrap { max-width: 76rem; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mono { font-family: var(--font-mono); font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; }
+.piso { background-color: var(--bg); background-image: radial-gradient(circle at 42% 38%, var(--dot-hi) 0 2px, transparent 3px), radial-gradient(circle, var(--dot) 0 7px, transparent 8px); background-size: 30px 30px, 30px 30px; }
+.skip { position: absolute; left: 16px; top: -100px; z-index: 50; background: var(--surface); color: var(--fg); padding: 12px 16px; border-radius: 10px; }
+.skip:focus { top: calc(12px + env(safe-area-inset-top, 0px)); }
+
+header.topo .wrap { display: flex; align-items: center; justify-content: space-between; padding-block: 16px; gap: 16px; }
+.marca { display: inline-flex; align-items: center; gap: 10px; color: var(--fg); text-decoration: none; font-family: var(--font-display); font-size: 1.6rem; min-height: 48px; }
+.marca svg { width: 34px; height: 34px; }
+.topo .mono { color: var(--fg2); }
+
+.pagina { min-height: 62vh; padding-block: 32px 72px; position: relative; overflow: hidden; }
+.pagina .wrap { position: relative; display: grid; gap: 16px; align-content: start; }
+.eyebrow { color: var(--accent-text); font-weight: 700; margin: 0; }
+h1 { margin: 0; font-family: var(--font-display); font-weight: 400; text-transform: uppercase; color: var(--brand); font-size: clamp(2.6rem, 8vw, 5.6rem); line-height: 1; text-wrap: balance; max-width: 16ch; }
+.resumo { margin: 0; max-width: 46ch; color: var(--fg2); font-size: 1.25rem; }
+.nota { margin: 8px 0 0; max-width: 44rem; color: var(--fg2); font-size: 1rem; border: 1px dashed var(--border); border-radius: 12px; padding: 14px 16px; }
+.botoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 26px; border-radius: 999px; font-weight: 700; text-decoration: none; }
+.btn-ouro { background: var(--gold); color: var(--on-gold); }
+.btn-sec { border: 2px solid var(--brand); color: var(--brand); background: transparent; }
+.btn-sec:hover { background: color-mix(in srgb, var(--brand) 10%, transparent); }
+.reservado { border: 2px dashed var(--border); border-radius: 18px; padding: 24px; color: var(--fg2); max-width: 44rem; }
+
+/* 404 */
+.p404 .grade { display: grid; gap: 24px; align-items: center; }
+.p404 .marca-dagua { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: min(21rem, 30vw); text-transform: uppercase; color: var(--watermark); pointer-events: none; user-select: none; }
+.p404 .codigo { font-family: var(--font-mono); font-weight: 700; color: var(--accent-text); letter-spacing: .14em; }
+.p404 .cena { width: min(100%, 22rem); aspect-ratio: 1; justify-self: center; position: relative; }
+.p404 .cena canvas { width: 100%; height: 100%; display: block; }
+.p404 .legenda { text-align: center; color: var(--fg2); font-size: 1rem; margin: 0; }
+@media (min-width: 900px) { .p404 .grade { grid-template-columns: 1.2fr 1fr; } }
+
+/* Transição entre páginas: piso tátil */
+.cortina { position: fixed; inset: 0; z-index: 80; background: var(--cortina); pointer-events: none; --d: 0px;
+  -webkit-mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + .5px)); mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + .5px));
+  -webkit-mask-size: 30px 30px; mask-size: 30px 30px; }
+
+/* Rodapé */
+footer.rodape { background: var(--rod-bg); color: var(--rod-fg); padding-block: 56px 132px; }
+footer.rodape a { color: var(--rod-fg); }
+footer.rodape :focus-visible { outline-color: var(--rod-ouro); }
+.rod-topo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 24px; }
+#rod-ods { margin-bottom: 40px; }
+.rod-topo h2 { margin: 0; font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1; }
+.rod-topo .mono { color: var(--rod-ouro); font-weight: 700; margin: 0 0 8px; }
+.btn-faixa { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 18px; border-radius: 999px; border: 2px solid var(--rod-borda); background: transparent; color: var(--rod-fg); font: 700 1rem var(--font-body); cursor: pointer; }
+.btn-faixa:hover { border-color: var(--rod-ouro); }
+.btn-faixa svg { width: 20px; height: 20px; }
+/* Faixa contínua: a lista anda para a esquerda sem parar; uma cópia oculta fecha o laço */
+.faixa-ods { overflow: hidden; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-block: 4px; }
+.faixa-trilho { display: flex; width: max-content; animation: faixa 48s linear infinite; }
+.faixa-ods:hover .faixa-trilho, .faixa-ods:focus-within .faixa-trilho, .faixa-ods.pausada .faixa-trilho { animation-play-state: paused; }
+.faixa-lista { list-style: none; margin: 0; padding: 0 12px; display: flex; gap: 24px; }
+.faixa-lista li { flex: none; }
+.ods-item { display: inline-flex; align-items: center; gap: 14px; min-height: 64px; padding: 8px 22px 8px 16px; border-radius: 999px; border: 1px solid var(--rod-borda); background: var(--rod-card); color: var(--rod-fg); font: 700 1.05rem var(--font-body); cursor: default; white-space: nowrap; }
+.ods-item:hover, .ods-item:focus-visible, .ods-item.ativo { border-color: var(--rod-ouro); }
+.ods-item .num { font-family: var(--font-display); font-weight: 400; font-size: 2.4rem; line-height: 1; color: var(--rod-ouro); }
+.ods-item .tag { padding: 3px 10px; border-radius: 999px; background: var(--rod-ouro); color: #120B24; font-size: .85rem; }
+.ods-detalhe { margin-top: 16px; min-height: 5.5rem; border-radius: 16px; border: 1px dashed var(--rod-borda); padding: 16px 20px; display: grid; gap: 4px; align-content: center; }
+.ods-detalhe strong { font-size: 1.1rem; }
+.ods-detalhe span { color: var(--rod-fg2); }
+.ods-desc { display: none; }
+@keyframes faixa { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .faixa-trilho { animation: none; width: auto; display: block; }
+  .faixa-ods { margin-inline: 0; }
+  .faixa-lista { flex-wrap: wrap; padding: 0; }
+  .faixa-lista li { flex: 1 1 100%; }
+  .ods-item { white-space: normal; width: 100%; text-align: left; }
+  .faixa-lista.copia, .btn-faixa { display: none; }
+}
+.rod-base { padding-top: 24px; border-top: 1px solid color-mix(in srgb, var(--rod-borda) 50%, transparent); display: grid; gap: 16px; }
+.rod-base ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.rod-base ul a { display: inline-flex; align-items: center; min-height: 48px; font-weight: 700; }
+.rod-base p { margin: 0; color: var(--rod-fg2); font-size: 1rem; }
+
+nav.barra { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20; width: min(30rem, calc(100% - 32px)); }
+nav.barra ul { list-style: none; margin: 0; padding: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; border-radius: 999px; background: var(--chrome); border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(18, 11, 36, .22); }
+nav.barra a { display: grid; place-items: center; min-height: 48px; border-radius: 999px; text-decoration: none; color: var(--fg); font-weight: 700; font-size: 1rem; padding: 0 6px; }
+nav.barra a[aria-current="page"] { background: var(--gold); color: var(--on-gold); }
+nav.barra a:not([aria-current]):hover { background: color-mix(in srgb, var(--brand) 12%, transparent); }
+</style>
+
+<a class="skip" href="#conteudo" id="pular">Pular para o conteúdo</a>
+<header class="topo">
+  <div class="wrap">
+    <a class="marca" href="#inicio"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="50" cy="50" r="38"></circle><path d="M20 52h16l6-15 10 28 6-13h22"></path></svg>Pulse</a>
+    <span class="mono">GS 2026.2 · CitizenTech</span>
+  </div>
+</header>
+
+<main id="conteudo">
+  <section class="pagina piso" data-rota="inicio" data-titulo="Pulse — Inovação que chega a quem precisa">
+    <div class="wrap">
+      <p class="mono eyebrow">Início</p>
+      <h1 tabindex="-1">Inovação que chega a quem precisa</h1>
+      <p class="resumo">A Pulse é uma pulseira que guia pessoas cegas e com baixa visão pela cidade. Conheça o problema que ela resolve.</p>
+      <p class="nota">Prévia de navegação: use a barra de baixo para trocar de página e ver a transição de piso tátil. Os ODS passam no rodapé só da página Solução. A abertura completa com a pulseira está no protótipo da abertura.</p>
+      <div class="botoes">
+        <a class="btn btn-ouro" href="#solucao">Conheça a solução →</a>
+        <a class="btn btn-sec" href="#pagina-que-nao-existe">Testar um endereço errado</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pagina piso" data-rota="solucao" data-titulo="Solução — Pulse" hidden>
+    <div class="wrap">
+      <p class="mono eyebrow">A solução</p>
+      <h1 tabindex="-1">A Pulse: um guia no pulso</h1>
+      <p class="resumo">Uma pulseira que orienta o caminho por vibrações e sinais, com mais autonomia e segurança nos deslocamentos.</p>
+      <p class="nota">A página completa está no protótipo da Solução.</p>
+      <div class="botoes"><a class="btn btn-ouro" href="#simulador">Experimente o simulador →</a></div>
+    </div>
+  </section>
+
+  <section class="pagina piso" data-rota="simulador" data-titulo="Simulador — Pulse" hidden>
+    <div class="wrap">
+      <p class="mono eyebrow">Experimente</p>
+      <h1 tabindex="-1">Simulador</h1>
+      <p class="resumo">Experimente os sinais da Pulse antes de usar a pulseira na rua.</p>
+      <div class="reservado"><strong>Espaço reservado</strong><br>O simulador está em desenvolvimento por outro integrante da equipe.</div>
+    </div>
+  </section>
+
+  <section class="pagina piso" data-rota="diario" data-titulo="Diário — Pulse" hidden>
+    <div class="wrap">
+      <p class="mono eyebrow">Impacto</p>
+      <h1 tabindex="-1">Diário de deslocamentos</h1>
+      <p class="resumo">Registre como foi cada trajeto. Os registros ajudam a medir o impacto da Pulse.</p>
+      <p class="nota">O Diário mantém as telas já definidas; nesta etapa ele recebe só o novo visual.</p>
+    </div>
+  </section>
+
+  <section class="pagina piso p404" data-rota="404" data-titulo="Página não encontrada — Pulse" hidden>
+    <div class="marca-dagua" aria-hidden="true">Parar</div>
+    <div class="wrap grade">
+      <div style="display:grid;gap:16px">
+        <p class="codigo">Erro 404</p>
+        <h1 tabindex="-1">Você saiu da rota</h1>
+        <p class="resumo">Esta página não existe ou mudou de endereço.</p>
+        <div class="botoes">
+          <a class="btn btn-ouro" href="#inicio">Voltar ao Início</a>
+          <a class="btn btn-sec" href="#solucao">Ir para a Solução</a>
+        </div>
+      </div>
+      <div>
+        <div class="cena"><canvas id="cena404" aria-hidden="true"></canvas></div>
+        <p class="legenda" aria-hidden="true">A pulseira faz o sinal de parar.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape">
+  <div class="wrap">
+    <div id="rod-ods">
+      <div class="rod-topo">
+        <div>
+          <p class="mono">Objetivos de Desenvolvimento Sustentável</p>
+          <h2 id="rod-t">A Pulse e os ODS</h2>
+        </div>
+        <button type="button" class="btn-faixa" id="faixa-pausa" aria-pressed="false" aria-controls="faixa-ods"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" id="faixa-ico"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg><span id="faixa-txt">Pausar</span></button>
+      </div>
+      <div class="faixa-ods" id="faixa-ods">
+        <div class="faixa-trilho">
+          <ul class="faixa-lista">
+            <li><button type="button" class="ods-item" data-ods="10" aria-describedby="ods-d10"><span class="num" aria-hidden="true">10</span>ODS 10 · Redução das Desigualdades<span class="tag">Principal</span></button></li>
+            <li><button type="button" class="ods-item" data-ods="9" aria-describedby="ods-d9"><span class="num" aria-hidden="true">9</span>ODS 9 · Indústria, Inovação e Infraestrutura</button></li>
+            <li><button type="button" class="ods-item" data-ods="11" aria-describedby="ods-d11"><span class="num" aria-hidden="true">11</span>ODS 11 · Cidades e Comunidades Sustentáveis</button></li>
+          </ul>
+          <ul class="faixa-lista copia" aria-hidden="true"></ul>
+        </div>
+      </div>
+      <p class="ods-desc" id="ods-d10">Reduz as barreiras enfrentadas por pessoas com deficiência visual e promove igualdade de acesso à mobilidade.</p>
+      <p class="ods-desc" id="ods-d9">Um dispositivo inteligente que melhora a infraestrutura de acessibilidade e mobilidade urbana.</p>
+      <p class="ods-desc" id="ods-d11">Torna as cidades mais acessíveis, inclusivas e seguras nas ruas e no transporte público.</p>
+      <div class="ods-detalhe" id="ods-detalhe" aria-hidden="true"><span>Passe o mouse, foque ou toque num ODS para ver o que ele significa.</span></div>
+    </div>
+    <div class="rod-base">
+      <ul>
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#solucao">Solução</a></li>
+        <li><a href="#simulador">Simulador</a></li>
+        <li><a href="#diario">Diário</a></li>
+      </ul>
+      <p>Pulse · Global Solution 2026.2 · FIAP · Giovana, Giovane, Mie, Pedro e Thiago.</p>
+    </div>
+  </div>
+</footer>
+
+<nav class="barra" aria-label="Navegação principal">
+  <ul>
+    <li><a href="#inicio" data-r="inicio" aria-current="page">Início</a></li>
+    <li><a href="#solucao" data-r="solucao">Solução</a></li>
+    <li><a href="#simulador" data-r="simulador">Simulador</a></li>
+    <li><a href="#diario" data-r="diario">Diário</a></li>
+  </ul>
+</nav>
+
+<script>
+(function () {
+  const reduzir = matchMedia("(prefers-reduced-motion: reduce)");
+  const paginas = [...document.querySelectorAll(".pagina")];
+  const ROTAS = ["inicio", "solucao", "simulador", "diario"];
+  let atual = null, ocupado = false, primeira = true;
+
+  // "Pular para o conteúdo" leva o foco ao título, sem trocar de página
+  document.getElementById("pular").addEventListener("click", e => {
+    e.preventDefault();
+    const h1 = document.querySelector(".pagina:not([hidden]) h1");
+    if (h1) h1.focus();
+  });
+
+  function rotaDoHash() {
+    const h = location.hash.replace("#", "");
+    if (!h) return "inicio";
+    return ROTAS.includes(h) ? h : "404";
+  }
+  function mostrar(rota) {
+    paginas.forEach(p => p.hidden = p.dataset.rota !== rota);
+    const p = paginas.find(x => x.dataset.rota === rota);
+    document.title = p.dataset.titulo;
+    document.querySelectorAll("nav.barra a").forEach(a => {
+      if (a.dataset.r === rota) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    scrollTo(0, 0);
+    if (!primeira) p.querySelector("h1").focus({ preventScroll: true });
+    primeira = false;
+    atual = rota;
+    document.getElementById("rod-ods").hidden = rota !== "solucao";
+    window.dispatchEvent(new CustomEvent("pulse:rota", { detail: rota }));
+  }
+
+  const cortina = document.createElement("div");
+  cortina.className = "cortina"; cortina.setAttribute("aria-hidden", "true"); cortina.hidden = true;
+  document.body.appendChild(cortina);
+  function animar(de, para, ms) {
+    return new Promise(res => {
+      const t0 = performance.now();
+      const passo = agora => {
+        const k = Math.min(1, (agora - t0) / ms);
+        const e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        cortina.style.setProperty("--d", (de + (para - de) * e) + "px");
+        if (k < 1) requestAnimationFrame(passo); else res();
+      };
+      requestAnimationFrame(passo);
+    });
+  }
+  async function trocar() {
+    const rota = rotaDoHash();
+    if (rota === atual) return;
+    if (primeira || reduzir.matches || ocupado) { mostrar(rota); return; }
+    ocupado = true;
+    cortina.hidden = false;
+    await animar(0, 22, 200);   // os pontos crescem e cobrem a tela
+    mostrar(rota);
+    await animar(22, 0, 220);   // e somem, revelando a nova página
+    cortina.hidden = true;
+    ocupado = false;
+    if (rotaDoHash() !== atual) trocar();
+  }
+  addEventListener("hashchange", trocar);
+  trocar();
+
+  /* ---------- Rodapé da Solução: faixa contínua dos ODS ---------- */
+  const faixa = document.getElementById("faixa-ods");
+  const original = faixa.querySelector(".faixa-lista:not(.copia)");
+  faixa.querySelector(".copia").innerHTML = original.innerHTML;   // cópia oculta que fecha o laço
+  const bPausa = document.getElementById("faixa-pausa");
+  function rotulo(p) {
+    bPausa.setAttribute("aria-pressed", String(p));
+    document.getElementById("faixa-txt").textContent = p ? "Retomar" : "Pausar";
+    document.getElementById("faixa-ico").innerHTML = p ? '<path d="M8 5v14l11-7z"></path>' : '<rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect>';
+  }
+  bPausa.addEventListener("click", () => { const p = !faixa.classList.contains("pausada"); faixa.classList.toggle("pausada", p); rotulo(p); });
+  // A cópia que fecha o laço não entra no Tab
+  faixa.querySelectorAll(".copia button").forEach(b => { b.tabIndex = -1; b.removeAttribute("aria-describedby"); });
+  // Frase completa do ODS: aparece ao passar o mouse, focar ou tocar (o toque foca o botão)
+  const detalhe = document.getElementById("ods-detalhe");
+  const padrao = detalhe.innerHTML;
+  const NOMES = { "10": "ODS 10: Redução das Desigualdades (principal)", "9": "ODS 9: Indústria, Inovação e Infraestrutura", "11": "ODS 11: Cidades e Comunidades Sustentáveis" };
+  let focado = null;
+  function mostrarODS(n) {
+    faixa.querySelectorAll(".ods-item").forEach(b => b.classList.toggle("ativo", b.dataset.ods === n));
+    if (!n) { detalhe.innerHTML = padrao; return; }
+    detalhe.innerHTML = "<strong></strong><span></span>";
+    detalhe.querySelector("strong").textContent = NOMES[n];
+    detalhe.querySelector("span").textContent = document.getElementById("ods-d" + n).textContent;
+  }
+  faixa.querySelectorAll(".ods-item").forEach(b => {
+    b.addEventListener("mouseenter", () => mostrarODS(b.dataset.ods));
+    b.addEventListener("mouseleave", () => mostrarODS(focado));
+    b.addEventListener("focus", () => { focado = b.dataset.ods; mostrarODS(focado); });
+    b.addEventListener("blur", () => { focado = null; mostrarODS(null); });
+  });
+})();
+</script>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from "three";
+const canvas = document.getElementById("cena404");
+const reduzir = matchMedia("(prefers-reduced-motion: reduce)");
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { canvas.parentElement.hidden = true; }
+if (renderer) {
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
+  camera.position.set(0, 0.4, 6.2); camera.lookAt(0, -0.05, 0);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x3b1d8b, 1.6));
+  const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(2.5, 4, 3); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xc4b5fd, 2.0); rim.position.set(-3, 1, -3); scene.add(rim);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const gold = new THREE.Color("#D4A24A");
+  const pulseira = new THREE.Group(); pulseira.rotation.y = -0.55;
+  const balanco = new THREE.Group(); balanco.add(pulseira); scene.add(balanco);
+  const RY = 1.12, RZ = 0.72;
+  const matFaixa = new THREE.MeshPhysicalMaterial({ color: css("--band3d") || "#4F2BAB", roughness: 0.62, sheen: 0.6, sheenColor: new THREE.Color("#C4B5FD") });
+  const gf = new THREE.TorusGeometry(1, 0.075, 28, 160); gf.rotateY(Math.PI / 2);
+  const faixa = new THREE.Mesh(gf, matFaixa); faixa.scale.set(3.3, RY, RZ); pulseira.add(faixa);
+  const matModulo = new THREE.MeshPhysicalMaterial({ color: css("--band3d") || "#4F2BAB", roughness: 0.22, clearcoat: 1 });
+  const modulo = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.56, 12, 32), matModulo);
+  modulo.scale.set(1, 1, 0.36); modulo.position.set(0, 0, RZ + 0.05); pulseira.add(modulo);
+  const frente = RZ + 0.05 + 0.3 * 0.36;
+  const matOuro = new THREE.MeshStandardMaterial({ color: gold, metalness: 0.85, roughness: 0.28 });
+  [[0.12, 0.02], [0.055, -0.3]].forEach(([r, y]) => { const g = new THREE.CylinderGeometry(r, r * 1.04, 0.05, 40); g.rotateX(Math.PI / 2); const b = new THREE.Mesh(g, matOuro); b.position.set(0, y, frente + 0.005); pulseira.add(b); });
+  const motor = x => { const m = new THREE.Mesh(new THREE.CapsuleGeometry(0.035, 0.34, 6, 16), new THREE.MeshStandardMaterial({ color: gold, metalness: 0.6, roughness: 0.35, emissive: gold, emissiveIntensity: 0 })); m.position.set(x, 0, RZ + 0.07); pulseira.add(m); return m; };
+  const mEsq = motor(-0.315), mDir = motor(0.315);
+  const aneis = []; const geoAnel = new THREE.RingGeometry(0.16, 0.2, 48);
+  const pulso = obj => { const m = new THREE.Mesh(geoAnel, new THREE.MeshBasicMaterial({ color: gold, transparent: true, opacity: .9, side: THREE.DoubleSide, depthWrite: false, depthTest: false })); obj.getWorldPosition(m.position); scene.add(m); aneis.push({ m, t: 0 }); };
+  const caixa = canvas.parentElement;
+  const tam = () => { const w = caixa.clientWidth, h = caixa.clientHeight; if (!w) return; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); };
+  new ResizeObserver(tam).observe(caixa);
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { matFaixa.color.set(css("--band3d")); matModulo.color.set(css("--band3d")); });
+  const relogio = new THREE.Clock();
+  let t = 0, prox = 0;
+  function quadro() {
+    const dt = Math.min(relogio.getDelta(), 0.05);
+    if (caixa.offsetParent !== null) {
+      // Menos de 5 segundos de movimento: depois a pulseira para (WCAG 2.2.2)
+      if (!reduzir.matches && t < 4.6) {
+        t += dt;
+        // Parar: vibração contínua por 2 s, pausa curta, repete
+        const fase = t % 2.8;
+        if (fase < 2) {
+          mEsq.material.emissiveIntensity = mDir.material.emissiveIntensity = 1.3;
+          balanco.position.x = Math.sin(t * 95) * 0.012;
+          if (t > prox) { pulso(mEsq); pulso(mDir); prox = t + 0.32; }
+        } else {
+          mEsq.material.emissiveIntensity *= 0.85; mDir.material.emissiveIntensity *= 0.85; balanco.position.x = 0;
+        }
+        balanco.rotation.y = Math.sin(t * 0.5) * 0.25;
+      } else { mEsq.material.emissiveIntensity *= 0.85; mDir.material.emissiveIntensity *= 0.85; balanco.position.x = 0; }
+      for (let k = aneis.length - 1; k >= 0; k--) {
+        const a = aneis[k]; a.t += dt; const q = a.t / 0.9;
+        a.m.scale.setScalar(1 + q * 3.2); a.m.material.opacity = Math.max(0, .85 * (1 - q)); a.m.quaternion.copy(camera.quaternion);
+        if (q >= 1) { scene.remove(a.m); a.m.material.dispose(); aneis.splice(k, 1); }
+      }
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(quadro);
+  }
+  addEventListener("pulse:rota", e => { if (e.detail === "404") { t = 0; prox = 0; } requestAnimationFrame(tam); });
+  tam(); requestAnimationFrame(quadro);
+}
+</script>

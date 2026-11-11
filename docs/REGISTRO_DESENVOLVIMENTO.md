@@ -21,6 +21,7 @@
 | 5 | Diário completo: lista, formulário, ver, editar, excluir, desfazer | `a303670` |
 | 6 | Responsividade para tablet e computador | `37175ba` |
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
+| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 e 8.1 feitas | — |
 
 **Em números:** 7 rotas · 33 componentes (o mínimo é 8) · 12 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras.
 
@@ -236,6 +237,86 @@ Os componentes de apresentação só recebem dados e funções por props. Quando
 
 ---
 
+## Fase 8 — Nova identidade e movimento (em andamento)
+
+A equipe aprovou uma identidade visual e de movimento nova (seção 18 da especificação, com os protótipos em `docs/prototipos/`). A fase é feita em subfases, com uma pausa para aprovação no fim de cada uma. **Cada mudança é registrada aqui.**
+
+### 8.0 — Leitura e plano (sem código)
+
+**O que foi feito:** leitura da seção 18, das notas (Fase 8) das outras seções e dos 3 protótipos; exame do projeto; plano das subfases 8.1 a 8.8, com o comando de instalação e os riscos.
+
+**Decisões da equipe** (vão para a seção 17 da especificação como **Equipe**):
+
+| # | Decisão |
+| --- | --- |
+| 1 | "Nesta página" em pílulas, depois do resumo (Solução) ou da abertura (Início). A coluna lateral da 9.4 sai. No computador (≥ 1024 px e altura ≥ 700 px), o índice gruda embaixo do cabeçalho ao rolar, e a pílula da seção atual fica dourada (`aria-current="true"`). |
+| 2 | Valem os textos da especificação ("O problema", "Cerca de 90%", "7,9 milhões"). Entra a introdução de Tecnologias do protótipo. Com "reduzir movimento", a abertura mostra "Sinais da Pulse" e "Veja cada sinal explicado na página Solução." (a frase do protótipo pedia para desligar uma configuração de acessibilidade). |
+| 3 | Rótulos mono: os da 18.5 e os dos protótipos, mais "As pessoas", "No trajeto", "Ecossistema", "Próximos passos" e "Por que a Pulse". O Diário fica sem rótulo. |
+| 4 | Cabeçalho: "Pulse" com o marcador `ICONE-Pulse-AQUI` e "GS 2026.2 · CitizenTech" em mono à direita. |
+| 5 | A cortina de piso tátil aparece só ao entrar e ao sair do Diário; entre as páginas internas do Diário não há cortina. O diálogo e as mensagens continuam sem animação. |
+| 6 | Capa: uma camada sólida, criada por um script no `<head>`, evita que a página apareça por um instante antes da capa. Só existe quando a chave `pulse-capa-vista` não existe; some quando a capa monta ou em no máximo 2 s. |
+
+**Onde o protótipo discorda e a especificação vence:** barra com largura pelo texto e fundo sólido; botões do carrossel com ícone e texto; rodapé com "Protótipo acadêmico com dados públicos e simulados."; densidade de pixels máxima de 1,75; ODS só no rodapé da Solução; textos dos sinais da 6.2.
+
+### 8.1 — Instalação e base do movimento
+
+**Pacotes instalados** (comando aprovado pela equipe, com versões exatas, como o resto do `package.json`):
+
+```
+npm install --save-exact lenis@1.3.27 gsap@3.15.0 @gsap/react@2.1.2 motion@14.6.0 three@0.186.1
+```
+
+| Pacote | Para quê | Por que esta versão |
+| --- | --- | --- |
+| `lenis` 1.3.27 | Rolagem suave com a roda do mouse | Última estável (a 2.0 ainda está em desenvolvimento) |
+| `gsap` 3.15.0 | Animações e o ScrollTrigger (animação ligada à rolagem) | Estável há meses; a 4.0 está em beta |
+| `@gsap/react` 2.1.2 | Hook `useGSAP`, que limpa as animações ao sair da página | Última |
+| `motion` 14.6.0 | Microinterações | Mais de 2 semanas de uso (a mais nova saiu um dia antes) |
+| `three` 0.186.1 | Pulseira 3D (subfase 8.4) | Mais de 2 semanas de uso |
+
+O `npm audit` mostra 7 avisos moderados. Eles já existiam e vêm do `minimatch`, usado pelas ferramentas do ESLint, e não dos pacotes novos. Não foi rodado `npm audit fix`, porque ele mudaria pacotes fora da lista aprovada.
+
+**Arquivos:**
+
+| Arquivo | Mudança |
+| --- | --- |
+| `package.json` e `package-lock.json` | Os 5 pacotes acima |
+| `lib/movimento.js` (novo) | Registra o ScrollTrigger uma vez (só no navegador) e liga o Lenis ao relógio do GSAP |
+| `components/layout/ProvedorMovimento.jsx` (novo) | Lenis na raiz (`anchors: true`, `autoRaf: false`) + `MotionConfig reducedMotion="user"` |
+| `app/layout.jsx` | `ProvedorMovimento` em volta do site; marcadores `FONTE-Anton-AQUI`, `FONTE-Atkinson Hyperlegible Next-AQUI` e `FONTE-JetBrains Mono-AQUI`, com o passo a passo |
+| `app/globals.css` | Variáveis `--fonte-titulo`, `--fonte-base` e `--fonte-mono` com as fontes de reserva; classes `font-titulo` e `font-mono`; CSS do Lenis; `scroll-behavior: auto` quando o Lenis está ativo |
+
+**Decisões da implementação** (seção 17 como **Implementação**):
+- **Um relógio só.** O Lenis não usa o próprio relógio (`autoRaf: false`): o do GSAP chama o Lenis a cada quadro e avisa o ScrollTrigger a cada passo da rolagem. Assim as animações ligadas à rolagem nunca ficam um quadro atrasadas.
+- **Âncoras sem desconto extra.** O Lenis já desconta o `scroll-padding-top` do `<html>` (altura do cabeçalho + 16 px). O clique continua sendo um link normal, então o navegador leva o foco para o destino.
+- **"Reduzir movimento" na roda do mouse.** O Lenis respeita a configuração, mas ainda amortecia a roda por cerca de 0,1 s (o teste mediu 397 px em 60 ms e 400 px depois). Como a 18.2 pede que nada se mova, com "reduzir movimento" a suavização da roda é desligada (`smoothWheel: false`).
+- **Sem `scroll-behavior: smooth` com o Lenis ativo.** Se o navegador também suavizasse, cada passo do Lenis viraria uma rolagem suave por cima da outra. A regra antiga continua valendo se o Lenis não carregar.
+
+**Verificação automática** (Chrome sem janela, servidor de produção): ESLint sem problemas, `next build` sem erros e 17 de 17 testes:
+- Lenis ativo e `scroll-behavior: auto`;
+- 1º Tab no "Pular para o conteúdo"; Enter leva o foco ao `<main>` e o Tab seguinte continua no conteúdo;
+- "Nesta página": rolagem suave, H2 a 80 px do topo (fora do cabeçalho), foco no H2 e o endereço com `#o-problema`;
+- roda do mouse suave;
+- com "reduzir movimento": âncora e roda instantâneas, foco no H2;
+- celular com toque: rolar para baixo esconde o cabeçalho e a barra; rolar para cima mostra o cabeçalho;
+- nenhum erro ou aviso no console em Início, Solução, Simulador, Diário e Novo registro.
+
+Observação sobre o teste: o gesto pronto de rolagem do Chrome sem janela (`synthesizeScrollGesture`) não rola nenhuma página, nem uma página simples sem Lenis. O teste passou a simular os toques um a um. Com eles, o site rola como uma página sem Lenis, confirmando que o toque continua o do aparelho.
+
+**Como testar à mão:**
+1. `npm run dev` e abra `http://localhost:3000` num computador com mouse.
+2. Role com a roda do mouse: a página desliza suave.
+3. Aperte `Tab`: o primeiro foco é "Pular para o conteúdo". Aperte `Enter` e depois `Tab`: o foco vai para o primeiro link do conteúdo.
+4. No "Nesta página", clique em "O problema": a página rola suave, o título para logo abaixo do cabeçalho, e o próximo `Tab` continua dali.
+5. Ligue "reduzir movimento" (Windows: Configurações > Acessibilidade > Efeitos visuais > Efeitos de animação desligado) e repita: tudo instantâneo.
+6. No celular (ou no modo celular do navegador), na Início ou na Solução: rolar para baixo esconde o cabeçalho e a barra; rolar para cima mostra.
+
+**Marcadores desta subfase:** `FONTE-Anton-AQUI`, `FONTE-Atkinson Hyperlegible Next-AQUI` e `FONTE-JetBrains Mono-AQUI`, todos em `app/layout.jsx`.
+
+**Sugestão de commit:** `Instala pacotes de movimento e adiciona provedor de rolagem suave`
+
+---
+
 ## Como os testes automáticos foram feitos
 
 - Scripts temporários, **fora do projeto**, controlaram o Chrome sem janela pelo protocolo de depuração: clicam, preenchem formulários, apertam Tab e medem a tela.
@@ -262,6 +343,10 @@ Os componentes de apresentação só recebem dados e funções por props. Quando
 | `role="status"` / `role="alert"` | Regiões cujo texto o leitor de tela anuncia sem / com interrupção |
 | Container query | Regra de CSS que olha o espaço do componente, e não a tela inteira |
 | `ResizeObserver` | Avisa quando um elemento muda de tamanho |
+| Lenis | Biblioteca que deixa a rolagem com a roda do mouse suave (Fase 8) |
+| GSAP / ScrollTrigger | Biblioteca de animação / plugin dela que liga uma animação à rolagem (Fase 8) |
+| Motion | Biblioteca de microinterações para React (Fase 8) |
+| Relógio (`ticker`) | Função chamada a cada quadro da tela, cerca de 60 vezes por segundo, que faz as animações andarem |
 
 ---
 
@@ -269,10 +354,10 @@ Os componentes de apresentação só recebem dados e funções por props. Quando
 
 | Pendência | Quem resolve |
 | --- | --- |
-| Colocar a fonte, os ícones, as imagens e as fotos nos marcadores | Equipe |
+| Colocar as 3 fontes (Anton, Atkinson Hyperlegible Next e JetBrains Mono), os ícones, as imagens e as fotos nos marcadores | Equipe |
 | Conectar a API externa (`.env.local` + blocos `API-EXTERNA-AQUI`) | Equipe |
 | Fazer o simulador (`SIMULADOR-AQUI`) e decidir sobre a vibração do celular | Integrante do simulador + equipe |
-| Textos da página 404 em português | Equipe (passar os textos) |
+| ~~Textos da página 404 em português~~ Definidos na seção 18.11; implementação na subfase 8.7 | Fase 8 |
 | Textos para esperas acima de 10 s (aviso + cancelar) | Equipe (passar os textos) |
 | Alinhamento do logo com a grade no computador; cabeçalho fixo com zoom de 400% | Equipe avalia |
 | Testes manuais da Fase 7 (leitor de tela, aparelhos reais) | Equipe |

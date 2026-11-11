@@ -5,6 +5,8 @@
 >
 > As decisões tomadas durante o desenvolvimento (Fases 0 a 7) já estão incorporadas nas seções, marcadas com **(Fase N)**, e reunidas na seção 17. O resumo de cada fase está em `docs/REGISTRO_DESENVOLVIMENTO.md`.
 >
+> **Fase 8 — nova identidade e movimento (11/11/2026):** a seção 18 traz o novo estilo, cores, fontes, efeitos, a capa, a pulseira 3D, o rodapé (com a faixa dos ODS na Solução) e a página 404. **Onde a seção 18 e uma seção antiga discordarem, vale a 18.** As seções afetadas têm uma nota **(Fase 8)**.
+>
 > Última atualização: 11/11/2026.
 
 ---
@@ -28,6 +30,7 @@
 15. Checklist de acessibilidade e critérios de aceite
 16. Pendências e suposições
 17. Registro de alterações do desenvolvimento
+18. Nova identidade e movimento (Fase 8)
 
 ---
 
@@ -57,9 +60,11 @@
 - Boas práticas de desenvolvimento e **versionamento** (Git). **Os commits são feitos manualmente pela equipe**, com uma mensagem simples sugerida ao fim de cada fase.
 - Briefing da GS: **nada de dados pessoais reais**. Usar dados simulados ou públicos e citar a fonte.
 - O registro do uso de IA no **`prompts.md`** (exigência da GS) é feito manualmente pela equipe.
-- **Não usar imagens geradas por IA.**
+- **Não usar imagens geradas por IA.** **(Fase 8)** A regra vale para o Claude Code, que nunca gera nem coloca imagens. A equipe pode colocar imagens geradas por IA (seção 18.13).
 
 **Feito manualmente pela equipe (não refazer no código):** criação do projeto Next.js com App Router, instalação do Tailwind CSS e do ESLint, instalação da fonte Atkinson Hyperlegible Next, estrutura de pastas (seção 14) e o arquivo `prompts.md`. O desenvolvimento continua a partir do projeto já existente no VSCode, sem reinstalar pacotes nem mudar configurações.
+
+**(Fase 8)** Na Fase 8, o Claude Code instala os pacotes da seção 18.1 (`lenis`, `gsap`, `@gsap/react`, `motion`, `three`), sempre depois de mostrar o comando e receber a confirmação da equipe. **Fontes, ícones e imagens continuam manuais**, com marcadores.
 
 ---
 
@@ -76,11 +81,11 @@
 9. **Alvos de toque de no mínimo 48 × 48 px**, com 8 px de espaço entre alvos vizinhos.
 10. **Contorno de foco sempre visível**, 3 px, afastado 2 px do elemento.
 11. **Tema claro e escuro seguindo somente a configuração do aparelho** (`prefers-color-scheme`). Não há botão de tema.
-12. **Respeitar "reduzir movimento"** (`prefers-reduced-motion`): sem animações e barras sempre visíveis.
+12. **Respeitar "reduzir movimento"** (`prefers-reduced-motion`): sem animações e barras sempre visíveis. **(Fase 8)** Ver também o piso de acessibilidade da nova identidade (seção 18.2).
 13. **Funcionar no alto contraste do Windows** (`forced-colors`): áreas separadas por bordas; nada importante só em sombra ou imagem de fundo.
 14. **Sem CAPTCHA, sem limites de tempo, sem gestos obrigatórios** (deslizar etc.), sem vibração do celular (para não confundir com os sinais da Pulse).
 15. **Sem emoji** em texto importante.
-16. **Toda imagem tem `alt` preenchido**, com uma comunicação simples, clara e direta para quem usa leitor de tela (regras na seção 13.2). Não há imagem puramente decorativa no site.
+16. **Toda imagem tem `alt` preenchido**, com uma comunicação simples, clara e direta para quem usa leitor de tela (regras na seção 13.2). Não há imagem puramente decorativa no site. **(Fase 8)** Decorações feitas em CSS ou SVG (textura de piso tátil, palavras gigantes, linhas da abertura) não são imagens de conteúdo e ficam com `aria-hidden="true"`.
 
 ---
 
@@ -106,10 +111,12 @@
 
 | Página | Conteúdo | Perguntas do briefing da GS respondidas |
 | --- | --- | --- |
-| Início | Tema CitizenTech → o problema → quem vive o problema | 02 Qual problema será resolvido? · 01 Quem é o cidadão beneficiado? |
-| Solução | A pulseira, como funciona, tecnologias, ecossistema, como ampliar o impacto, ODS, diferencial, equipe | 03 Como funcionará? · 04 Quais tecnologias? · 05 Quem participará do ecossistema? · 06 Como o impacto será ampliado? |
+| Início | **(Fase 8)** Capa (primeira visita) → abertura com a pulseira 3D e os links da solução → tema CitizenTech → o problema → quem vive o problema | 02 Qual problema será resolvido? · 01 Quem é o cidadão beneficiado? |
+| Solução | **(Fase 8)** A pulseira, os sinais, como funciona, tecnologias, galeria, ecossistema, como ampliar o impacto, diferencial, equipe (os ODS foram para o rodapé da Solução) | 03 Como funcionará? · 04 Quais tecnologias? · 05 Quem participará do ecossistema? · 06 Como o impacto será ampliado? |
 | Simulador | Espaço reservado para o simulador | Demonstra a 03 |
 | Diário | CRUD de registros de deslocamento + resumo de indicadores | 06 Como o impacto será medido? |
+| Rodapé | **(Fase 8)** Links e créditos em todas as páginas; na Solução, também a faixa contínua dos 3 ODS (seção 18.10) | Tema CitizenTech |
+| 404 | **(Fase 8)** "Você saiu da rota" (seção 18.11) | — |
 
 ---
 
@@ -123,7 +130,7 @@ Ordem no HTML (é também a ordem visual e a ordem de leitura do leitor de tela)
    1. `<h1>` + uma frase de resumo.
    2. Índice **"Nesta página"** (`<nav aria-label="Nesta página">`), só em Início e Solução.
    3. Seções com `<h2>` (e `<h3>`/`<h4>` quando preciso). Um único `<h1>` por página. O tamanho visual acompanha o nível.
-4. `<footer>` com: "Pulse · Global Solution 2026 · FIAP" e "Protótipo acadêmico com dados públicos e simulados."
+4. `<footer>` com: "Pulse · Global Solution 2026 · FIAP" e "Protótipo acadêmico com dados públicos e simulados." **(Fase 8)** Substituído pelo rodapé da seção 18.10 (na Solução, com a faixa dos ODS).
 5. `<nav aria-label="Navegação principal">` — a barra flutuante.
 
 Regras de layout:
@@ -140,6 +147,8 @@ Regras de layout:
 Use estes textos como estão. Tom de voz: próximo, sério, respeitoso e objetivo; trata quem lê por "você". Ver regras na seção 11.4.
 
 ### 6.1 Início (`/`)
+
+> **(Fase 8)** Os textos abaixo continuam. A ordem da página e a abertura com a pulseira estão na seção 18.6.
 
 **H1:** Inovação que chega a quem precisa
 **Resumo:** A Pulse é uma pulseira que guia pessoas cegas e com baixa visão pela cidade. Conheça o problema que ela resolve.
@@ -169,6 +178,8 @@ Use estes textos como estão. Tom de voz: próximo, sério, respeitoso e objetiv
 **Botão-link principal:** Conheça a solução → `/solucao`
 
 ### 6.2 Solução (`/solucao`)
+
+> **(Fase 8)** Mudanças na seção 18.8: "Os sinais" vira H2 próprio em rolagem fixa, entra a Galeria, a seção de ODS sai do meio desta página e vai para o rodapé dela, numa faixa contínua, e o "Nesta página" muda.
 
 **H1:** A Pulse: um guia no pulso
 **Resumo:** Uma pulseira que orienta o caminho por vibrações e sinais, com mais autonomia e segurança nos deslocamentos.
@@ -427,7 +438,9 @@ Ao salvar:
 
 ## 8. Design tokens
 
-Estilo visual: **Flat Design 2.0** — superfícies limpas, cores sólidas, sem degradê/textura/brilho, sombras sutis. A **borda é o que separa os elementos**; a sombra é só reforço.
+> **(Fase 8)** Estilo, cores e tipografia substituídos pelas seções 18.3, 18.4 e 18.5. Espaçamento, foco e unidades desta seção continuam valendo.
+
+Estilo visual (até a Fase 7): **Flat Design 2.0** — superfícies limpas, cores sólidas, sem degradê/textura/brilho, sombras sutis. A **borda é o que separa os elementos**; a sombra é só reforço.
 
 ### 8.1 Cores
 
@@ -542,6 +555,8 @@ Toque e passagem do mouse: **mudança leve de fundo**, sem animações chamativa
 - Fica preso no topo (`sticky`). Em Início e Solução, no celular, some ao rolar (ver 9.3).
 
 ### 9.2 Barra flutuante (`<nav aria-label="Navegação principal">`)
+
+> **(Fase 8)** Comportamento igual; visual em pílula com o item ativo dourado (seção 18.9).
 
 - **Em todos os tamanhos de tela.** Centralizada horizontalmente, **16 px acima da borda inferior + área de segurança** (`env(safe-area-inset-bottom)`).
 - Fundo **sólido** `--cor-cromo` (nunca translúcido), borda 1 px `--cor-borda`, raio 16 px, sombra de barra, padding 6 px, 6 px entre itens.
@@ -671,6 +686,8 @@ Notas de implementação:
 
 ## 12. Responsividade
 
+> **(Fase 8)** Complementada pela seção 18.12.
+
 Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (computador).
 
 | Elemento | Celular (< 768 px) | Tablet (≥ 768) | Computador (≥ 1024) |
@@ -736,7 +753,7 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 
 - **Ícones continuam ocultos para o leitor de tela** (`aria-hidden="true"`), porque o texto ao lado já diz o mesmo. Assim a leitura fica direta: "Início", e não "Ícone casa, Início".
 - **Sem texto dentro de imagens.** Imagens da pulseira são apresentadas como "ilustração conceitual".
-- **Não usar imagens geradas por IA.**
+- **Não usar imagens geradas por IA.** **(Fase 8)** Vale para o Claude Code; a equipe pode colocá-las. Marcadores novos na seção 18.13.
 - Outras mídias, se houver, também são manuais: **`VIDEO-(descrição)-AQUI`** e **`AUDIO-(descrição)-AQUI`**. Sem animação ou vídeo automático de mais de 5 s sem botão de pausa; som só depois de uma ação da pessoa.
 
 ---
@@ -898,7 +915,9 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 - Fotos da equipe (Giovana, Giovane, Mie, Pedro e Thiago): colocadas manualmente nos marcadores `IMAGEM-foto de (nome)-AQUI`.
 - Fonte e ícones: colocados manualmente pela equipe nos marcadores (seções 8.2 e 13.1).
 - Nome definitivo da pulseira ("Pulse" é provisório).
-- **(Fase 7)** Página 404 em português: hoje aparece a página padrão do Next, em inglês ("This page could not be found"). Como a página é `lang="pt-BR"`, o leitor de tela lê o inglês com pronúncia de português (WCAG 3.1.2). Faltam os textos para criar `app/not-found.jsx`.
+- ~~**(Fase 7)** Página 404 em português.~~ **(Fase 8)** Textos definidos na seção 18.11; falta só implementar.
+- **(Fase 8)** Imagens novas: capa (2 versões), 4 sinais e 6 fotos da galeria (seção 18.13), colocadas pela equipe.
+- **(Fase 8)** Frase da capa provisória: "Um guia no pulso para atravessar a cidade."
 - **(Fase 5)** Espera acima de 10 s (seção 11.1): faltam o texto do aviso e o do botão de cancelar.
 - **(Fase 3)** Vibração no simulador: a seção 6.3 cita a Vibration API no Android, e a seção 3, item 14, proíbe vibração do celular. A equipe precisa decidir antes de o simulador usar essa API.
 - **(Fase 6)** No computador, na Início e na Solução, o logo do cabeçalho (coluna de 40rem) não fica alinhado com a grade de 59rem. É só visual; a seção 9.1 não define a largura do cabeçalho.
@@ -909,7 +928,7 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 - Todas as perguntas do Diário são obrigatórias, exceto Observações.
 - O Diário mostra o aviso de privacidade.
 - Na confirmação de exclusão, o foco começa em "Manter registro".
-- **(Fases 3 a 6)** As decisões da seção 17 marcadas como "proposta da implementação" valem até a equipe confirmar ou mudar.
+- ~~**(Fases 3 a 6)** As decisões da seção 17 marcadas como "proposta da implementação" valem até a equipe confirmar ou mudar.~~ Confirmadas pela equipe em 11/11/2026.
 
 **Riscos aceitos na avaliação heurística (não corrigir sem decisão da equipe):**
 - Termos técnicos da seção Tecnologias sem explicação extra (H2).
@@ -952,3 +971,338 @@ Decisões tomadas durante as Fases 0 a 7. **Equipe** = escolhida pela equipe qua
 | 7 | Campo de data com contorno de foco por `:focus-within` | Implementação | 8.3 |
 | 7 | `overflow-wrap: anywhere` no corpo, para palavras longas com texto muito ampliado | Implementação | 8.2 |
 | 7 | A barra refaz a medição quando os textos mudam de largura (WCAG 1.4.12) | Implementação | 9.2 |
+
+
+---
+
+## 18. Nova identidade e movimento (Fase 8)
+
+Decidida pela equipe em 11/11/2026, depois das Fases 0 a 7. **Esta seção vence as seções antigas onde elas discordarem.** As seções afetadas têm uma nota **(Fase 8)** apontando para cá.
+
+- **O que muda:** estilo visual, cores, tipografia, a abertura do Início, a página Solução, a barra, a transição entre páginas, o rodapé, a página 404 e as fotos.
+- **O que não muda:** rotas, textos (exceto onde esta seção diz), o Diário (só recebe cores e fontes novas, sem efeitos), a camada de dados, a API, os marcadores e todas as regras de acessibilidade da seção 3.
+- **Protótipos de referência:** `docs/prototipos/pulse-abertura.html`, `docs/prototipos/pulse-solucao.html` e `docs/prototipos/pulse-navegacao.html`. São HTML puro, feitos para aprovação visual. Servem de referência de aparência, de comportamento e da geometria da pulseira 3D. **Não copiar o código direto:** eles carregam bibliotecas por CDN e não seguem a arquitetura do projeto.
+
+### 18.1 Pacotes e fontes
+
+Na Fase 8, **o Claude Code instala os pacotes**, depois de mostrar o comando à equipe e receber a confirmação. Nada fora desta lista sem perguntar.
+
+| Pacote | Para quê | Observações |
+| --- | --- | --- |
+| `lenis` | Rolagem suave no computador | Usar `ReactLenis` de `lenis/react` na raiz, com `anchors: true` (links internos e "Pular para o conteúdo" funcionando) e `autoRaf: false`, sincronizado com o relógio do GSAP. Já desliga sozinho com "reduzir movimento". No toque, a rolagem continua a do aparelho. |
+| `gsap` e `@gsap/react` | Animações ligadas à rolagem (ScrollTrigger) | Registrar o ScrollTrigger uma vez. Usar `useGSAP` (limpa as animações ao sair da página) e `gsap.matchMedia()` para separar "movimento permitido" de "reduzir movimento". |
+| `motion` | Microinterações | Importar de `motion/react`. `MotionConfig reducedMotion="user"` na raiz. Uso: diálogo, mensagens, barra e botões. |
+| `three` | Pulseira 3D | Só em componentes de cliente, carregados com `next/dynamic` e `ssr: false`. |
+
+- **Fontes: instaladas manualmente pela equipe**, como antes. No lugar onde cada uma será carregada (`app/layout.jsx` ou CSS global), deixar os marcadores **`FONTE-Anton-AQUI`** (peso 400), **`FONTE-Atkinson Hyperlegible Next-AQUI`** (400 e 700, já existe) e **`FONTE-JetBrains Mono-AQUI`** (500 e 700), com o passo a passo em comentário. Usar as variáveis `--fonte-titulo`, `--fonte-base` e `--fonte-mono` com as fontes de reserva da seção 18.4, para o site funcionar antes das fontes entrarem.
+- **21st.dev, Aceternity UI e React Bits:** não instalar agora. Só se a equipe pedir um bloco específico, sempre convertido para JavaScript e conferido quanto à acessibilidade. As dependências possíveis (`clsx`, `tailwind-merge`) só entram nesse caso.
+- **Fontes, ícones e imagens continuam manuais**, com os marcadores `FONTE-…-AQUI`, `ICONE-…-AQUI` e `IMAGEM-…-AQUI`.
+
+### 18.2 Piso de acessibilidade da nova identidade
+
+Vale junto com a seção 3 e não pode ser quebrado por nenhum efeito:
+
+1. Texto sempre sobre fundo sólido, com contraste de 7:1 ou mais. Texturas, palavras gigantes e degradês só atrás de áreas sem texto.
+2. Com "reduzir movimento": nada se move. As cenas 3D mostram um quadro parado, as rolagens fixas e a galeria horizontal viram listas comuns, a capa sai sem animação e a transição entre páginas é instantânea.
+3. O que se move sozinho por mais de 5 segundos tem botão de pausa visível (WCAG 2.2.2). Nada pisca mais de 3 vezes por segundo (WCAG 2.3.1).
+4. Nenhum conteúdo depende de animação ou de JavaScript para aparecer. O texto vem do servidor; os efeitos só enfeitam o que já está na página.
+5. Nada invisível recebe foco. Elementos fora da tela ou transparentes não podem ser alcançados pelo Tab.
+6. O cursor do sistema nunca é substituído (quem tem baixa visão costuma aumentá-lo). Nenhuma ação depende só do mouse ou de um gesto.
+7. Decorações (textura, palavra gigante, linhas da abertura, nome do sinal animado) ficam com `aria-hidden="true"`.
+8. Ícone sempre com texto visível, inclusive nos botões dos carrosséis: "Anterior", "Próximo", "Pausar", "Girar".
+9. Desempenho: no máximo uma cena 3D visível por vez; a cena só anima enquanto está na tela; densidade de pixels limitada a 1,75; tudo liberado da memória ao sair da página. Se o WebGL falhar, aparece a descrição em texto.
+
+### 18.3 Cores (substitui a seção 8.1)
+
+Os temas continuam seguindo só o aparelho. Contrastes calculados.
+
+**Tema claro**
+
+| Token | Uso | Cor | Contraste |
+| --- | --- | --- | --- |
+| `--cor-fundo` | Fundo da página | `#F5F1E8` (creme) | — |
+| `--cor-superficie` | Cartões, campos, cabeçalho, barra e diálogo | `#FFFFFF` | — |
+| `--cor-texto` | Texto principal | `#1E0F4A` | 15,2:1 no creme; 17,2:1 no branco |
+| `--cor-texto-2` | Texto secundário | `#453A66` | 9,1:1; 10,2:1 |
+| `--cor-marca` | Títulos, links, foco e botão secundário | `#4F2BAB` | 8,2:1; 9,3:1 |
+| `--cor-destaque` | Rótulos mono e números grandes | `#4F2BAB` | 8,2:1 |
+| `--cor-ouro` / `--cor-sobre-ouro` | Botão principal e item ativo da barra | `#D4A24A` / `#120B24` | 8,3:1 |
+| `--cor-borda` | Bordas | `#6B5F94` | 5,1:1; 5,7:1 |
+| `--cor-erro` / `--cor-sucesso` / `--cor-aviso` | Status | iguais à seção 8.1 | 8,5 a 9,0:1 |
+| `--cor-perigo-texto` | Texto do botão de perigo preenchido | `#FFFFFF` sobre `#8B0A1A` | 9,7:1 |
+
+**Tema escuro**
+
+| Token | Uso | Cor | Contraste |
+| --- | --- | --- | --- |
+| `--cor-fundo` | Fundo da página | `#120B24` | — |
+| `--cor-superficie` | Cartões, campos, cabeçalho, barra, diálogo e fundo das mensagens | `#1C1238` | — |
+| `--cor-texto` | Texto principal | `#F5F1E8` | 16,9:1; 15,6:1 na superfície |
+| `--cor-texto-2` | Texto secundário | `#D9D0F2` | 13,0:1; 12,0:1 |
+| `--cor-marca` | Títulos, links (sublinhados) e foco | `#C4B5FD` (lilás) | 10,4:1; 9,5:1 |
+| `--cor-destaque` | Rótulos mono e números grandes | `#D4A24A` | 8,3:1; 7,6:1 |
+| `--cor-ouro` / `--cor-sobre-ouro` | Botão principal e item ativo da barra | `#D4A24A` / `#120B24` | 8,3:1 |
+| `--cor-borda` | Bordas | `#8C7BC9` | 5,3:1; 4,9:1 |
+| `--cor-erro` / `--cor-sucesso` / `--cor-aviso` | Status, sobre a superfície | `#FFDADA` / `#B8F5CB` / `#FFE7A3` | 13,7 a 14,4:1 |
+| `--cor-perigo-texto` | Texto do botão de perigo preenchido | `#2A1366` sobre `#FFDADA` | 11,8:1 |
+
+**Tokens de decoração e de 3D** (sem texto em cima):
+
+| Token | Claro | Escuro | Uso |
+| --- | --- | --- | --- |
+| `--cor-ponto` | `rgba(79, 43, 171, .09)` | `rgba(196, 181, 253, .07)` | Domos da textura de piso tátil |
+| `--cor-ponto-brilho` | `rgba(255, 255, 255, .7)` | `rgba(255, 255, 255, .04)` | Brilho de cada domo |
+| `--cor-palavra-fundo` | `rgba(79, 43, 171, .07)` | `rgba(79, 43, 171, .35)` | Palavras gigantes de fundo |
+| `--cor-faixa-3d` | `#4F2BAB` | `#5B37BA` | Tira e módulo da pulseira 3D |
+| `--cor-cortina` | `#4F2BAB` | `#4F2BAB` | Transição entre páginas |
+
+**Rodapé** (escuro nos dois temas): fundo `#120B24` no tema claro e `#0B0716` no escuro; cartões `#1C1238`; texto `#F5F1E8` (16,9:1 e 17,6:1); texto secundário `#D9D0F2` (13,0:1 e 13,5:1); dourado `#D4A24A` em números, rótulos e foco (8,3:1 e 8,6:1); bordas `#8C7BC9`.
+
+Regras:
+- **O roxo `#4F2BAB` só vira texto no tema claro** (no escuro teria 2,1:1). No escuro, o texto roxo vira lilás `#C4B5FD`.
+- **O dourado só vira texto no tema escuro e no rodapé** (no creme teria 2,1:1). No claro, ele só aparece como fundo de botão, sempre com texto `#120B24`.
+- A regra antiga "sem amarelo na interface" deixa de valer: o dourado `#D4A24A` foi escolhido pela equipe.
+- Hover do botão dourado: sombra leve e subida de 2 px, sem trocar a cor. Hover de botões secundários e itens da barra: fundo `color-mix(in srgb, var(--cor-marca) 12%, transparent)`.
+- Remover os tokens antigos (`#3B1D8B`, `#2A1366` como fundo, `#2E1670`) e manter a paleta padrão do Tailwind desligada.
+- Recalcular todos os pares de contraste na revisão da fase.
+
+### 18.4 Tipografia (substitui a família única da seção 8.2)
+
+| Família | Papel | Tamanho | Regras |
+| --- | --- | --- | --- |
+| **Anton** (`--fonte-titulo`, reserva `Impact, "Arial Narrow", sans-serif`) | H1, H2, nomes dos sinais, palavras de fundo, números grandes, nome "Pulse" | H1 `clamp(2.6rem, 8vw, 5.6rem)`; H1 da abertura do Início `clamp(2.1rem, 5.4vw, 3.6rem)`; H2 `clamp(2.2rem, 6vw, 4rem)`; altura de linha 1 | Só títulos curtos. Maiúsculas **só por CSS** (`text-transform: uppercase`); no código o texto fica normal, para o leitor de tela não soletrar. |
+| **Atkinson Hyperlegible Next** (`--fonte-base`, reserva Verdana) | Texto corrido, botões, links, H3, H4 e formulário | Texto 1,125rem (18 px), altura de linha 1,55; H3 1,25rem negrito; nunca menor que 16 px | Todo texto longo. |
+| **JetBrains Mono** (`--fonte-mono`, reserva `ui-monospace, "Courier New"`) | Rótulos curtos: "MODO TÁTIL", "SINAL · PARAR", "FONTE: G1, 2019", contagens | 0,8 a 0,9rem, letras espaçadas (0,12 a 0,14em), maiúsculas por CSS | Única exceção à regra dos 16 px: por isso são curtos e nunca carregam sozinhos uma informação. |
+
+Continuam valendo: `text-wrap: balance` nos títulos, `overflow-wrap: anywhere` no corpo e o teste de espaçamento de texto (WCAG 1.4.12).
+
+### 18.5 Linguagem visual (substitui o Flat Design 2.0 da seção 8)
+
+- **Textura de piso tátil:** grade de domos de 30 px, feita em CSS com dois `radial-gradient` (`--cor-ponto` e `--cor-ponto-brilho`), no fundo das aberturas e das cabeças de página.
+- **Palavras gigantes de fundo** em Anton, `--cor-palavra-fundo`, atrás do objeto principal, com `aria-hidden="true"`.
+- **Um objeto central por tela:** a pulseira 3D na abertura, a foto da situação em "Os sinais".
+- **Rótulos mono** acima dos títulos (eyebrow): "Tema", "O problema", "A solução", "Linguagem da Pulse"…
+- **Cantos:** cartões e fotos 18 a 20 px; botões e barra em pílula (999 px); polaroides 6 px.
+- **Botões:** principal dourado em pílula, 56 px de altura; secundário com contorno de 2 px em `--cor-marca`.
+- **O Diário fica calmo:** cores e fontes novas, sem textura, sem palavra de fundo e sem efeitos.
+
+### 18.6 Início (substitui a ordem da seção 6.1)
+
+Ordem: capa (primeira visita da sessão) → abertura com a pulseira → "Nesta página" → Tema CitizenTech → O problema → Quem vive o problema → "Conheça a solução". Os textos da seção 6.1 continuam.
+
+**Capa de introdução (`CapaIntro`)**
+- Aparece só na **primeira visita de cada sessão** (`sessionStorage`, chave `pulse-capa-vista`, com `try/catch`; se o armazenamento falhar, a capa aparece). É criada **só no navegador**, depois da hidratação: sem JavaScript, ela não existe.
+- Antes dela, o logo "pulsa" uma vez, em até 1 segundo.
+- Conteúdo: rótulo mono "GS 2026.2 · CitizenTech", "PULSE" gigante, a frase provisória **"Um guia no pulso para atravessar a cidade."** e a dica "Toque, role ou aperte uma tecla" (com seta).
+- Imagem de capa em `<picture>`, com marcadores: `IMAGEM-capa versão computador (horizontal)-AQUI` e `IMAGEM-capa versão celular (vertical)-AQUI`. `alt` sugerido: "Capa da Pulse.". A frase fica sobre uma faixa sólida.
+- A capa inteira tem `aria-hidden="true"` e nenhum elemento focável. Sai com clique, rolagem, toque arrastado, qualquer tecla ou foco. O primeiro Tab (no "Pular para o conteúdo") já abre o site.
+- Transição de saída **piso tátil**: a capa se desfaz nos domos (máscara `radial-gradient` com tamanho de 30 px, raio de 22 px para 0 em 1 segundo). Com "reduzir movimento", a saída é instantânea.
+- Ao sair, os títulos e os links da abertura aparecem (opacidade e subida de 10 px, 0,6 s), e a pulseira entra.
+
+**Abertura com a pulseira (`AberturaPulseira`)**
+- Rótulo mono "Pulseira de navegação", H1 "Inovação que chega a quem precisa" e o resumo.
+- `Pulseira3D` no centro, com a descrição como texto alternativo (18.7).
+- Embaixo dela: o nome do sinal atual em mono e a descrição curta (ambos `aria-hidden`, porque mudam sozinhos) e o botão **"Pausar animação" / "Retomar animação"** (`aria-pressed`).
+- Atrás, a palavra gigante acompanha o sinal: **Esquerda, Direita, Aguardar, Parar, Continuar** (troca com esmaecimento de 0,35 s; com "reduzir movimento", fica "Pulse"). O tamanho se ajusta ao comprimento: `min(21rem, 150vw / número de letras)`.
+- Navegação **"Partes da solução"** (`<nav>` com `<h2>` visualmente oculto), com 6 links para a página Solução:
+
+| Link | Destino | Descrição | Parte da pulseira que acende |
+| --- | --- | --- | --- |
+| Como funciona | `/solucao#como-funciona` | Aperte o botão e diga o destino. | Botão grande (destino) |
+| Os sinais | `/solucao#os-sinais` | Cada comando tem uma vibração própria. | Motor esquerdo |
+| Transporte público | `/solucao#transporte-publico` | Avisa a hora de embarcar no veículo certo. | Parte de baixo da tira |
+| Dois modos | `/solucao#dois-modos` | Sonoro e tátil, ou só tátil. | Botão pequeno (modo) |
+| Semáforos | `/solucao#semaforos` | Dados reais para saber quando atravessar. | Motor direito |
+| Tecnologias | `/solucao#tecnologias` | GPS, ESP32, motores e atuadores. | Atuador de pressão |
+
+- **No computador (≥ 1000 px):** 3 links de cada lado (os 3 primeiros à esquerda, alinhados à direita). Linhas tracejadas em SVG (`aria-hidden`) ligam cada link à parte da pulseira, recalculadas a cada quadro a partir da posição 3D projetada na tela. A linha anda devagar (tracejado em movimento). Ao passar o mouse ou focar um link, a linha engrossa e a parte acende.
+- **No celular:** a pulseira em cima e os links em lista de cartões abaixo (2 colunas a partir de 640 px), sem linhas.
+- No HTML, a ordem é a da tabela, igual nos dois tamanhos.
+
+**Seções seguintes:** cabeça de seção com rótulo mono e H2 em Anton. Em "O problema", a citação tem borda dourada à esquerda, e os dados aparecem em cartões com o número grande em Anton (`--cor-destaque`) e a fonte em mono.
+
+### 18.7 Pulseira 3D (`Pulseira3D`)
+
+Inspirada em pulseiras esportivas (referência visual da equipe): tira de silicone roxa em laço e um módulo em forma de pílula na frente, da mesma cor. A geometria de referência está em `docs/prototipos/pulse-abertura.html`.
+
+| Parte | Como é feita (Three.js) |
+| --- | --- |
+| Tira | `TorusGeometry(1, 0.075)` girada para o eixo x e escalada `(3.3, 1.12, 0.72)`: laço oval, alto e estreito. Material fosco com brilho lilás (`sheen`). Seis furos escuros na parte de trás. |
+| Módulo | `CapsuleGeometry(0.3, 0.56)` achatada no z (0,36), na frente do laço. Material brilhante (`clearcoat`), mesma cor da tira (`--cor-faixa-3d`). |
+| Botões | Botão grande dourado (raio 0,12, "informar o destino") no centro do módulo; botão pequeno (raio 0,055, "trocar o modo") embaixo. Um furo de microfone em cima e três de alto-falante embaixo. |
+| Motores | Duas cápsulas douradas finas nas laterais do módulo (esquerda e direita). |
+| Atuador de pressão | Disco dourado atrás do módulo, na parte de dentro. |
+| Luz e câmera | Luz hemisférica, uma luz principal, uma lilás de contorno e uma dourada suave. Câmera de 32°, vista de 3/4 (`rotation.y = -0.55`). Fundo transparente. |
+
+**Sinais animados** (ciclo de 2,8 s cada; anéis dourados de "pulso" saem da parte que vibra e somem em 0,9 s):
+
+| Sinal | Animação |
+| --- | --- |
+| Virar à esquerda / à direita | Três pulsos no motor do lado (0,1, 0,45 e 0,8 s); o motor acende |
+| Aguardar | Três vibrações curtas nos dois motores, duas vezes no ciclo |
+| Parar | Vibração contínua nos dois motores por cerca de 2 s, com um tremor leve da pulseira |
+| Continuar | O atuador acende e pulsa devagar; dois pulsos grandes |
+
+**Modos de uso (prop `modo`):**
+- `"abertura"`: percorre os 5 sinais em sequência; entra depois da capa (escala de 0,35 para 1 e uma volta completa em 1,6 s); balança devagar e acompanha o mouse em telas com mouse (`pointer: fine`); `role="img"` com `aria-label`: "Pulseira Pulse em 3D: uma tira roxa de silicone com um módulo em forma de pílula na frente. No módulo há um botão dourado grande, para dizer o destino, e um menor, para trocar o modo. Dos lados do módulo ficam os motores que vibram para indicar o lado da conversão."
+- `"sinal"`: repete um sinal fixo (usado em "Os sinais"; em "Virar", alterna esquerda e direita). `aria-hidden`, porque o texto do sinal está ao lado.
+- `"parar"`: usado na 404; vibra por no máximo 4,6 s e para. `aria-hidden`.
+
+**Regras:** carregar com `next/dynamic` e `ssr: false`, mostrando a descrição em texto enquanto carrega e se o WebGL falhar; animar só quando visível (`IntersectionObserver`); botão de pausa onde a animação é contínua; com "reduzir movimento", um quadro parado; cor da tira lida de `--cor-faixa-3d` e atualizada quando o tema muda; liberar geometrias, materiais e o renderizador ao desmontar. A lógica da cena fica num hook (`usePulseira3D`) ou num módulo em `lib/`, marcada com "// Esta parte é lógica".
+
+### 18.8 Solução (substitui a ordem e partes da seção 6.2)
+
+**Nesta página:** A pulseira · Os sinais · Como funciona · Tecnologias · Galeria · Quem participa · Como ampliar o impacto · O diferencial · Equipe
+
+Mudanças nos textos da seção 6.2:
+- **A seção "Objetivos de Desenvolvimento Sustentável" sai desta página**, sem link. Os ODS passam para o rodapé desta página, numa faixa contínua (18.10).
+- **"Os sinais" vira um H2 próprio**, logo depois de "A pulseira", e sai de dentro de "Como funciona". Textos dos sinais iguais aos da 6.2, agrupados em 4: Continuar, Parar, Virar (esquerda ou direita), Aguardar.
+- **Nova seção H2 "Galeria"**, depois de Tecnologias.
+- Âncoras para os links da abertura: `id="como-funciona"` (H2), `id="os-sinais"` (H2), `id="tecnologias"` (H2), e nos H3 de "Como funciona": `id="dois-modos"`, `id="semaforos"` (H3 "Semáforos em tempo real") e `id="transporte-publico"`. Todos com `tabIndex={-1}` para receber o foco.
+- "A pulseira": os 3 passos viram cartões com o número grande em Anton (o número é `aria-hidden`; a lista `<ol>` já diz a ordem).
+
+**Os sinais, em rolagem fixa (`SinaisRolagemFixa`)**
+- Rótulo "Linguagem da Pulse", H2 "Os sinais" e o texto "Cada comando tem um sinal próprio. Role a página para passar de um sinal para o outro."
+- No HTML: navegação "Sinais" (`<nav aria-label="Sinais">` com `<ol>` de 4 links para `#sinal-continuar`, `#sinal-parar`, `#sinal-virar` e `#sinal-aguardar`), a pulseira pequena, o botão de pausa e 4 `<article>`, cada um com a foto, o H3 do sinal e os pares em `<dl>` ("Modo tátil", "Modo sonoro" ou "Nos dois modos").
+- **Modo fixo** (só quando não há "reduzir movimento", a altura da janela é ≥ 560 px e a largura ≥ 340 px): o trilho tem `4 × 85svh + 100svh` de altura e o palco fica `position: sticky`. O progresso da rolagem (lido com ScrollTrigger, **sem `pin`**) escolhe o sinal ativo. O link ativo recebe `aria-current="step"` e fica marcado em dourado. Clicar num link rola até o meio do trecho daquele sinal.
+- Troca da foto com **piso tátil** (máscara de domos de 26 px, 0,7 s; propriedade `--d` registrada com `@property`). O texto esmaece e sobe 12 px.
+- Pulseira pequena (`Pulseira3D modo="sinal"`) **junto do índice**, nunca em cima da foto: 76 px no celular (ao lado do botão de pausa) e 132 px no computador (embaixo do índice, com o nome do movimento em mono).
+- Computador (≥ 1000 px): índice à esquerda (15rem); foto e texto lado a lado (1,5 : 1). Celular: índice como faixa no topo, depois a pulseira e o pausar, a foto e o texto.
+- **Fora do modo fixo:** os 4 artigos aparecem em lista comum, um embaixo do outro, cada um com a sua foto; a pulseira pequena e o botão de pausa somem.
+- Os artigos inativos ficam transparentes, mas o leitor de tela lê os 4 em ordem. Eles não têm nada focável.
+
+**Tecnologias, em carrossel (`Carrossel`)**
+- Região com `aria-roledescription="carrossel"` e `aria-label="Tecnologias"`; lista com rolagem horizontal e `scroll-snap`; os 8 cartões (rótulo mono, H3 e descrição; rótulos: Localização, Destino, Cérebro, Tato, Tato, Som, Dados, Conexão).
+- Botões **"Anterior"** e **"Próximo"** com ícone e texto, `aria-controls`; `aria-disabled` nas pontas; contagem visível "1 a 3 de 8". Também dá para deslizar. **Sem avanço automático.**
+
+**Galeria (`GaleriaHorizontal`)**
+- Rótulo "A cidade", H2 "Galeria" e o texto "Onde a Pulse faz diferença: calçadas, travessias e transporte público."
+- Lista de 6 `<figure>` com foto (marcador e `alt`) e legenda (`<figcaption>`), na tabela da 18.13.
+- **Computador** (largura ≥ 900 px, altura ≥ 600 px, sem "reduzir movimento"): o trilho tem a altura da janela + a largura que sobra da lista; o palco fica fixo e a lista anda para a esquerda conforme a rolagem (ScrollTrigger). Fotos de 16 a 24rem, as pares 64 px mais baixas. Se o foco do teclado cair numa foto, a página rola até ela.
+- **Celular, zoom alto ou "reduzir movimento":** grade comum de fotos.
+
+**Equipe em polaroides**
+- Cartão branco com sombra, foto quadrada, nome em Anton maiúsculo. Inclinações fixas: −3°, 2°, −1,5°, 3°, −2°.
+- Distribuição com `flex-wrap` centralizado: 2 por linha no celular, 3 + 2 no tablet (≥ 640 px), 5 lado a lado no computador (≥ 1100 px). **Nenhum cartão pode sair da tela** (os protótipos antigos cortavam o último com margens negativas).
+- Com mouse e sem "reduzir movimento": o cartão se endireita, sobe e inclina acompanhando o mouse (até 10°).
+
+### 18.9 Navegação, transição e rolagem (complementa a seção 9)
+
+- **Barra em pílula:** mesmas regras da seção 9.2 (largura pelo texto, 2 × 2, medição, área de segurança). Visual novo: fundo `--cor-superficie`, borda, cantos de 999 px; item ativo com fundo dourado e texto `#120B24`.
+- **Transição entre páginas (`TransicaoPagina`, provedor no layout):** domos de piso tátil em `--cor-cortina` crescem e cobrem a tela (200 ms), a página troca, e os domos somem (220 ms). Implementação sugerida: interceptar a navegação no `onNavigate` do `<Link>` (o mesmo usado pela guarda de saída, que tem prioridade), animar a entrada, chamar `router.push` e animar a saída quando o `pathname` mudar. Pelos botões Voltar e Avançar do navegador, só a saída anima. A camada tem `aria-hidden` e `pointer-events: none`. O foco continua indo para o H1 (`FocoNaTroca`). Com "reduzir movimento": troca instantânea.
+- **Rolagem suave (Lenis):** só no computador. "Pular para o conteúdo", "Nesta página" e os links da abertura continuam funcionando (`anchors: true`, com o desconto da altura do cabeçalho). As barras que somem ao rolar (9.3) continuam iguais.
+- **Interação do mouse:** inclinação da pulseira, dos polaroides e dos cartões só em `@media (hover: hover) and (pointer: fine)` e sem "reduzir movimento". Nunca trocar o cursor.
+
+### 18.10 Rodapé (substitui o rodapé da seção 5)
+
+O rodapé é escuro nos dois temas (18.3) e existe em todas as páginas. **Os ODS aparecem só no rodapé da página Solução** (decisão da equipe).
+
+**Em todas as páginas:** links Início, Solução, Simulador e Diário (48 px de altura) e a linha "Pulse · Global Solution 2026.2 · FIAP · Giovana, Giovane, Mie, Pedro e Thiago. Protótipo acadêmico com dados públicos e simulados." O espaço no fim continua do tamanho da barra flutuante.
+
+**Só na Solução: faixa contínua dos ODS (`FaixaODS`)**, acima dos links:
+- Rótulo mono "Objetivos de Desenvolvimento Sustentável", H2 "A Pulse e os ODS" e o botão **"Pausar"/"Retomar"** (ícone e texto, `aria-pressed`, `aria-controls` apontando para a faixa).
+- Uma faixa que **anda sem parar** para a esquerda (animação CSS de cerca de 48 s, linear e infinita). Uma cópia da lista, com `aria-hidden="true"` e botões com `tabIndex={-1}`, fecha o laço.
+- Na faixa, cada ODS é um **botão curto em pílula**: número em Anton dourado (`aria-hidden`) + "ODS 10 · Redução das Desigualdades" + a etiqueta **"Principal"** (só no ODS 10), depois "ODS 9 · Indústria, Inovação e Infraestrutura" e "ODS 11 · Cidades e Comunidades Sustentáveis".
+- **A frase completa de cada ODS** (textos da antiga seção de ODS da 6.2) aparece **ao passar o mouse, focar ou tocar** (o toque foca o botão), numa **área fixa logo abaixo da faixa**, que não cobre nada (WCAG 1.4.13). Sem interação, a área mostra "Passe o mouse, foque ou toque num ODS para ver o que ele significa." A área tem `aria-hidden="true"`; para o leitor de tela, cada botão leva a frase pelo `aria-describedby`.
+- **A faixa para** com o mouse em cima, com o foco dentro ou pelo botão "Pausar" (WCAG 2.2.2).
+- **Com "reduzir movimento":** sem animação e sem o botão de pausa; os 3 botões aparecem parados, um embaixo do outro, e a área da frase continua funcionando.
+- Ordem no Tab: "Pausar" → os 3 botões de ODS → links do rodapé.
+
+### 18.11 Página 404 (`app/not-found.jsx`)
+
+- Aba: `Página não encontrada — Pulse`. Textura de piso tátil e "PARAR" gigante ao fundo (`aria-hidden`).
+- Rótulo mono "Erro 404", H1 **"Você saiu da rota"**, texto **"Esta página não existe ou mudou de endereço."**, botões **"Voltar ao Início"** (dourado) e **"Ir para a Solução"** (secundário).
+- `Pulseira3D modo="parar"` ao lado (embaixo no celular), com a legenda visual "A pulseira faz o sinal de parar." (`aria-hidden`). A animação dura menos de 5 s e para.
+- Resolve a pendência da página em inglês (WCAG 3.1.2).
+
+### 18.12 Responsividade da nova identidade (complementa a seção 12)
+
+| Elemento | Celular | Tablet (≥ 768 px) | Computador (≥ 1024 px) |
+| --- | --- | --- | --- |
+| Capa | Imagem vertical | Imagem horizontal | Imagem horizontal |
+| Abertura do Início | Pulseira em cima, links em lista (2 colunas a partir de 640 px) | Igual | Pulseira no centro (até 30rem), 3 links de cada lado com linhas (a partir de 1000 px) |
+| "Os sinais" | Índice em faixa, pulseira de 76 px e pausar, foto, texto | Igual | Índice lateral com pulseira de 132 px; foto e texto lado a lado |
+| Galeria | Grade | Grade | Corre na horizontal com a rolagem (≥ 900 px de largura) |
+| Polaroides | 2 por linha | 3 + 2 | 5 lado a lado (≥ 1100 px) |
+| Faixa dos ODS (Solução) | Anda na horizontal; com "reduzir movimento", botões um embaixo do outro | Igual | Igual |
+| 404 | Texto, depois a pulseira | Igual | Texto e pulseira lado a lado (≥ 900 px) |
+| Pouca altura (≤ 480 px) ou zoom alto | Rolagens fixas e galeria viram listas; barra no fim da página | Igual | Igual |
+
+### 18.13 Marcadores novos de imagem
+
+Seguem as regras da seção 13.2. **As imagens são colocadas pela equipe**, que pode usar fotos próprias, bancos gratuitos ou imagens geradas por IA; o Claude Code nunca gera nem coloca imagens. A regra antiga "não usar imagens geradas por IA" passa a valer só para o Claude Code.
+
+| Marcador | Onde | `alt` sugerido | Legenda visível |
+| --- | --- | --- | --- |
+| `IMAGEM-capa versão computador (horizontal)-AQUI` | Capa | "Capa da Pulse." | — |
+| `IMAGEM-capa versão celular (vertical)-AQUI` | Capa | "Capa da Pulse." | — |
+| `IMAGEM-sinal continuar-AQUI` | Os sinais | "Pessoa cega com bengala atravessando a faixa de pedestres." | — |
+| `IMAGEM-sinal parar-AQUI` | Os sinais | "Pessoa parada no meio-fio diante do semáforo fechado." | — |
+| `IMAGEM-sinal virar-AQUI` | Os sinais | "Esquina de calçada com piso tátil indicando a curva." | — |
+| `IMAGEM-sinal aguardar-AQUI` | Os sinais | "Pessoa esperando no ponto de ônibus." | — |
+| `IMAGEM-galeria faixa de pedestres-AQUI` | Galeria | "Faixa de pedestres numa avenida movimentada." | Travessias sem sinal sonoro |
+| `IMAGEM-galeria calçada com obstáculo-AQUI` | Galeria | "Calçada com piso tátil interrompido por um poste." | Calçadas com obstáculos |
+| `IMAGEM-galeria semáforo de pedestres-AQUI` | Galeria | "Semáforo de pedestres com botão de acionamento." | Semáforos de pedestres |
+| `IMAGEM-galeria ponto de ônibus-AQUI` | Galeria | "Pessoa esperando o ônibus no ponto." | Embarque no transporte |
+| `IMAGEM-galeria plataforma do metrô-AQUI` | Galeria | "Plataforma do metrô com piso tátil na borda." | Plataformas de metrô e trem |
+| `IMAGEM-galeria esquina com rampa-AQUI` | Galeria | "Esquina com rampa de acesso e piso tátil." | Esquinas e rampas |
+
+Continuam: `IMAGEM-ilustração de uma travessia-AQUI` (Início), `IMAGEM-ilustração conceitual da pulseira-AQUI` (Solução, "A pulseira") e `IMAGEM-foto de (nome)-AQUI` (Equipe).
+
+**Ícones novos** (marcadores `ICONE-…-AQUI`, Phosphor Bold): `Pause`, `Play` (retomar e girar), `CaretLeft` (anterior), `CaretRight` (próximo), `ArrowDown` (dica da capa), `ArrowRight` (links "→"). A pulseira 3D e o logo da capa são código, não marcadores.
+
+### 18.14 Componentes e hooks novos (complementa as seções 10 e 14)
+
+| Componente | Pasta sugerida | Função |
+| --- | --- | --- |
+| `CapaIntro` | `components/abertura/` | Capa da primeira visita e saída em piso tátil |
+| `AberturaPulseira` | `components/abertura/` | Abertura do Início: H1, pulseira, sinal atual, pausar, palavra de fundo e links |
+| `PartesSolucao` | `components/abertura/` | Os 6 links e as linhas em SVG |
+| `Pulseira3D` | `components/pulseira/` | Cena 3D (cliente, `ssr: false`) |
+| `PalavraFundo` | `components/ui/` | Palavra gigante decorativa |
+| `TexturaPiso` | `components/ui/` | Fundo de piso tátil (ou só uma classe CSS) |
+| `SinaisRolagemFixa` | `components/solucao/` | Seção "Os sinais" |
+| `Carrossel` | `components/ui/` | Carrossel com botões e contagem (Tecnologias) |
+| `GaleriaHorizontal` | `components/solucao/` | Galeria |
+| `CartaoIntegrante` | `components/solucao/` | Passa a ser polaroide |
+| `TransicaoPagina` | `components/layout/` | Provedor da transição entre páginas |
+| `Rodape` | `components/layout/` | Links e créditos, no visual novo, em todas as páginas |
+| `FaixaODS` | `components/solucao/` | Faixa contínua dos ODS com a área da frase (só no rodapé da Solução) |
+| `ProvedorMovimento` | `components/layout/` | Lenis + `MotionConfig` + registro do GSAP |
+
+| Hook | Função |
+| --- | --- |
+| `useCapaIntro` | Primeira visita da sessão, eventos de saída, estado "saindo" |
+| `usePulseira3D` | Montagem da cena, sinais, pausa, visibilidade, limpeza |
+| `useRolagemFixa` | Progresso da rolagem → índice ativo; liga e desliga o modo fixo |
+| `useCarrossel` | Posição, contagem, pontas e passos |
+| `useFaixaODS` | Pausa (botão, mouse e foco) e o ODS em destaque na área da frase |
+| `useGaleriaHorizontal` | Altura do trilho e deslocamento da lista |
+| `useTransicaoPagina` | Animação de entrada e saída da cortina |
+| `useInclinacaoMouse` | Inclinação dos cartões com o mouse |
+
+Todos os hooks e funções de animação levam o comentário `// Esta parte é lógica`. Componentes de apresentação continuam sem `fetch`.
+
+### 18.15 Leitor de tela na nova identidade (complementa a seção 15 do documento de decisões)
+
+- **Capa:** ignorada (`aria-hidden`), sem nada focável.
+- **Início:** Pular → Pulse → H1 → resumo → pulseira (descrição) → "Pausar animação" → "Partes da solução, lista, 6 links" → Nesta página → seções. A palavra de fundo e o nome do sinal animado não são lidos.
+- **Os sinais:** navegação "Sinais" com 4 links (o atual com `aria-current="step"`) → pausar → cada sinal: foto com `alt`, H3, pares "Modo tátil:"… Os 4 são lidos em ordem.
+- **Carrossel de Tecnologias:** "Tecnologias, carrossel"; botões "Anterior" e "Próximo".
+- **Faixa dos ODS (Solução):** "A Pulse e os ODS" → "Pausar" → 3 botões, cada um lido com o nome do ODS e a frase completa (`aria-describedby`). A cópia da animação não é lida nem recebe foco.
+- **Galeria:** 6 fotos com `alt` e legenda.
+- **Troca de página:** a cortina não é lida; o leitor anuncia o novo H1.
+- **404:** "Erro 404" → H1 "Você saiu da rota" → texto → dois botões.
+
+### 18.16 Critérios de aceite da Fase 8
+
+- [ ] Todos os itens da 18.2 conferidos em cada página.
+- [ ] Com "reduzir movimento": nada se move, nenhuma rolagem fixa, capa e trocas instantâneas, cenas 3D paradas.
+- [ ] 320 px sem rolagem lateral; zoom de 400% com rolagens fixas e galeria em lista; nenhum polaroide cortado.
+- [ ] Teclado alcança tudo, nada invisível recebe foco, e a capa nunca prende o foco.
+- [ ] Contraste recalculado com os tokens da 18.3, nos dois temas e no rodapé.
+- [ ] WebGL desligado: aparece a descrição em texto, sem erro.
+- [ ] Uma cena 3D animando por vez; nenhum vazamento de memória ao trocar de página.
+- [ ] ESLint `jsx-a11y` e axe sem violações.
+- [ ] Diário sem efeitos, só com cores e fontes novas.
+- [ ] Todos os marcadores novos (18.13) no lugar e listados para a equipe.

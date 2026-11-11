@@ -1,4 +1,8 @@
 @import "tailwindcss";
+/* CSS próprio do Lenis (rolagem suave, seção 18.1). Ele só vale quando o
+   Lenis está ativo, porque todas as regras dependem da classe .lenis,
+   que o Lenis coloca no <html>. */
+@import "lenis/dist/lenis.css";
 
 /*
   =====================================================================
@@ -51,9 +55,15 @@
   /* Texto do botão de perigo preenchido (fundo = --cor-erro) */
   --cor-perigo-texto: #ffffff;
 
-  /* Tipografia — seção 8.2. A Atkinson entra antes da Verdana quando a
-     equipe ligar a fonte (ver marcador em app/layout.jsx). */
+  /* Tipografia — seção 18.4. Cada família entra antes da sua fonte de
+     reserva quando a equipe ligar a fonte (marcadores FONTE-...-AQUI em
+     app/layout.jsx). Até lá, o site usa as reservas.
+     - título: Anton (H1, H2, nomes dos sinais, números grandes)
+     - base: Atkinson Hyperlegible Next (todo o texto corrido)
+     - mono: JetBrains Mono (rótulos curtos) */
+  --fonte-titulo: var(--fonte-anton, Impact), Impact, "Arial Narrow", sans-serif;
   --fonte-base: var(--fonte-atkinson, Verdana), Verdana, system-ui, sans-serif;
+  --fonte-mono: var(--fonte-jetbrains, ui-monospace), ui-monospace, "Courier New", monospace;
 
   /* Sombras — seção 8.3, tema claro */
   --sombra-cartao: 0 1px 2px rgba(30, 15, 74, 0.08), 0 4px 12px rgba(30, 15, 74, 0.06);
@@ -159,6 +169,9 @@
   --color-perigo-texto: var(--cor-perigo-texto);
 
   --font-sans: var(--fonte-base);
+  /* Classes font-titulo e font-mono (seção 18.4) */
+  --font-titulo: var(--fonte-titulo);
+  --font-mono: var(--fonte-mono);
 
   /* Tamanhos de texto — seção 8.2 (classes text-h1, text-corpo...) */
   --text-h1: 1.875rem;
@@ -319,6 +332,14 @@
   html {
     scroll-behavior: smooth;
   }
+}
+
+/* Quando o Lenis está ativo (classe .lenis no <html>), a suavidade é
+   dele. Se o navegador também suavizasse, cada passo do Lenis viraria
+   uma rolagem suave por cima da outra, e a página "patinaria".
+   O scroll-behavior acima continua valendo se o Lenis não carregar. */
+html.lenis {
+  scroll-behavior: auto;
 }
 
 /* ---------------------------------------------------------------------
