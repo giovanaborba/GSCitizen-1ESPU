@@ -13,9 +13,14 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
   Use <button> para ações e link para navegar (seção 3, item 6).
   Altura mínima de 56 px. "icone" recebe o nome do ícone Phosphor; o
   marcador ICONE-(nome)-AQUI fica no lugar onde o Botao é usado.
+
+  Durante "Salvando…" e "Excluindo…" usamos aria-disabled="true" em vez
+  de disabled: o botão continua com o foco (com disabled, o navegador
+  tiraria o foco dele, e quem usa teclado ou leitor de tela se perderia).
+  Quem usa o Botao ignora o segundo toque enquanto estiver ocupado.
 */
 const ESTILO_BASE =
-  "inline-flex min-h-14 items-center justify-center gap-2 rounded-cartao border-2 px-6 py-2 text-center font-bold no-underline transicao-fundo disabled:cursor-wait";
+  "inline-flex min-h-14 items-center justify-center gap-2 rounded-cartao border-2 px-6 py-2 text-center font-bold no-underline transicao-fundo aria-disabled:cursor-wait";
 
 const ESTILO_VARIANTE = {
   principal: "border-botao bg-botao text-botao-texto hover:border-botao-hover hover:bg-botao-hover",

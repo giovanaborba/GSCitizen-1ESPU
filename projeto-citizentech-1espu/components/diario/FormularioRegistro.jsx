@@ -1,0 +1,99 @@
+"use client";
+
+import Botao from "@/components/ui/Botao";
+import Campo from "@/components/ui/Campo";
+import ErroCampo from "@/components/ui/ErroCampo";
+import GrupoOpcoes from "@/components/ui/GrupoOpcoes";
+import { useFormularioRegistro } from "@/hooks/useFormularioRegistro";
+import { useGuardaDeSaida } from "@/hooks/useGuardaDeSaida";
+import { useHoje } from "@/hooks/useHoje";
+import { OPCOES, PERGUNTAS } from "@/lib/rotulos";
+
+/*
+  FormularioRegistro — formulário de "Novo registro" e "Editar registro"
+  (seção 7.3). Uma coluna, campos na ordem da especificação.
+
+  A lógica (valores, validação, foco, salvar) fica no hook
+  useFormularioRegistro. Este componente só monta a tela.
+
+  Props:
+  - valoresIniciais  vazios (novo) ou os do registro (editar)
+  - aoSalvar(dados)  salva e navega; lança erro se falhar
+  - destinoCancelar  para onde "Cancelar" leva
+*/
+const GRUPOS = ["meio", "chegouSemSePerder", "precisouDeAjuda", "travessias", "orientacoes"];
+
+export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoCancelar }) {
+  const { valores, erros, enviando, falhouAoSalvar, falhasAoSalvar, alterar, enviar } =
+    useFormularioRegistro({ valoresIniciais, aoSalvar });
+  const { aoNavegar } = useGuardaDeSaida();
+  const hoje = useHoje();
+
+  // Esta parte é lógica
+  function aoCancelar(evento) {
+    aoNavegar(evento, destinoCancelar);
+  }
+
+  return (
+    // noValidate: desliga os balões de erro do navegador; a validação
+    // é a nossa, só ao enviar, com as mensagens da especificação.
+    <form noValidate onSubmit={enviar} className="mt-8 space-y-8">
+      <Campo
+        nome="data"
+        tipo="date"
+        rotulo={`${PERGUNTAS.data} (obrigatório)`}
+        max={hoje || undefined}
+        valor={valores.data}
+        aoMudar={(valor) => alterar("data", valor)}
+        erro={erros.data}
+      />
+
+      {/* Esta parte é lógica */}
+      {GRUPOS.map((campo) => (
+        <GrupoOpcoes
+          key={campo}
+          nome={campo}
+          legenda={`${PERGUNTAS[campo]} (obrigatório)`}
+          opcoes={OPCOES[campo]}
+          valor={valores[campo]}
+          aoMudar={(valor) => alterar(campo, valor)}
+          erro={erros[campo]}
+        />
+      ))}
+
+      <Campo
+        nome="observacoes"
+        tipo="textarea"
+        rotulo={`${PERGUNTAS.observacoes} (opcional)`}
+        dica="Até 300 caracteres. Não escreva nomes ou endereços."
+        valor={valores.observacoes}
+        aoMudar={(valor) => alterar("observacoes", valor)}
+        erro={erros.observacoes}
+      />
+
+      <div>
+        {/* Esta parte é lógica */}
+        {falhouAoSalvar && (
+          // key: a cada nova falha a mensagem é recriada e anunciada de novo
+          <ErroCampo key={falhasAoSalvar} papel="alert" className="mb-4">
+            Não foi possível salvar. Verifique a conexão e tente de novo.
+          </ErroCampo>
+        )}
+
+        {/* Anuncia "Salvando" sem mover o foco */}
+        <p role="status" className="sr-only">
+          {enviando ? "Salvando" : ""}
+        </p>
+
+        <div className="flex flex-wrap gap-4">
+          <Botao type="submit" aria-disabled={enviando || undefined}>
+            {enviando ? "Salvando…" : "Salvar registro"}
+          </Botao>
+          <Botao variante="secundario" href={destinoCancelar} onNavigate={aoCancelar}>
+            Cancelar
+          </Botao>
+        </div>
+      </div>
+    </form>
+  );
+}

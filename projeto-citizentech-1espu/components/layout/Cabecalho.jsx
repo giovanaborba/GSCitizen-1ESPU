@@ -3,6 +3,7 @@
 import Link from "next/link";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 import { useDirecaoRolagem } from "@/hooks/useDirecaoRolagem";
+import { useGuardaDeSaida } from "@/hooks/useGuardaDeSaida";
 
 /*
   Cabecalho — seção 9.1 e seção 10, item 2.
@@ -13,6 +14,13 @@ import { useDirecaoRolagem } from "@/hooks/useDirecaoRolagem";
 export default function Cabecalho() {
   // Esta parte é lógica
   const escondido = useDirecaoRolagem();
+  const { aoNavegar } = useGuardaDeSaida();
+
+  // Esta parte é lógica
+  // Sair do formulário pelo logo também pergunta "Descartar as respostas?"
+  function aoNavegarParaInicio(evento) {
+    aoNavegar(evento, "/");
+  }
 
   return (
     <header
@@ -24,6 +32,7 @@ export default function Cabecalho() {
       <div className="margem-lateral mx-auto flex min-h-16 w-full max-w-texto items-center">
         <Link
           href="/"
+          onNavigate={aoNavegarParaInicio}
           className="inline-flex min-h-12 items-center gap-2 text-logo font-bold text-marca"
         >
           {/* ICONE-Pulse-AQUI */}

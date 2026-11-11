@@ -4,6 +4,7 @@ import Cabecalho from "@/components/layout/Cabecalho";
 import Rodape from "@/components/layout/Rodape";
 import BarraNavegacao from "@/components/layout/BarraNavegacao";
 import FocoNaTroca from "@/components/layout/FocoNaTroca";
+import Provedores from "@/components/layout/Provedores";
 
 /*
   =====================================================================
@@ -44,16 +45,18 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body>
-        {/* Ordem da seção 5: é a ordem visual e a de leitura do leitor de tela */}
-        <LinkPular />
-        <Cabecalho />
-        {/* tabIndex={-1}: deixa o "Pular para o conteúdo" mover o foco para cá */}
-        <main id="conteudo" tabIndex={-1}>
-          {children}
-        </main>
-        <Rodape />
-        <BarraNavegacao />
-        <FocoNaTroca />
+        <Provedores>
+          {/* Ordem da seção 5: é a ordem visual e a de leitura do leitor de tela */}
+          <LinkPular />
+          <Cabecalho />
+          {/* tabIndex={-1}: deixa o "Pular para o conteúdo" mover o foco para cá */}
+          <main id="conteudo" tabIndex={-1}>
+            {children}
+          </main>
+          <Rodape />
+          <BarraNavegacao />
+          <FocoNaTroca />
+        </Provedores>
       </body>
     </html>
   );

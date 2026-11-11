@@ -1,5 +1,9 @@
 import { ErroConexao, requisitar } from "@/services/apiClient";
 
+// Os hooks usam isto para ignorar buscas canceladas, sem precisar
+// importar o apiClient (só o serviço conversa com a API).
+export { foiCancelado } from "@/services/apiClient";
+
 /*
   registrosService — serviço único do Diário (seção 7.6).
 

@@ -13,13 +13,16 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
   "pular" quando o item ativo muda. Ela tem aria-hidden, então o leitor de
   tela lê o nome uma vez só.
 */
-export default function ItemBarra({ href, texto, icone, ativo }) {
+export default function ItemBarra({ href, texto, icone, ativo, aoNavegar }) {
   return (
-    <li className="flex @min-[21em]:flex-auto">
+    // flex-auto: em uma linha, cada item tem a largura do texto e divide o
+    // espaço que sobra; em 2 × 2 (grade), não tem efeito
+    <li className="flex flex-auto">
       <Link
         href={href}
+        onNavigate={aoNavegar}
         aria-current={ativo ? "page" : undefined}
-        className={`flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-cartao border px-2 py-1 text-auxiliar no-underline transicao-fundo md:min-h-12 md:flex-row md:gap-2 md:px-4 ${
+        className={`flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-cartao border px-1 py-1 text-auxiliar no-underline transicao-fundo md:min-h-12 md:flex-row md:gap-2 md:px-4 ${
           ativo
             ? "border-botao bg-botao font-bold text-botao-texto hover:border-botao-hover hover:bg-botao-hover"
             : "border-linha-item bg-cromo text-texto hover:bg-hover"
