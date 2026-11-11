@@ -1,5 +1,4 @@
-import TituloPagina from "@/components/layout/TituloPagina";
-import IndiceNestaPagina from "@/components/layout/IndiceNestaPagina";
+import PaginaComIndice from "@/components/layout/PaginaComIndice";
 import Secao from "@/components/layout/Secao";
 import Cartao from "@/components/ui/Cartao";
 import EspacoImagem from "@/components/ui/EspacoImagem";
@@ -24,16 +23,12 @@ const SECOES = [
 
 export default function PaginaInicio() {
   return (
-    <div className="margem-lateral mx-auto max-w-texto py-8">
-      <TituloPagina
-        titulo="Inovação que chega a quem precisa"
-        resumo="A Pulse é uma pulseira que guia pessoas cegas e com baixa visão pela cidade. Conheça o problema que ela resolve."
-      />
-
-      <div className="mt-8">
-        <IndiceNestaPagina itens={SECOES} />
-      </div>
-
+    <PaginaComIndice
+      titulo="Inovação que chega a quem precisa"
+      resumo="A Pulse é uma pulseira que guia pessoas cegas e com baixa visão pela cidade. Conheça o problema que ela resolve."
+      itensIndice={SECOES}
+      acaoFinal={<Botao href="/solucao">Conheça a solução</Botao>}
+    >
       <Secao id="tema-citizentech" titulo="Tema CitizenTech">
         <p>
           CitizenTech é tecnologia criada a partir das necessidades reais das
@@ -61,7 +56,7 @@ export default function PaginaInicio() {
           </figcaption>
         </figure>
 
-        <ul className="grid gap-4">
+        <ul className="grid gap-4 md:grid-cols-2">
           <Cartao as="li">
             <p>
               <strong className="block text-numero">Cerca de 90%</strong>{" "}
@@ -100,7 +95,7 @@ export default function PaginaInicio() {
           transporte público.
         </p>
 
-        <ul className="grid gap-4">
+        <ul className="grid gap-4 md:grid-cols-2">
           <Cartao as="li">
             <h3>Pessoa cega</h3>
             <p className="mt-2">
@@ -117,10 +112,6 @@ export default function PaginaInicio() {
           </Cartao>
         </ul>
       </Secao>
-
-      <p className="mt-16">
-        <Botao href="/solucao">Conheça a solução</Botao>
-      </p>
-    </div>
+    </PaginaComIndice>
   );
 }

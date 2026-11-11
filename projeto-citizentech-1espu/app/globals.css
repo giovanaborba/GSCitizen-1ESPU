@@ -188,7 +188,9 @@
 
   /* Larguras máximas — seções 5 e 12 */
   --container-texto: 40rem; /* coluna de texto (max-w-texto) */
-  --container-equipe: 64rem; /* seção Equipe com 5 cartões (max-w-equipe) */
+  /* No computador, Início e Solução usam uma grade de 59rem (texto 40rem +
+     espaço 3rem + "Nesta página" 16rem) — ver PaginaComIndice. A Equipe
+     ocupa a grade inteira, dentro do limite de ~64rem da seção 12. */
 
   /* Pontos de quebra: md = 48rem (768 px) e lg = 64rem (1024 px) já são
      os padrões do Tailwind v4. Espaçamento: a unidade padrão é 0.25rem

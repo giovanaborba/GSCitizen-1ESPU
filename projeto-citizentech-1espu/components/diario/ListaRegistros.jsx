@@ -8,7 +8,7 @@ export default function ListaRegistros({ registros }) {
   return (
     <section className="mt-12">
       <h2>Registros</h2>
-      <ul className="mt-6 grid gap-4">
+      <ul className="mt-6 grid gap-4 md:grid-cols-2">
         {/* Esta parte é lógica */}
         {registros.map((registro) => (
           <CartaoRegistro key={registro.id} registro={registro} />

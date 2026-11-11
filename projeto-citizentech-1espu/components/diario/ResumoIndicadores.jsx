@@ -19,7 +19,7 @@ export default function ResumoIndicadores({ indicadores }) {
         deslocamentos foram feitos com autonomia e segurança. É assim que
         medimos se a Pulse está ajudando.
       </p>
-      <ul className="mt-6 grid grid-cols-2 gap-4">
+      <ul className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         {/* Esta parte é lógica */}
         {indicadores.map((indicador) => (
           <Cartao as="li" compacto key={indicador.chave}>
