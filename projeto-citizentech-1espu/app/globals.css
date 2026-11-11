@@ -61,10 +61,34 @@
 
   /* Medidas de layout (em rem, para acompanhar o tamanho do texto) */
   --altura-cabecalho: 4rem; /* 64 px */
-  /* Barra no celular: item de 56 px + padding 6 px × 2 + borda 1 px × 2 = 70 px ≈ 4.5rem */
+  /* Altura da barra flutuante. Valor de reserva: item de 56 px + padding
+     6 px × 2 + borda 1 px × 2 = 70 px ≈ 4.5rem. Depois que a página
+     carrega, a BarraNavegacao mede a altura real e atualiza esta variável
+     (a barra fica mais alta em 2 × 2 ou com texto ampliado). */
   --altura-barra: 4.5rem;
   --distancia-barra: 1rem; /* 16 px acima da borda inferior */
+  /* Espaço extra no fim de cada página: barra + 16 px + área de segurança
+     (seção 5), para o último item e o foco nunca ficarem escondidos. */
+  --espaco-fim: calc(
+    var(--altura-barra) + var(--distancia-barra) + 1rem + env(safe-area-inset-bottom)
+  );
   --duracao-transicao: 200ms;
+}
+
+/* Tela muito estreita (320 px): a barra fica em 2 × 2 (decisão da Fase 2).
+   Reserva: 2 × 56 px + 6 px entre linhas + padding + borda ≈ 8.5rem. */
+@media (max-width: 22.5rem) {
+  :root {
+    --altura-barra: 8.5rem;
+  }
+}
+
+/* Pouca altura (zoom alto ou celular deitado): a barra deixa de flutuar e
+   vai para o fim da página (seção 9.2), então não precisa de espaço extra. */
+@media (max-height: 30rem) {
+  :root {
+    --espaco-fim: 2rem;
+  }
 }
 
 /* ---------------------------------------------------------------------
@@ -151,6 +175,8 @@
   --text-auxiliar--line-height: 1.5;
   --text-numero: 1.875rem; /* números do resumo, usar com tabular-nums */
   --text-numero--line-height: 1.2;
+  --text-logo: 1.375rem; /* "Pulse" no cabeçalho: 22 px (seção 9.1) */
+  --text-logo--line-height: 1.2;
 
   /* Cantos — seção 8.3 */
   --radius-cartao: 0.75rem; /* 12 px: cartões, campos, botões, itens da barra */
@@ -170,6 +196,9 @@
      múltiplos de 2 (8 px) e o 1 (4 px) só em ajustes internos. */
 }
 
+/* Variante "pouca-altura:" para usar nas classes (ex.: pouca-altura:static) */
+@custom-variant pouca-altura (@media (max-height: 30rem));
+
 /* ---------------------------------------------------------------------
    4. BASE
    --------------------------------------------------------------------- */
@@ -178,12 +207,12 @@
     /* Ao pular para uma âncora, o título não fica escondido atrás do
        cabeçalho fixo nem da barra flutuante (WCAG 2.4.11). */
     scroll-padding-top: calc(var(--altura-cabecalho) + 1rem);
-    scroll-padding-bottom: calc(
-      var(--altura-barra) + var(--distancia-barra) + 1rem + env(safe-area-inset-bottom)
-    );
+    scroll-padding-bottom: var(--espaco-fim);
   }
 
   body {
+    /* Espaço extra no fim da página, depois do rodapé */
+    padding-bottom: var(--espaco-fim);
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
     font-family: var(--fonte-base);
@@ -243,6 +272,13 @@
   /* O <h1> recebe foco ao trocar de rota (tabIndex={-1}), mas sem
      contorno visível nesse caso (seção 4.1). */
   h1[tabindex="-1"]:focus {
+    outline: none;
+  }
+
+  /* O <main> recebe foco pelo "Pular para o conteúdo" só para o leitor de
+     tela e o Tab continuarem dali. Não é um elemento clicável, então não
+     ganha contorno. */
+  #conteudo:focus {
     outline: none;
   }
 

@@ -1,4 +1,9 @@
 import "./globals.css";
+import LinkPular from "@/components/layout/LinkPular";
+import Cabecalho from "@/components/layout/Cabecalho";
+import Rodape from "@/components/layout/Rodape";
+import BarraNavegacao from "@/components/layout/BarraNavegacao";
+import FocoNaTroca from "@/components/layout/FocoNaTroca";
 
 /*
   =====================================================================
@@ -39,8 +44,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <body>
-        {/* A Fase 2 adiciona aqui: LinkPular, Cabecalho, Rodape e BarraNavegacao */}
-        <main id="conteudo">{children}</main>
+        {/* Ordem da seção 5: é a ordem visual e a de leitura do leitor de tela */}
+        <LinkPular />
+        <Cabecalho />
+        {/* tabIndex={-1}: deixa o "Pular para o conteúdo" mover o foco para cá */}
+        <main id="conteudo" tabIndex={-1}>
+          {children}
+        </main>
+        <Rodape />
+        <BarraNavegacao />
+        <FocoNaTroca />
       </body>
     </html>
   );
