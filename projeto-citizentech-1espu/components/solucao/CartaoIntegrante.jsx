@@ -18,7 +18,7 @@ import EspacoImagem from "@/components/ui/EspacoImagem";
 export default function CartaoIntegrante({ nome, className = "" }) {
   return (
     <li
-      className={`flex items-center gap-4 rounded-cartao border border-borda bg-cartao p-4 shadow-cartao md:flex-col md:text-center ${className}`}
+      className={`flex items-center gap-4 rounded-cartao border border-borda bg-superficie p-4 shadow-cartao md:flex-col md:text-center ${className}`}
     >
       <EspacoImagem formato="quadrado" className="size-16 shrink-0 md:size-32" />
       <h3 className="text-h3">{nome}</h3>

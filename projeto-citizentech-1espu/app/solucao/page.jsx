@@ -293,7 +293,7 @@ export default function PaginaSolucao() {
             {/* "Principal" fica dentro do <h3>: quem navega pelos títulos
                 com o leitor de tela também ouve que este é o principal. */}
             <h3>
-              <span className="mb-2 block w-fit rounded-cartao border-2 border-marca px-2 text-auxiliar text-marca">
+              <span className="mb-2 block w-fit rounded-campo border-2 border-marca px-2 text-auxiliar text-marca">
                 Principal
               </span>{" "}
               ODS 10: Redução das Desigualdades

@@ -28,7 +28,7 @@ export default function CartaoRegistro({ registro }) {
         {etiquetas.map((etiqueta) => (
           <li
             key={etiqueta}
-            className="rounded-cartao border border-borda bg-fundo px-2 text-auxiliar"
+            className="rounded-campo border border-borda bg-fundo px-2 text-auxiliar"
           >
             {etiqueta}
           </li>

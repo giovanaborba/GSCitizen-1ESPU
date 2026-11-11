@@ -7,7 +7,7 @@ export default function LinkPular() {
   return (
     <a
       href="#conteudo"
-      className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:inline-flex focus:min-h-12 focus:items-center focus:rounded-cartao focus:border-2 focus:border-botao focus:bg-botao focus:px-4 focus:font-bold focus:text-botao-texto"
+      className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:inline-flex focus:min-h-12 focus:items-center focus:rounded-full focus:border-2 focus:border-ouro focus:bg-ouro focus:px-6 focus:font-bold focus:text-sobre-ouro"
     >
       Pular para o conteúdo
     </a>

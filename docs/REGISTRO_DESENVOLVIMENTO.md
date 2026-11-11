@@ -21,7 +21,7 @@
 | 5 | Diário completo: lista, formulário, ver, editar, excluir, desfazer | `a303670` |
 | 6 | Responsividade para tablet e computador | `37175ba` |
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
-| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 e 8.1 feitas | — |
+| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.2 feitas | — |
 
 **Em números:** 7 rotas · 33 componentes (o mínimo é 8) · 12 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras.
 
@@ -314,6 +314,48 @@ Observação sobre o teste: o gesto pronto de rolagem do Chrome sem janela (`syn
 **Marcadores desta subfase:** `FONTE-Anton-AQUI`, `FONTE-Atkinson Hyperlegible Next-AQUI` e `FONTE-JetBrains Mono-AQUI`, todos em `app/layout.jsx`.
 
 **Sugestão de commit:** `Instala pacotes de movimento e adiciona provedor de rolagem suave`
+
+### 8.2 — Cores, tipografia e linguagem visual
+
+**Arquivos:**
+
+| Arquivo | Mudança |
+| --- | --- |
+| `app/globals.css` | Tokens da 18.3 nos dois temas, mais decoração, 3D, cortina e rodapé; tokens antigos removidos; H1 e H2 em Anton com maiúsculas só por CSS; corpo com altura de linha 1,55; links e foco na cor da marca; utilitários `textura-piso`, `rotulo-mono` e `palavra-fundo`; textura e palavra de fundo desligadas no alto contraste do Windows |
+| `components/ui/PalavraFundo.jsx` (novo) | Palavra gigante decorativa (`aria-hidden`), com tamanho `min(21rem, 150vw ÷ letras)` |
+| `components/ui/Botao.jsx` | Pílula de 56 px; principal dourado (no hover: sombra e subida de 2 px, sem trocar a cor); secundário com contorno de 2 px na cor da marca |
+| `components/ui/Cartao.jsx`, `Campo.jsx`, `GrupoOpcoes.jsx`, `EspacoImagem.jsx`, `DialogoConfirmacao.jsx` | Fundo `--cor-superficie` no lugar de `--cor-cartao` e `--cor-cromo`; campos e opções com canto de 12 px; título do diálogo no menor tamanho do H2 |
+| `components/layout/BarraNavegacao.jsx`, `ItemBarra.jsx`, `Cabecalho.jsx`, `IndiceNestaPagina.jsx`, `LinkPular.jsx` | Cores novas: item ativo e "Pular para o conteúdo" em dourado com texto `#120B24` |
+| `components/solucao/CartaoIntegrante.jsx`, `components/diario/CartaoRegistro.jsx`, `app/solucao/page.jsx` | Só a troca das classes de cor e de canto |
+
+**Tokens removidos:** `--cor-cromo`, `--cor-cartao`, `--cor-botao`, `--cor-botao-texto`, `--cor-botao-hover`, `--cor-link` e `--cor-foco`, e as cores `#3B1D8B`, `#2E1670` e `#2A1366` como fundo. O `#2A1366` continua só como texto do botão de perigo no tema escuro, como manda a 18.3.
+
+**Decisões da implementação** (seção 17 como **Implementação**):
+- **Hover e borda dos itens da barra calculados a partir da marca.** `--cor-hover` é a marca a 12% (como manda a 18.3). `--cor-linha-item` é a marca a 70%: 4,3:1 no claro e 5,3:1 no escuro (mínimo de 3:1). Como os dois são calculados, acompanham o tema sozinhos.
+- **Cantos.** Cartões, fotos e mensagens com 18 px (18.5). Campos, opções do formulário e etiquetas continuam com 12 px (seção 8.3), porque a 18.5 não fala deles. Botões em pílula. O diálogo continua com 16 px. A barra vira pílula na 8.3.
+- **Título do diálogo.** É um H2, então usa a Anton, mas no menor tamanho do H2 (2,2rem). O tamanho normal chegaria a 4rem num diálogo estreito.
+- **Rótulo mono sem cor fixa.** O utilitário `rotulo-mono` define fonte, tamanho e espaçamento; a cor vem de quem usa (`text-destaque` na página, dourado no rodapé).
+- **Subida do botão dourado só com movimento permitido** (`motion-safe:`). A sombra do hover vale sempre.
+- **Alto contraste do Windows.** A textura e a palavra de fundo são desligadas nesse modo, para não virarem ruído nem texto gigante.
+- **Hover do botão em CSS, não em Motion.** É uma mudança simples de estado e não precisa de JavaScript. O Motion fica para as animações comandadas por código (abertura, nas próximas subfases).
+
+**Verificação automática:**
+- ESLint sem problemas e `next build` sem erros.
+- **Contraste calculado:** 67 de 67 pares (texto ≥ 7:1; bordas e foco ≥ 3:1), nos dois temas, no rodapé, no hover, nos status, no botão de perigo e no polaroide. Os valores batem com a tabela da 18.3.
+- **axe-core** (WCAG 2.2 AA + contraste 7:1): 0 violações em Início, Solução, Simulador, Diário e Novo registro, nos dois temas.
+- **320 px:** nenhuma rolagem lateral nas 5 páginas, nos dois temas.
+- Nenhum erro no console.
+
+**Como testar à mão:**
+1. `npm run dev`. Com o aparelho no tema claro: fundo creme, cartões brancos, títulos H1 e H2 em maiúsculas e em roxo, item ativo da barra em dourado.
+2. Troque o aparelho para o tema escuro: fundo `#120B24`, títulos e links em lilás.
+3. Passe o mouse num botão dourado (ex.: "Conheça a solução"): aparece uma sombra e o botão sobe 2 px. Com "reduzir movimento" ligado, só a sombra aparece.
+4. Navegue com `Tab`: o contorno de foco tem 3 px, na cor da marca.
+5. Selecione um título com o mouse e copie: o texto colado vem normal ("Tema CitizenTech"), porque as maiúsculas são só visuais.
+
+**Marcadores desta subfase:** nenhum novo.
+
+**Sugestão de commit:** `Aplica cores, tipografia e botões da nova identidade`
 
 ---
 

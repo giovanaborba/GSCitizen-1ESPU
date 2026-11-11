@@ -25,7 +25,7 @@ export default function Cabecalho() {
   return (
     <header
       data-barra-rolagem
-      className={`sticky top-0 z-30 border-b border-borda bg-cromo transition-transform duration-200 ${
+      className={`sticky top-0 z-30 border-b border-borda bg-superficie transition-transform duration-200 ${
         escondido ? "max-md:-translate-y-full" : ""
       }`}
     >

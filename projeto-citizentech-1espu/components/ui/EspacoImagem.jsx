@@ -24,7 +24,7 @@ const FORMATOS = {
 export default function EspacoImagem({ texto, formato = "paisagem", className = "" }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center gap-2 rounded-cartao border-2 border-dashed border-borda bg-cartao text-center text-auxiliar text-texto-2 ${
+      className={`flex flex-col items-center justify-center gap-2 rounded-cartao border-2 border-dashed border-borda bg-superficie text-center text-auxiliar text-texto-2 ${
         texto ? "p-6" : "p-2"
       } ${FORMATOS[formato]} ${className}`}
     >

@@ -86,9 +86,13 @@ export default function DialogoConfirmacao({
       aria-describedby={idTexto}
       onCancel={aoPedirParaFechar}
       onClose={aoFechar}
-      className="m-auto max-h-[calc(100%-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-barra border border-borda bg-cromo p-6 text-texto shadow-barra"
+      className="m-auto max-h-[calc(100%-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-barra border border-borda bg-superficie p-6 text-texto shadow-barra"
     >
-      <h2 id={idTitulo}>{titulo}</h2>
+      {/* Título em Anton, como todo H2 (seção 18.4), mas no menor tamanho
+          do H2: o diálogo é estreito e não tem efeitos (Diário calmo). */}
+      <h2 id={idTitulo} className="text-h2-compacto">
+        {titulo}
+      </h2>
       <p id={idTexto} className="mt-4">
         {texto}
       </p>

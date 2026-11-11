@@ -19,11 +19,21 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
   tiraria o foco dele, e quem usa teclado ou leitor de tela se perderia).
   Quem usa o Botao ignora o segundo toque enquanto estiver ocupado.
 */
+/*
+  Visual da Fase 8 (seção 18.5): todos em pílula (rounded-full), 56 px
+  de altura.
+  - principal: dourado com texto #120B24 (8,3:1). No hover, NÃO troca de
+    cor (seção 18.3): ganha uma sombra leve e sobe 2 px. A subida só
+    acontece sem "reduzir movimento" (motion-safe:); a sombra vale sempre.
+  - secundario: contorno de 2 px na cor da marca; no hover, fundo leve
+    (--cor-hover: marca a 12%).
+*/
 const ESTILO_BASE =
-  "inline-flex min-h-14 items-center justify-center gap-2 rounded-cartao border-2 px-6 py-2 text-center font-bold no-underline transicao-fundo aria-disabled:cursor-wait";
+  "inline-flex min-h-14 items-center justify-center gap-2 rounded-full border-2 px-7 py-2 text-center font-bold no-underline transition-[background-color,box-shadow,translate] duration-200 aria-disabled:cursor-wait";
 
 const ESTILO_VARIANTE = {
-  principal: "border-botao bg-botao text-botao-texto hover:border-botao-hover hover:bg-botao-hover",
+  principal:
+    "border-ouro bg-ouro text-sobre-ouro hover:shadow-barra motion-safe:hover:-translate-y-0.5",
   secundario: "border-marca bg-transparent text-marca hover:bg-hover",
   perigo: "border-erro bg-transparent text-erro hover:bg-erro-fundo",
   "perigo-preenchido": "border-erro bg-erro text-perigo-texto",

@@ -23,7 +23,7 @@ export default function Cartao({
 }) {
   return (
     <Elemento
-      className={`rounded-cartao bg-cartao shadow-cartao ${compacto ? "p-4" : "p-6"} ${
+      className={`rounded-cartao bg-superficie shadow-cartao ${compacto ? "p-4" : "p-6"} ${
         destaque ? "border-2 border-marca" : "border border-borda"
       } ${className}`}
     >

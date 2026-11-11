@@ -19,7 +19,7 @@ export default function Campo({ nome, rotulo, tipo = "date", valor, aoMudar, err
   // Esta parte é lógica
   const descricao = [dica && idDica, erro && idErro].filter(Boolean).join(" ") || undefined;
 
-  const classesControle = `mt-2 block w-full rounded-cartao bg-cartao px-4 py-3 text-texto ${
+  const classesControle = `mt-2 block w-full rounded-campo bg-superficie px-4 py-3 text-texto ${
     erro ? "border-2 border-erro" : "border border-borda"
   }`;
 

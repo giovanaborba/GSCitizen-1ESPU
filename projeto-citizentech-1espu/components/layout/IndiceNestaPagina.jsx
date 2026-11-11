@@ -13,7 +13,7 @@ export default function IndiceNestaPagina({ itens }) {
   return (
     <nav
       aria-label="Nesta página"
-      className="rounded-cartao border border-borda bg-cartao p-6 shadow-cartao"
+      className="rounded-cartao border border-borda bg-superficie p-6 shadow-cartao"
     >
       <h2 className="text-h3">Nesta página</h2>
       <ul className="mt-2 flex flex-col gap-2">

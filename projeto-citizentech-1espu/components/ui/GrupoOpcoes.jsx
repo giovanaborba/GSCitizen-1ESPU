@@ -36,7 +36,7 @@ export default function GrupoOpcoes({ nome, legenda, opcoes, valor, aoMudar, err
             <label
               key={id}
               htmlFor={id}
-              className={`flex min-h-14 cursor-pointer items-center gap-4 rounded-cartao bg-cartao py-2 ${
+              className={`flex min-h-14 cursor-pointer items-center gap-4 rounded-campo bg-superficie py-2 ${
                 marcada
                   ? "border-2 border-marca px-[calc(1rem-1px)] font-bold"
                   : "border border-borda px-4"

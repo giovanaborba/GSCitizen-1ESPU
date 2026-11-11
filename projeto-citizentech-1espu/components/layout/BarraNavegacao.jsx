@@ -94,7 +94,7 @@ export default function BarraNavegacao() {
       <div className="@container">
         <ul
           ref={refLista}
-          className={`mx-auto gap-1.5 rounded-barra border border-borda bg-cromo p-1.5 shadow-barra md:flex md:w-fit md:flex-wrap md:justify-center ${
+          className={`mx-auto gap-1.5 rounded-barra border border-borda bg-superficie p-1.5 shadow-barra md:flex md:w-fit md:flex-wrap md:justify-center ${
             LAYOUT_CELULAR[String(cabeEmUmaLinha)]
           }`}
         >
