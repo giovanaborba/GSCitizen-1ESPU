@@ -21,7 +21,7 @@
 | 5 | Diário completo: lista, formulário, ver, editar, excluir, desfazer | `a303670` |
 | 6 | Responsividade para tablet e computador | `37175ba` |
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
-| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.2 feitas | — |
+| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.3 feitas | — |
 
 **Em números:** 7 rotas · 33 componentes (o mínimo é 8) · 12 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras.
 
@@ -356,6 +356,86 @@ Observação sobre o teste: o gesto pronto de rolagem do Chrome sem janela (`syn
 **Marcadores desta subfase:** nenhum novo.
 
 **Sugestão de commit:** `Aplica cores, tipografia e botões da nova identidade`
+
+**Decisão da equipe depois da 8.2 — tamanho dos títulos (opção C).** Os tamanhos da 18.4 usavam `vw`, uma unidade que acompanha a largura da tela. Com zoom de 200% (ou texto em 200% nas configurações do navegador), o H1 crescia só 1,14× e o H2 1,2×. Isso falhava a WCAG 1.4.4 (falha F94), que faz parte do piso do projeto. A equipe escolheu deixar o termo do meio mais inclinado, para o título chegar ao tamanho máximo já em 640 px:
+
+| Título | Especificação | Agora |
+| --- | --- | --- |
+| H1 | `clamp(2.6rem, 8vw, 5.6rem)` | `clamp(2.6rem, 14vw, 5.6rem)` |
+| H1 da abertura do Início | `clamp(2.1rem, 5.4vw, 3.6rem)` | `clamp(2.1rem, 9vw, 3.6rem)` (mesma regra) |
+| H2 | `clamp(2.2rem, 6vw, 4rem)` | `clamp(2.2rem, 10vw, 4rem)` |
+
+O mínimo e o máximo continuam os da 18.4. Com isso, os títulos dobram de tamanho com zoom de 200%. Em troca, ficam maiores em telas médias (a 375 px, o H1 passa de cerca de 42 para 52 px). Aplicado em `app/globals.css`, junto com a 8.3.
+
+### 8.3 — Layout comum
+
+**Arquivos:**
+
+| Arquivo | Mudança |
+| --- | --- |
+| `hooks/useTransicaoPagina.js` (novo) | Lógica da cortina de piso tátil: entrada (200 ms), troca de página, saída (220 ms); regra do Diário; Voltar do navegador; trava de 3 s |
+| `components/layout/TransicaoPagina.jsx` (novo) | Provedor da transição e a cortina (`aria-hidden`, sem clique) |
+| `components/ui/LinkInterno.jsx` (novo) | `<Link>` do Next que passa pela guarda de saída e pela transição |
+| `hooks/useFaixaODS.js` (novo) | Pausa e ODS em destaque na área da frase |
+| `components/solucao/FaixaODS.jsx` (novo) | Faixa contínua dos 3 ODS, só no rodapé da Solução |
+| `hooks/useGuardaDeSaida.jsx` | Se a saída estiver livre, passa a navegação para a transição; "Descartar respostas" também |
+| `components/layout/Provedores.jsx` | `TransicaoPagina` por fora da guarda de saída |
+| `components/layout/Rodape.jsx` | Rodapé escuro em todas as páginas: 4 links de 48 px, créditos e a faixa dos ODS na Solução; o espaço do fim da página fica dentro dele |
+| `components/layout/Cabecalho.jsx` | "Pulse" em Anton com `ICONE-Pulse-AQUI`, rótulo "GS 2026.2 · CitizenTech" à direita, largura de 76rem; mede a própria altura |
+| `components/layout/BarraNavegacao.jsx` e `ItemBarra.jsx` | Barra em pílula com item ativo dourado |
+| `components/layout/FocoNaTroca.jsx` | Com âncora no endereço (ex.: `/solucao#os-sinais`), o foco vai para o título da âncora, e não para o H1 |
+| `components/ui/Botao.jsx`, `components/diario/CartaoRegistro.jsx`, `app/solucao/page.jsx` | Links internos passam a usar `LinkInterno` |
+| `app/globals.css` | Títulos (opção C), largura `max-w-pagina` (76rem), CSS da cortina e da faixa dos ODS, foco dourado no rodapé, espaço do fim saindo do `body` |
+
+**Como a navegação funciona agora:**
+
+```
+Link (LinkInterno, barra, logo, Voltar, Cancelar)
+  → guarda de saída: há respostas não salvas?  sim → diálogo "Descartar as respostas?"
+  → não → transição: precisa animar?
+       sim → domos crescem → router.push → página nova → domos encolhem
+       não → navegação normal, instantânea
+```
+
+A cortina **não** anima: com "reduzir movimento" ou alto contraste do Windows; quando a origem e o destino estão dentro do Diário (decisão da equipe); quando o destino é a mesma página. Voltar e Avançar do navegador fazem só a saída.
+
+**Decisões da implementação** (seção 17 como **Implementação**):
+- **A guarda de saída é a porta de entrada de todo link interno.** Ela decide primeiro e só depois chama a transição. Assim, nunca há cortina com o diálogo aberto.
+- **Trava de segurança de 3 s.** Se a página nova não chegar, a cortina some mesmo assim.
+- **Saída no Voltar do navegador com `useLayoutEffect`.** Ele roda antes de a tela ser pintada, então a cortina já aparece cobrindo, sem a página nova "piscar".
+- **Alto contraste do Windows: troca instantânea**, como com "reduzir movimento". A máscara de domos não funciona bem nesse modo.
+- **Faixa dos ODS com o foco dentro:** ela para e volta ao começo, e o botão focado é rolado até aparecer inteiro (18.2, item 5). Ao tocar num ODS, o clique também mostra a frase, porque o Safari do iPhone não foca botões no toque.
+- **Frases dos ODS** em parágrafos com `hidden`, ligados por `aria-describedby`: o leitor de tela lê a frase com o botão, mas não lê de novo ao percorrer a página.
+- **Cabeçalho mede a própria altura** e guarda em `--altura-cabecalho`. Com o rótulo quebrando linha (83 px a 320 px), as âncoras continuam parando logo abaixo dele.
+- **Rodapé em componente de cliente**, só para saber se está na Solução (`usePathname`). Ele continua vindo pronto do servidor.
+- **Cantos da barra.** A partir de 768 px, pílula perfeita. No celular, os itens têm 2 andares (ícone e texto), e a pílula perfeita cortava o texto; o canto lá é de 20 px, e o da barra acompanha.
+- **Links do rodapé numa lista simples**, sem um segundo `<nav>`: um `<nav>` precisaria de um nome que a especificação não define.
+
+**Verificação automática** (Chrome sem janela, servidor de produção): ESLint sem problemas, `next build` sem erros e **45 de 45 testes**:
+- Transição Início → Solução: os domos cobrem a tela (22 px), a cortina some no fim, foco no H1, cortina com `aria-hidden` e sem clique.
+- Voltar do navegador: a cortina só encolhe.
+- Entrar no Diário: anima. Novo registro → "Voltar ao Diário": sem cortina.
+- Formulário preenchido + barra: abre o diálogo, sem cortina, foco em "Continuar preenchendo". "Descartar respostas" indo para o Início: anima. Indo para o Diário: sem cortina.
+- Reduzir movimento: sem cortina; faixa dos ODS parada, sem "Pausar" e sem a cópia, com os botões empilhados.
+- Faixa dos ODS: só na Solução; anima por 48 s, linear e infinita; ordem do Tab Pausar → ODS 10 → ODS 9 → ODS 11 → Início; com o foco, a faixa para e o botão aparece inteiro; a frase aparece na área e chega pelo `aria-describedby`; a cópia não recebe o Tab; "Pausar" troca para "Retomar", com `aria-pressed` e a faixa parada.
+- axe (WCAG 2.2 AA + contraste 7:1): 0 violações nas 5 páginas, nos dois temas.
+- 320 px: sem rolagem lateral nas 5 páginas, nos dois temas; `--altura-cabecalho` acompanha a altura real; a âncora para abaixo do cabeçalho.
+- Nenhum erro ou aviso no console.
+
+Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Esses links nascem nas subfases 8.5 e 8.6.
+
+**Como testar à mão:**
+1. `npm run dev`. Na barra, vá de Início para Solução: domos roxos cobrem a tela e somem, revelando a página nova.
+2. Use o Voltar do navegador: os domos aparecem cobrindo e encolhem.
+3. Entre no Diário pela barra (anima). Dentro dele, vá para "Novo registro" e volte: troca instantânea.
+4. Em "Novo registro", escreva algo nas observações e toque em "Início" na barra: abre "Descartar as respostas?". "Descartar respostas" leva ao Início com a cortina.
+5. Na Solução, role até o rodapé: a faixa dos ODS anda. Passe o mouse (para e mostra a frase), aperte "Pausar" (vira "Retomar") e navegue com `Tab` (Pausar → ODS 10 → ODS 9 → ODS 11 → links).
+6. Ligue "reduzir movimento": as trocas de página ficam instantâneas, e os ODS ficam parados, um embaixo do outro.
+7. Com um leitor de tela, foque um ODS: ele lê o nome e a frase completa.
+
+**Marcadores desta subfase:** `ICONE-Pause-AQUI` e `ICONE-Play-AQUI` (botão Pausar/Retomar), em `components/solucao/FaixaODS.jsx`. O `ICONE-Pulse-AQUI` do cabeçalho continua.
+
+**Sugestão de commit:** `Adiciona transição entre páginas, rodapé novo e faixa dos ODS`
 
 ---
 

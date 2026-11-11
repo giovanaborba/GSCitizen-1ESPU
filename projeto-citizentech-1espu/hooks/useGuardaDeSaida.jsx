@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import DialogoConfirmacao from "@/components/ui/DialogoConfirmacao";
+import { useNavegacaoComTransicao } from "@/hooks/useTransicaoPagina";
 
 /*
   useGuardaDeSaida — aviso "Descartar as respostas?" (seção 7.3).
@@ -20,11 +20,16 @@ import DialogoConfirmacao from "@/components/ui/DialogoConfirmacao";
   Limite: o botão Voltar DO NAVEGADOR não pode ser bloqueado de forma
   confiável. Fechar a aba e recarregar são cobertos pelo aviso padrão do
   navegador (beforeunload), no useFormularioRegistro.
+
+  Fase 8: a guarda é a porta de entrada de TODO link interno (componente
+  LinkInterno, barra, logo, "Voltar", "Cancelar"). Ela decide primeiro.
+  Se a saída estiver livre, passa a navegação para a transição de piso
+  tátil (useTransicaoPagina), que decide se a cortina anima ou não.
 */
 const ContextoGuarda = createContext(null);
 
 export function ProvedorGuardaDeSaida({ children }) {
-  const router = useRouter();
+  const { navegar, irPara } = useNavegacaoComTransicao();
   // Ref (e não state): mudar o bloqueio não precisa redesenhar a tela
   const bloqueado = useRef(false);
   const [destinoPendente, setDestinoPendente] = useState(null);
@@ -36,7 +41,11 @@ export function ProvedorGuardaDeSaida({ children }) {
 
   // Esta parte é lógica
   function aoNavegar(evento, destino) {
-    if (!bloqueado.current) return;
+    if (!bloqueado.current) {
+      // Saída livre: a transição de piso tátil cuida da navegação
+      navegar(evento, destino);
+      return;
+    }
     evento.preventDefault();
     setDestinoPendente(destino);
   }
@@ -46,7 +55,8 @@ export function ProvedorGuardaDeSaida({ children }) {
     const destino = destinoPendente;
     bloqueado.current = false;
     setDestinoPendente(null);
-    router.push(destino);
+    // Dentro do Diário a troca é instantânea; ao sair dele, a cortina anima
+    irPara(destino);
   }
 
   // Esta parte é lógica

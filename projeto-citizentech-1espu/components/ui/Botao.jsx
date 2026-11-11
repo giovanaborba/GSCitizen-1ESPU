@@ -1,4 +1,4 @@
-import Link from "next/link";
+import LinkInterno from "@/components/ui/LinkInterno";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 
 /*
@@ -9,7 +9,8 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
   - "perigo": contorno na cor de erro (ex.: "Excluir registro" na página)
   - "perigo-preenchido": preenchido na cor de erro (ex.: confirmar no diálogo)
 
-  Vira link (<Link>) quando recebe "href"; senão, é um <button>.
+  Vira link (LinkInterno: guarda de saída + transição entre páginas)
+  quando recebe "href"; senão, é um <button>.
   Use <button> para ações e link para navegar (seção 3, item 6).
   Altura mínima de 56 px. "icone" recebe o nome do ícone Phosphor; o
   marcador ICONE-(nome)-AQUI fica no lugar onde o Botao é usado.
@@ -60,9 +61,9 @@ export default function Botao({
   // Esta parte é lógica
   if (href) {
     return (
-      <Link href={href} className={classes} {...resto}>
+      <LinkInterno href={href} className={classes} {...resto}>
         {conteudo}
-      </Link>
+      </LinkInterno>
     );
   }
 

@@ -1,11 +1,14 @@
 "use client";
 
+import TransicaoPagina from "@/components/layout/TransicaoPagina";
 import { ProvedorGuardaDeSaida } from "@/hooks/useGuardaDeSaida";
 import { ProvedorMensagemDiario } from "@/hooks/useMensagemDiario";
 
 /*
   Provedores — junta os contextos que precisam sobreviver à troca de
   página (por isso ficam no layout):
+  - transição de piso tátil entre páginas (Fase 8). Fica por fora,
+    porque a guarda de saída usa a transição;
   - guarda de saída ("Descartar as respostas?");
   - mensagem do Diário ("Registro salvo.", "Registro excluído." + Desfazer).
 
@@ -14,8 +17,10 @@ import { ProvedorMensagemDiario } from "@/hooks/useMensagemDiario";
 */
 export default function Provedores({ children }) {
   return (
-    <ProvedorGuardaDeSaida>
-      <ProvedorMensagemDiario>{children}</ProvedorMensagemDiario>
-    </ProvedorGuardaDeSaida>
+    <TransicaoPagina>
+      <ProvedorGuardaDeSaida>
+        <ProvedorMensagemDiario>{children}</ProvedorMensagemDiario>
+      </ProvedorGuardaDeSaida>
+    </TransicaoPagina>
   );
 }

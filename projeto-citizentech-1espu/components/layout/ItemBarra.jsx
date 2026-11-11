@@ -7,7 +7,11 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
   - A partir de 768 px: ícone e texto lado a lado, altura mínima de 48 px.
   - Não selecionado: borda --cor-linha-item (mostra onde tocar).
   - Selecionado: fundo dourado (--cor-ouro) com texto #120B24, negrito e
-    aria-current="page" (seção 18.9). O formato em pílula entra na 8.3.
+    aria-current="page" (seção 18.9).
+  - Cantos: a partir de 768 px (ícone e texto numa linha), pílula
+    perfeita. No celular, o item tem 2 andares (ícone em cima, texto
+    embaixo); a pílula perfeita cortaria os cantos do texto, então o
+    canto é de 20 px.
 
   O texto aparece duas vezes empilhado: uma visível e uma invisível em
   negrito. A invisível reserva a largura do negrito, para a barra não
@@ -23,7 +27,7 @@ export default function ItemBarra({ href, texto, icone, ativo, aoNavegar }) {
         href={href}
         onNavigate={aoNavegar}
         aria-current={ativo ? "page" : undefined}
-        className={`flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-campo border px-1 py-1 text-auxiliar no-underline transicao-fundo md:min-h-12 md:flex-row md:gap-2 md:px-4 ${
+        className={`flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-[1.25rem] border px-1 py-1 text-auxiliar md:rounded-full no-underline transicao-fundo md:min-h-12 md:flex-row md:gap-2 md:px-4 ${
           ativo
             ? "border-ouro bg-ouro font-bold text-sobre-ouro"
             : "border-linha-item bg-superficie text-texto hover:bg-hover"

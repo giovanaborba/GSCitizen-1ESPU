@@ -1,4 +1,4 @@
-import Link from "next/link";
+import LinkInterno from "@/components/ui/LinkInterno";
 import Cartao from "@/components/ui/Cartao";
 import { formatarData } from "@/lib/datas";
 import { etiquetasDoRegistro, rotuloDe } from "@/lib/rotulos";
@@ -36,9 +36,9 @@ export default function CartaoRegistro({ registro }) {
       </ul>
 
       <p className="mt-4">
-        <Link href={`/diario/${registro.id}`} className="inline-flex min-h-12 items-center">
+        <LinkInterno href={`/diario/${registro.id}`} className="inline-flex min-h-12 items-center">
           Ver registro<span className="sr-only"> de {data}</span>
-        </Link>
+        </LinkInterno>
       </p>
     </Cartao>
   );

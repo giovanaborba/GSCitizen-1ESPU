@@ -1,4 +1,4 @@
-import Link from "next/link";
+import LinkInterno from "@/components/ui/LinkInterno";
 import PaginaComIndice from "@/components/layout/PaginaComIndice";
 import Secao from "@/components/layout/Secao";
 import Cartao from "@/components/ui/Cartao";
@@ -280,9 +280,9 @@ export default function PaginaSolucao() {
           retorno de quem usa.
         </p>
         <p>
-          <Link href="/diario" className="inline-flex min-h-12 items-center">
+          <LinkInterno href="/diario" className="inline-flex min-h-12 items-center">
             Veja como medimos o impacto no Diário
-          </Link>
+          </LinkInterno>
         </p>
       </Secao>
 

@@ -32,6 +32,13 @@ const LAYOUT_CELULAR = {
   Pouca altura (max-height: 480 px): a barra deixa de flutuar e fica no fim
   da página, no fluxo normal.
 
+  Visual da Fase 8 (seção 18.9): pílula com fundo --cor-superficie,
+  borda e item ativo dourado. O canto do contorno é o canto do item + o
+  espaço interno + a borda (1,25rem + 7 px no celular; 3rem ÷ 2 + 7 px a
+  partir de 768 px), para os cantos ficarem "paralelos". A partir de
+  768 px, a barra é uma pílula perfeita; no celular (itens de 2 andares
+  e, às vezes, 2 × 2), os cantos acompanham os itens sem cortar nenhum.
+
   No celular, enquanto um campo de digitação está em uso, a barra sai da
   frente do teclado (seção 7.3). Os itens passam pela guarda de saída do
   formulário ("Descartar as respostas?").
@@ -94,7 +101,7 @@ export default function BarraNavegacao() {
       <div className="@container">
         <ul
           ref={refLista}
-          className={`mx-auto gap-1.5 rounded-barra border border-borda bg-superficie p-1.5 shadow-barra md:flex md:w-fit md:flex-wrap md:justify-center ${
+          className={`mx-auto gap-1.5 rounded-[calc(1.25rem+7px)] border border-borda bg-superficie p-1.5 shadow-barra md:flex md:rounded-[calc(1.5rem+7px)] md:w-fit md:flex-wrap md:justify-center ${
             LAYOUT_CELULAR[String(cabeEmUmaLinha)]
           }`}
         >

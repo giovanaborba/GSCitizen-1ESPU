@@ -213,12 +213,19 @@
   --font-mono: var(--fonte-mono);
 
   /* Tamanhos de texto — seção 18.4 (classes text-h1, text-corpo...).
-     H1 e H2 em Anton, com altura de linha 1. */
-  --text-h1: clamp(2.6rem, 8vw, 5.6rem);
+     H1 e H2 em Anton, com altura de linha 1.
+     Decisão da equipe (Fase 8, opção C): o termo do meio (vw) é mais
+     inclinado que o da especificação, para o título já chegar ao tamanho
+     máximo em telas de 640 px. Por quê: com zoom de 200%, uma tela de
+     1280 px "vira" 640 px. Com 8vw, o H1 crescia só 1,14× e falhava a
+     WCAG 1.4.4 (texto ampliável até 200%). Com 14vw, ele dobra. O mínimo
+     e o máximo continuam os da 18.4. */
+  --text-h1: clamp(2.6rem, 14vw, 5.6rem);
   --text-h1--line-height: 1;
-  --text-h1-abertura: clamp(2.1rem, 5.4vw, 3.6rem); /* H1 da abertura do Início */
+  /* H1 da abertura do Início: mesma regra (3,6rem ÷ 640 px ≈ 9vw) */
+  --text-h1-abertura: clamp(2.1rem, 9vw, 3.6rem);
   --text-h1-abertura--line-height: 1;
-  --text-h2: clamp(2.2rem, 6vw, 4rem);
+  --text-h2: clamp(2.2rem, 10vw, 4rem);
   --text-h2--line-height: 1;
   /* H2 em espaço estreito (título do diálogo): o menor tamanho do H2 */
   --text-h2-compacto: 2.2rem;
@@ -248,6 +255,7 @@
 
   /* Larguras máximas — seções 5 e 12 */
   --container-texto: 40rem; /* coluna de texto (max-w-texto) */
+  --container-pagina: 76rem; /* área da página na Fase 8 (max-w-pagina): cabeçalho, rodapé, aberturas */
   /* No computador, Início e Solução usam uma grade de 59rem (texto 40rem +
      espaço 3rem + "Nesta página" 16rem) — ver PaginaComIndice. A Equipe
      ocupa a grade inteira, dentro do limite de ~64rem da seção 12. */
@@ -273,8 +281,9 @@
   }
 
   body {
-    /* Espaço extra no fim da página, depois do rodapé */
-    padding-bottom: var(--espaco-fim);
+    /* O espaço extra do fim da página (--espaco-fim, do tamanho da barra
+       flutuante) fica DENTRO do rodapé (Fase 8), para o fundo escuro dele
+       ir até o fim da tela. */
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
     font-family: var(--fonte-base);
@@ -465,6 +474,111 @@ html.lenis {
   color: var(--cor-palavra-fundo);
   pointer-events: none;
   user-select: none;
+}
+
+/* ---------------------------------------------------------------------
+   5b. COMPONENTES COM CSS PRÓPRIO (Fase 8)
+   --------------------------------------------------------------------- */
+@layer components {
+  /* Cortina da transição entre páginas (seção 18.9), usada pelo
+     TransicaoPagina. É uma camada roxa vista através de uma "peneira" de
+     domos: cada célula de 30 px mostra um círculo de raio --d. Com --d =
+     0 nada aparece; com --d = 22 px os círculos se encostam e cobrem a
+     tela inteira. O GSAP anima o --d. Não recebe clique
+     (pointer-events: none) e fica escondida do leitor de tela
+     (aria-hidden no componente). Só aparece com data-ativa. */
+  .cortina-piso {
+    --d: 0px;
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: none;
+    pointer-events: none;
+    background-color: var(--cor-cortina);
+    -webkit-mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
+    mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
+    -webkit-mask-size: 30px 30px;
+    mask-size: 30px 30px;
+  }
+
+  .cortina-piso[data-ativa] {
+    display: block;
+  }
+
+  /* Rodapé: foco dourado sobre o fundo escuro (8,3:1). */
+  .rodape :focus-visible {
+    outline-color: var(--cor-rodape-ouro);
+  }
+
+  /* Faixa contínua dos ODS (seção 18.10). Duas cópias iguais da lista,
+     lado a lado; a fileira anda para a esquerda até a metade (-50%) e
+     recomeça. Como a segunda cópia está exatamente onde a primeira
+     começou, o recomeço não aparece: parece uma faixa sem fim. */
+  .faixa-ods {
+    overflow: hidden;
+    padding-block: 0.25rem;
+  }
+
+  .faixa-ods-trilho {
+    display: flex;
+    width: max-content;
+    animation: faixa-ods 48s linear infinite;
+  }
+
+  /* Para com o mouse em cima e com o botão "Pausar" (WCAG 2.2.2) */
+  .faixa-ods:hover .faixa-ods-trilho,
+  .faixa-ods[data-pausada] .faixa-ods-trilho {
+    animation-play-state: paused;
+  }
+
+  /* Com o foco dentro, a faixa para E volta ao começo: assim o botão
+     focado nunca fica fora da área visível (seção 18.2, item 5). O
+     navegador ainda rola a faixa por dentro até o botão focado. */
+  .faixa-ods:focus-within .faixa-ods-trilho {
+    animation: none;
+  }
+
+  .faixa-ods-lista {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0 1.5rem 0 0; /* o mesmo espaço entre as cópias e entre os itens */
+    list-style: none;
+  }
+
+  .faixa-ods-lista > li {
+    flex: none;
+  }
+
+  @keyframes faixa-ods {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Com "reduzir movimento": nada anda. Os 3 botões ficam parados, um
+     embaixo do outro, sem a cópia e sem o botão de pausa (18.10). */
+  @media (prefers-reduced-motion: reduce) {
+    .faixa-ods-trilho {
+      display: block;
+      width: auto;
+      animation: none;
+    }
+
+    .faixa-ods-lista {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+      padding: 0;
+    }
+
+    /* (O botão de pausa some pela classe motion-reduce:hidden, no
+       próprio componente.) */
+    .faixa-ods-lista[aria-hidden="true"] {
+      display: none;
+    }
+  }
 }
 
 /* ---------------------------------------------------------------------
