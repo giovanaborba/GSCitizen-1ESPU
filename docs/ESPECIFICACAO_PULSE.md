@@ -3,7 +3,9 @@
 > Documento de contexto para implementar a aplicação web da Pulse em **React + Next.js + Tailwind CSS, em JavaScript (sem TypeScript)**.
 > Reúne todas as decisões de UX/UI tomadas no planejamento (Etapas 1 a 14) e as convenções de código da equipe (seção 14.1). Quando este arquivo e o código discordarem, **este arquivo vence**, a menos que a equipe decida o contrário e atualize este arquivo.
 >
-> Última atualização: 10/11/2026.
+> As decisões tomadas durante o desenvolvimento (Fases 0 a 7) já estão incorporadas nas seções, marcadas com **(Fase N)**, e reunidas na seção 17. O resumo de cada fase está em `docs/REGISTRO_DESENVOLVIMENTO.md`.
+>
+> Última atualização: 11/11/2026.
 
 ---
 
@@ -25,6 +27,7 @@
 14. Arquitetura de código sugerida
 15. Checklist de acessibilidade e critérios de aceite
 16. Pendências e suposições
+17. Registro de alterações do desenvolvimento
 
 ---
 
@@ -92,11 +95,12 @@
 | `/simulador` | Simulador | `Simulador — Pulse` | Simulador |
 | `/diario` | Diário: lista | `Diário — Pulse` | Diário |
 | `/diario/novo` | Novo registro | `Novo registro — Pulse` | Diário |
-| `/diario/[id]` | Ver registro | `Registro de DD/MM/AAAA — Pulse` | Diário |
-| `/diario/[id]/editar` | Editar registro | `Editar registro — Pulse` | Diário |
+| `/diario/[id]` | Ver registro | `Registro de DD/MM/AAAA — Pulse` · enquanto carrega: `Registro — Pulse` · registro inexistente: `Registro não encontrado` **(Fase 5)** | Diário |
+| `/diario/[id]/editar` | Editar registro | `Editar registro — Pulse` · registro inexistente: `Registro não encontrado` **(Fase 5)** | Diário |
 
 - O Next.js anuncia a troca de página ao leitor de tela lendo o título. Cada página precisa de um título **único**.
-- Na troca de rota, mover o foco para o `<h1>` da nova página (`tabIndex={-1}`, sem contorno visível nesse caso).
+- Na troca de rota, mover o foco para o `<h1>` da nova página (`tabIndex={-1}`, sem contorno visível nesse caso). No primeiro carregamento o foco **não** é movido, para o "Pular para o conteúdo" continuar sendo o primeiro foco (componente `FocoNaTroca`, **Fase 2**).
+- Implementação dos títulos **(Fases 2 e 5)**: `title.template` (`%s — Pulse`) no layout raiz. A Início escreve o título completo, porque, pela regra do Next, o modelo do layout não vale para a página da mesma pasta. O título com a data só existe depois que a API responde, então é trocado no navegador pelo hook `useTituloDaAba`.
 
 ### 4.2 O que fica em cada página
 
@@ -345,13 +349,14 @@ Rótulos para exibição:
 
 Após envio com erro:
 - A mensagem aparece **junto de cada campo com problema** (sem resumo de erros no topo).
-- Campo marcado com `aria-invalid="true"` e ligado à mensagem por `aria-describedby`. Em grupos de radio, `aria-describedby` no `<fieldset>`.
+- Campo marcado com `aria-invalid="true"` e ligado à mensagem por `aria-describedby`. Em grupos de radio, `aria-describedby` no `<fieldset>`. **(Fase 5)** O `aria-invalid` **não** vai nos radios: a especificação ARIA não aceita esse atributo no papel `radio`, e o leitor de tela o ignoraria. O erro do grupo chega pelo `aria-describedby` do `<fieldset>`.
 - **O foco vai para o primeiro campo com erro.** As respostas já preenchidas continuam na tela.
 
 Ao salvar:
-- Botão muda para **"Salvando…"** e não aceita um segundo toque. Anunciar "Salvando".
-- Sucesso → volta para `/diario` com a mensagem **"Registro salvo."**
+- Botão muda para **"Salvando…"** e não aceita um segundo toque. Anunciar "Salvando". **(Fase 5)** Implementado com `aria-disabled="true"`, e não `disabled`: com `disabled`, o navegador tira o foco do botão.
+- Sucesso → volta para `/diario` com a mensagem **"Registro salvo."** (vale para Novo e para Editar).
 - Falha → mensagem junto ao botão: "Não foi possível salvar. Verifique a conexão e tente de novo." Os dados continuam preenchidos.
+- **(Fase 4)** As observações são salvas sem espaços nas pontas. No limite de 300 caracteres, acentos e emojis contam como 1 caractere.
 
 **Aviso ao sair do formulário (correção H3 da Etapa 14):**
 - Se houver respostas preenchidas (ou alteradas, ao editar) e a pessoa tocar em **Cancelar**, **Voltar** ou num **item da barra**, abrir o diálogo:
@@ -361,12 +366,18 @@ Ao salvar:
 - Ao fechar a aba ou recarregar: aviso padrão do navegador (`beforeunload`).
 - Reaproveitar o componente `DialogoConfirmacao`.
 - Dica de implementação: o App Router não bloqueia navegação sozinho; interceptar os cliques nos links do formulário e da barra (por exemplo, um contexto `useGuardaDeSaida` que a barra consulta antes de navegar).
+- **Implementado (Fase 5):**
+  - contexto `useGuardaDeSaida` + prop `onNavigate` do `<Link>` do Next 16 (`evento.preventDefault()`);
+  - vale para a barra, o logo "Pulse", "Voltar" e "Cancelar";
+  - "Descartar respostas" usa o botão de perigo preenchido e "Continuar preenchendo" o secundário, como no diálogo de excluir;
+  - limite: o botão Voltar **do navegador** não pode ser bloqueado de forma confiável no App Router.
 
-**Barra e teclado:** no celular, enquanto um campo de digitação (data ou observações) estiver em uso, a barra flutuante se esconde e volta quando o teclado fecha.
+**Barra e teclado:** no celular, enquanto um campo de digitação (data ou observações) estiver em uso, a barra flutuante se esconde e volta quando o teclado fecha. **(Fase 5)** A barra volta quando o campo perde o foco. Se a pessoa fechar o teclado sem sair do campo (botão Voltar do Android), a barra só volta quando o campo perder o foco. Com "reduzir movimento", a barra também sai da frente, só que sem animação (hook `useDigitandoNoCelular`).
 
 ### 7.4 Ver registro (`/diario/[id]`)
 
 - Link "Voltar ao Diário". **H1:** Registro de DD/MM/AAAA.
+- **(Fase 5)** Enquanto os dados não chegam, o H1 é "Registro" (em Editar, "Editar registro"). Carregando e erro usam **os mesmos textos da lista**, no plural (decisão da equipe): "Carregando os registros…" e "Não foi possível carregar os registros." + "Verifique a conexão e tente de novo.".
 - Lista de definições (`<dl>`), pergunta (`<dt>`) antes da resposta (`<dd>`): Meio de transporte; Chegou ao destino sem se perder?; Precisou de ajuda de outra pessoa?; Como se sentiu nas travessias?; As orientações da pulseira estavam certas?; Observações (ou "Nenhuma").
 - Botões: **"Editar registro"** (link para `/diario/[id]/editar`) e **"Excluir registro"** (botão de perigo, contorno na cor de erro).
 - Registro não encontrado: H1 "Registro não encontrado", texto "Esse registro pode ter sido excluído." e botão "Ir para o Diário".
@@ -381,6 +392,7 @@ Ao salvar:
   - Durante a exclusão: "Excluindo…". Falha: "Não foi possível excluir. Verifique a conexão e tente de novo." dentro do diálogo.
 - Sucesso → volta para `/diario` com a mensagem **"Registro excluído."** + botões **"Desfazer"** e **"Fechar"**.
 - **Desfazer (correção H3 da Etapa 14):** recria o registro com os mesmos dados (POST) e anuncia **"Registro restaurado."** Disponível enquanto a mensagem estiver na tela.
+- **(Fase 5)** Se o Desfazer falhar, aparece "Não foi possível salvar. Verifique a conexão e tente de novo." junto da mensagem, e o botão "Desfazer" continua disponível. A mensagem é levada até `/diario` pelo contexto `useMensagemDiario`. Ela pertence à página `/diario` e é apagada quando a pessoa vai para outra página, para não reaparecer depois.
 
 ### 7.6 Acesso a dados (API externa)
 
@@ -399,6 +411,17 @@ Ao salvar:
 - **Sem mock e sem dados provisórios.** Enquanto a API não existir, cada função **lança um erro de conexão** (`codigo: "conexao"`), e as telas mostram o estado de erro da seção 11 ("Não foi possível carregar os registros.") sem quebrar.
 - Erros de rede, quando a API existir, também viram esse erro de domínio (`codigo: "conexao"`), que a interface traduz para as mensagens da seção 11.
 - Sem login: qualquer pessoa vê, edita e exclui qualquer registro. Manter registros de exemplo prontos para recriar dados apagados durante a apresentação.
+  - **Decisão da equipe (Fase 4):** o arquivo de registros de exemplo **não** será criado agora. Ele será feito quando a API existir, com dados fictícios, e nunca será importado pelo site (não é mock).
+
+**Como ficou implementado (Fase 4):**
+- `services/apiClient.js` é o **único** arquivo que faz `fetch`. Ele lê a URL base, faz a requisição e transforma qualquer falha (sem URL, sem internet, servidor fora do ar, resposta inválida, erro HTTP) no erro de domínio `{ codigo: "conexao" }`.
+- O `fetch` já está escrito seguindo a tabela acima, mas só roda quando `NEXT_PUBLIC_API_URL` estiver configurada. Para configurar:
+  1. crie `projeto-citizentech-1espu/.env.local` (já ignorado pelo Git) com `NEXT_PUBLIC_API_URL=https://endereco-da-api.com`, sem barra no final;
+  2. reinicie o `npm run dev`.
+- 404 em `obter` → `null` ("Registro não encontrado"). 404 em `atualizar`/`excluir` (o registro sumiu enquanto a pessoa estava na tela) → erro de conexão.
+- Todas as funções aceitam `{ sinal }` (`AbortSignal`), para o hook cancelar a busca se a pessoa sair da tela.
+- `registrosService` normaliza o registro recebido (por exemplo, `id` sempre texto) e envia só os campos do formulário (sem `id`, `criadoEm`, `atualizadoEm`).
+- Se a API usar outro formato (PATCH em vez de PUT, lista dentro de `{ "itens": [...] }`), o bloco `API-EXTERNA-AQUI` de cada função diz qual linha ajustar.
 
 ---
 
@@ -453,6 +476,20 @@ Regras:
 - Qualquer cor nova precisa passar de **7:1 para texto** e **3:1 para ícones, bordas e foco**. Conferir em https://webaim.org/resources/contrastchecker/.
 - Adicionar `color-scheme: light dark` para controles nativos acompanharem o tema.
 
+**Tokens definidos na implementação (Fase 1).** Reaproveitam cores que já estão na paleta acima; o contraste foi recalculado na Fase 7.
+
+| Token | Claro | Escuro | Uso |
+| --- | --- | --- | --- |
+| `--cor-link` | `#3B1D8B` (= marca) | `#FFFFFF` | Links |
+| `--cor-marca` | `#3B1D8B` | `#FFFFFF` (a cor do texto, como os links) | H1, logo, botão secundário |
+| `--cor-cromo` | `#FFFFFF` | `#2A1366` | Cabeçalho, barra, diálogo |
+| `--cor-botao-hover` | `#2A1366` (15,2:1 com o texto do botão) | `#EDE8FC` (12,7:1) | Botão principal com o mouse em cima |
+| `--cor-hover` | `#F3F0FB` (= cartão) | `#2E1670` (= cartão) | Fundo leve no hover de botões secundários e itens da barra |
+| `--cor-perigo-texto` | `#FFFFFF` (9,7:1) | `#2A1366` (11,8:1) | Texto do botão de perigo preenchido (fundo `--cor-erro`) |
+| `--cor-erro/sucesso/aviso-fundo` | conforme a tabela | `#2E1670` (= cartão) | Fundo das mensagens de status |
+
+- No Tailwind v4, os tokens ficam em `app/globals.css` (`:root` + `@media (prefers-color-scheme: dark)`) e são ligados às classes por `@theme inline` (ex.: `bg-fundo`, `text-texto`, `border-borda`). A paleta padrão do Tailwind foi removida (`--color-*: initial`), para ninguém usar uma cor sem contraste conferido.
+
 ### 8.2 Tipografia
 
 - Família única: **Atkinson Hyperlegible Next** (Google Fonts, licença OFL), pesos **400 e 700**. **A fonte é instalada e ligada manualmente pela equipe.** No código, deixar o marcador **`FONTE-Atkinson Hyperlegible Next-AQUI`** no lugar onde ela será carregada (no `app/layout.jsx` ou no CSS global) e usar uma variável CSS de família (ex.: `--fonte-base`) com fallback `Verdana, system-ui, sans-serif`, para o site funcionar antes da fonte entrar.
@@ -470,6 +507,8 @@ Regras:
 - Sem pesos abaixo de 400, sem itálico em textos longos, **sem texto todo em maiúsculas**.
 - O layout precisa aguentar espaçamento maior entre linhas, letras e palavras (WCAG 1.4.12).
 - Títulos com `text-wrap: balance`.
+- **(Fase 1)** Variável `--fonte-base: var(--fonte-atkinson, Verdana), Verdana, system-ui, sans-serif`. Para ligar a fonte, basta o `next/font` criar a variável `--fonte-atkinson` e colocar a classe dela na tag `<html>` (passo a passo no marcador em `app/layout.jsx`).
+- **(Fase 7)** `overflow-wrap: anywhere` no `<body>`: uma palavra longa só é quebrada quando, sozinha, não cabe na linha (texto muito ampliado). Em tamanho normal, nada muda.
 
 ### 8.3 Espaçamento, cantos e sombras
 
@@ -487,7 +526,11 @@ Regras:
 | Contorno de foco | `outline: 3px solid var(--cor-foco); outline-offset: 2px` (usar `:focus-visible`) |
 | Transições | até 200 ms, só em cor de fundo e posição das barras; nenhuma com `prefers-reduced-motion: reduce` |
 
-Toque e passagem do mouse: **mudança leve de fundo**, sem animações chamativas.
+Toque e passagem do mouse: **mudança leve de fundo**, sem animações chamativas. **(Fase 1)** As cores são `--cor-botao-hover` e `--cor-hover` (8.1). O botão de perigo preenchido não muda de cor, porque não há uma cor da paleta que sirva para isso.
+
+**Foco no campo de data (Fase 7):** o campo de data tem partes internas (dia, mês, ano e, no Chrome, o ícone de calendário). Ele usa `input[type="date"]:focus-within` com o mesmo contorno de 3 px, porque no ícone de calendário o `:focus-visible` não se aplica.
+
+**Unidades (Fase 1):** a unidade de espaçamento do Tailwind v4 é 0,25rem (4 px): `p-2` = 8 px, `p-4` = 16 px. Os pontos de quebra `md` (48rem) e `lg` (64rem) são os padrões do Tailwind.
 
 ---
 
@@ -503,7 +546,14 @@ Toque e passagem do mouse: **mudança leve de fundo**, sem animações chamativa
 - **Em todos os tamanhos de tela.** Centralizada horizontalmente, **16 px acima da borda inferior + área de segurança** (`env(safe-area-inset-bottom)`).
 - Fundo **sólido** `--cor-cromo` (nunca translúcido), borda 1 px `--cor-borda`, raio 16 px, sombra de barra, padding 6 px, 6 px entre itens.
 - 4 itens, nesta ordem: **Início** (`/`), **Solução** (`/solucao`), **Simulador** (`/simulador`), **Diário** (`/diario` e subrotas).
-- Cada item: ícone (24 px) + texto (16 px). **Celular:** ícone em cima e texto embaixo, 4 colunas iguais, altura mínima 56 px. **A partir de 768 px:** ícone e texto lado a lado, altura mínima 48 px.
+- Cada item: ícone (24 px) + texto (16 px). **Celular:** ícone em cima e texto embaixo, altura mínima 56 px. **A partir de 768 px:** ícone e texto lado a lado, altura mínima 48 px.
+- **Largura dos itens no celular (decisão da equipe, Fase 2):** a regra original era "4 colunas iguais", mas 4 colunas iguais com texto de 16 px não cabem a 320 px ("Simulador" em negrito precisa de ~91 px; cada coluna teria ~64 px), e isso causaria rolagem lateral (WCAG 1.4.10). Ficou assim:
+  - cada item tem a largura do seu texto, numa linha só, e divide o espaço que sobra;
+  - quando não cabe (tela de ~320 px ou texto ampliado), a barra passa para **2 × 2**;
+  - a decisão é feita **medindo os textos no navegador** (hook `useCabeEmUmaLinha`), então acompanha a fonte instalada, o tamanho de texto e o espaçamento escolhidos pela pessoa;
+  - o espaço interno dos itens no celular é de 4 px, para caber em uma linha a partir de ~375 px;
+  - o texto do item reserva a largura do negrito, para a barra não "pular" quando o item ativo muda.
+- **(Fase 2)** A altura real da barra é medida e guardada em `--altura-barra`. O espaço extra no fim da página e o `scroll-padding` usam esse valor.
 - Item **não selecionado**: borda 1 px `--cor-linha-item` (mostra onde tocar).
 - Item **selecionado**: fundo `--cor-botao`, texto `--cor-botao-texto`, negrito, `aria-current="page"` (o leitor de tela anuncia "página atual"). Nunca depende só da linha.
 - Ícones com `aria-hidden="true"`.
@@ -524,7 +574,10 @@ Aplica-se **só a Início e Solução, só abaixo de 768 px**:
 
 - Início e Solução. `<nav aria-label="Nesta página">` com `<h2>` "Nesta página" e links para os `id` das seções (cada `<h2>` de seção com `id` e `tabIndex={-1}` para receber o foco).
 - Celular e tablet: cartão no topo da página, depois do resumo.
-- **A partir de 1024 px**: coluna ao lado do texto, presa ao rolar (`position: sticky`).
+- **A partir de 1024 px**: coluna ao lado do texto, presa ao rolar (`position: sticky`). **(Fase 6)** Implementado assim:
+  - fica à **direita** do texto, numa grade de 59rem (texto 40rem + espaço 3rem + índice 16rem), no componente `PaginaComIndice`;
+  - a ordem no HTML não muda: título → índice → seções;
+  - em telas baixas, o índice rola por dentro em vez de ficar cortado.
 - Rolagem suave só sem `prefers-reduced-motion`.
 
 ---
@@ -550,6 +603,27 @@ Aplica-se **só a Início e Solução, só abaixo de 768 px**:
 
 Componentes extras de layout permitidos (ex.: `Rodape`, `CartaoRegistro`, `ListaRegistros`, `FormularioRegistro`).
 
+**Como ficou implementado (Fases 2 a 6): 33 componentes.**
+
+| Componente extra | Para que serve |
+| --- | --- |
+| `EspacoIcone` | Espaço de 24 × 24 px com `aria-hidden`, onde cada ícone entra (marcador `ICONE-…-AQUI`) |
+| `ErroCampo` | Mensagem de erro com ícone e texto (campo, botão Salvar, diálogo) |
+| `LinkVoltar` | "Voltar ao Diário" / "Voltar ao registro", passando pela guarda de saída |
+| `TituloPagina` | `<h1 tabIndex={-1}>` + resumo, em todas as páginas |
+| `Secao` | `<section>` com `<h2 id tabIndex={-1}>`, destino do "Nesta página" |
+| `PaginaComIndice` | Estrutura de Início e Solução, com o índice lateral no computador |
+| `FocoNaTroca` | Leva o foco ao `<h1>` na troca de rota |
+| `Provedores` | Junta os contextos (guarda de saída e mensagem do Diário) no layout |
+| `RegistroNaoEncontrado` | Tela "Registro não encontrado" (Ver e Editar) |
+| `TelaDiario`, `TelaNovoRegistro`, `TelaRegistro`, `TelaEditarRegistro` | Telas do Diário: ligam os hooks aos componentes de apresentação |
+
+Notas de implementação:
+- `Botao` tem as variantes `principal`, `secundario`, `perigo` (contorno) e `perigo-preenchido`. Durante "Salvando…" e "Excluindo…" usa `aria-disabled`, e não `disabled`.
+- `Cartao` tem as opções `as` (ex.: `as="li"`), `destaque` (ODS principal) e `compacto` (espaço interno de 16 px, usado no resumo em 2 × 2).
+- `MensagemStatus` cria a região `role="status"` vazia e coloca o texto logo depois. O leitor de tela só anuncia mudanças dentro de uma região que já existia na página.
+- `DialogoConfirmacao` usa `<dialog>` com `showModal()`. O Esc é tratado pelo evento `cancel`, e o foco volta ao elemento que abriu o diálogo.
+
 ---
 
 ## 11. Estados da interface e mensagens
@@ -558,7 +632,7 @@ Componentes extras de layout permitidos (ex.: `Rodape`, `CartaoRegistro`, `Lista
 
 - Abaixo de 1 s: nenhum indicador.
 - Entre 1 e 10 s: indicador de carregamento + texto.
-- Acima de 10 s: progresso e opção de cancelar.
+- Acima de 10 s: progresso e opção de cancelar. **(Pendente)** O cancelamento já existe por dentro (`AbortSignal`), mas faltam os textos do aviso e do botão (seção 16).
 
 ### 11.2 Estados do Diário
 
@@ -573,6 +647,11 @@ Componentes extras de layout permitidos (ex.: `Rodape`, `CartaoRegistro`, `Lista
 | Erro ao salvar | Mensagem junto ao botão; dados mantidos | O texto do erro |
 | Excluído | Volta à lista com "Registro excluído." + "Desfazer" + "Fechar" | "Registro excluído" |
 | Restaurado | "Registro restaurado." + "Fechar" | "Registro restaurado" |
+
+**Decisões da implementação (Fase 5):**
+- Ver registro e Editar registro usam os mesmos textos de carregando e de erro da lista, no plural (decisão da equipe).
+- Nos estados de erro e de lista vazia, o Resumo e o botão "Novo registro" do topo não aparecem. Na lista vazia, o botão fica dentro do próprio estado.
+- Quando o "Tentar de novo" falha outra vez, a mensagem é anunciada de novo e o foco volta para o botão.
 
 ### 11.3 Regras
 
@@ -596,14 +675,17 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 
 | Elemento | Celular (< 768 px) | Tablet (≥ 768) | Computador (≥ 1024) |
 | --- | --- | --- | --- |
-| Barra flutuante | Ícone em cima, texto embaixo | Ícone e texto lado a lado | Igual ao tablet |
+| Barra flutuante | Ícone em cima, texto embaixo; largura pelo texto em 1 linha, 2 × 2 quando não couber **(Fase 2)** | Ícone e texto lado a lado | Igual ao tablet |
 | Barras que somem ao rolar | Início e Solução | Não | Não |
 | Coluna de texto | Largura total | Até ~40rem, centralizada | Até ~40rem, centralizada |
 | "Nesta página" | Cartão no topo | Cartão no topo | Coluna lateral `sticky` |
 | Cartões repetidos | 1 por linha | 2 por linha | 2 por linha |
-| Resumo do Diário | 2 × 2 | 4 lado a lado | 4 lado a lado |
+| Resumo do Diário | 2 × 2 (palavras longas podem ser hifenizadas a 320 px) | 4 lado a lado | 4 lado a lado |
 | Formulário | 1 coluna | 1 coluna | 1 coluna |
-| Equipe (Solução) | 1 por linha: foto de 64 px à esquerda, nome à direita | 3 por linha (3 + 2, segunda linha centralizada): foto em cima, nome embaixo | **5 lado a lado**: foto em cima, nome embaixo; a seção pode ocupar até ~64rem para caber os 5 |
+| Equipe (Solução) | 1 por linha: foto de 64 px à esquerda, nome à direita | 3 por linha (3 + 2, segunda linha centralizada): foto em cima, nome embaixo | **5 lado a lado**: foto em cima, nome embaixo; a seção pode ocupar até ~64rem para caber os 5 (implementado: ocupa a grade inteira de 59rem, **Fase 6**) |
+
+- **(Fase 6)** "Cartões repetidos" inclui os registros do Diário (2 por linha a partir de 768 px).
+- **(Fase 2)** "Pouca altura" (`max-height: 30rem`, ou seja, 480 px): variante `pouca-altura:` no CSS. A barra fica no fim da página e o espaço extra no fim cai para 2rem.
 
 ---
 
@@ -663,40 +745,62 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 
 A estrutura de pastas é criada manualmente pela equipe. Se os nomes no projeto forem diferentes dos abaixo, seguir o projeto e avisar a equipe.
 
+**Estrutura real do projeto (decidida na Fase 0):**
+- não há `src/`: as pastas ficam na raiz de `projeto-citizentech-1espu/`, ao lado de `app/` (o alias `@/*` do `jsconfig.json` aponta para essa raiz);
+- arquivos com JSX usam `.jsx`; hooks, serviços e `lib` usam `.js`. Os hooks que trazem um contexto (provedor com JSX) usam `.jsx`.
+
+Versões encontradas: Next.js 16.4.6 (App Router, Turbopack e React Compiler ligados), React 19.3, Tailwind CSS 4.3.3 (loader `@tailwindcss/turbopack`, configuração no próprio CSS) e ESLint 9 com `eslint-config-next`.
+
 ```
-src/
+docs/
+  ESPECIFICACAO_PULSE.md          # este arquivo
+  REGISTRO_DESENVOLVIMENTO.md     # resumo de cada fase do desenvolvimento
+AI.md                             # registro do uso de IA (mantido pela equipe; ver seção 16)
+projeto-citizentech-1espu/
   app/
-    layout.jsx              # FONTE-...-AQUI, LinkPular, Cabecalho, <main>, Rodape, BarraNavegacao
-    page.jsx                # Início
-    solucao/page.jsx
-    simulador/page.jsx      # SIMULADOR-AQUI
-    diario/page.jsx
-    diario/novo/page.jsx
-    diario/[id]/page.jsx
-    diario/[id]/editar/page.jsx
-    globals.css             # tokens (variáveis CSS), tema escuro, forced-colors, reduced-motion
+    layout.jsx                    # FONTE-...-AQUI, Provedores, LinkPular, Cabecalho, <main>, Rodape, BarraNavegacao, FocoNaTroca
+    page.jsx                      # Início
+    solucao/page.jsx              # Solução (com a seção Equipe)
+    simulador/page.jsx            # SIMULADOR-AQUI
+    diario/page.jsx               # lista (TelaDiario)
+    diario/novo/page.jsx          # TelaNovoRegistro
+    diario/[id]/page.jsx          # TelaRegistro
+    diario/[id]/editar/page.jsx   # TelaEditarRegistro
+    globals.css                   # tokens, tema escuro, @theme, foco, forced-colors, reduced-motion
   components/
-    layout/                 # LinkPular, Cabecalho, BarraNavegacao, ItemBarra, Rodape, IndiceNestaPagina
-    ui/                     # Botao, Cartao, Campo, GrupoOpcoes, MensagemStatus, DialogoConfirmacao, EstadoTela, EspacoImagem
-    diario/                 # ResumoIndicadores, ListaRegistros, CartaoRegistro, FormularioRegistro, DetalheRegistro
+    layout/   # LinkPular, Cabecalho, BarraNavegacao, ItemBarra, Rodape, IndiceNestaPagina,
+              # TituloPagina, Secao, PaginaComIndice, FocoNaTroca, Provedores
+    ui/       # Botao, Cartao, Campo, GrupoOpcoes, MensagemStatus, DialogoConfirmacao, EstadoTela,
+              # EspacoImagem, EspacoIcone, ErroCampo, LinkVoltar
+    diario/   # ResumoIndicadores, ListaRegistros, CartaoRegistro, FormularioRegistro, DetalheRegistro,
+              # RegistroNaoEncontrado, TelaDiario, TelaNovoRegistro, TelaRegistro, TelaEditarRegistro
+    solucao/  # CartaoIntegrante
   hooks/
-    useRegistros.js         # estado do CRUD: lista, carregando, erro, criar/atualizar/excluir/restaurar
-    useFormularioRegistro.js# valores, validação ao enviar, erros, foco no primeiro erro, "sujo" (para o aviso de saída)
-    useResumoIndicadores.js # calcula os 4 indicadores a partir da lista
-    useDirecaoRolagem.js    # esconde/mostra cabeçalho e barra (regras da seção 9.3)
+    useRegistros.js               # estado do CRUD: lista, carregando, erro, criar/atualizar/excluir/restaurar
+    useRegistro.js                # um registro (Ver e Editar), incluindo "não encontrado"
+    useFormularioRegistro.js      # valores, validação ao enviar, foco no 1º erro, "Salvando…", aviso de saída
+    useResumoIndicadores.js       # os 4 indicadores a partir da lista
+    useGuardaDeSaida.jsx          # contexto + diálogo "Descartar as respostas?"
+    useMensagemDiario.jsx         # contexto da mensagem "Registro salvo." / "Registro excluído." + Desfazer
+    useDirecaoRolagem.js          # esconde/mostra cabeçalho e barra (seção 9.3)
     usePrefereMovimentoReduzido.js
+    useCabeEmUmaLinha.js          # barra em 1 linha ou 2 × 2 (mede os textos)
+    useDigitandoNoCelular.js      # barra sai da frente do teclado
+    useHoje.js                    # data de hoje no fuso do aparelho (max do campo de data)
+    useTituloDaAba.js             # título "Registro de DD/MM/AAAA — Pulse"
   services/
-    registrosService.js     # as 5 funções do CRUD, cada uma com API-EXTERNA-AQUI
-    apiClient.js            # URL base (API-EXTERNA-AQUI), fetch, tradução de erros
+    apiClient.js                  # URL base (API-EXTERNA-AQUI), o único fetch, tradução de erros
+    registrosService.js           # as 5 funções do CRUD, cada uma com API-EXTERNA-AQUI
   lib/
-    datas.js                # formatar DD/MM/AAAA, hoje em AAAA-MM-DD
-    rotulos.js              # rótulos dos campos (seção 7.2)
-    validacao.js            # regras e mensagens (seção 7.3) — funções puras
-prompts.md                  # mantido manualmente pela equipe
+    datas.js                      # DD/MM/AAAA, hoje em AAAA-MM-DD, validar data, ordenar
+    rotulos.js                    # perguntas, opções, etiquetas e textos dos indicadores
+    validacao.js                  # regras e mensagens (seção 7.3) — funções puras
 ```
 
 - Hooks fazem a ponte entre serviços e componentes. `useState` e `useEffect` aparecem naturalmente nos hooks e componentes interativos.
-- Páginas de conteúdo (Início, Solução) podem ser Server Components; Diário, barra e formulário são Client Components (`"use client"`).
+- Páginas de conteúdo (Início, Solução, Simulador) são Server Components. Barra, cabeçalho, formulário e telas do Diário são Client Components (`"use client"`).
+- **(Fase 5)** As páginas do Diário são divididas em dois arquivos: o `page.jsx` (servidor) define o título da aba, e a `Tela…` (cliente) tem o conteúdo interativo. Uma página com `"use client"` não pode exportar `metadata`.
+- **(Fase 5)** O ESLint do Next 16 (`eslint-plugin-react-hooks` 7) proíbe chamar `setState` diretamente dentro de `useEffect`. Por isso alguns hooks usam `useSyncExternalStore` (`usePrefereMovimentoReduzido`, `useHoje`) ou atualizam o estado só em retornos assíncronos e eventos.
 
 ### 14.1 Convenções do código
 
@@ -774,6 +878,14 @@ Antes de considerar uma página pronta:
 - [ ] Quando a API for conectada: CRUD completo funcionando, incluindo Desfazer e o aviso de descartar respostas.
 - [ ] Todos os marcadores da seção 14.1 estão no lugar e listados para a equipe.
 
+**Resultado da revisão automática (Fase 7):**
+- ESLint `jsx-a11y` completo (33 regras): 0 problemas.
+- Contraste calculado nos dois temas: 54 de 54 combinações.
+- axe-core (WCAG 2.2 AA + contraste 7:1): 0 violações, em 14 estados e nos dois temas.
+- Teclado, alvos de toque, zoom de 400%, espaçamento de texto, texto em 200%, movimento reduzido e alto contraste: todos aprovados.
+
+Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto contraste real, texto ampliado no celular) e o passo a passo de cada teste estão em `docs/REGISTRO_DESENVOLVIMENTO.md`, Fase 7.
+
 ---
 
 ## 16. Pendências e suposições
@@ -786,12 +898,57 @@ Antes de considerar uma página pronta:
 - Fotos da equipe (Giovana, Giovane, Mie, Pedro e Thiago): colocadas manualmente nos marcadores `IMAGEM-foto de (nome)-AQUI`.
 - Fonte e ícones: colocados manualmente pela equipe nos marcadores (seções 8.2 e 13.1).
 - Nome definitivo da pulseira ("Pulse" é provisório).
+- **(Fase 7)** Página 404 em português: hoje aparece a página padrão do Next, em inglês ("This page could not be found"). Como a página é `lang="pt-BR"`, o leitor de tela lê o inglês com pronúncia de português (WCAG 3.1.2). Faltam os textos para criar `app/not-found.jsx`.
+- **(Fase 5)** Espera acima de 10 s (seção 11.1): faltam o texto do aviso e o do botão de cancelar.
+- **(Fase 3)** Vibração no simulador: a seção 6.3 cita a Vibration API no Android, e a seção 3, item 14, proíbe vibração do celular. A equipe precisa decidir antes de o simulador usar essa API.
+- **(Fase 6)** No computador, na Início e na Solução, o logo do cabeçalho (coluna de 40rem) não fica alinhado com a grade de 59rem. É só visual; a seção 9.1 não define a largura do cabeçalho.
+- **(Fase 7)** Com zoom de 400% e pouca altura, o cabeçalho fixo (64 px) ocupa cerca de 1/4 da tela. A seção 9.1 manda que ele fique fixo; avaliar.
+- **(Fase 0)** O registro do uso de IA está em `AI.md`, na raiz do repositório. Não existe `prompts.md`. A equipe decide o nome final.
 
 **Suposições em uso até confirmação:**
 - Todas as perguntas do Diário são obrigatórias, exceto Observações.
 - O Diário mostra o aviso de privacidade.
 - Na confirmação de exclusão, o foco começa em "Manter registro".
+- **(Fases 3 a 6)** As decisões da seção 17 marcadas como "proposta da implementação" valem até a equipe confirmar ou mudar.
 
 **Riscos aceitos na avaliação heurística (não corrigir sem decisão da equipe):**
 - Termos técnicos da seção Tecnologias sem explicação extra (H2).
 - Diário sem filtro (H7).
+
+---
+
+## 17. Registro de alterações do desenvolvimento
+
+Decisões tomadas durante as Fases 0 a 7. **Equipe** = escolhida pela equipe quando perguntada. **Implementação** = proposta durante a implementação, para cobrir uma lacuna ou um limite técnico; vale até a equipe decidir diferente.
+
+| Fase | Decisão | Origem | Seção |
+| --- | --- | --- | --- |
+| 0 | Sem `src/`: pastas na raiz de `projeto-citizentech-1espu/`, ao lado de `app/` | Equipe | 14 |
+| 0 | `layout.js` e `page.js` renomeados para `.jsx`; `.jsx` para arquivos com JSX e `.js` para hooks, serviços e `lib` | Equipe | 14 |
+| 0 | Código de exemplo do create-next-app removido (fontes Geist, página de exemplo); `lang="pt-BR"`; nada apagado de `public/` | Equipe | 14 |
+| 1 | Hover só com cores da paleta (`--cor-botao-hover`, `--cor-hover`) | Equipe | 8.1, 8.3 |
+| 1 | Tokens novos: `--cor-link`, `--cor-marca` no escuro (`#FFFFFF`), `--cor-perigo-texto`; fundos de status no escuro = `--cor-cartao` | Implementação | 8.1 |
+| 2 | Barra no celular: largura pelo texto em 1 linha e 2 × 2 quando não couber (4 colunas iguais não cabem a 320 px) | Equipe | 9.2, 12 |
+| 2 | A barra mede os próprios textos no navegador para escolher entre 1 linha e 2 × 2; espaço interno de 4 px no celular | Implementação | 9.2 |
+| 3 | "Principal" dentro do `<h3>` do ODS 10, para ser ouvido por quem navega pelos títulos | Implementação | 6.2 |
+| 3 | Os sinais em lista de definições (`<dl>`): "Modo tátil:" / "Modo sonoro:" | Implementação | 6.2 |
+| 3 | `alt` das fotos "Foto de (nome)", sem ponto final, como na seção 6.2 | Implementação | 6.2, 13.2 |
+| 4 | Arquivo de registros de exemplo **não** criado agora | Equipe | 7.6 |
+| 4 | `fetch` já escrito no `apiClient`, só ativo com `NEXT_PUBLIC_API_URL`; qualquer falha vira `codigo: "conexao"`; 404 só significa "não encontrado" em `obter` | Implementação | 7.6 |
+| 4 | Observações salvas sem espaços nas pontas; acentos e emojis contam 1 caractere | Implementação | 7.3 |
+| 5 | Ver e Editar registro usam os textos de carregando e de erro da lista, no plural | Equipe | 7.4, 11.2 |
+| 5 | Título da aba de registro inexistente: `Registro não encontrado` (sem "— Pulse") | Equipe | 4.1 |
+| 5 | Enquanto carrega: H1 "Registro" e aba `Registro — Pulse` | Implementação | 4.1, 7.4 |
+| 5 | Falha no Desfazer reaproveita "Não foi possível salvar. Verifique a conexão e tente de novo." | Implementação | 7.5 |
+| 5 | Nos estados de erro e vazio, sem Resumo e sem o "Novo registro" do topo | Implementação | 11.2 |
+| 5 | "Descartar respostas" = perigo preenchido; "Continuar preenchendo" = secundário | Implementação | 7.3 |
+| 5 | O logo "Pulse" também passa pela guarda de saída | Implementação | 7.3 |
+| 5 | Barra sai da frente do teclado também com "reduzir movimento", sem animação | Implementação | 7.3 |
+| 5 | `aria-disabled` em vez de `disabled` em "Salvando…" e "Excluindo…" | Implementação | 7.3, 10 |
+| 5 | Sem `aria-invalid` nos radios (não aceito pela ARIA); erro pelo `aria-describedby` do `<fieldset>` | Implementação | 7.3 |
+| 5 | Indicadores em 2 × 2 a 320 px podem hifenizar palavras longas | Implementação | 12 |
+| 6 | "Nesta página" à **direita** do texto, numa grade de 59rem; rola por dentro em telas baixas | Implementação | 9.4, 12 |
+| 6 | Equipe ocupa a grade inteira (59rem) no computador; registros do Diário 2 por linha a partir de 768 px | Implementação | 12 |
+| 7 | Campo de data com contorno de foco por `:focus-within` | Implementação | 8.3 |
+| 7 | `overflow-wrap: anywhere` no corpo, para palavras longas com texto muito ampliado | Implementação | 8.2 |
+| 7 | A barra refaz a medição quando os textos mudam de largura (WCAG 1.4.12) | Implementação | 9.2 |
