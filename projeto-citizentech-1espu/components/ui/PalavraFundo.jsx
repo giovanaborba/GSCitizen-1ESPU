@@ -23,6 +23,9 @@ import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido
   - "className": a área que a palavra ocupa (padrão: a área toda do pai,
     "inset-0"). Ex.: a abertura usa a altura da pulseira e a largura da
     tela inteira.
+  - "tamanho": troca a fórmula do tamanho, quando a palavra precisa caber
+    numa área menor que a tela (ex.: a coluna da pulseira na 404, com
+    "cqw", a largura do componente pai em vez da tela).
 */
 
 // Esta parte é lógica
@@ -31,7 +34,7 @@ function tamanhoDaPalavra(texto) {
   return `min(21rem, ${(150 / letras).toFixed(1)}vw)`;
 }
 
-export default function PalavraFundo({ texto, animarTroca = false, className = "inset-0" }) {
+export default function PalavraFundo({ texto, animarTroca = false, className = "inset-0", tamanho }) {
   // Esta parte é lógica
   const movimentoReduzido = usePrefereMovimentoReduzido();
   const duracao = animarTroca && !movimentoReduzido ? 0.35 : 0;
@@ -46,7 +49,7 @@ export default function PalavraFundo({ texto, animarTroca = false, className = "
         <motion.span
           key={texto}
           className="palavra-fundo"
-          style={{ fontSize: tamanhoDaPalavra(texto) }}
+          style={{ fontSize: tamanho ?? tamanhoDaPalavra(texto) }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

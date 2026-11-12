@@ -8,14 +8,31 @@ export const metadata = {
   Simulador (/simulador) — seção 6.3.
   O simulador está sendo feito por outro integrante da equipe. Enquanto
   isso, a página mostra o "Espaço reservado".
+
+  Fase 8: cabeça com o rótulo mono "Experimente" e a textura de piso
+  tátil numa faixa à direita, no computador, que se apaga em direção ao
+  texto (seção 18.5 e opção B da equipe).
 */
 export default function PaginaSimulador() {
   return (
-    <div className="margem-lateral mx-auto max-w-texto py-8">
-      <TituloPagina
-        titulo="Simulador"
-        resumo="Experimente os sinais da Pulse antes de usar a pulseira na rua."
-      />
+    <div className="overflow-x-clip pb-8">
+      <div className="relative margem-lateral pt-10 pb-6">
+        <div
+          aria-hidden="true"
+          className="textura-piso textura-lado absolute inset-y-0 right-0 hidden w-[45%] lg:block"
+        />
+        <div className="relative mx-auto max-w-pagina">
+          <TituloPagina
+            rotulo="Experimente"
+            titulo="Simulador"
+            resumo="Experimente os sinais da Pulse antes de usar a pulseira na rua."
+          />
+        </div>
+      </div>
+
+      <div className="margem-lateral">
+      <div className="mx-auto max-w-pagina">
+      <div className="max-w-texto">
 
       {/*
         ##################################################################
@@ -67,6 +84,9 @@ export default function PaginaSimulador() {
           funcionar sem a visão.
         </p>
       </section>
+      </div>
+      </div>
+      </div>
     </div>
   );
 }

@@ -94,6 +94,7 @@ export function usePulseira3D(refCaixa, opcoes) {
       disparos: new Set(),
       entrada: refOpcoes.current.aguardarEntrada ? -1 : 0,
       terminou: false,
+      inicioDoParar: null, // instante real (ms) do primeiro quadro do modo "parar"
       mouse: { x: 0, y: 0 },
       primeiroQuadro: true,
     };
@@ -154,10 +155,17 @@ export function usePulseira3D(refCaixa, opcoes) {
     }
 
     // Esta parte é lógica
-    // Modo "parar" (404): vibra até 4,6 s e para de vez.
+    // Modo "parar" (404): vibra até 4,6 s e para de vez. O limite conta o
+    // tempo REAL (relógio do navegador), e não o tempo da animação: num
+    // aparelho lento, cada passo da animação é limitado a 0,05 s, e o
+    // tempo da animação andaria mais devagar que o real. A WCAG 2.2.2
+    // fala de segundos de verdade.
     function avancarParar(dt) {
+      const agora = performance.now();
+      if (estado.inicioDoParar === null) estado.inicioDoParar = agora;
+      const decorrido = (agora - estado.inicioDoParar) / 1000;
       estado.tempoDoSinal += dt;
-      if (estado.tempoDoSinal >= LIMITE_DO_PARAR) {
+      if (decorrido >= LIMITE_DO_PARAR) {
         estado.terminou = true;
         cena.limparAneis();
         apagarPartes(cena);
@@ -165,7 +173,7 @@ export function usePulseira3D(refCaixa, opcoes) {
       }
       const dentroDoCiclo = estado.tempoDoSinal % DURACAO_DO_CICLO;
       if (dentroDoCiclo < dt) estado.disparos.clear(); // começou outro ciclo
-      animarSinal("parar", dentroDoCiclo, dt, cena, umaVez, estado.tempoDoSinal < ULTIMO_PULSO_DO_PARAR);
+      animarSinal("parar", dentroDoCiclo, dt, cena, umaVez, decorrido < ULTIMO_PULSO_DO_PARAR);
     }
 
     // Esta parte é lógica

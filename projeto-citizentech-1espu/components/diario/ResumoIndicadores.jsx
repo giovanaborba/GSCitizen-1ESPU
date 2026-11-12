@@ -4,7 +4,8 @@ import Cartao from "@/components/ui/Cartao";
   ResumoIndicadores — seção 10, item 11, e seção 7.1.
   H2 "Resumo" + explicação + lista de 4 cartões (número grande + rótulo).
   Números com tabular-nums: todos os algarismos têm a mesma largura e
-  ficam alinhados.
+  ficam alinhados. Fase 8: os números grandes em Anton, na cor de
+  destaque (seção 18.4). O Diário recebe só cores e fontes, sem efeitos.
 
   "indicadores": lista de { chave, numero, rotulo } (useResumoIndicadores).
   No celular, 2 × 2. As palavras longas ("deslocamentos") podem ser
@@ -24,7 +25,9 @@ export default function ResumoIndicadores({ indicadores }) {
         {indicadores.map((indicador) => (
           <Cartao as="li" compacto key={indicador.chave}>
             <p className="hyphens-auto break-words">
-              <span className="block text-numero font-bold tabular-nums">{indicador.numero}</span>{" "}
+              <span className="block font-titulo text-[2.5rem] leading-tight font-normal text-destaque tabular-nums">
+                {indicador.numero}
+              </span>{" "}
               {indicador.rotulo}
             </p>
           </Cartao>

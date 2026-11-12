@@ -21,7 +21,7 @@
 | 5 | Diário completo: lista, formulário, ver, editar, excluir, desfazer | `a303670` |
 | 6 | Responsividade para tablet e computador | `37175ba` |
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
-| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.6 feitas | — |
+| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.7 feitas | — |
 
 **Em números:** 7 rotas · 33 componentes (o mínimo é 8) · 12 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras.
 
@@ -615,6 +615,48 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 
 **Sugestão de commit:** `Reorganiza a Solução com sinais em rolagem fixa, carrossel, galeria e polaroides`
 
+### 8.7 — Página 404 e Diário
+
+**Arquivos:**
+
+| Arquivo | Mudança |
+| --- | --- |
+| `app/not-found.jsx` (novo) | Página 404 da 18.11: aba "Página não encontrada — Pulse", rótulo "Erro 404", H1 "Você saiu da rota", texto, botões "Voltar ao Início" (dourado) e "Ir para a Solução" (secundário), pulseira no modo `parar` com a legenda, palavra "Parar" e textura ao fundo |
+| `hooks/usePulseira3D.js` | O modo `parar` passa a contar o tempo real (ver abaixo) |
+| `components/ui/PalavraFundo.jsx` | Opção `tamanho`, para a palavra caber numa coluna em vez da tela inteira |
+| `components/diario/ResumoIndicadores.jsx` | Números grandes em Anton, na cor de destaque (só cor e fonte) |
+| `app/simulador/page.jsx` | Rótulo mono "Experimente" e textura numa faixa à direita da cabeça; o marcador `SIMULADOR-AQUI` e o "Espaço reservado" continuam iguais |
+
+**Diário:** conferido em `/diario`, `/diario/novo`, `/diario/[id]` e `/diario/[id]/editar`. Nenhuma textura, palavra de fundo, rótulo mono, cena 3D ou animação. Recebeu só as cores e as fontes (nas subfases 8.2 e 8.7), e o título do diálogo usa o menor tamanho do H2. Entre as páginas do Diário, a troca continua instantânea (decisão 5). A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não foi tocada.
+
+**Defeito encontrado e corrigido:** na 404, a pulseira continuava se mexendo depois de 5,5 s no teste. O relógio da animação limita cada passo a 0,05 s, para não dar saltos quando o navegador engasga. Num aparelho lento (o WebGL por software do teste faz cerca de 15 quadros por segundo), o tempo da animação anda mais devagar que o real, e os 4,6 s viravam mais de 6 s de verdade. Agora o modo `parar` mede o tempo real (relógio do navegador) desde o primeiro quadro animado. A WCAG 2.2.2 conta segundos de verdade.
+
+**Decisões da implementação** (seção 17 como **Implementação**):
+- **"Parar" e textura só na coluna da pulseira.** O tamanho da palavra acompanha a largura dessa coluna (unidade `cqw`, a largura do "contêiner"). Assim nenhum texto da 404 fica sobre a palavra ou os domos (18.2, item 1). No tema escuro, o rótulo dourado sobre a palavra ficaria em 6,84:1.
+- **Reserva da pulseira na 404 decorativa**, como a pulseira e a legenda (`aria-hidden`): o texto da página já explica a situação.
+- **Números do resumo do Diário com 2,5rem** (em `rem`, para crescerem com o zoom).
+
+**Verificação automática** (Chrome sem janela, servidor de produção): ESLint sem problemas, `next build` sem erros e **28 de 28 testes**, mais todas as baterias anteriores de novo (8.1: 17; 8.3: 45; 8.4: 30; 8.5: 49; 8.6: 36), sem regressão:
+- Endereço inexistente responde 404, com a aba "Página não encontrada — Pulse" e `lang="pt-BR"`; os textos da 18.11 já vêm no HTML do servidor.
+- H1, rótulo e botões certos (dourado e contorno); legenda, palavra "Parar" e pulseira decorativas; palavra só na coluna da pulseira; texto e pulseira lado a lado no computador; 375 e 320 px com o texto primeiro e a pulseira embaixo, sem rolagem lateral.
+- A pulseira vibra no começo e para antes de 5 s; com "reduzir movimento", um quadro parado; sem WebGL, a descrição no lugar, sem erro no console.
+- "Voltar ao Início" leva ao Início com o foco no H1.
+- Diário (4 páginas): sem textura, palavra de fundo, rótulo mono ou 3D; H1 com a fonte de título em maiúsculas.
+- Simulador: rótulo "Experimente", textura só onde não há texto, "Espaço reservado" no lugar.
+- axe sem violações na 404 e no Simulador, nos dois temas; nenhum erro no console.
+
+**Como testar à mão:**
+1. `npm run dev` e abra um endereço que não existe (ex.: `/qualquer-coisa`): aparece "Você saiu da rota", e a aba diz "Página não encontrada — Pulse".
+2. A pulseira faz o sinal de parar e para sozinha em menos de 5 s.
+3. "Voltar ao Início" leva ao Início; "Ir para a Solução", à Solução.
+4. No celular, a pulseira fica embaixo do texto.
+5. Diário: tudo com as cores e as fontes novas, sem nada se mexendo. Quando a API existir, confira os números do Resumo em Anton.
+6. Simulador: rótulo "Experimente" acima do título.
+
+**Marcadores desta subfase:** nenhum novo. A 404 não tem imagens (a pulseira é código).
+
+**Sugestão de commit:** `Adiciona página 404 e aplica a nova identidade no Diário e no Simulador`
+
 ---
 
 ## Como os testes automáticos foram feitos
@@ -657,7 +699,7 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | Colocar as 3 fontes (Anton, Atkinson Hyperlegible Next e JetBrains Mono), os ícones, as imagens e as fotos nos marcadores | Equipe |
 | Conectar a API externa (`.env.local` + blocos `API-EXTERNA-AQUI`) | Equipe |
 | Fazer o simulador (`SIMULADOR-AQUI`) e decidir sobre a vibração do celular | Integrante do simulador + equipe |
-| ~~Textos da página 404 em português~~ Definidos na seção 18.11; implementação na subfase 8.7 | Fase 8 |
+| ~~Textos da página 404 em português~~ Feita na subfase 8.7 (`app/not-found.jsx`) | — |
 | Textos para esperas acima de 10 s (aviso + cancelar) | Equipe (passar os textos) |
 | Alinhamento do logo com a grade no computador; cabeçalho fixo com zoom de 400% | Equipe avalia |
 | Testes manuais da Fase 7 (leitor de tela, aparelhos reais) | Equipe |
