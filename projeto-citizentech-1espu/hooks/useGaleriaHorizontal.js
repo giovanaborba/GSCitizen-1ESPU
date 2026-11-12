@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLenis } from "lenis/react";
 import { useConsultaMidia } from "@/hooks/useConsultaMidia";
 import { registrarPluginsGsap } from "@/lib/movimento";
 
@@ -21,7 +20,7 @@ import { registrarPluginsGsap } from "@/lib/movimento";
   Fora disso (celular, zoom alto, "reduzir movimento" e sem
   JavaScript): grade comum de fotos.
 
-  Devolve horizontal, refTrilho, refPalco, refLista e aoFocarDentro.
+  Devolve horizontal, refTrilho, refPalco e refLista.
 */
 
 const CONSULTA_HORIZONTAL =
@@ -44,7 +43,6 @@ export function useGaleriaHorizontal() {
   const refPalco = useRef(null);
   const refLista = useRef(null);
   const refGatilho = useRef(null);
-  const lenis = useLenis();
 
   // Esta parte é lógica
   useGSAP(
@@ -75,7 +73,21 @@ export function useGaleriaHorizontal() {
       });
       refGatilho.current = animacao.scrollTrigger;
 
+      // Esta parte é lógica
+      // Se o foco do teclado cair em algo dentro de uma foto, a página rola
+      // até a lista mostrar aquela foto (o foco nunca fica fora da tela).
+      const aoFocarDentro = (evento) => {
+        const gatilho = refGatilho.current;
+        const item = evento.target.closest("li");
+        const sobra = sobraDaLista(lista);
+        if (!gatilho || !item || !sobra) return;
+        const alvoNaLista = Math.min(sobra, Math.max(0, item.offsetLeft - window.innerWidth / 2 + item.offsetWidth / 2));
+        window.scrollTo({ top: gatilho.start + (gatilho.end - gatilho.start) * (alvoNaLista / sobra) });
+      };
+      lista.addEventListener("focusin", aoFocarDentro);
+
       return () => {
+        lista.removeEventListener("focusin", aoFocarDentro);
         ScrollTrigger.removeEventListener("refreshInit", ajustarAltura);
         trilho.style.height = "";
         refGatilho.current = null;
@@ -84,20 +96,5 @@ export function useGaleriaHorizontal() {
     { dependencies: [horizontal] },
   );
 
-  // Esta parte é lógica
-  // Foco dentro de uma foto: rola a página até a lista mostrar aquela foto.
-  function aoFocarDentro(evento) {
-    const gatilho = refGatilho.current;
-    const lista = refLista.current;
-    const item = evento.target.closest("li");
-    if (!horizontal || !gatilho || !lista || !item) return;
-    const sobra = sobraDaLista(lista);
-    if (!sobra) return;
-    const alvoNaLista = Math.min(sobra, Math.max(0, item.offsetLeft - window.innerWidth / 2 + item.offsetWidth / 2));
-    const destino = gatilho.start + (gatilho.end - gatilho.start) * (alvoNaLista / sobra);
-    if (lenis) lenis.scrollTo(destino, { immediate: true });
-    else window.scrollTo({ top: destino });
-  }
-
-  return { horizontal, refTrilho, refPalco, refLista, aoFocarDentro };
+  return { horizontal, refTrilho, refPalco, refLista };
 }

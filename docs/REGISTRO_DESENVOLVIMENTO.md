@@ -21,9 +21,9 @@
 | 5 | Diário completo: lista, formulário, ver, editar, excluir, desfazer | `a303670` |
 | 6 | Responsividade para tablet e computador | `37175ba` |
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
-| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.7 feitas | — |
+| 8 | Nova identidade e movimento (seção 18): cores, fontes, capa, pulseira 3D, rolagens, carrossel, galeria, transição entre páginas, rodapé com os ODS, 404 | — (commits por subfase, feitos pela equipe) |
 
-**Em números:** 7 rotas · 33 componentes (o mínimo é 8) · 12 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras.
+**Em números (depois da Fase 8):** 7 rotas + página 404 · 46 componentes (o mínimo é 8) · 23 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras + 3 módulos de movimento e 3D (`lib/movimento.js`, `lib/pulseira3d/cena.js` e `lib/pulseira3d/sinais.js`).
 
 **Como a aplicação é organizada:**
 
@@ -33,6 +33,13 @@ TelaDiario            useRegistros       registrosService.listar()    (único fe
 ```
 
 Os componentes de apresentação só recebem dados e funções por props. Quando a API chegar, só a pasta `services/` precisa de ajuste.
+
+**Movimento e 3D (Fase 8)** seguem a mesma separação: os componentes só desenham; quem anima são hooks (`usePulseira3D`, `useRolagemFixa`, `useTransicaoPagina`…) e módulos em `lib/`. Nenhum deles chama `fetch`.
+
+```
+Componente (ex.: AberturaPulseira)  →  hook (ex.: usePulseira3D)  →  lib/pulseira3d (cena e sinais)  →  Three.js
+Componente (ex.: SinaisRolagemFixa) →  hook (ex.: useRolagemFixa) →  GSAP + ScrollTrigger (relógio único com o Lenis)
+```
 
 ---
 
@@ -237,9 +244,9 @@ Os componentes de apresentação só recebem dados e funções por props. Quando
 
 ---
 
-## Fase 8 — Nova identidade e movimento (em andamento)
+## Fase 8 — Nova identidade e movimento
 
-A equipe aprovou uma identidade visual e de movimento nova (seção 18 da especificação, com os protótipos em `docs/prototipos/`). A fase é feita em subfases, com uma pausa para aprovação no fim de cada uma. **Cada mudança é registrada aqui.**
+A equipe aprovou uma identidade visual e de movimento nova (seção 18 da especificação, com os protótipos em `docs/prototipos/`). A fase foi feita em 9 subfases (8.0 a 8.8), com uma pausa para aprovação no fim de cada uma. **Cada mudança está registrada aqui.** As decisões estão na seção 17 da especificação, marcadas como **Equipe** ou **Implementação**.
 
 ### 8.0 — Leitura e plano (sem código)
 
@@ -657,6 +664,85 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 
 **Sugestão de commit:** `Adiciona página 404 e aplica a nova identidade no Diário e no Simulador`
 
+### 8.8 — Revisão
+
+**Arquivos:**
+
+| Arquivo | Mudança |
+| --- | --- |
+| `hooks/useFaixaODS.js` e `components/solucao/FaixaODS.jsx` | A faixa volta ao começo quando o foco sai de um botão para fora dela; a lógica saiu da `<div>` da faixa (que não é interativa) e foi para os botões |
+| `hooks/useGaleriaHorizontal.js` e `components/solucao/GaleriaHorizontal.jsx` | O cuidado com o foco dentro de uma foto virou um ouvinte criado no hook, só no modo horizontal (a lista não tem mais um `onFocus`) |
+| `components/ui/Carrossel.jsx` | Comentário explicando por que a lista recebe o foco |
+| `docs/ESPECIFICACAO_PULSE.md` | Seção 17 com as decisões da Fase 8 (Equipe e Implementação); notas (Fase 8) nas seções 9.4 e 18.4; pendências da seção 16 atualizadas |
+| `docs/REGISTRO_DESENVOLVIMENTO.md` | Visão geral, números, esta revisão e as pendências |
+
+**Critérios de aceite da 18.16:**
+
+| Critério | Resultado | Como foi verificado |
+| --- | --- | --- |
+| Itens da 18.2 em cada página | ok | Contraste calculado; "reduzir movimento"; pausa em tudo o que se move sozinho por mais de 5 s (pulseira da abertura, pulseira pequena, faixa dos ODS); a 404 para antes de 5 s; no máximo 3 anéis por segundo; nada invisível com foco; cursor nunca trocado; decorações com `aria-hidden`; ícones com texto; desempenho (abaixo) |
+| "Reduzir movimento": nada se move | ok | Em todas as 7 páginas: nenhuma animação rodando (`document.getAnimations()`) e nenhum desenho novo na cena 3D; sem rolagens fixas; capa e trocas de página instantâneas |
+| 320 px; zoom de 400%; polaroides | ok | Nenhuma página com rolagem lateral a 320 px, com zoom de 400% (320 × 180), com texto em 200% e com espaçamento de texto aumentado (1.4.12); com zoom de 400%, sinais e galeria em lista e índice e barra parados; nenhum polaroide cortado |
+| Teclado | ok | Tab do começo ao fim em 7 páginas (de 10 a 33 focos cada): todo elemento focado está visível, tem contorno, não está transparente, não está dentro de `aria-hidden` e não fica coberto por cabeçalho, barra ou índice. A capa nunca prende o foco |
+| Contraste com os tokens da 18.3 | ok | 67 de 67 pares (dois temas e rodapé), mais o texto sobre a textura e sobre a palavra de fundo (os pares abaixo de 7:1 foram evitados: ver 8.4, 8.5 e 8.7) |
+| WebGL desligado | ok | Início e 404: descrição em texto, sem erro no console; Solução: a pulseira pequena some |
+| Uma cena 3D por vez; memória | ok | 1 canvas por página; em 5 idas e voltas, todos os contextos WebGL liberados |
+| ESLint `jsx-a11y` e axe | ok, com 1 exceção registrada | ESLint do projeto: 0 problemas. Varredura com as 33 regras do `jsx-a11y`: 1 aviso conhecido (ver abaixo). axe (WCAG 2.2 AA + contraste 7:1): 0 violações em 10 estados × 2 temas |
+| Diário sem efeitos | ok | 4 páginas sem textura, palavra de fundo, rótulo mono, 3D ou cortina interna |
+| Marcadores da 18.13 | ok | Todos no lugar (lista abaixo) |
+
+**A exceção do `jsx-a11y`:** a lista do carrossel recebe o foco (`tabIndex={0}`). A regra `no-noninteractive-tabindex` não gosta disso, mas a lista é uma área rolável sem nada focável dentro: sem o foco, quem usa só o teclado não consegue rolá-la, e o axe acusaria `scrollable-region-focusable` (WCAG 2.1.1). O ESLint do projeto não liga essa regra; o motivo está escrito no código.
+
+**Estados testados no axe (nos dois temas):** Início com a capa; Início; Solução no topo; Solução em "Os sinais" (modo fixo); Solução no rodapé com os ODS (carrossel avançado); Simulador; Diário com erro de conexão (sem API); Novo registro com erros de preenchimento; diálogo "Descartar as respostas?"; página 404.
+
+**Checklist da seção 15:**
+
+| Item | Resultado |
+| --- | --- |
+| Só teclado, foco visível e nunca escondido | ok (automático) |
+| "Pular para o conteúdo" é o primeiro foco | ok (automático, também com a capa) |
+| Um H1 por página, títulos em ordem, regiões | ok (axe) |
+| Título da aba único; foco no H1 ao trocar de rota | ok (automático; com âncora, o foco vai para o título da âncora) |
+| Leitor de tela | **manual** (passo a passo abaixo) |
+| 320 px; zoom de 200% e 400% | ok (automático) |
+| Texto ampliado nas configurações do celular | **manual** (simulado com texto em 200%: ok) |
+| Contraste nos dois temas | ok (automático) |
+| "Reduzir movimento" | ok (automático) |
+| Alto contraste do Windows | ok (simulado: textura e palavra desligadas, item ativo com a cor do sistema, trocas instantâneas); **manual** no Windows real |
+| Alvos de toque ≥ 48 × 48 px | ok (axe `target-size` e medidas dos componentes) |
+| Nada só por cor; ícone com texto | ok |
+| Toda imagem com `alt` | ok (marcadores com o `alt` ao lado; decorações com `aria-hidden`) |
+| ESLint `jsx-a11y` e axe | ok (com a exceção explicada) |
+| Sem a API: Diário com erro de conexão | ok |
+| CRUD com a API | **pendente** (a API ainda não existe) |
+| Marcadores no lugar e listados | ok |
+
+**Defeitos corrigidos nesta subfase:** os 3 pontos do `jsx-a11y` acima (2 corrigidos, 1 exceção explicada). Nos testes, duas travas eram do próprio script: medidas que esperavam um quadro de animação em abas fora de primeiro plano, e o aviso "Sair do site?" do formulário preenchido, que estava funcionando e esperando resposta. Na regressão final (todas as baterias seguidas, no mesmo navegador), 1 teste da 8.5 falhou porque dezenas de abas abertas atrasaram o evento de foco. Num navegador limpo, a 8.5 passou inteira (49 de 49).
+
+#### Testes que precisam ser feitos por uma pessoa
+
+1. **Leitor de tela no computador (NVDA, gratuito, nvaccess.org).**
+   - Abra o site numa aba nova. A capa não é lida, e o primeiro `Tab` vai para "Pular para o conteúdo".
+   - Início, com `H` (títulos) e `D` (regiões): H1 → resumo → pulseira ("Pulseira Pulse em 3D: uma tira roxa…") → "Pausar animação, botão, não pressionado" → "Partes da solução, lista, 6 links" → "Nesta página". O nome do sinal que muda e a palavra gigante **não** podem ser lidos.
+   - Solução: navegação "Sinais" com 4 links (o atual lido como "etapa atual") → "Pausar animação" → os 4 sinais em ordem, cada um com o `alt` da foto, o título e "Modo tátil: …". Carrossel lido como "Tecnologias, carrossel", com "Anterior" e "Próximo".
+   - Rodapé da Solução: "A Pulse e os ODS" → "Pausar" → cada ODS lido com o nome e a frase completa. A cópia da faixa não é lida.
+   - Troca de página: a cortina não é lida; o leitor anuncia o novo H1.
+   - 404: "Erro 404" → "Você saiu da rota" → texto → dois botões.
+2. **Leitor de tela no celular (TalkBack no Android, VoiceOver no iPhone).** Repita os fluxos acima deslizando o dedo. No VoiceOver, use o rotor em "Títulos".
+3. **Aparelho real (celular simples, de preferência):**
+   - a pulseira da abertura anima sem engasgar; se engasgar, avise (há uma proposta de material mais leve, a ser decidida antes);
+   - em "Os sinais", o palco fica parado ao rolar com o dedo e a foto troca;
+   - o toque arrastado tira a capa;
+   - a barra e o cabeçalho somem e voltam ao rolar.
+4. **"Reduzir movimento" real.** Windows: Configurações > Acessibilidade > Efeitos visuais > Efeitos de animação desligado. Android: Acessibilidade > Remover animações. iPhone: Acessibilidade > Movimento > Reduzir movimento. Esperado: nada se move; capa e trocas instantâneas; sinais e galeria em lista; sem botões de pausa.
+5. **Alto contraste do Windows real** (Configurações > Acessibilidade > Temas de contraste). Esperado: textura e palavra de fundo somem, bordas visíveis, item ativo da barra e pílula atual do índice destacados, foco visível.
+6. **Zoom de 400%** (janela de 1280 px, `Ctrl` + `+` até 400%). Esperado: sem rolagem lateral; "Os sinais" e a galeria em lista; o índice e a barra não grudam.
+7. **Texto ampliado no celular** (Android: tamanho da fonte no máximo; iPhone: "aA" → 200% no Safari). Esperado: nada cortado; os títulos crescem junto.
+8. **WebGL desligado** (Chrome: `chrome://settings/system` → desligar "Usar aceleração gráfica" e reiniciar). Esperado: descrição em texto no lugar da pulseira, na Início e na 404.
+9. **Depois de colocar fontes, ícones e imagens:** repita os itens 1, 6 e 7, e confira o contraste do texto da capa sobre a imagem.
+
+**Sugestão de commit:** `Revisa acessibilidade da Fase 8 e atualiza a documentação`
+
 ---
 
 ## Como os testes automáticos foram feitos
@@ -664,6 +750,7 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 - Scripts temporários, **fora do projeto**, controlaram o Chrome sem janela pelo protocolo de depuração: clicam, preenchem formulários, apertam Tab e medem a tela.
 - Para testar o CRUD completo, uma **API falsa temporária** rodou só durante os testes. O site continua sem mock, e nada disso entrou no projeto.
 - **Total:** 41 testes sem API, 27 de CRUD, 54 de responsividade, 6 a 320 px com dados e 96 da auditoria de acessibilidade. Todos passaram no estado final.
+- **Fase 8:** o Chrome sem janela rodou com WebGL por software (SwiftShader), para testar a pulseira 3D. Uma instrumentação temporária contava os desenhos do WebGL e os contextos liberados. O WebGL desligado foi simulado no próprio navegador, e "reduzir movimento" e alto contraste foram simulados pelo protocolo de depuração. **Total: 17 (8.1) + 45 (8.3) + 30 (8.4) + 49 (8.5) + 36 (8.6) + 28 (8.7) + 23 (8.8) = 228 testes**, todos passando no estado final, mais o cálculo de contraste (67 pares) e a varredura completa do `jsx-a11y`.
 
 ---
 
@@ -701,6 +788,9 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | Fazer o simulador (`SIMULADOR-AQUI`) e decidir sobre a vibração do celular | Integrante do simulador + equipe |
 | ~~Textos da página 404 em português~~ Feita na subfase 8.7 (`app/not-found.jsx`) | — |
 | Textos para esperas acima de 10 s (aviso + cancelar) | Equipe (passar os textos) |
-| Alinhamento do logo com a grade no computador; cabeçalho fixo com zoom de 400% | Equipe avalia |
-| Testes manuais da Fase 7 (leitor de tela, aparelhos reais) | Equipe |
+| ~~Alinhamento do logo com a grade no computador~~ Resolvido na Fase 8 (área de 76rem em tudo). Cabeçalho fixo com zoom de 400% | Equipe avalia |
+| Testes manuais da Fase 7 e da Fase 8 (leitor de tela, aparelhos reais, desempenho da pulseira no celular) | Equipe |
+| Depois de colocar a imagem da capa: conferir o contraste de 7:1 do rótulo, de "PULSE" e da dica | Equipe |
+| Depois de colocar a Anton: conferir a 320 px os títulos longos e os números (hoje medidos com a Impact, a reserva) | Equipe |
+| Frase da capa ("Um guia no pulso para atravessar a cidade.") é provisória | Equipe |
 | Confirmar ou mudar as decisões marcadas "Implementação" na seção 17 da especificação | Equipe |

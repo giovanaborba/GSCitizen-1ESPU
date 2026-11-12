@@ -587,6 +587,8 @@ Aplica-se **só a Início e Solução, só abaixo de 768 px**:
 
 ### 9.4 Índice "Nesta página"
 
+> **(Fase 8, decisão da equipe)** O índice virou uma fileira de pílulas depois do resumo (Solução) ou da abertura (Início), com o `<h2>` "Nesta página" visualmente oculto. A coluna lateral desta seção saiu. No computador (≥ 1024 px de largura e ≥ 700 px de altura), o índice gruda embaixo do cabeçalho, e a pílula da seção atual fica dourada (`aria-current="true"`). Ver a seção 17.
+
 - Início e Solução. `<nav aria-label="Nesta página">` com `<h2>` "Nesta página" e links para os `id` das seções (cada `<h2>` de seção com `id` e `tabIndex={-1}` para receber o foco).
 - Celular e tablet: cartão no topo da página, depois do resumo.
 - **A partir de 1024 px**: coluna ao lado do texto, presa ao rolar (`position: sticky`). **(Fase 6)** Implementado assim:
@@ -913,14 +915,15 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 - Imagens (ilustrações): colocadas manualmente; espaços com `IMAGEM-...-AQUI` e `alt` sugerido (seção 13.2).
 - API: a equipe vai **aguardar a API** para testar o CRUD. Sem mock.
 - Fotos da equipe (Giovana, Giovane, Mie, Pedro e Thiago): colocadas manualmente nos marcadores `IMAGEM-foto de (nome)-AQUI`.
-- Fonte e ícones: colocados manualmente pela equipe nos marcadores (seções 8.2 e 13.1).
+- Fontes e ícones: colocados manualmente pela equipe nos marcadores (seções 8.2, 13.1 e 18.1). **(Fase 8)** São 3 fontes: Anton, Atkinson Hyperlegible Next e JetBrains Mono (`app/layout.jsx`).
 - Nome definitivo da pulseira ("Pulse" é provisório).
-- ~~**(Fase 7)** Página 404 em português.~~ **(Fase 8)** Textos definidos na seção 18.11; falta só implementar.
-- **(Fase 8)** Imagens novas: capa (2 versões), 4 sinais e 6 fotos da galeria (seção 18.13), colocadas pela equipe.
+- ~~**(Fase 7)** Página 404 em português.~~ **(Fase 8)** Feita (`app/not-found.jsx`).
+- **(Fase 8)** Imagens novas: capa (2 versões), 4 sinais e 6 fotos da galeria (seção 18.13), colocadas pela equipe. Ao colocar a imagem da capa, conferir o contraste de 7:1 do rótulo, de "PULSE" e da dica sobre ela.
+- **(Fase 8)** Quando a Anton entrar, conferir a 320 px os títulos longos ("Deslocamentos") e os números dos cartões (hoje medidos com a Impact, a fonte de reserva).
 - **(Fase 8)** Frase da capa provisória: "Um guia no pulso para atravessar a cidade."
 - **(Fase 5)** Espera acima de 10 s (seção 11.1): faltam o texto do aviso e o do botão de cancelar.
 - **(Fase 3)** Vibração no simulador: a seção 6.3 cita a Vibration API no Android, e a seção 3, item 14, proíbe vibração do celular. A equipe precisa decidir antes de o simulador usar essa API.
-- **(Fase 6)** No computador, na Início e na Solução, o logo do cabeçalho (coluna de 40rem) não fica alinhado com a grade de 59rem. É só visual; a seção 9.1 não define a largura do cabeçalho.
+- ~~**(Fase 6)** No computador, na Início e na Solução, o logo do cabeçalho (coluna de 40rem) não fica alinhado com a grade de 59rem.~~ **(Fase 8)** Resolvida: cabeçalho, rodapé, Início, Solução, Simulador e 404 usam a mesma área de 76rem.
 - **(Fase 7)** Com zoom de 400% e pouca altura, o cabeçalho fixo (64 px) ocupa cerca de 1/4 da tela. A seção 9.1 manda que ele fique fixo; avaliar.
 - **(Fase 0)** O registro do uso de IA está em `AI.md`, na raiz do repositório. Não existe `prompts.md`. A equipe decide o nome final.
 
@@ -938,7 +941,7 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 
 ## 17. Registro de alterações do desenvolvimento
 
-Decisões tomadas durante as Fases 0 a 7. **Equipe** = escolhida pela equipe quando perguntada. **Implementação** = proposta durante a implementação, para cobrir uma lacuna ou um limite técnico; vale até a equipe decidir diferente.
+Decisões tomadas durante as Fases 0 a 8. **Equipe** = escolhida pela equipe quando perguntada. **Implementação** = proposta durante a implementação, para cobrir uma lacuna ou um limite técnico; vale até a equipe decidir diferente.
 
 | Fase | Decisão | Origem | Seção |
 | --- | --- | --- | --- |
@@ -971,6 +974,39 @@ Decisões tomadas durante as Fases 0 a 7. **Equipe** = escolhida pela equipe qua
 | 7 | Campo de data com contorno de foco por `:focus-within` | Implementação | 8.3 |
 | 7 | `overflow-wrap: anywhere` no corpo, para palavras longas com texto muito ampliado | Implementação | 8.2 |
 | 7 | A barra refaz a medição quando os textos mudam de largura (WCAG 1.4.12) | Implementação | 9.2 |
+| 8 | Versões instaladas: `lenis` 1.3.27, `gsap` 3.15.0, `@gsap/react` 2.1.2, `motion` 14.6.0, `three` 0.186.1 (exatas; nenhuma com menos de 2 semanas de uso, sem versões beta) | Equipe | 18.1 |
+| 8 | "Nesta página" em pílulas, depois do resumo (Solução) ou da abertura (Início); sai a coluna lateral da 9.4. No computador (≥ 1024 × 700 px), o índice gruda embaixo do cabeçalho, e a pílula da seção atual fica dourada (`aria-current="true"`) | Equipe | 9.4, 18.6, 18.8 |
+| 8 | Valem os textos da especificação ("O problema", "Cerca de 90%", "7,9 milhões"). Entra a introdução de Tecnologias do protótipo. Com a pulseira parada, a abertura mostra "Sinais da Pulse" / "Veja cada sinal explicado na página Solução." | Equipe | 6.1, 18.6, 18.8 |
+| 8 | Rótulos mono que faltavam: "As pessoas", "No trajeto", "Ecossistema", "Próximos passos" e "Por que a Pulse"; também os dos protótipos ("Como usar", "Por dentro", "Quem fez", "Experimente"). O Diário fica sem rótulo | Equipe | 18.5 |
+| 8 | Cabeçalho: "Pulse" em Anton com `ICONE-Pulse-AQUI`, e "GS 2026.2 · CitizenTech" em mono à direita | Equipe | 9.1, 18.9 |
+| 8 | Cortina de piso tátil só ao entrar e ao sair do Diário; nenhuma entre as páginas internas dele. Diálogo e mensagens sem animação | Equipe | 18.1, 18.9 |
+| 8 | Capa: camada sólida criada por um script no `<head>`, só sem a chave `pulse-capa-vista`; some quando a capa monta ou em até 2 s | Equipe | 18.6 |
+| 8 | Títulos (opção C): H1 `clamp(2.6rem, 14vw, 5.6rem)`, H1 da abertura `clamp(2.1rem, 9vw, 3.6rem)` e H2 `clamp(2.2rem, 10vw, 4rem)`. Os valores com `vw` da 18.4 cresciam só 1,14× com zoom de 200% (WCAG 1.4.4, falha F94) | Equipe | 18.4 |
+| 8 | Textura de piso tátil nunca atrás de texto (opção B): na abertura e na 404, só atrás da pulseira, apagando-se nas bordas; nas cabeças de página, numa faixa à direita, só no computador | Equipe | 18.2, 18.5 |
+| 8 | Um relógio só: o Lenis é movido pelo relógio do GSAP, que também atualiza o ScrollTrigger | Implementação | 18.1 |
+| 8 | Com "reduzir movimento", a roda do mouse deixa de ser suavizada pelo Lenis (`smoothWheel: false`); sem isso, ele ainda amortecia a roda por cerca de 0,1 s | Implementação | 18.1, 18.2 |
+| 8 | Hover e borda dos itens da barra calculados a partir da marca: `--cor-hover` = marca a 12%; `--cor-linha-item` = marca a 70% (4,3:1 e 5,3:1) | Implementação | 18.3, 9.2 |
+| 8 | Cantos: cartões, fotos e mensagens com 18 px; campos, opções e etiquetas com 12 px; diálogo com 16 px; itens da barra no celular com 20 px (pílula perfeita a partir de 768 px) | Implementação | 18.5, 18.9 |
+| 8 | Título do diálogo no menor tamanho do H2 (2,2rem) | Implementação | 18.4 |
+| 8 | Hover do botão dourado em CSS (sombra sempre; subida de 2 px só sem "reduzir movimento"); o Motion fica para a revelação da abertura e a troca da palavra de fundo | Implementação | 18.1, 18.3 |
+| 8 | Um fluxo único de navegação: link interno → guarda de saída → transição. Trava de 3 s na cortina; Voltar e Avançar do navegador só com a saída; alto contraste do Windows sem cortina | Implementação | 18.9, 7.3 |
+| 8 | `FocoNaTroca`: com âncora no endereço, o foco vai para o título da âncora (e não para o H1) | Implementação | 4.1, 18.8 |
+| 8 | Faixa dos ODS: com o foco dentro, ela para, volta ao começo e rola até o botão focado aparecer inteiro; o clique também mostra a frase (Safari do iPhone não foca no toque); frases ligadas por `aria-describedby` a parágrafos `hidden` | Implementação | 18.10 |
+| 8 | Cabeçalho mede a própria altura (`--altura-cabecalho`); o índice fixo mede a dele (`--altura-indice`); o desconto das âncoras usa as duas | Implementação | 9.1, 9.4 |
+| 8 | Rodapé: o espaço do fim da página fica dentro dele (fundo escuro até o fim da tela); links numa lista simples, sem um segundo `<nav>` | Implementação | 18.10 |
+| 8 | Pulseira 3D: o `<canvas>` é criado pelo hook (para funcionar com a montagem dupla do modo de desenvolvimento); a caixa tem `role="img"` só depois do primeiro quadro; o WebGL2 é pedido antes do Three.js (sem erro no console quando falta); liberação com `forceContextLoss` | Implementação | 18.7 |
+| 8 | Ritmo do "Parar": um anel a cada 0,35 s (máximo de 3 por segundo, WCAG 2.3.1). Na 404, o limite de 4,6 s conta o tempo real, e os últimos anéis saem até 3,7 s | Implementação | 18.7, 18.11 |
+| 8 | Abertura e "Os sinais": sem a cena pronta (carregando, sem JavaScript, sem WebGL), legenda parada e nenhum botão de pausa | Implementação | 18.6, 18.8 |
+| 8 | Logo da capa pulsa sobre o fundo escuro dela; capa sem imagem, com fundo sólido `#120B24`, até a equipe colocar as imagens | Implementação | 18.6 |
+| 8 | Palavra de fundo: na abertura, com a altura da pulseira e a largura da tela; na 404, só na coluna da pulseira (`cqw`). O rótulo dourado sobre ela ficaria em 6,84:1 no escuro | Implementação | 18.5, 18.6, 18.11 |
+| 8 | Títulos com rótulo ganham `scroll-margin-top` de 40 px: ao pular para a seção, o rótulo também aparece | Implementação | 9.4 |
+| 8 | Links da abertura numa lista só, posicionada com `subgrid` no computador (a ordem no HTML não muda) | Implementação | 18.6 |
+| 8 | Números grandes em `rem` (cartões de dados 3,25rem; resumo do Diário 2,5rem), sem `vw` | Implementação | 18.4, 18.6 |
+| 8 | Modo fixo de "Os sinais" e galeria horizontal ligados por uma media query lida no React (`useConsultaMidia`) e no `useGSAP`, em vez de `gsap.matchMedia()`, porque o React também troca o layout | Implementação | 18.1, 18.8 |
+| 8 | "Os sinais": H3 "Virar à esquerda ou à direita" (texto da 6.2) e link "Virar"; nome do movimento na pulseira pequena com os textos do protótipo | Implementação | 18.8 |
+| 8 | Carrossel: a lista recebe o foco (área rolável sem nada focável); contagem com `aria-live="polite"`; botão desabilitado com borda tracejada, sem perder contraste e sem trocar o cursor | Implementação | 18.8 |
+| 8 | Condições de tela em `rem` (1000 px = 62,5rem; 1100 px = 68,75rem), para ficarem na ordem certa com as do Tailwind | Implementação | 18.8, 18.12 |
+| 8 | Polaroides com cores fixas nos dois temas (branco e `#1E0F4A`) | Implementação | 18.8 |
 
 
 ---
@@ -1075,6 +1111,8 @@ Regras:
 | **JetBrains Mono** (`--fonte-mono`, reserva `ui-monospace, "Courier New"`) | Rótulos curtos: "MODO TÁTIL", "SINAL · PARAR", "FONTE: G1, 2019", contagens | 0,8 a 0,9rem, letras espaçadas (0,12 a 0,14em), maiúsculas por CSS | Única exceção à regra dos 16 px: por isso são curtos e nunca carregam sozinhos uma informação. |
 
 Continuam valendo: `text-wrap: balance` nos títulos, `overflow-wrap: anywhere` no corpo e o teste de espaçamento de texto (WCAG 1.4.12).
+
+> **(Fase 8, decisão da equipe — opção C)** Para os títulos dobrarem de tamanho com zoom de 200% (WCAG 1.4.4), o termo do meio ficou mais inclinado: H1 `clamp(2.6rem, 14vw, 5.6rem)`, H1 da abertura `clamp(2.1rem, 9vw, 3.6rem)` e H2 `clamp(2.2rem, 10vw, 4rem)`. Os mínimos e máximos da tabela continuam.
 
 ### 18.5 Linguagem visual (substitui o Flat Design 2.0 da seção 8)
 

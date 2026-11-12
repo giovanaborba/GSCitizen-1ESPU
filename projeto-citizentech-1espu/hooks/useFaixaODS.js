@@ -26,10 +26,11 @@ export function useFaixaODS() {
   }
 
   // Esta parte é lógica
-  // Quando o foco sai da faixa, ela volta ao começo da rolagem interna.
-  // (Com o foco dentro, o navegador rola a faixa por dentro até o botão
-  // focado; ao sair, a animação recomeça do ponto certo.)
-  function aoSairDaFaixa(evento) {
+  // Quando o foco sai de um botão para fora da faixa, ela volta ao começo
+  // da rolagem interna. (Com o foco dentro, a faixa rola por dentro até o
+  // botão focado; ao sair, a animação recomeça do ponto certo.)
+  function aoSairDoBotao(evento) {
+    setOdsComFoco(null);
     const faixa = refFaixa.current;
     if (faixa && !faixa.contains(evento.relatedTarget)) {
       faixa.scrollLeft = 0;
@@ -50,7 +51,7 @@ export function useFaixaODS() {
         const botao = evento.currentTarget;
         requestAnimationFrame(() => botao.scrollIntoView({ block: "nearest", inline: "nearest" }));
       },
-      onBlur: () => setOdsComFoco(null),
+      onBlur: aoSairDoBotao,
       // No toque, alguns navegadores (Safari no iPhone) não focam o
       // botão. O clique garante que a frase apareça.
       onClick: () => setOdsComFoco(numero),
@@ -63,6 +64,5 @@ export function useFaixaODS() {
     odsEmDestaque: odsComMouse ?? odsComFoco,
     eventosDoOds,
     refFaixa,
-    aoSairDaFaixa,
   };
 }

@@ -81,8 +81,7 @@ function ConteudoOds({ ods }) {
 
 export default function FaixaODS() {
   // Esta parte é lógica
-  const { pausada, alternarPausa, odsEmDestaque, eventosDoOds, refFaixa, aoSairDaFaixa } =
-    useFaixaODS();
+  const { pausada, alternarPausa, odsEmDestaque, eventosDoOds, refFaixa } = useFaixaODS();
   const destaque = ODS.find((ods) => ods.numero === odsEmDestaque);
 
   return (
@@ -116,7 +115,6 @@ export default function FaixaODS() {
       <div
         id={ID_FAIXA}
         ref={refFaixa}
-        onBlur={aoSairDaFaixa}
         data-pausada={pausada ? "" : undefined}
         className="faixa-ods"
       >

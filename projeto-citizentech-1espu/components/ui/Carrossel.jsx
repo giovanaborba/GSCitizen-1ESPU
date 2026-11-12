@@ -34,6 +34,11 @@ export default function Carrossel({ rotulo, idLista, children }) {
       <ul
         id={idLista}
         ref={refLista}
+        // Área rolável sem nada focável dentro: precisa receber o foco para
+        // quem usa teclado conseguir rolar com as setas (WCAG 2.1.1; o axe
+        // exige isso na regra "scrollable-region-focusable"). A regra
+        // jsx-a11y/no-noninteractive-tabindex (que o projeto não liga) não
+        // conhece esse caso: é uma exceção conhecida e registrada.
         tabIndex={0}
         className="grid snap-x snap-mandatory scroll-px-1 auto-cols-[min(78%,20rem)] grid-flow-col gap-4 overflow-x-auto p-1 pb-3 [&>li]:snap-start"
       >

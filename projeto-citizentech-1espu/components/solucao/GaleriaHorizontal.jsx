@@ -59,7 +59,7 @@ const FOTOS = [
 
 export default function GaleriaHorizontal() {
   // Esta parte é lógica
-  const { horizontal, refTrilho, refPalco, refLista, aoFocarDentro } = useGaleriaHorizontal();
+  const { horizontal, refTrilho, refPalco, refLista } = useGaleriaHorizontal();
 
   return (
     <section className="mt-20">
@@ -83,7 +83,6 @@ export default function GaleriaHorizontal() {
         >
           <ul
             ref={refLista}
-            onFocus={aoFocarDentro}
             className={
               horizontal
                 ? "flex w-max gap-6 px-[max(1rem,calc((100vw-76rem)/2+1rem))] [&>li]:w-[clamp(16rem,26vw,24rem)] [&>li:nth-child(even)]:mt-16"
