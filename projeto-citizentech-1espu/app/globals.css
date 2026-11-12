@@ -489,6 +489,15 @@ html.lenis {
 /* ---------------------------------------------------------------------
    5b. COMPONENTES COM CSS PRÓPRIO (Fase 8)
    --------------------------------------------------------------------- */
+
+/* --d: raio dos domos nas máscaras de "piso tátil" (cortina, capa e
+   fotos de "Os sinais"). Registrada como medida (<length>) para o
+   navegador conseguir fazer a transição dela em CSS. */
+@property --d {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
 @layer components {
   /* Cortina da transição entre páginas (seção 18.9), usada pelo
      TransicaoPagina. É uma camada roxa vista através de uma "peneira" de
@@ -523,6 +532,48 @@ html.lenis {
   .textura-centro {
     -webkit-mask-image: radial-gradient(closest-side, #000 45%, transparent 100%);
     mask-image: radial-gradient(closest-side, #000 45%, transparent 100%);
+  }
+
+  /* Textura das cabeças de página (opção B): uma faixa à direita, que se
+     apaga em direção ao texto. Só no computador (no celular, o texto
+     ocupa a largura toda e não sobra área sem texto). */
+  .textura-lado {
+    -webkit-mask-image: linear-gradient(to left, #000 15%, transparent 75%);
+    mask-image: linear-gradient(to left, #000 15%, transparent 75%);
+  }
+
+  /* "Os sinais" em rolagem fixa (seção 18.8). Só valem com a classe
+     .sinais-fixo, que o componente põe quando o modo fixo pode ligar
+     (nunca com "reduzir movimento").
+     - Foto: troca em "piso tátil", uma peneira de domos de 26 px cujo
+       raio (--d) cresce de 0 a 20 px em 0,7 s. O --d é registrado com
+       @property (abaixo) para o navegador conseguir animá-lo.
+     - Texto: esmaece e sobe 12 px. */
+  .sinais-fixo .foto-sinal {
+    --d: 0px;
+    -webkit-mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
+    mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
+    -webkit-mask-size: 26px 26px;
+    mask-size: 26px 26px;
+    transition: --d 0.7s ease;
+  }
+
+  .sinais-fixo [data-ativo] .foto-sinal {
+    --d: 20px;
+  }
+
+  .sinais-fixo .texto-sinal {
+    opacity: 0;
+    translate: 0 12px;
+    transition:
+      opacity 0.45s ease,
+      translate 0.45s ease;
+  }
+
+  .sinais-fixo [data-ativo] .texto-sinal {
+    opacity: 1;
+    translate: none;
+    transition-delay: 0.15s;
   }
 
   /* Capa de introdução (seção 18.6). Fundo e texto fixos (a capa é

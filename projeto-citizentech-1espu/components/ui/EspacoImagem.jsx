@@ -8,7 +8,9 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
 
   - "texto": o que aparece no espaço enquanto a imagem não existe
     (ex.: "Ilustração de uma travessia (a definir)"). Opcional.
-  - "formato": "paisagem" (16:9) ou "quadrado" (fotos da equipe).
+  - "formato": "paisagem" (16:9), "quadrado" (fotos da equipe), "retrato"
+    (4:5, galeria) ou "livre" (ocupa a caixa de quem usa, ex.: foto de
+    "Os sinais" no modo fixo).
   - O marcador IMAGEM-(descrição)-AQUI e o alt sugerido ficam em
     comentário no lugar onde este componente é usado.
 
@@ -19,6 +21,8 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
 const FORMATOS = {
   paisagem: "aspect-video w-full",
   quadrado: "aspect-square",
+  retrato: "aspect-[4/5] w-full",
+  livre: "size-full",
 };
 
 export default function EspacoImagem({ texto, formato = "paisagem", className = "" }) {

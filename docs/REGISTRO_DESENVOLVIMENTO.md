@@ -21,7 +21,7 @@
 | 5 | Diário completo: lista, formulário, ver, editar, excluir, desfazer | `a303670` |
 | 6 | Responsividade para tablet e computador | `37175ba` |
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
-| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.5 feitas | — |
+| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.6 feitas | — |
 
 **Em números:** 7 rotas · 33 componentes (o mínimo é 8) · 12 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras.
 
@@ -554,6 +554,66 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 - `IMAGEM-ilustração de uma travessia-AQUI` continua em `app/page.jsx`.
 
 **Sugestão de commit:** `Adiciona capa e abertura com links da solução no Início`
+
+### 8.6 — Solução
+
+**Arquivos:**
+
+| Arquivo | Mudança |
+| --- | --- |
+| `app/solucao/page.jsx` | Nova ordem e "Nesta página" (18.8); âncoras `como-funciona`, `os-sinais`, `tecnologias`, `dois-modos`, `semaforos` e `transporte-publico`; seção de ODS retirada; passos em cartões com o número em Anton; rótulos mono; equipe em polaroides |
+| `hooks/useRolagemFixa.js` (novo) + `components/solucao/SinaisRolagemFixa.jsx` (novo) | "Os sinais" em rolagem fixa: palco parado, sinal escolhido pela rolagem (ScrollTrigger, sem `pin`), foto em piso tátil, pulseira pequena e pausar; lista comum fora do modo fixo |
+| `hooks/useCarrossel.js` (novo) + `components/ui/Carrossel.jsx` (novo) | Carrossel de Tecnologias: rolagem horizontal com encaixe, "Anterior"/"Próximo" com ícone e texto, `aria-disabled` nas pontas, contagem "1 a 3 de 8" |
+| `hooks/useGaleriaHorizontal.js` (novo) + `components/solucao/GaleriaHorizontal.jsx` (novo) | Galeria que corre na horizontal com a rolagem no computador; grade no resto |
+| `hooks/useInclinacaoMouse.js` (novo) + `components/solucao/CartaoIntegrante.jsx` | Polaroide com inclinação fixa; com mouse, endireita, sobe e inclina até 10° |
+| `hooks/useConsultaMidia.js` (novo) | Diz se uma condição de tela vale agora (ex.: "≥ 900 × 600 px e sem reduzir movimento") |
+| `components/layout/PaginaComIndice.jsx` e `TituloPagina.jsx` | Rótulo mono na cabeça; textura numa faixa à direita (opção B); `overflow-x-clip` para a galeria de largura total |
+| `components/ui/EspacoImagem.jsx` | Formatos "retrato" (4:5) e "livre" |
+| `app/globals.css` | `@property --d`; troca de foto e de texto de "Os sinais"; textura lateral das cabeças de página |
+
+**Decisões da implementação** (seção 17 como **Implementação**):
+- **Modo fixo pela mesma condição no React e no GSAP.** A 18.1 sugere `gsap.matchMedia()`. Usamos a mesma media query num hook (`useConsultaMidia`) e ligamos o ScrollTrigger com `useGSAP` só quando ela vale, porque o React também precisa dela para trocar o layout (palco fixo × lista).
+- **Palco abaixo do cabeçalho e da faixa do índice.** O palco de "Os sinais" e o da galeria grudam em `--altura-cabecalho + --altura-indice`, e o ScrollTrigger começa a contar a partir desse ponto.
+- **H3 do "Virar" com o texto da 6.2** ("Virar à esquerda ou à direita"); no índice "Sinais", o link é "Virar", como no protótipo.
+- **Nome do movimento na pulseira pequena** com os textos do protótipo: "Pressão contínua", "Vibração contínua", "Vira à esquerda"/"Vira à direita" e "Três vibrações curtas".
+- **Tamanho do nome do sinal:** `clamp(2.2rem, 10vw, 3.5rem)`, com a mesma regra da opção C (chega ao máximo cedo, para crescer com o zoom).
+- **Carrossel:** a lista recebe o foco pelo Tab e rola com as setas (sem isso, o axe acusaria uma área rolável sem acesso pelo teclado). A contagem é anunciada com educação (`aria-live="polite"`). Os botões e a contagem só aparecem depois que o JavaScript mede a lista. O botão desabilitado ganha borda tracejada, sem perder contraste e sem trocar o cursor (18.9).
+- **Galeria:** as fotos não têm nada focável hoje. Mesmo assim, se no futuro algo focável entrar numa foto, a página rola até ela (18.8).
+- **Polaroides com cores fixas** (branco e `#1E0F4A`, 17,2:1 nos dois temas), como uma foto de verdade. Ao passar o mouse, o cartão se endireita só sem "reduzir movimento".
+- **Condições de tela em `rem`** (`min-[68.75rem]` = 1100 px; `min-[62.5rem]` = 1000 px). Misturadas com as do Tailwind, que são em `rem`, as em `px` ficavam fora de ordem, e a regra de 3 polaroides por linha vencia a de 5 (defeito achado pelo teste).
+- **Encaixe do carrossel com `scroll-px-1`.** Sem ele, o encaixe deixava a lista em 4 px, e o "Anterior" aparecia habilitado já no começo (defeito achado pelo teste).
+- **Cabeça da Solução com textura só à direita, no computador** (opção B): o H1 e o resumo ficam antes do ponto em que os domos começam a aparecer (conferido no teste). No celular, não há textura, porque o texto ocupa a largura toda.
+
+**Verificação automática** (Chrome sem janela, servidor de produção): ESLint sem problemas, `next build` sem erros e **36 de 36 testes**, mais as baterias anteriores de novo (8.1: 17; 8.3: 45; 8.4: 30; 8.5: 49):
+- "Nesta página" com os 9 itens da 18.8, todos com alvo; as 6 âncoras com `tabIndex={-1}`; sem a seção de ODS (os ODS estão no rodapé); cabeça com "A solução" e textura só onde não há texto; 3 passos em `<ol>` com o número decorativo.
+- Os sinais (computador): modo fixo; 4 links e 4 artigos sem nada focável; rolando, Continuar → Parar → Virar → Aguardar, com `aria-current="step"`; palco parado abaixo do cabeçalho e da faixa; foto ativa em piso tátil (`--d` de 20 px) e as outras escondidas; pulseira pequena de 132 px, decorativa, com o nome do movimento; 1 canvas só na página; "Pausar animação" com `aria-pressed`; clique em "Virar" vai até o Virar.
+- Carrossel: região "Tecnologias", 8 cartões, botões com texto e `aria-controls`, "Anterior" desabilitado no começo, contagem "1 a 3 de 8"; "Próximo" avança e libera o "Anterior".
+- Galeria: 6 fotos com legenda; no computador, a lista anda para a esquerda com a rolagem.
+- Equipe: 5 polaroides lado a lado a 1280 px, nenhum fora da tela.
+- Links da abertura do Início (`#os-sinais`, `#dois-modos`, `#tecnologias`): chegam na âncora, com o foco nela e visível.
+- "Reduzir movimento": sinais em lista comum, sem pulseira e sem "Pausar"; galeria em grade, parada; carrossel avança na hora.
+- 375 × 800: modo fixo, pulseira de 76 px, galeria em grade, 2 polaroides por linha. 320 × 640: lista comum (menos de 340 px de largura). 1280 × 500: lista comum e galeria em grade (pouca altura). 700 × 900: 3 + 2 polaroides. Nenhum com rolagem lateral nem polaroide cortado.
+- axe sem violações nos dois temas; nenhum erro no console.
+
+**Como testar à mão:**
+1. `npm run dev` → Solução. Role até "Os sinais": o palco para e, rolando, a foto troca em piso tátil (Continuar, Parar, Virar, Aguardar). A pulseira pequena mostra o sinal e pode ser pausada.
+2. Clique em "Aguardar" no índice "Sinais": a página vai até esse sinal.
+3. Tecnologias: use "Próximo" e "Anterior", ou deslize com o dedo, ou focalize a lista com `Tab` e use as setas. A contagem acompanha.
+4. Galeria (computador): role e veja as fotos correrem para a esquerda.
+5. Equipe: passe o mouse nos polaroides.
+6. No Início, clique em "Os sinais" ou "Dois modos": a Solução abre na seção certa.
+7. "Reduzir movimento": tudo em lista e em grade, sem nada se mexer.
+8. Celular: o índice "Sinais" vira uma faixa no topo do palco, com a pulseira de 76 px ao lado de "Pausar".
+
+**Marcadores desta subfase:**
+- `IMAGEM-sinal continuar-AQUI`, `IMAGEM-sinal parar-AQUI`, `IMAGEM-sinal virar-AQUI` e `IMAGEM-sinal aguardar-AQUI`, com os alts da 18.13, em `components/solucao/SinaisRolagemFixa.jsx`.
+- `IMAGEM-galeria faixa de pedestres-AQUI`, `IMAGEM-galeria calçada com obstáculo-AQUI`, `IMAGEM-galeria semáforo de pedestres-AQUI`, `IMAGEM-galeria ponto de ônibus-AQUI`, `IMAGEM-galeria plataforma do metrô-AQUI` e `IMAGEM-galeria esquina com rampa-AQUI`, com os alts da 18.13, em `components/solucao/GaleriaHorizontal.jsx`.
+- `ICONE-CaretLeft-AQUI` e `ICONE-CaretRight-AQUI` (carrossel), em `components/ui/Carrossel.jsx`.
+- `ICONE-Pause-AQUI` e `ICONE-Play-AQUI` (pulseira pequena), em `components/solucao/SinaisRolagemFixa.jsx`.
+- `ICONE-Image-AQUI` (espaço da foto do polaroide), em `components/solucao/CartaoIntegrante.jsx`.
+- Continuam: `IMAGEM-ilustração conceitual da pulseira-AQUI` e `IMAGEM-foto de (nome)-AQUI` (5), em `app/solucao/page.jsx`.
+
+**Sugestão de commit:** `Reorganiza a Solução com sinais em rolagem fixa, carrossel, galeria e polaroides`
 
 ---
 

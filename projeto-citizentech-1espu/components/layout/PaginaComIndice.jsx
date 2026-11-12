@@ -22,24 +22,37 @@ import IndiceNestaPagina from "@/components/layout/IndiceNestaPagina";
   O índice e as seções ficam dentro do mesmo bloco: é isso que deixa o
   índice "grudado" (position: sticky) enquanto as seções passam.
 
-  Props: titulo e resumo (opcionais), itensIndice, children (seções),
-         secaoLarga, acaoFinal
+  Cabeça da página (quando há título): rótulo mono, H1 e resumo, com a
+  textura de piso tátil só numa faixa à direita, no computador, que se
+  apaga em direção ao texto (opção B da equipe).
+
+  overflow-x-clip: corta o que passar da largura da tela (a galeria
+  horizontal usa a tela inteira) sem criar rolagem lateral. Diferente de
+  overflow: hidden, o "clip" não desliga o position: sticky de dentro.
+
+  Props: titulo, resumo e rotulo (opcionais), itensIndice, children
+         (seções), secaoLarga, acaoFinal
 */
 export default function PaginaComIndice({
   titulo,
   resumo,
+  rotulo,
   itensIndice,
   children,
   secaoLarga,
   acaoFinal,
 }) {
   return (
-    <div className="pb-8">
+    <div className="overflow-x-clip pb-8">
       {/* Esta parte é lógica */}
       {titulo && (
-        <div className="margem-lateral pt-8 pb-4">
-          <div className="mx-auto max-w-pagina">
-            <TituloPagina titulo={titulo} resumo={resumo} />
+        <div className="relative margem-lateral pt-10 pb-6">
+          <div
+            aria-hidden="true"
+            className="textura-piso textura-lado absolute inset-y-0 right-0 hidden w-[45%] lg:block"
+          />
+          <div className="relative mx-auto max-w-pagina">
+            <TituloPagina titulo={titulo} resumo={resumo} rotulo={rotulo} />
           </div>
         </div>
       )}
