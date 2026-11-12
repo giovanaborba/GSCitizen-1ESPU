@@ -279,16 +279,17 @@ export function criarCena(canvas, modo) {
   }
 
   // Esta parte é lógica
-  // Posição de uma âncora na tela, em pixels, a partir do canto do canvas.
+  // Posição de uma âncora na tela, em pixels da janela (como o
+  // getBoundingClientRect), para ligar as linhas da abertura aos links.
   function projetar(nomeDaAncora) {
     const objeto = partes.ancoras[nomeDaAncora];
     if (!objeto) return null;
     objeto.getWorldPosition(posicaoTemporaria);
     posicaoTemporaria.project(camera);
-    const { width, height } = canvas.getBoundingClientRect();
+    const { left, top, width, height } = canvas.getBoundingClientRect();
     return {
-      x: ((posicaoTemporaria.x + 1) / 2) * width,
-      y: ((1 - posicaoTemporaria.y) / 2) * height,
+      x: left + ((posicaoTemporaria.x + 1) / 2) * width,
+      y: top + ((1 - posicaoTemporaria.y) / 2) * height,
     };
   }
 

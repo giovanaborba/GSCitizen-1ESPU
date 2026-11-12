@@ -21,7 +21,7 @@
 | 5 | Diário completo: lista, formulário, ver, editar, excluir, desfazer | `a303670` |
 | 6 | Responsividade para tablet e computador | `37175ba` |
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
-| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.4 feitas | — |
+| 8 | Nova identidade e movimento (seção 18 da especificação) — **em andamento**: 8.0 a 8.5 feitas | — |
 
 **Em números:** 7 rotas · 33 componentes (o mínimo é 8) · 12 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras.
 
@@ -490,6 +490,70 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 **Marcadores desta subfase:** `ICONE-Pause-AQUI` e `ICONE-Play-AQUI` (botão da abertura), em `components/abertura/AberturaPulseira.jsx`. A pulseira é código, não tem marcador.
 
 **Sugestão de commit:** `Adiciona pulseira 3D na abertura`
+
+**Decisão da equipe depois da 8.4 — textura atrás do texto (opção B).** A textura de piso tátil só aparece no meio da área (atrás da pulseira) e se apaga em direção às bordas, onde fica o texto. Assim nenhum texto fica sobre os domos (seção 18.2, item 1). Vale também para as cabeças de página das próximas subfases.
+
+### 8.5 — Início
+
+**Arquivos:**
+
+| Arquivo | Mudança |
+| --- | --- |
+| `hooks/useCapaIntro.js` (novo) | Primeira visita da sessão (`sessionStorage`, chave `pulse-capa-vista`, com `try/catch`), saída por clique, roda, toque, tecla ou foco, saída em piso tátil (1 s), Lenis parado com a capa na tela |
+| `components/abertura/CapaIntro.jsx` (novo) | Capa (`aria-hidden`, nada focável): logo que pulsa uma vez, rótulo, "PULSE", frase sobre faixa sólida, dica com seta e os marcadores das duas imagens |
+| `app/layout.jsx` | Script mínimo no `<head>` com a camada de espera da capa (decisão 6) e `suppressHydrationWarning` na tag `<html>` |
+| `hooks/useLinhasPartes.js` (novo) | Linhas tracejadas da abertura: da parte da pulseira (posição 3D projetada na tela) até o nó de cada link, a cada quadro |
+| `components/abertura/PartesSolucao.jsx` (novo) | "Partes da solução": `<nav>` com H2 oculto e 1 lista de 6 links; cartões no celular, 3 de cada lado no computador |
+| `components/abertura/AberturaPulseira.jsx` | Abertura completa: capa, revelação depois da capa (Motion), palavra de fundo acompanhando o sinal, textura só atrás da pulseira, links e linhas |
+| `components/ui/PalavraFundo.jsx` | Troca da palavra com esmaecimento de 0,35 s (instantânea com "reduzir movimento"); área configurável |
+| `hooks/useSecaoAtual.js` (novo) | Seção em que a pessoa está, para a pílula dourada do índice |
+| `components/layout/IndiceNestaPagina.jsx` | "Nesta página" em pílulas, com H2 oculto, seção atual dourada (`aria-current="true"`) e faixa fixa no computador; mede `--altura-indice` |
+| `components/layout/PaginaComIndice.jsx` | Refeito para a Fase 8: título (se houver) → índice → seções, em 76rem; sai a coluna lateral |
+| `components/layout/Secao.jsx` | Rótulo mono acima do H2 e a opção `larga` |
+| `app/page.jsx` | Início na ordem da 18.6, com os rótulos "Tema", "O problema" e "As pessoas", citação com borda dourada e cartões de dados com o número em Anton |
+| `app/globals.css` | Variantes `faixa-fixa` e `abertura-larga`; `scroll-padding-top` com a faixa do índice; textura que some nas bordas; CSS da capa e da camada de espera; alto contraste para `aria-current="true"` e `"step"` |
+
+**Decisões da implementação** (seção 17 como **Implementação**):
+- **O logo pulsa sobre o fundo escuro da capa**, e não sobre o fundo da página como no protótipo. A camada de espera já é escura, e trocar para o creme por 1 s e voltar ao escuro piscaria.
+- **Capa sem imagem, por enquanto, com fundo sólido `#120B24`.** Todo texto da capa tem contraste de 7:1 ou mais. O marcador explica como colocar o `<picture>` e pede para conferir o contraste depois.
+- **Tamanho de "PULSE" na capa** com `vw`, como no protótipo. É decoração (`aria-hidden`) e some com qualquer tecla ou toque. A frase e a dica usam `rem`, para crescerem com o zoom.
+- **Revelação com Motion:** com a capa na tela, os títulos e os links ficam escondidos; ao sair, aparecem (0,6 s). Na primeira pintura e sem JavaScript, já aparecem no lugar. Com "reduzir movimento", na hora.
+- **A palavra de fundo tem a altura da pulseira e a largura da tela.** No computador, ela passa por trás dos textos dos links, como no protótipo e no tamanho da 18.6. Contraste desses textos sobre ela: texto 13,6:1 (claro) e 14,1:1 (escuro); texto secundário 8,1:1 e 10,8:1. O rótulo dourado do sinal ficaria em 6,84:1 no escuro, por isso a palavra nunca desce até a linha dele.
+- **Uma lista só com os 6 links**, posicionados com `subgrid` no computador: a ordem no HTML não muda, e o leitor de tela anuncia "lista, 6 links" em qualquer tela.
+- **Linhas escritas direto no SVG**, sem passar pelo estado do React, porque mudam a cada quadro. Elas são redesenhadas também quando a janela muda de tamanho com a pulseira parada.
+- **Pílulas do índice sem sublinhado**, como os itens da barra: são controles de navegação em formato de botão, não links no meio do texto.
+- **Margem de rolagem nos títulos com rótulo** (`scroll-margin-top` de 40 px): ao pular para a seção, o rótulo aparece junto, em vez de ficar atrás da faixa do índice. A seção atual do índice também desconta essa margem.
+- **Número dos cartões de dados em `rem` (3,25rem), não em `vw`.** O protótipo usava `vw`, que teria o mesmo problema de zoom da opção C.
+
+**Verificação automática** (Chrome sem janela, servidor de produção): ESLint sem problemas, `next build` sem erros e **49 de 49 testes**, mais as baterias anteriores de novo (8.1: 17; 8.3: 45; 8.4: 30), sem regressão:
+- Capa na primeira visita, `aria-hidden`, nada focável, com os textos da 18.6. A camada de espera sai quando a capa monta, e a abertura fica escondida enquanto ela está na tela.
+- Primeiro Tab: a capa sai em piso tátil e o foco já está no "Pular para o conteúdo". A capa some em cerca de 1 s, a chave é gravada e a abertura aparece. Ao recarregar: sem capa e sem camada.
+- A capa também sai pela roda do mouse (sem rolar a página por baixo), pelo clique e pelo toque arrastado.
+- "Reduzir movimento": capa sem o logo pulsando; sai na hora com uma tecla.
+- JavaScript do site bloqueado: a camada de espera cobre a tela e some em 2 s; o conteúdo está no HTML. Sem JavaScript, nenhuma capa.
+- Abertura no computador: 1 lista de 6 links na ordem da 18.6; 3 à esquerda e 3 à direita; 6 linhas, cada uma terminando no nó do seu link; tracejado andando; foco em "Os sinais" engrossa a linha do motor esquerdo; palavra de fundo acompanhando o sinal; pausa congela tracejado e palavra.
+- Índice: no computador alto, gruda embaixo do cabeçalho; `--altura-indice` correta; o H2 para abaixo da faixa com o rótulo visível; pílula "O problema" atual e foco no H2; no fim da página, a última seção é a atual. Com 650 px de altura, o índice fica parado.
+- O link "Tecnologias" leva a `/solucao#tecnologias` (as âncoras da Solução nascem na 8.6).
+- 375, 700 e 320 px: sem linhas, cartões em 1 ou 2 colunas, índice parado, sem rolagem lateral (também com a capa a 320 px).
+- "Reduzir movimento": palavra "Pulse", linhas desenhadas e paradas.
+- axe sem violações nos dois temas; nenhum erro no console.
+
+**Como testar à mão:**
+1. Abra o site numa aba nova (`npm run dev`): aparece a capa, com o logo pulsando uma vez. Aperte uma tecla, role ou toque: os domos encolhem e a abertura aparece, com a pulseira entrando.
+2. Recarregue: sem capa. Feche a aba e abra outra: a capa volta (nova sessão).
+3. No computador: passe o mouse ou o `Tab` pelos 6 links: a linha engrossa, o link ganha borda e a parte da pulseira acende.
+4. Role a página: o "Nesta página" gruda embaixo do cabeçalho e a pílula da seção atual fica dourada.
+5. "Reduzir movimento": a capa sai na hora, a pulseira fica parada, a palavra fica "Pulse" e as linhas param.
+6. Celular: pulseira em cima, links em cartões; o índice não gruda.
+7. Leitor de tela: a capa não é lida. A ordem é: H1, resumo, pulseira (descrição), "Pausar animação", "Partes da solução, lista, 6 links", "Nesta página".
+
+**Marcadores desta subfase:**
+- `IMAGEM-capa versão computador (horizontal)-AQUI` e `IMAGEM-capa versão celular (vertical)-AQUI` (alt: "Capa da Pulse."), em `components/abertura/CapaIntro.jsx`.
+- `ICONE-ArrowDown-AQUI` (dica da capa), em `components/abertura/CapaIntro.jsx`.
+- `ICONE-ArrowRight-AQUI` (6 links da abertura), em `components/abertura/PartesSolucao.jsx`.
+- `IMAGEM-ilustração de uma travessia-AQUI` continua em `app/page.jsx`.
+
+**Sugestão de commit:** `Adiciona capa e abertura com links da solução no Início`
 
 ---
 

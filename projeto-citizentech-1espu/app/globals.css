@@ -269,14 +269,24 @@
 /* Variante "pouca-altura:" para usar nas classes (ex.: pouca-altura:static) */
 @custom-variant pouca-altura (@media (max-height: 30rem));
 
+/* Fase 8 — variantes das telas em que um efeito pode ligar:
+   - faixa-fixa: o "Nesta página" gruda embaixo do cabeçalho
+     (computador, ≥ 1024 px de largura e ≥ 700 px de altura; decisão 1);
+   - abertura-larga: os 6 links da abertura ficam 3 de cada lado da
+     pulseira, com as linhas (≥ 1000 px, seção 18.6). */
+@custom-variant faixa-fixa (@media (min-width: 64rem) and (min-height: 43.75rem));
+@custom-variant abertura-larga (@media (min-width: 62.5rem));
+
 /* ---------------------------------------------------------------------
    4. BASE
    --------------------------------------------------------------------- */
 @layer base {
   html {
     /* Ao pular para uma âncora, o título não fica escondido atrás do
-       cabeçalho fixo nem da barra flutuante (WCAG 2.4.11). */
-    scroll-padding-top: calc(var(--altura-cabecalho) + 1rem);
+       cabeçalho fixo nem da barra flutuante (WCAG 2.4.11). Fase 8: desconta
+       também a faixa fixa do "Nesta página" (--altura-indice, medida pelo
+       IndiceNestaPagina; vale 0 quando a faixa não gruda). */
+    scroll-padding-top: calc(var(--altura-cabecalho) + var(--altura-indice, 0px) + 1rem);
     scroll-padding-bottom: var(--espaco-fim);
   }
 
@@ -505,6 +515,91 @@ html.lenis {
     display: block;
   }
 
+  /* Textura de piso tátil que some nas bordas (decisão da equipe, opção
+     B): os domos aparecem só no meio da área (atrás da pulseira) e se
+     apagam em direção às bordas, onde fica o texto. Assim nenhum texto
+     fica sobre os domos (seção 18.2, item 1). Uso: junto com
+     .textura-piso, numa camada decorativa (aria-hidden). */
+  .textura-centro {
+    -webkit-mask-image: radial-gradient(closest-side, #000 45%, transparent 100%);
+    mask-image: radial-gradient(closest-side, #000 45%, transparent 100%);
+  }
+
+  /* Capa de introdução (seção 18.6). Fundo e texto fixos (a capa é
+     escura nos dois temas): #F5F1E8 sobre #120B24 = 16,9:1. */
+  .capa-intro {
+    --d: 22px;
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    overflow: hidden;
+    background-color: #120b24;
+    color: #f5f1e8;
+  }
+
+  /* Saída em piso tátil: a capa vira uma "peneira" de domos que encolhem
+     até sumir (raio de 22 px para 0, em células de 30 px). */
+  .capa-intro[data-saindo] {
+    -webkit-mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
+    mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
+    -webkit-mask-size: 30px 30px;
+    mask-size: 30px 30px;
+  }
+
+  /* O logo "pulsa" uma vez (até 1 s) e some; depois o conteúdo aparece.
+     Com "reduzir movimento", o logo nem aparece (classe
+     motion-reduce:hidden no componente) e o conteúdo já vem pronto (as
+     animações são desligadas no fim deste arquivo). */
+  .capa-logo {
+    animation: capa-logo-some 0.3s ease 0.7s both;
+  }
+
+  .capa-logo-onda {
+    transform-origin: 50% 50%;
+    animation: capa-logo-onda 1s ease-out both;
+  }
+
+  .capa-conteudo {
+    animation: capa-conteudo-aparece 0.35s ease 0.9s both;
+  }
+
+  @keyframes capa-logo-onda {
+    from {
+      transform: scale(0.6);
+      opacity: 0.9;
+    }
+    to {
+      transform: scale(1.9);
+      opacity: 0;
+    }
+  }
+
+  @keyframes capa-logo-some {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  @keyframes capa-conteudo-aparece {
+    from {
+      opacity: 0;
+    }
+  }
+
+  /* Camada de espera da capa (decisão 6 da equipe): o script no <head>
+     marca o <html> com data-capa-pendente na primeira visita da sessão,
+     e esta camada sólida cobre a página até a capa montar (ou por no
+     máximo 2 s). É um pseudo-elemento: não tem texto, não recebe foco e
+     o leitor de tela não o encontra. Sem JavaScript, nada disso existe. */
+  html[data-capa-pendente] body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 75;
+    background-color: #120b24;
+  }
+
   /* Rodapé: foco dourado sobre o fundo escuro (8,3:1). */
   .rodape :focus-visible {
     outline-color: var(--cor-rodape-ouro);
@@ -588,8 +683,11 @@ html.lenis {
    borda, mesmo que transparente: no alto contraste ela fica visível).
    --------------------------------------------------------------------- */
 @media (forced-colors: active) {
-  /* Item ativo da barra e opção marcada continuam identificáveis */
-  [aria-current="page"] {
+  /* Item ativo da barra, seção atual do "Nesta página" e sinal atual
+     continuam identificáveis */
+  [aria-current="page"],
+  [aria-current="true"],
+  [aria-current="step"] {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;

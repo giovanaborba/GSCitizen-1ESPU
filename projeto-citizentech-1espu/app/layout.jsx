@@ -72,9 +72,35 @@ export const viewport = {
   viewportFit: "cover",
 };
 
+// Esta parte é lógica
+// Camada de espera da capa (decisão 6 da equipe, seção 18.6). Roda antes
+// de a página aparecer. Só na Início e só na primeira visita da sessão
+// (sem a chave "pulse-capa-vista"; se o sessionStorage falhar, a capa
+// aparece, então a camada também). Marca o <html>, e o CSS cobre a tela
+// com uma cor sólida até a capa montar. Se a capa não montar em 2 s (ex.:
+// erro no JavaScript), a marca sai sozinha e a página aparece. Sem
+// JavaScript, este script não roda e nada muda.
+const SCRIPT_CAPA_PENDENTE = `(function () {
+  try {
+    if (location.pathname !== "/") return;
+    var vista = null;
+    try { vista = sessionStorage.getItem("pulse-capa-vista"); } catch (e) {}
+    if (vista) return;
+    var raiz = document.documentElement;
+    raiz.setAttribute("data-capa-pendente", "");
+    setTimeout(function () { raiz.removeAttribute("data-capa-pendente"); }, 2000);
+  } catch (e) {}
+})();`;
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="pt-BR">
+    // suppressHydrationWarning: o script acima pode marcar o <html> antes
+    // de o React assumir a página; sem isso, o React avisaria que o
+    // atributo não veio do servidor. Vale só para a própria tag <html>.
+    <html lang="pt-BR" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_CAPA_PENDENTE }} />
+      </head>
       <body>
         {/* Rolagem suave (Lenis), GSAP e Motion — seção 18.1 */}
         <ProvedorMovimento>

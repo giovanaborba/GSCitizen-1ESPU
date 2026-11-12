@@ -3,29 +3,27 @@ import IndiceNestaPagina from "@/components/layout/IndiceNestaPagina";
 
 /*
   PaginaComIndice — estrutura das páginas com "Nesta página" (Início e
-  Solução), seções 9.4 e 12.
+  Solução), no layout da Fase 8 (seções 9.4, 12 e 18; decisão 1 da
+  equipe).
 
-  Celular e tablet (< 1024 px): uma coluna de até 40rem, nesta ordem:
-  título e resumo → cartão "Nesta página" → seções.
+  Ordem no HTML (é também a ordem visual e a do leitor de tela):
+  título e resumo (se houver) → "Nesta página" em pílulas → seções →
+  seção larga (se houver) → ação final.
 
-  Computador (≥ 1024 px): grade de 2 colunas.
-  ┌──────────────────────────┬──────────────┐
-  │ título e resumo          │ Nesta página │  ← coluna lateral presa
-  │ seções (até 40rem)       │ (sticky)     │    ao rolar
-  ├──────────────────────────┴──────────────┤
-  │ seção larga (ex.: Equipe, 5 cartões)    │  ← ocupa as 2 colunas
-  ├──────────────────────────┐              │
-  │ ação final (botão-link)  │              │
-  └──────────────────────────┘              ┘
-  A ordem no HTML é a mesma nos dois casos (título → índice → seções), e
-  é a ordem que o leitor de tela e o Tab seguem.
+  ┌───────────────────────────────────────────────┐
+  │ título e resumo (na Início, ficam na abertura) │
+  ├───────────────────────────────────────────────┤
+  │ (Nesta página) (pílulas…)  ← gruda no topo no  │
+  ├───────────────────────────────────────────────┤   computador
+  │ seções: texto em até 40rem; partes largas      │
+  │ (fotos, cartões) usam a área toda de 76rem      │
+  └───────────────────────────────────────────────┘
 
-  Props: titulo, resumo, itensIndice, children (seções), secaoLarga,
-         acaoFinal
+  O índice e as seções ficam dentro do mesmo bloco: é isso que deixa o
+  índice "grudado" (position: sticky) enquanto as seções passam.
 
-  Fase 8: "titulo" é opcional. Na Início, o H1 e o resumo ficam na
-  abertura com a pulseira (AberturaPulseira), antes desta estrutura.
-  (Este componente é refeito para o layout novo na subfase 8.5.)
+  Props: titulo e resumo (opcionais), itensIndice, children (seções),
+         secaoLarga, acaoFinal
 */
 export default function PaginaComIndice({
   titulo,
@@ -36,28 +34,25 @@ export default function PaginaComIndice({
   acaoFinal,
 }) {
   return (
-    <div className="margem-lateral py-8">
-      <div className="mx-auto max-w-texto lg:grid lg:max-w-[59rem] lg:grid-cols-[minmax(0,40rem)_16rem] lg:gap-x-12">
-        {/* Esta parte é lógica */}
-        {titulo && (
-          <div className="lg:col-start-1 lg:row-start-1">
+    <div className="pb-8">
+      {/* Esta parte é lógica */}
+      {titulo && (
+        <div className="margem-lateral pt-8 pb-4">
+          <div className="mx-auto max-w-pagina">
             <TituloPagina titulo={titulo} resumo={resumo} />
           </div>
-        )}
-
-        <div className={`${titulo ? "mt-8" : ""} lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0`}>
-          {/* Presa abaixo do cabeçalho. Se a tela for baixa, o índice
-              rola por dentro em vez de ficar cortado. */}
-          <div className="lg:sticky lg:top-[calc(var(--altura-cabecalho)+1rem)] lg:max-h-[calc(100dvh-var(--altura-cabecalho)-var(--espaco-fim)-1rem)] lg:overflow-y-auto">
-            <IndiceNestaPagina itens={itensIndice} />
-          </div>
         </div>
+      )}
 
-        <div className="lg:col-start-1 lg:row-start-2">{children}</div>
+      <IndiceNestaPagina itens={itensIndice} />
 
-        {/* Esta parte é lógica */}
-        {secaoLarga && <div className="lg:col-span-2">{secaoLarga}</div>}
-        {acaoFinal && <p className="mt-16 lg:col-start-1">{acaoFinal}</p>}
+      <div className="margem-lateral">
+        <div className="mx-auto max-w-pagina">
+          {children}
+          {/* Esta parte é lógica */}
+          {secaoLarga}
+          {acaoFinal && <p className="mt-16">{acaoFinal}</p>}
+        </div>
       </div>
     </div>
   );
