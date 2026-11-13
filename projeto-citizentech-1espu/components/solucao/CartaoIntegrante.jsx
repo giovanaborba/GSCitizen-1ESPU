@@ -9,8 +9,8 @@ import { useInclinacaoMouse } from "@/hooks/useInclinacaoMouse";
 
   - Item de uma <ul>: cartão branco com sombra, foto quadrada e o nome em
     <h3>, em Anton maiúsculo (maiúsculas só por CSS).
-  - Cores fixas nos dois temas, como uma foto de verdade: texto #1E0F4A
-    sobre branco (17,2:1).
+  - Cores fixas nos dois temas, como uma foto de verdade: texto grafite
+    #242428 sobre branco (15,5:1).
   - "inclinacao": a inclinação fixa do polaroide, em graus (−3°, 2°,
     −1,5°, 3°, −2°, na ordem da lista).
   - Com mouse e com os efeitos ligados, ele se endireita, sobe e inclina
@@ -31,10 +31,10 @@ export default function CartaoIntegrante({ nome, inclinacao = 0, className = "" 
       onPointerMove={aoMover}
       onPointerLeave={aoSair}
       style={{ "--inclinacao": `${inclinacao}deg` }}
-      className={`grid rotate-(--inclinacao) gap-2.5 rounded-polaroide bg-[#FFFFFF] p-2.5 pb-4 text-[#1E0F4A] shadow-[0_10px_26px_rgba(18,11,36,0.22)] transition-transform duration-300 forced-colors:border efeitos-ligados:hover:rotate-0 ${className}`}
+      className={`grid rotate-(--inclinacao) gap-2.5 rounded-polaroide bg-[#FFFFFF] p-2.5 pb-4 text-[#242428] shadow-[0_10px_26px_rgba(26,26,29,0.2)] transition-transform duration-300 forced-colors:border efeitos-ligados:hover:rotate-0 ${className}`}
     >
       {/* Espaço da foto (quadrado) */}
-      <div className="grid aspect-square place-items-center rounded-[4px] border-2 border-dashed border-[#6B5F94] bg-[#EDE8FC]">
+      <div className="grid aspect-square place-items-center rounded-[4px] border-2 border-dashed border-[#6E6E78] bg-[#FAFAFA]">
         {/* ICONE-Image-AQUI */}
         <EspacoIcone nome="Image" />
       </div>

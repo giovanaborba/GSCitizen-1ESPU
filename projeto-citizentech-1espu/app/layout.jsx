@@ -1,3 +1,4 @@
+import { Anton, Atkinson_Hyperlegible_Next, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import LinkPular from "@/components/layout/LinkPular";
 import Cabecalho from "@/components/layout/Cabecalho";
@@ -8,52 +9,52 @@ import Provedores from "@/components/layout/Provedores";
 import ProvedorMovimento from "@/components/layout/ProvedorMovimento";
 
 /*
-  =====================================================================
-  FONTES (seção 18.4) — colocadas manualmente pela equipe
-  =====================================================================
-  O site usa 3 famílias. Cada uma tem uma variável CSS no globals.css,
-  com fontes de reserva, então o site já funciona antes de elas entrarem:
+  FONTES (seções 18.4 e 19.4), carregadas com next/font/google.
 
-  | Família                    | Variável que o globals.css espera | Reserva enquanto não entra |
-  | Anton                      | --fonte-anton                     | Impact, Arial Narrow       |
-  | Atkinson Hyperlegible Next | --fonte-atkinson                  | Verdana                    |
-  | JetBrains Mono             | --fonte-jetbrains                 | ui-monospace, Courier New  |
+  O next/font já vem com o Next (não é um pacote novo). No momento do
+  build, ele baixa os arquivos das fontes e os serve pelo próprio site
+  (self-hosting): quando a página abre, o navegador não chama o Google.
+  Ele também pré-carrega as fontes e ajusta a fonte de reserva para o
+  texto não "pular" quando a fonte de verdade chega.
 
-  ---------------------------------------------------------------------
-  FONTE-Anton-AQUI
-  Títulos H1 e H2, nomes dos sinais, palavras de fundo, números grandes.
-  Peso: 400 (a Anton só tem esse peso).
-  ---------------------------------------------------------------------
-  FONTE-Atkinson Hyperlegible Next-AQUI
-  Texto corrido, botões, links, H3, H4 e formulário. Pesos: 400 e 700.
-  ---------------------------------------------------------------------
-  FONTE-JetBrains Mono-AQUI
-  Rótulos curtos em mono ("MODO TÁTIL", "FONTE: G1, 2019").
-  Pesos: 500 e 700.
-  ---------------------------------------------------------------------
+  Cada família vira uma variável CSS na tag <html> (opção "variable"). O
+  globals.css usa essas variáveis em --fonte-titulo, --fonte-base e
+  --fonte-mono, com as reservas da 18.4 logo depois.
 
-  Passo a passo (igual para as 3):
-  1. Carregue a fonte neste arquivo, por exemplo com next/font/google, e
-     dê a ela a variável da tabela na opção "variable". Exemplo:
+  | Família                    | Variável          | Uso                                              |
+  | Anton (400)                | --fonte-anton     | H1, H2, nomes dos sinais, palavras de fundo, números |
+  | Atkinson Hyperlegible Next | --fonte-atkinson  | texto corrido, botões, links, H3, H4 e formulário |
+  | JetBrains Mono (500, 700)  | --fonte-jetbrains | rótulos curtos ("MODO TÁTIL", "FONTE: G1, 2019") |
 
-       import { Anton } from "next/font/google";
-       const anton = Anton({
-         weight: "400",
-         subsets: ["latin"],
-         display: "swap",
-         variable: "--fonte-anton",
-       });
-
-     (Para a Atkinson, pesos ["400", "700"] e variável --fonte-atkinson;
-     para a JetBrains Mono, pesos ["500", "700"] e --fonte-jetbrains.
-     Confira o nome exato de cada família na versão instalada.)
-  2. Coloque as classes que o next/font devolve no className da tag
-     <html> abaixo, por exemplo:
-       <html lang="pt-BR" className={`${anton.variable} ${atkinson.variable} ${jetbrains.variable}`}>
-  3. Pronto: o globals.css já usa essas variáveis antes das fontes de
-     reserva. Nada mais precisa mudar.
-  =====================================================================
+  "latin-ext" entra junto com "latin" para cobrir todos os acentos.
+  display "swap": o texto aparece na hora com a reserva e troca quando a
+  fonte chega (o texto nunca fica invisível).
 */
+// Esta parte é lógica
+const anton = Anton({
+  weight: "400",
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--fonte-anton",
+});
+// Aviso conhecido no build: "Failed to find font override values for font
+// Atkinson Hyperlegible Next". O Next 16.4 ainda não tem as medidas desta
+// família para criar a reserva ajustada; ele só pula essa etapa. A reserva
+// continua a Verdana da 18.4 (globals.css), e o texto pode mudar um pouco
+// de largura quando a fonte chega. Não é erro. A Anton e a JetBrains Mono
+// ganham a reserva ajustada normalmente.
+const atkinson = Atkinson_Hyperlegible_Next({
+  weight: ["400", "700"],
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--fonte-atkinson",
+});
+const mono = JetBrains_Mono({
+  weight: ["500", "700"],
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--fonte-jetbrains",
+});
 
 // Título de cada página: "Nome da página — Pulse" (seção 4.1).
 // Cada page.jsx define só a primeira parte, por exemplo: title: "Início".
@@ -114,7 +115,11 @@ export default function RootLayout({ children }) {
     // suppressHydrationWarning: o script acima marca o <html> antes de o
     // React assumir a página; sem isso, o React avisaria que os atributos
     // não vieram do servidor. Vale só para a própria tag <html>.
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html
+      lang="pt-BR"
+      className={`${anton.variable} ${atkinson.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_INICIAL }} />
       </head>

@@ -62,8 +62,8 @@ export default function PaginaInicio() {
             <EspacoImagem texto="Ilustração de uma travessia (a definir)" />
 
             <div className="grid gap-4">
-              {/* Citação com borda dourada à esquerda (seção 18.6) */}
-              <figure className="rounded-r-cartao border-l-4 border-ouro bg-superficie p-5">
+              {/* Citação com borda laranja à esquerda (seções 18.6 e 19.3) */}
+              <figure className="rounded-r-cartao border-l-4 border-acao bg-superficie p-5">
                 <blockquote>
                   <p className="text-h3 font-bold">
                     “Não sabemos quando o sinal abriu ou fechou para nós.”

@@ -7,7 +7,7 @@ import { efeitosLigadosAgora } from "@/lib/efeitos";
 
   - A pulseira chama aoDesenhar(projetar) a cada quadro. "projetar(nome)"
     diz onde aquela parte (motor, botão...) está na tela agora.
-  - Para cada link, a linha vai da parte da pulseira até o "nó" dourado
+  - Para cada link, a linha vai da parte da pulseira até o "nó" laranja
     do link, numa curva suave. As linhas são SVG decorativo (aria-hidden)
     e só aparecem a partir de 1000 px.
   - O tracejado anda devagar. Com os efeitos desligados, fica parado.

@@ -6,7 +6,7 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
   - Celular: ícone em cima e texto embaixo, altura mínima de 56 px.
   - A partir de 768 px: ícone e texto lado a lado, altura mínima de 48 px.
   - Não selecionado: borda --cor-linha-item (mostra onde tocar).
-  - Selecionado: fundo dourado (--cor-ouro) com texto #120B24, negrito e
+  - Selecionado: fundo laranja (--cor-acao) com texto grafite (4,55:1), negrito e
     aria-current="page" (seção 18.9).
   - Cantos: a partir de 768 px (ícone e texto numa linha), pílula
     perfeita. No celular, o item tem 2 andares (ícone em cima, texto
@@ -29,7 +29,7 @@ export default function ItemBarra({ href, texto, icone, ativo, aoNavegar }) {
         aria-current={ativo ? "page" : undefined}
         className={`flex min-h-14 w-full flex-col items-center justify-center gap-0.5 rounded-[1.25rem] border px-1 py-1 text-auxiliar md:rounded-full no-underline transicao-fundo md:min-h-12 md:flex-row md:gap-2 md:px-4 ${
           ativo
-            ? "border-ouro bg-ouro font-bold text-sobre-ouro"
+            ? "border-acao bg-acao font-bold text-sobre-acao"
             : "border-linha-item bg-superficie text-texto hover:bg-hover"
         }`}
       >

@@ -6,7 +6,7 @@ import { efeitosLigadosAgora } from "@/lib/efeitos";
 /*
   useTransicaoPagina — transição de piso tátil entre páginas (seção 18.9).
 
-  Como funciona a cortina: é uma camada roxa vista por uma "peneira" de
+  Como funciona a cortina: é uma camada grafite vista por uma "peneira" de
   domos (CSS .cortina-piso). A variável --d é o raio de cada domo:
   0 px = invisível; 22 px = os domos se encostam e cobrem a tela.
 

@@ -40,7 +40,7 @@ export default function InterruptorEfeitos() {
       {/* Trilho decorativo: 40 × 24 px, preenchido quando ligado */}
       <span
         aria-hidden="true"
-        className="relative h-6 w-10 shrink-0 rounded-full border-2 border-borda bg-[color-mix(in_srgb,var(--cor-borda)_35%,transparent)] efeitos-ligados:border-sobre-ouro efeitos-ligados:bg-ouro"
+        className="relative h-6 w-10 shrink-0 rounded-full border-2 border-borda bg-[color-mix(in_srgb,var(--cor-borda)_35%,transparent)] efeitos-ligados:border-sobre-acao efeitos-ligados:bg-acao"
       >
         {/* Esta parte é lógica */}
         {/* Antes de o React assumir a página, a posição vem do CSS (já
@@ -51,10 +51,10 @@ export default function InterruptorEfeitos() {
             initial={false}
             animate={{ x: efeitosLigados ? 16 : 0 }}
             transition={spring.rapida}
-            className="absolute top-0.5 left-0.5 size-4 rounded-full bg-texto-2 efeitos-ligados:bg-sobre-ouro"
+            className="absolute top-0.5 left-0.5 size-4 rounded-full bg-texto-2 efeitos-ligados:bg-sobre-acao"
           />
         ) : (
-          <span className="absolute top-0.5 left-0.5 size-4 rounded-full bg-texto-2 efeitos-ligados:translate-x-4 efeitos-ligados:bg-sobre-ouro" />
+          <span className="absolute top-0.5 left-0.5 size-4 rounded-full bg-texto-2 efeitos-ligados:translate-x-4 efeitos-ligados:bg-sobre-acao" />
         )}
       </span>
       <span className="max-[26.25rem]:max-w-[6.5em]">

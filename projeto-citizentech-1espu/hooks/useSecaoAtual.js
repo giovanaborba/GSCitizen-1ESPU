@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 /*
   useSecaoAtual — em qual seção da página a pessoa está (decisão 1 da
-  equipe na Fase 8: a pílula da seção atual fica dourada no "Nesta
+  equipe na Fase 8: a pílula da seção atual fica laranja no "Nesta
   página").
 
   Regra: a seção atual é a última cujo título (<h2 id>) já passou da

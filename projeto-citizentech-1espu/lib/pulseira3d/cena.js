@@ -19,9 +19,13 @@ import * as THREE from "three";
   o hook usePulseira3D animar.
 */
 
-const OURO = new THREE.Color("#D4A24A");
-const LILAS = new THREE.Color("#C4B5FD");
-const ESCURO = 0x0b0716;
+// Cores da Fase 9 (seção 19.3). Esta é a pulseira da Fase 8 com a paleta
+// nova; o modelo novo (19.12) entra na subfase 9.5.
+const LARANJA = new THREE.Color("#FC4C02"); // brilho das partes e anéis de "pulso"
+const GRAFITE = new THREE.Color("#242428"); // botões, motores e atuador
+const CORPO_DO_MODULO = new THREE.Color("#CC4200"); // corpo do módulo (19.12)
+const CONTORNO = new THREE.Color("#FFB088"); // luz de contorno quente (protótipo)
+const ESCURO = 0x141416;
 
 // Laço oval da tira: alto (y) e estreito (z)
 const RAIO_Y = 1.12;
@@ -39,7 +43,7 @@ const CAMERA_POR_MODO = {
 // Lê a cor da tira no CSS (--cor-faixa-3d), que muda com o tema.
 export function lerCorDaFaixa() {
   const cor = getComputedStyle(document.documentElement).getPropertyValue("--cor-faixa-3d").trim();
-  return cor || "#4F2BAB";
+  return cor || "#FC4C02";
 }
 
 // Esta parte é lógica
@@ -61,14 +65,14 @@ function criarRenderizador(canvas) {
 
 // Esta parte é lógica
 function adicionarLuzes(cena) {
-  cena.add(new THREE.HemisphereLight(0xffffff, 0x3b1d8b, 1.6)); // luz do "céu" e do "chão"
+  cena.add(new THREE.HemisphereLight(0xffffff, 0x242428, 1.6)); // luz do "céu" e do "chão"
   const principal = new THREE.DirectionalLight(0xffffff, 2.4);
   principal.position.set(2.5, 4, 3);
-  const contorno = new THREE.DirectionalLight(LILAS, 2.0); // contorno lilás, por trás
+  const contorno = new THREE.DirectionalLight(CONTORNO, 2.0); // contorno quente, por trás
   contorno.position.set(-3, 1, -3);
-  const dourada = new THREE.PointLight(OURO, 6, 6); // dourada suave, por cima
-  dourada.position.set(0, 2.2, 1.5);
-  cena.add(principal, contorno, dourada);
+  const deCima = new THREE.PointLight(0xffffff, 4, 6); // luz suave, por cima
+  deCima.position.set(0, 2.2, 1.5);
+  cena.add(principal, contorno, deCima);
 }
 
 // Esta parte é lógica
@@ -79,13 +83,13 @@ function montarPulseira(corFaixa) {
   pulseira.rotation.y = -0.55; // vista de 3/4
 
   // Tira: um toro (anel) girado para o eixo x e achatado, vira um laço
-  // de silicone alto e estreito. Fosca, com brilho lilás (sheen).
+  // de silicone alto e estreito. Fosca, com brilho quente (sheen).
   const materialFaixa = new THREE.MeshPhysicalMaterial({
     color: corFaixa,
     roughness: 0.62,
     sheen: 0.6,
     sheenRoughness: 0.5,
-    sheenColor: LILAS,
+    sheenColor: CONTORNO,
   });
   const geometriaFaixa = new THREE.TorusGeometry(1, 0.075, 28, 200);
   geometriaFaixa.rotateY(Math.PI / 2);
@@ -108,9 +112,9 @@ function montarPulseira(corFaixa) {
     pulseira.add(furo);
   }
 
-  // Módulo em forma de pílula na frente, brilhante (clearcoat), mesma cor
+  // Módulo em forma de pílula na frente, brilhante (clearcoat), em laranja escuro
   const materialModulo = new THREE.MeshPhysicalMaterial({
-    color: corFaixa,
+    color: CORPO_DO_MODULO,
     roughness: 0.22,
     clearcoat: 1,
     clearcoatRoughness: 0.12,
@@ -121,14 +125,14 @@ function montarPulseira(corFaixa) {
   pulseira.add(modulo);
   const frenteDoModulo = RAIO_Z + 0.05 + 0.3 * 0.36;
 
-  // Botões dourados: grande (informar o destino) e pequeno (trocar o modo).
+  // Botões grafite: grande (informar o destino) e pequeno (trocar o modo).
   // Cada um tem o próprio material, para poder "acender" sozinho.
   function criarBotao(raio, y) {
     const geometria = new THREE.CylinderGeometry(raio, raio * 1.04, 0.05, 48);
     geometria.rotateX(Math.PI / 2);
     const botao = new THREE.Mesh(
       geometria,
-      new THREE.MeshStandardMaterial({ color: OURO, metalness: 0.85, roughness: 0.28, emissive: OURO, emissiveIntensity: 0 }),
+      new THREE.MeshStandardMaterial({ color: GRAFITE, metalness: 0.85, roughness: 0.28, emissive: LARANJA, emissiveIntensity: 0 }),
     );
     botao.position.set(0, y, frenteDoModulo + 0.005);
     pulseira.add(botao);
@@ -145,11 +149,11 @@ function montarPulseira(corFaixa) {
     pulseira.add(ponto);
   }
 
-  // Motores de vibração: cápsulas douradas finas, uma de cada lado
+  // Motores de vibração: cápsulas grafite finas, uma de cada lado
   function criarMotor(x) {
     const motor = new THREE.Mesh(
       new THREE.CapsuleGeometry(0.035, 0.34, 6, 16),
-      new THREE.MeshStandardMaterial({ color: OURO, metalness: 0.6, roughness: 0.35, emissive: OURO, emissiveIntensity: 0 }),
+      new THREE.MeshStandardMaterial({ color: GRAFITE, metalness: 0.6, roughness: 0.35, emissive: LARANJA, emissiveIntensity: 0 }),
     );
     motor.position.set(x, 0, RAIO_Z + 0.07);
     pulseira.add(motor);
@@ -158,12 +162,12 @@ function montarPulseira(corFaixa) {
   const motorEsquerdo = criarMotor(-0.315);
   const motorDireito = criarMotor(0.315);
 
-  // Atuador de pressão: disco dourado atrás do módulo, do lado de dentro
+  // Atuador de pressão: disco grafite atrás do módulo, do lado de dentro
   const geometriaAtuador = new THREE.CylinderGeometry(0.13, 0.13, 0.03, 36);
   geometriaAtuador.rotateX(Math.PI / 2);
   const atuador = new THREE.Mesh(
     geometriaAtuador,
-    new THREE.MeshStandardMaterial({ color: OURO, metalness: 0.5, roughness: 0.4, emissive: OURO, emissiveIntensity: 0 }),
+    new THREE.MeshStandardMaterial({ color: GRAFITE, metalness: 0.5, roughness: 0.4, emissive: LARANJA, emissiveIntensity: 0 }),
   );
   atuador.position.set(0, 0, RAIO_Z - 0.1);
   pulseira.add(atuador);
@@ -175,7 +179,7 @@ function montarPulseira(corFaixa) {
 
   return {
     pulseira,
-    materiaisDaFaixa: [materialFaixa, materialModulo],
+    materiaisDaFaixa: [materialFaixa],
     modulo,
     botaoDestino,
     botaoModo,
@@ -222,7 +226,7 @@ export function criarCena(canvas, modo) {
   balanco.add(partes.pulseira);
   cena.add(balanco);
 
-  // Anéis dourados de "pulso", que saem da parte que vibra e somem em 0,9 s
+  // Anéis laranja de "pulso", que saem da parte que vibra e somem em 0,9 s
   const geometriaAnel = new THREE.RingGeometry(0.16, 0.19, 64);
   const aneis = [];
   const posicaoTemporaria = new THREE.Vector3();
@@ -230,7 +234,7 @@ export function criarCena(canvas, modo) {
   // Esta parte é lógica
   function soltarPulso(parte, forca = 1) {
     const material = new THREE.MeshBasicMaterial({
-      color: OURO,
+      color: LARANJA,
       transparent: true,
       opacity: 0.9,
       side: THREE.DoubleSide,

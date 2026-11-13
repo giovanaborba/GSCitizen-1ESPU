@@ -29,7 +29,7 @@ import { useState } from "react";
 */
 
 export const DESCRICAO_DA_PULSEIRA =
-  "Pulseira Pulse em 3D: uma tira roxa de silicone com um módulo em forma de pílula na frente. No módulo há um botão dourado grande, para dizer o destino, e um menor, para trocar o modo. Dos lados do módulo ficam os motores que vibram para indicar o lado da conversão.";
+  "Pulseira Pulse em 3D: uma tira laranja de silicone com um módulo laranja-escuro em forma de pílula na frente. No módulo há um botão grafite grande, para dizer o destino, e um menor, para trocar o modo. Dos lados do módulo ficam os motores que vibram para indicar o lado da conversão.";
 
 // Esta parte é lógica
 const CenaPulseira = dynamic(() => import("@/components/pulseira/CenaPulseira"), {

@@ -21,22 +21,23 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
   Quem usa o Botao ignora o segundo toque enquanto estiver ocupado.
 */
 /*
-  Visual da Fase 8 (seção 18.5): todos em pílula (rounded-full), 56 px
-  de altura.
-  - principal: dourado com texto #120B24 (8,3:1). No hover, NÃO troca de
-    cor (seção 18.3): ganha uma sombra leve e sobe 2 px. A subida só
-    acontece com os efeitos ligados (efeitos-ligados:, seção 19.2); a
+  Visual das Fases 8 e 9 (seções 18.5 e 19.3): todos em pílula
+  (rounded-full), 56 px de altura.
+  - principal: laranja #FC4C02 com texto grafite #242428 (4,55:1). No
+    hover, NÃO troca de cor: ganha uma sombra leve e sobe 2 px. A subida
+    só acontece com os efeitos ligados (efeitos-ligados:, seção 19.2); a
     sombra vale sempre.
   - secundario: contorno de 2 px na cor da marca; no hover, fundo leve
-    (--cor-hover: marca a 12%).
+    (--cor-hover: marca a 12%) e texto grafite. O texto laranja sobre esse
+    fundo ficaria em 4,1:1, abaixo do mínimo de 4,5:1.
 */
 const ESTILO_BASE =
-  "inline-flex min-h-14 items-center justify-center gap-2 rounded-full border-2 px-7 py-2 text-center font-bold no-underline transition-[background-color,box-shadow,translate] duration-200 aria-disabled:cursor-wait";
+  "inline-flex min-h-14 items-center justify-center gap-2 rounded-full border-2 px-7 py-2 text-center font-bold no-underline transition-[background-color,color,box-shadow,translate] duration-200 aria-disabled:cursor-wait";
 
 const ESTILO_VARIANTE = {
   principal:
-    "border-ouro bg-ouro text-sobre-ouro hover:shadow-barra efeitos-ligados:hover:-translate-y-0.5",
-  secundario: "border-marca bg-transparent text-marca hover:bg-hover",
+    "border-acao bg-acao text-sobre-acao hover:shadow-barra efeitos-ligados:hover:-translate-y-0.5",
+  secundario: "border-marca bg-transparent text-marca hover:bg-hover hover:text-texto",
   perigo: "border-erro bg-transparent text-erro hover:bg-erro-fundo",
   "perigo-preenchido": "border-erro bg-erro text-perigo-texto",
 };

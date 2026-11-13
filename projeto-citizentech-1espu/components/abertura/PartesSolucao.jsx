@@ -17,7 +17,7 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
     primeiros à esquerda, alinhados à direita). A lista usa "subgrid":
     ela ocupa a grade da abertura inteira e cada link vai para a coluna
     da esquerda ou da direita, sem mudar a ordem no HTML.
-  - Cada link tem um "nó" dourado (decorativo), onde chega a linha que
+  - Cada link tem um "nó" laranja (decorativo), onde chega a linha que
     vem da parte da pulseira. Ao passar o mouse ou focar, o link ganha
     borda e sobe 2 px (só com movimento permitido), e a parte acende.
 
@@ -82,7 +82,7 @@ export default function PartesSolucao({ parteAtiva, aoMudarParte, registrarNo, a
                 <span
                   aria-hidden="true"
                   ref={registrarNo(item.parte)}
-                  className={`row-span-2 size-3 rounded-full bg-ouro shadow-[0_0_0_4px_color-mix(in_srgb,var(--cor-ouro)_25%,transparent)] ${
+                  className={`row-span-2 size-3 rounded-full bg-acao shadow-[0_0_0_4px_color-mix(in_srgb,var(--cor-acao)_25%,transparent)] ${
                     naEsquerda ? "abertura-larga:col-start-2 abertura-larga:row-start-1" : ""
                   }`}
                 />

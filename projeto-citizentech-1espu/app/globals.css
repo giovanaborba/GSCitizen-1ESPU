@@ -13,7 +13,7 @@
   2. Tokens do tema escuro, que só trocam os valores quando o aparelho
      está em modo escuro (prefers-color-scheme). Não há botão de tema.
   3. @theme inline: liga os tokens ao Tailwind, para usar classes como
-     bg-fundo, bg-superficie, text-texto, border-borda, bg-ouro.
+     bg-fundo, bg-superficie, text-texto, border-borda, bg-acao.
   4. Estilos de base (corpo, títulos, links, foco).
   5. Utilitários próprios (margem lateral, textura de piso tátil,
      rótulo mono, palavra de fundo).
@@ -26,16 +26,20 @@
   "reduzir movimento" do aparelho: ele é só o valor inicial do botão.
   Sem JavaScript, o atributo não existe e tudo fica parado.
 
-  Fontes: os marcadores FONTE-...-AQUI ficam em app/layout.jsx, onde as
-  fontes serão carregadas. Aqui ficam só as variáveis --fonte-titulo,
-  --fonte-base e --fonte-mono, que já funcionam com as fontes de reserva.
+  Fontes (seção 19.4): carregadas em app/layout.jsx com next/font/google,
+  que cria as variáveis --fonte-anton, --fonte-atkinson e --fonte-jetbrains
+  na tag <html>. Aqui, --fonte-titulo, --fonte-base e --fonte-mono apontam
+  para elas, com as fontes de reserva da 18.4 logo depois.
 
-  Cores da Fase 8 (seção 18.3). Todos os contrastes foram recalculados
-  (registro de desenvolvimento, subfase 8.2). Duas regras:
-  - o roxo #4F2BAB só vira texto no tema claro; no escuro, o texto roxo
-    vira lilás #C4B5FD;
-  - o dourado #D4A24A só vira texto no tema escuro e no rodapé; no claro,
-    ele só aparece como fundo de botão, sempre com texto #120B24.
+  Cores da Fase 9 (seção 19.3): paleta laranja e grafite. Todos os
+  contrastes foram recalculados, também com o granulado por baixo do
+  texto (registro de desenvolvimento, subfase 9.2). Regras:
+  - laranja escuro #CC4200 é o texto laranja do tema claro; no escuro, o
+    texto laranja é o #FC4C02;
+  - o botão principal é laranja #FC4C02 com texto grafite #242428
+    (4,55:1). Branco sobre laranja (3,4:1) só em texto grande;
+  - o laranja escuro sobre o grafite (3,2:1) nunca vira texto;
+  - os dois laranjas (1,03:1) nunca diferenciam estados.
 */
 
 /* ---------------------------------------------------------------------
@@ -45,50 +49,63 @@
   /* Permite que controles nativos (data, rolagem, radio) sigam o tema */
   color-scheme: light dark;
 
-  /* Cores — seção 18.3, tema claro (contraste sobre o creme / o branco) */
-  --cor-fundo: #f5f1e8; /* creme: fundo da página */
+  /* Cores — seção 19.3, tema claro. Contraste sobre o fundo branco / a
+     faixa #FAFAFA (o granulado claro por baixo não baixa nenhum par). */
+  --cor-fundo: #ffffff; /* fundo da página */
+  --cor-faixa: #fafafa; /* seções alternadas ("bandas", seção 19.5) */
   --cor-superficie: #ffffff; /* cartões, campos, cabeçalho, barra, diálogo */
-  --cor-texto: #1e0f4a; /* 15,2:1 / 17,2:1 */
-  --cor-texto-2: #453a66; /* 9,1:1 / 10,2:1 */
-  --cor-marca: #4f2bab; /* títulos, links, foco, botão secundário: 8,2:1 / 9,3:1 */
-  --cor-destaque: #4f2bab; /* rótulos mono e números grandes: 8,2:1 / 9,3:1 */
-  --cor-ouro: #d4a24a; /* botão principal e item ativo da barra (só fundo no claro) */
-  --cor-sobre-ouro: #120b24; /* texto sobre o dourado: 8,3:1 */
-  --cor-borda: #6b5f94; /* 5,1:1 / 5,7:1 */
-  /* Fundo leve no hover de botões secundários e itens da barra (18.3).
-     Sobre o branco: texto 14,0:1 e marca 7,6:1. */
+  --cor-texto: #242428; /* grafite: 15,5:1 / 14,8:1 */
+  --cor-texto-2: #4e4e57; /* 8,2:1 / 7,9:1 */
+  --cor-marca: #cc4200; /* laranja escuro: títulos, links, foco, botão secundário — 4,8:1 / 4,6:1 */
+  --cor-destaque: #cc4200; /* rótulos mono e números grandes: 4,8:1 / 4,6:1 */
+  --cor-acao: #fc4c02; /* laranja: botão principal e item ativo da barra (só fundo no claro) */
+  --cor-sobre-acao: #242428; /* texto sobre o laranja: 4,55:1 */
+  --cor-borda: #6e6e78; /* 5,0:1 / 4,8:1 */
+  --cor-apagada: #6e6e78; /* palavras ainda apagadas da frase que acende (19.7) */
+  /* Fundo leve no hover de botões secundários, itens da barra e pílulas
+     do "Nesta página": a marca a 12% (como no protótipo). O texto em cima
+     dele é sempre o grafite --cor-texto (13,0:1 no claro; 13,6:1 no
+     escuro). O texto laranja ficaria em 4,1:1, abaixo do mínimo; por isso
+     o botão secundário troca o texto para --cor-texto no hover. */
   --cor-hover: color-mix(in srgb, var(--cor-marca) 12%, transparent);
-  /* Borda dos itens não selecionados da barra (seção 9.2): marca a 70%,
-     4,3:1 sobre o branco (o mínimo para bordas é 3:1). */
-  --cor-linha-item: color-mix(in srgb, var(--cor-marca) 70%, transparent);
-  /* Status: iguais à seção 8.1 */
-  --cor-erro: #8b0a1a;
-  --cor-erro-fundo: #fdecec;
-  --cor-sucesso: #0a4d2e;
-  --cor-sucesso-fundo: #e7f6ec;
+  /* Borda dos itens não selecionados da barra (seção 9.2). Com o laranja,
+     a marca a 70% ficaria abaixo de 3:1, então usa a cor das bordas
+     (5,0:1). Sai na subfase 9.3 (19.5: esses itens perdem a borda). */
+  --cor-linha-item: var(--cor-borda);
+  /* Status (19.3). O aviso e os fundos claros continuam os da seção 8.1. */
+  --cor-erro: #b3261e; /* 6,5:1 */
+  --cor-erro-fundo: #fdecec; /* erro sobre ele: 5,7:1 */
+  --cor-sucesso: #1f6b3a; /* 6,5:1 */
+  --cor-sucesso-fundo: #e7f6ec; /* sucesso sobre ele: 5,8:1 */
   --cor-aviso: #5a3e00;
-  --cor-aviso-fundo: #fff4cc;
-  /* Texto do botão de perigo preenchido (fundo = --cor-erro): 9,7:1 */
+  --cor-aviso-fundo: #fff4cc; /* 9,0:1 */
+  /* Texto do botão de perigo preenchido (fundo = --cor-erro): 6,5:1 */
   --cor-perigo-texto: #ffffff;
 
-  /* Decoração e 3D — sem texto em cima (seção 18.3) */
-  --cor-ponto: rgba(79, 43, 171, 0.09); /* domos da textura de piso tátil */
-  --cor-ponto-brilho: rgba(255, 255, 255, 0.7); /* brilho de cada domo */
-  --cor-palavra-fundo: rgba(79, 43, 171, 0.07); /* palavras gigantes de fundo */
-  --cor-faixa-3d: #4f2bab; /* tira e módulo da pulseira 3D */
-  --cor-cortina: #4f2bab; /* transição entre páginas */
+  /* Decoração e 3D — sem texto em cima, exceto o granulado (seção 19.3) */
+  --cor-ponto: rgba(36, 36, 40, 0.07); /* domos da textura de piso tátil */
+  --cor-ponto-brilho: rgba(255, 255, 255, 0.9); /* brilho de cada domo */
+  --cor-ponto-sombra: rgba(36, 36, 40, 0.1); /* sombra de cada domo (relevo, 19.5) */
+  /* Palavras gigantes de fundo: grafite bem suave, da mesma família dos
+     domos (decisão da equipe na 9.2) */
+  --cor-palavra-fundo: rgba(36, 36, 40, 0.06);
+  --grao-opacidade: 0.06; /* granulado (19.6) */
+  --cor-faixa-3d: #fc4c02; /* tira da pulseira 3D */
+  --cor-cortina: #242428; /* transição entre páginas e preloader */
 
-  /* Rodapé: escuro nos dois temas (seção 18.3) */
-  --cor-rodape-fundo: #120b24;
-  --cor-rodape-cartao: #1c1238;
-  --cor-rodape-texto: #f5f1e8; /* 16,9:1 */
-  --cor-rodape-texto-2: #d9d0f2; /* 13,0:1 */
-  --cor-rodape-ouro: #d4a24a; /* números, rótulos e foco: 8,3:1 */
-  --cor-rodape-borda: #8c7bc9;
+  /* Rodapé: escuro nos dois temas (seção 19.3) */
+  --cor-rodape-fundo: #242428;
+  /* Botões da faixa dos ODS: o tom vizinho da paleta (decisão da equipe
+     na 9.2). Texto 17,4:1; destaque 5,1:1. */
+  --cor-rodape-cartao: #1a1a1d;
+  --cor-rodape-texto: #ffffff; /* 15,5:1 */
+  --cor-rodape-texto-2: #c9c9cf; /* 9,4:1 */
+  --cor-rodape-destaque: #fc4c02; /* números, rótulos e foco: 4,55:1 */
+  --cor-rodape-borda: #9a9aa4; /* 5,5:1 */
 
-  /* Tipografia — seção 18.4. Cada família entra antes da sua fonte de
-     reserva quando a equipe ligar a fonte (marcadores FONTE-...-AQUI em
-     app/layout.jsx). Até lá, o site usa as reservas.
+  /* Tipografia — seções 18.4 e 19.4. As variáveis --fonte-anton,
+     --fonte-atkinson e --fonte-jetbrains vêm do next/font (app/layout.jsx).
+     As fontes de reserva só aparecem se o arquivo da fonte falhar.
      - título: Anton (H1, H2, nomes dos sinais, números grandes)
      - base: Atkinson Hyperlegible Next (todo o texto corrido)
      - mono: JetBrains Mono (rótulos curtos) */
@@ -96,9 +113,9 @@
   --fonte-base: var(--fonte-atkinson, Verdana), Verdana, system-ui, sans-serif;
   --fonte-mono: var(--fonte-jetbrains, ui-monospace), ui-monospace, "Courier New", monospace;
 
-  /* Sombras — seção 8.3, tema claro */
-  --sombra-cartao: 0 1px 2px rgba(30, 15, 74, 0.08), 0 4px 12px rgba(30, 15, 74, 0.06);
-  --sombra-barra: 0 8px 24px rgba(30, 15, 74, 0.14);
+  /* Sombras — seção 8.3, tema claro (em grafite, um nível só) */
+  --sombra-cartao: 0 1px 2px rgba(26, 26, 29, 0.08), 0 4px 12px rgba(26, 26, 29, 0.06);
+  --sombra-barra: 0 8px 24px rgba(26, 26, 29, 0.14);
 
   /* Medidas de layout (em rem, para acompanhar o tamanho do texto) */
   --altura-cabecalho: 4rem; /* 64 px */
@@ -137,39 +154,43 @@
    --------------------------------------------------------------------- */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Cores — seção 18.3, tema escuro (contraste sobre o fundo / a
-       superfície). Os links continuam SEMPRE sublinhados. */
-    --cor-fundo: #120b24;
-    --cor-superficie: #1c1238; /* cartões, campos, cabeçalho, barra, diálogo, mensagens */
-    --cor-texto: #f5f1e8; /* 16,9:1 / 15,6:1 */
-    --cor-texto-2: #d9d0f2; /* 13,0:1 / 12,0:1 */
-    --cor-marca: #c4b5fd; /* lilás: títulos, links e foco — 10,4:1 / 9,5:1 */
-    --cor-destaque: #d4a24a; /* dourado: rótulos mono e números — 8,3:1 / 7,6:1 */
-    --cor-ouro: #d4a24a;
-    --cor-sobre-ouro: #120b24; /* 8,3:1 */
-    --cor-borda: #8c7bc9; /* 5,3:1 / 4,9:1 */
-    /* --cor-hover e --cor-linha-item seguem a marca (lilás) sozinhos.
-       Sobre a superfície: hover com texto 12,3:1 e marca 7,5:1; linha
-       dos itens 5,3:1. */
-    --cor-erro: #ffdada;
-    --cor-sucesso: #b8f5cb;
-    --cor-aviso: #ffe7a3;
+    /* Cores — seção 19.3, tema escuro. Contraste sobre o fundo #1A1A1D /
+       a faixa #242428 (o granulado escuro por baixo só aumenta o
+       contraste). Os links continuam SEMPRE sublinhados. */
+    --cor-fundo: #1a1a1d;
+    --cor-faixa: #242428;
+    --cor-superficie: #242428; /* cartões, campos, cabeçalho, barra, diálogo, mensagens */
+    --cor-texto: #ffffff; /* 17,4:1 / 15,5:1 */
+    --cor-texto-2: #c9c9cf; /* 10,5:1 / 9,4:1 */
+    --cor-marca: #fc4c02; /* laranja: títulos, links e foco — 5,1:1 / 4,55:1 */
+    --cor-destaque: #fc4c02; /* rótulos mono e números — 5,1:1 / 4,55:1 */
+    /* --cor-acao e --cor-sobre-acao: iguais ao tema claro */
+    --cor-borda: #9a9aa4; /* 6,2:1 / 5,5:1 */
+    --cor-apagada: #9a9aa4;
+    /* --cor-hover e --cor-linha-item seguem a marca sozinhos. */
+    --cor-erro: #ff8a80; /* 7,6:1 / 6,8:1 */
+    --cor-sucesso: #7fd69b; /* 9,9:1 / 8,8:1 */
+    --cor-aviso: #ffe7a3; /* igual à 8.1: 12,7:1 na superfície */
     /* No escuro, mensagens de status usam o fundo da superfície */
-    --cor-erro-fundo: #1c1238;
-    --cor-sucesso-fundo: #1c1238;
-    --cor-aviso-fundo: #1c1238;
-    /* Botão de perigo preenchido: fundo #FFDADA, texto #2A1366 (11,8:1) */
-    --cor-perigo-texto: #2a1366;
+    --cor-erro-fundo: #242428;
+    --cor-sucesso-fundo: #242428;
+    --cor-aviso-fundo: #242428;
+    /* Botão de perigo preenchido: fundo #FF8A80, texto grafite (6,8:1) */
+    --cor-perigo-texto: #242428;
 
     /* Decoração e 3D */
-    --cor-ponto: rgba(196, 181, 253, 0.07);
-    --cor-ponto-brilho: rgba(255, 255, 255, 0.04);
-    --cor-palavra-fundo: rgba(79, 43, 171, 0.35);
-    --cor-faixa-3d: #5b37ba;
-    /* --cor-cortina continua #4F2BAB */
+    --cor-ponto: rgba(255, 255, 255, 0.05);
+    --cor-ponto-brilho: rgba(255, 255, 255, 0.08);
+    --cor-ponto-sombra: rgba(0, 0, 0, 0.35);
+    --cor-palavra-fundo: rgba(255, 255, 255, 0.05);
+    --grao-opacidade: 0.08;
+    /* --cor-faixa-3d e --cor-cortina: iguais ao tema claro */
 
-    /* Rodapé: um pouco mais escuro que a página, para se separar dela */
-    --cor-rodape-fundo: #0b0716; /* texto 17,6:1; dourado 8,6:1 */
+    /* Rodapé: mais escuro que a página, para se separar dela.
+       Texto 18,4:1; destaque 5,4:1. Os botões dos ODS ficam no #242428
+       (texto 15,5:1; destaque 4,55:1). */
+    --cor-rodape-fundo: #141416;
+    --cor-rodape-cartao: #242428;
 
     --sombra-cartao: 0 4px 12px rgba(0, 0, 0, 0.3);
     --sombra-barra: 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -188,15 +209,17 @@
   --color-*: initial;
 
   --color-fundo: var(--cor-fundo);
+  --color-faixa: var(--cor-faixa);
   --color-superficie: var(--cor-superficie);
   --color-texto: var(--cor-texto);
   --color-texto-2: var(--cor-texto-2);
   --color-marca: var(--cor-marca);
   --color-destaque: var(--cor-destaque);
-  --color-ouro: var(--cor-ouro);
-  --color-sobre-ouro: var(--cor-sobre-ouro);
+  --color-acao: var(--cor-acao);
+  --color-sobre-acao: var(--cor-sobre-acao);
   --color-hover: var(--cor-hover);
   --color-borda: var(--cor-borda);
+  --color-apagada: var(--cor-apagada);
   --color-linha-item: var(--cor-linha-item);
   --color-erro: var(--cor-erro);
   --color-erro-fundo: var(--cor-erro-fundo);
@@ -210,7 +233,7 @@
   --color-rodape-cartao: var(--cor-rodape-cartao);
   --color-rodape-texto: var(--cor-rodape-texto);
   --color-rodape-texto-2: var(--cor-rodape-texto-2);
-  --color-rodape-ouro: var(--cor-rodape-ouro);
+  --color-rodape-destaque: var(--cor-rodape-destaque);
   --color-rodape-borda: var(--cor-rodape-borda);
 
   --font-sans: var(--fonte-base);
@@ -365,8 +388,8 @@
   }
 
   /* Links sempre sublinhados (obrigatório no escuro, adotado no claro
-     por consistência — seção 8.1). Cor: a da marca (roxo no claro, lilás
-     no escuro — seção 18.3). */
+     por consistência — seção 8.1). Cor: a da marca (laranja escuro no
+     claro, laranja no escuro — seção 19.3). */
   a {
     color: var(--cor-marca);
     text-decoration-line: underline;
@@ -379,8 +402,8 @@
   }
 
   /* Contorno de foco: 3 px, afastado 2 px, só para quem navega por
-     teclado (:focus-visible). Cor da marca (seção 18.3): 8,2:1 no creme
-     e 10,4:1 no fundo escuro. */
+     teclado (:focus-visible). Cor da marca (seção 19.3): 4,8:1 no branco
+     e 5,1:1 no fundo escuro (o mínimo para o foco é 3:1). */
   :focus-visible {
     outline: 3px solid var(--cor-marca);
     outline-offset: 2px;
@@ -513,7 +536,7 @@ html.lenis {
 }
 @layer components {
   /* Cortina da transição entre páginas (seção 18.9), usada pelo
-     TransicaoPagina. É uma camada roxa vista através de uma "peneira" de
+     TransicaoPagina. É uma camada grafite vista através de uma "peneira" de
      domos: cada célula de 30 px mostra um círculo de raio --d. Com --d =
      0 nada aparece; com --d = 22 px os círculos se encostam e cobrem a
      tela inteira. O GSAP anima o --d. Não recebe clique
@@ -590,15 +613,15 @@ html.lenis {
   }
 
   /* Capa de introdução (seção 18.6). Fundo e texto fixos (a capa é
-     escura nos dois temas): #F5F1E8 sobre #120B24 = 16,9:1. */
+     escura nos dois temas): #FFFFFF sobre #1A1A1D = 17,4:1. */
   .capa-intro {
     --d: 22px;
     position: fixed;
     inset: 0;
     z-index: 70;
     overflow: hidden;
-    background-color: #120b24;
-    color: #f5f1e8;
+    background-color: #1a1a1d;
+    color: #ffffff;
   }
 
   /* Saída em piso tátil: a capa vira uma "peneira" de domos que encolhem
@@ -661,12 +684,12 @@ html.lenis {
     position: fixed;
     inset: 0;
     z-index: 75;
-    background-color: #120b24;
+    background-color: #1a1a1d;
   }
 
-  /* Rodapé: foco dourado sobre o fundo escuro (8,3:1). */
+  /* Rodapé: foco laranja sobre o fundo escuro (4,55:1 no claro; 5,4:1 no escuro). */
   .rodape :focus-visible {
-    outline-color: var(--cor-rodape-ouro);
+    outline-color: var(--cor-rodape-destaque);
   }
 
   /* Faixa contínua dos ODS (seção 18.10). Duas cópias iguais da lista,

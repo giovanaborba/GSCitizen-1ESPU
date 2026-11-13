@@ -153,14 +153,14 @@ export default function SinaisRolagemFixa() {
                         className={`rotulo-mono flex min-h-12 items-center gap-3 px-3 text-[0.9rem] whitespace-nowrap no-underline ${
                           podeFixar
                             ? `border-b-[3px] min-[62.5rem]:border-b-0 min-[62.5rem]:border-l-[3px] ${
-                                atual ? "border-ouro text-texto" : "border-borda/45 text-texto-2"
+                                atual ? "border-acao text-texto" : "border-borda/45 text-texto-2"
                               }`
                             : "rounded-full border border-borda bg-superficie text-texto"
                         }`}
                       >
                         {sinal.link}
-                        {/* Ponto dourado do sinal atual (decorativo) */}
-                        {atual && <span aria-hidden="true" className="size-2 rounded-full bg-ouro" />}
+                        {/* Ponto laranja do sinal atual (decorativo) */}
+                        {atual && <span aria-hidden="true" className="size-2 rounded-full bg-acao" />}
                       </a>
                     </li>
                   );

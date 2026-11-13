@@ -14,7 +14,7 @@ import { useSecaoAtual } from "@/hooks/useSecaoAtual";
     gruda embaixo do cabeçalho ao rolar, como uma faixa fina com fundo
     sólido. Celular, pouca altura e zoom alto: fica parado, para não
     tirar espaço da tela.
-  - A pílula da seção atual fica dourada, com aria-current="true" (o
+  - A pílula da seção atual fica laranja, com aria-current="true" (o
     leitor de tela diz "atual"). É só troca de cor: vale também com
     os efeitos desligados.
   - A altura da faixa fixa fica em --altura-indice, para os saltos às
@@ -77,7 +77,7 @@ export default function IndiceNestaPagina({ itens }) {
                   aria-current={ehAtual ? "true" : undefined}
                   className={`inline-flex min-h-12 items-center rounded-full border px-4 text-auxiliar font-bold no-underline transicao-fundo ${
                     ehAtual
-                      ? "border-ouro bg-ouro text-sobre-ouro"
+                      ? "border-acao bg-acao text-sobre-acao"
                       : "border-borda bg-superficie text-texto hover:bg-hover"
                   }`}
                 >

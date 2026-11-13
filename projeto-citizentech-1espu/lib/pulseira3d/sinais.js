@@ -2,7 +2,7 @@
   sinais — o que cada sinal da Pulse faz na pulseira 3D (seção 18.7).
 
   Cada sinal dura um ciclo de 2,8 s. Dentro do ciclo, "t" é o tempo em
-  segundos desde o começo. Os anéis dourados de "pulso" saem da parte que
+  segundos desde o começo. Os anéis laranja de "pulso" saem da parte que
   vibra (motor ou atuador) e somem em 0,9 s.
 
   WCAG 2.3.1 (nada pisca mais de 3 vezes por segundo): em nenhum sinal

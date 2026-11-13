@@ -60,7 +60,7 @@ const CLASSES_BOTAO_ODS =
 function ConteudoOds({ ods }) {
   return (
     <>
-      <span aria-hidden="true" className="font-titulo text-[2.4rem] leading-none font-normal text-rodape-ouro">
+      <span aria-hidden="true" className="font-titulo text-[2.4rem] leading-none font-normal text-rodape-destaque">
         {ods.numero}
       </span>
       <span>
@@ -69,7 +69,7 @@ function ConteudoOds({ ods }) {
         {ods.principal && (
           <>
             {" "}
-            <span className="ml-1 inline-block rounded-full bg-rodape-ouro px-2.5 text-auxiliar text-sobre-ouro">
+            <span className="ml-1 inline-block rounded-full bg-rodape-destaque px-2.5 text-auxiliar text-sobre-acao">
               Principal
             </span>
           </>
@@ -88,7 +88,7 @@ export default function FaixaODS() {
     <section aria-labelledby="titulo-ods" className="mb-10">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="rotulo-mono mb-2 text-rodape-ouro">Objetivos de Desenvolvimento Sustentável</p>
+          <p className="rotulo-mono mb-2 text-rodape-destaque">Objetivos de Desenvolvimento Sustentável</p>
           <h2 id="titulo-ods" className="text-rodape-texto">
             A Pulse e os ODS
           </h2>
@@ -98,7 +98,7 @@ export default function FaixaODS() {
           aria-pressed={pausada}
           aria-controls={ID_FAIXA}
           onClick={alternarPausa}
-          className="faixa-ods-pausa inline-flex min-h-12 efeitos-desligados:hidden items-center gap-2 rounded-full border-2 border-rodape-borda px-5 font-bold text-rodape-texto hover:border-rodape-ouro"
+          className="faixa-ods-pausa inline-flex min-h-12 efeitos-desligados:hidden items-center gap-2 rounded-full border-2 border-rodape-borda px-5 font-bold text-rodape-texto hover:border-rodape-destaque"
         >
           {/* Esta parte é lógica */}
           {pausada ? (
@@ -127,7 +127,7 @@ export default function FaixaODS() {
                   type="button"
                   aria-describedby={idDaFrase(ods.numero)}
                   className={`${CLASSES_BOTAO_ODS} ${
-                    odsEmDestaque === ods.numero ? "border-rodape-ouro" : "border-rodape-borda"
+                    odsEmDestaque === ods.numero ? "border-rodape-destaque" : "border-rodape-borda"
                   }`}
                   {...eventosDoOds(ods.numero)}
                 >
@@ -145,7 +145,7 @@ export default function FaixaODS() {
                   type="button"
                   tabIndex={-1}
                   className={`${CLASSES_BOTAO_ODS} ${
-                    odsEmDestaque === ods.numero ? "border-rodape-ouro" : "border-rodape-borda"
+                    odsEmDestaque === ods.numero ? "border-rodape-destaque" : "border-rodape-borda"
                   }`}
                   onMouseEnter={eventosDoOds(ods.numero).onMouseEnter}
                   onMouseLeave={eventosDoOds(ods.numero).onMouseLeave}

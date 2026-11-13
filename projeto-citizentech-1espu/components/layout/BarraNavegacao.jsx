@@ -33,7 +33,7 @@ const LAYOUT_CELULAR = {
   da página, no fluxo normal.
 
   Visual da Fase 8 (seção 18.9): pílula com fundo --cor-superficie,
-  borda e item ativo dourado. O canto do contorno é o canto do item + o
+  borda e item ativo laranja. O canto do contorno é o canto do item + o
   espaço interno + a borda (1,25rem + 7 px no celular; 3rem ÷ 2 + 7 px a
   partir de 768 px), para os cantos ficarem "paralelos". A partir de
   768 px, a barra é uma pílula perfeita; no celular (itens de 2 andares
