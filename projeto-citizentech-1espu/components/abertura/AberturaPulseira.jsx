@@ -12,6 +12,7 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useCapaIntro } from "@/hooks/useCapaIntro";
 import { useEncaixe } from "@/hooks/useEncaixe";
+import { useGiroPulseira } from "@/hooks/useGiroPulseira";
 import { useLinhasPartes } from "@/hooks/useLinhasPartes";
 import { SINAIS_DA_ABERTURA } from "@/lib/pulseira3d/sinais";
 import { spring } from "@/lib/presetsMovimento";
@@ -19,10 +20,19 @@ import { spring } from "@/lib/presetsMovimento";
 /*
   AberturaPulseira — abertura do Início (seções 18.6 e 18.14).
 
-  Ordem no HTML (é a ordem do leitor de tela, seção 18.15):
-  H1 → resumo → pulseira (descrição) → "Pausar animação" → "Partes da
-  solução, lista, 6 links". A capa e a palavra de fundo são decorativas
-  (aria-hidden).
+  Ordem no HTML (é a ordem do leitor de tela, seções 18.15 e 19.16):
+  H1 → resumo → "Pulseira Pulse em 3D" (palco com a descrição) → grupo
+  "Girar a pulseira" → "Partes da solução, lista, 6 links". A capa e a
+  palavra de fundo são decorativas (aria-hidden).
+
+  Pulseira nova (seção 19.12, modo "abertura"): gira sozinha devagar,
+  passa pelos 5 sinais e escreve P-U-L-S-E na célula Braille. Ela também
+  gira arrastando, pelas setas do teclado (com o foco no palco) e pelos
+  botões "Girar para a esquerda" e "Girar para a direita". O botão
+  "Girar sozinha" (aria-pressed; texto fixo, só o ícone troca) para o
+  giro E a passagem dos sinais e do Braille (WCAG 2.2.2; decisão da 9.0):
+  o sinal da vez fica aceso e parado. Os 6 links continuam ligados às
+  partes equivalentes do modelo novo (zonas de vibração e fecho).
 
   - Capa (primeira visita da sessão, só com os efeitos ligados):
     enquanto ela está na tela, os títulos e os links ficam escondidos e a
@@ -37,40 +47,39 @@ import { spring } from "@/lib/presetsMovimento";
     linhas tracejadas ligando cada link à sua parte.
 
   Com os efeitos desligados (interruptor "Efeitos", seção 19.2): pulseira
-  parada, legenda "Sinais da Pulse" / "Veja cada sinal explicado na
-  página Solução." (decisão da equipe), sem botão de pausa, sem capa,
-  linhas paradas. Ligar ou desligar vale na hora. A mesma
-  legenda parada aparece enquanto a cena 3D não fica pronta, sem
-  JavaScript e se o WebGL falhar: nesses casos nada se move, e um botão
-  "Pausar animação" sem efeito confundiria.
+  parada na vista da frente, legenda "Sinais da Pulse" / "Veja cada sinal
+  explicado na página Solução." (decisão da equipe), sem "Girar sozinha",
+  sem capa, linhas paradas. "Girar para a esquerda/direita" e as setas
+  continuam girando, sem animação. Ligar ou desligar vale na hora.
+  Enquanto a cena 3D não fica pronta, sem JavaScript e se o WebGL falhar:
+  a mesma legenda parada e nenhum botão de giro (não há o que girar).
 */
+
+// Botões de giro (protótipo): pílula de 48 px, contorno de 2 px
+const ESTILO_BOTAO_GIRO =
+  "inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-borda bg-superficie px-4 font-bold text-texto hover:border-marca";
 export default function AberturaPulseira() {
   // Esta parte é lógica
-  const [pausado, setPausado] = useState(false);
   const [sinalAtual, setSinalAtual] = useState(SINAIS_DA_ABERTURA[0]);
-  const [cenaAnimando, setCenaAnimando] = useState(false);
+  const [cenaPronta, setCenaPronta] = useState(false);
   const [parteAtiva, setParteAtiva] = useState(null);
   const { efeitosLigados } = useEfeitos();
   const capa = useCapaIntro();
+  const giro = useGiroPulseira();
   const { refPalco, refSvg, registrarNo, aoDesenhar } = useLinhasPartes(parteAtiva);
-  const parada = !efeitosLigados || !cenaAnimando;
+  const parada = !efeitosLigados || !cenaPronta;
   // Rolagem com encaixe na Início (seção 19.6): a abertura, o Tema e
   // "Quem vive o problema" têm data-encaixe.
   useEncaixe();
 
   // Esta parte é lógica
-  function alternarPausa() {
-    setPausado((valor) => !valor);
-  }
-
-  // Esta parte é lógica
   function aoCenaPronta() {
-    setCenaAnimando(true);
+    setCenaPronta(true);
   }
 
   // Esta parte é lógica
   function aoCenaFalhar() {
-    setCenaAnimando(false);
+    setCenaPronta(false);
   }
 
   // Esta parte é lógica
@@ -176,9 +185,10 @@ export default function AberturaPulseira() {
             />
             <Pulseira3D
               modo="abertura"
-              pausado={pausado}
+              giro={giro}
               parteAtiva={parteAtiva}
               aguardarEntrada={capa.capaNaTela}
+              adiar={capa.preloaderNaTela}
               aoTrocarSinal={setSinalAtual}
               aoDesenhar={aoDesenhar}
               aoPronta={aoCenaPronta}
@@ -199,23 +209,41 @@ export default function AberturaPulseira() {
               {parada ? "Veja cada sinal explicado na página Solução." : sinalAtual.descricao}
             </span>
             {/* Esta parte é lógica */}
-            {!parada && (
-              <button
-                type="button"
-                aria-pressed={pausado}
-                onClick={alternarPausa}
-                className="inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-borda bg-superficie px-5 font-bold text-texto hover:border-marca"
-              >
+            {/* Botões de giro: só com a cena pronta (sem cena, não há o
+                que girar). Com os efeitos desligados, giram sem animação,
+                e "Girar sozinha" some (nada se move sozinho). */}
+            {cenaPronta && (
+              <div role="group" aria-label="Girar a pulseira" className="flex flex-wrap justify-center gap-2">
+                <button type="button" onClick={() => giro.girar(-45)} className={ESTILO_BOTAO_GIRO}>
+                  {/* ICONE-ArrowCounterClockwise-AQUI */}
+                  <EspacoIcone nome="ArrowCounterClockwise" />
+                  Girar para a esquerda
+                </button>
+                <button type="button" onClick={() => giro.girar(45)} className={ESTILO_BOTAO_GIRO}>
+                  {/* ICONE-ArrowClockwise-AQUI */}
+                  <EspacoIcone nome="ArrowClockwise" />
+                  Girar para a direita
+                </button>
                 {/* Esta parte é lógica */}
-                {pausado ? (
-                  // ICONE-Play-AQUI
-                  <EspacoIcone nome="Play" />
-                ) : (
-                  // ICONE-Pause-AQUI
-                  <EspacoIcone nome="Pause" />
+                {efeitosLigados && (
+                  <button
+                    type="button"
+                    aria-pressed={giro.girando}
+                    onClick={giro.alternarGiro}
+                    className={ESTILO_BOTAO_GIRO}
+                  >
+                    {/* Esta parte é lógica */}
+                    {giro.girando ? (
+                      // ICONE-Pause-AQUI
+                      <EspacoIcone nome="Pause" />
+                    ) : (
+                      // ICONE-Play-AQUI
+                      <EspacoIcone nome="Play" />
+                    )}
+                    Girar sozinha
+                  </button>
                 )}
-                <span>{pausado ? "Retomar animação" : "Pausar animação"}</span>
-              </button>
+              </div>
             )}
           </motion.div>
 

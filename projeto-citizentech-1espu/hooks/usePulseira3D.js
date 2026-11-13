@@ -1,34 +1,36 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { criarCena } from "@/lib/pulseira3d/cena";
+import { PULSE_EM_BRAILLE } from "@/lib/pulseira3d/modelo";
 import { useEfeitos } from "@/hooks/useEfeitos";
-import {
-  DURACAO_DO_CICLO,
-  MOVIMENTO_DO_SINAL,
-  SINAIS_DA_ABERTURA,
-  animarSinal,
-  apagarPartes,
-  destacarParte,
-} from "@/lib/pulseira3d/sinais";
+import { DURACAO_DO_CICLO, MOVIMENTO_DO_SINAL, SINAIS_DA_ABERTURA } from "@/lib/pulseira3d/sinais";
 
 /*
-  usePulseira3D — liga a cena 3D ao React (seções 18.2, 18.7 e 18.14).
+  usePulseira3D — liga a cena 3D ao React (seções 18.7, 19.1 e 19.12).
 
   Recebe a "caixa" onde a pulseira vai aparecer (refCaixa) e as opções:
-  - modo: "abertura" (os 5 sinais em sequência), "sinal" (um sinal
-    repetido, em "Os sinais") ou "parar" (página 404, até 4,6 s);
-  - sinal: no modo "sinal", qual ("continuar", "parar", "virar",
-    "aguardar");
-  - pausado: botão "Pausar animação" de quem usa;
-  - parteAtiva: no modo "abertura", a parte que acende (link focado);
-  - aguardarEntrada: no modo "abertura", espera a capa sair para entrar;
+  - modo:
+    - "abertura" (Início): gira sozinha devagar, passa pelos 5 sinais e
+      escreve P-U-L-S-E na célula Braille;
+    - "explorar" (Solução, "A pulseira"): gira sozinha até a pessoa
+      girar, escolher uma parte ou um sinal;
+    - "sinal" (Solução, "Os sinais"): repete um sinal;
+    - "parar" (página 404): faz o sinal de parar até 4,6 s e para;
+  - giro: a "conexão" do useGiroPulseira (abertura e explorar): o destino
+    do giro e se o giro automático está ligado;
+  - sinal e pausado: no modo "sinal";
+  - parteAtiva: a parte que acende (link focado na abertura; parte
+    escolhida no explorar);
+  - sinalAtivo: no modo "explorar", o sinal escolhido;
+  - aguardarEntrada: no modo "abertura", espera a capa sair;
   - aoTrocarSinal(sinal), aoDesenhar(projetar), aoPronta(), aoFalhar().
 
-  Regras de desempenho e de acessibilidade (seção 18.2):
-  - só anima enquanto está visível na tela (IntersectionObserver);
-  - com os efeitos desligados (interruptor "Efeitos", seção 19.2),
-    desenha um quadro parado e não anima. Ligar ou desligar vale na hora;
-  - pausa quando pedido; no modo "parar", para sozinha antes de 5 s;
-  - a cor da tira segue o tema do aparelho;
+  Regras de desempenho e de acessibilidade (seção 19.1):
+  - só anima enquanto está visível na tela (IntersectionObserver) e
+    enquanto algo se move (parado, só redesenha quando algo muda);
+  - com os efeitos desligados: quadro parado, sem giro automático; girar
+    pelos botões e setas continua valendo, sem animação;
+  - pausa ("Girar sozinha" desligado na abertura, botão de pausa no
+    modo "sinal"); no modo "parar", para sozinha antes de 5 s;
   - ao sair da página, libera tudo da memória.
 
   Por que o <canvas> é criado aqui, e não no JSX: no modo de
@@ -38,9 +40,11 @@ import {
   desenvolvimento quanto o site publicado funcionam.
 */
 
-const DURACAO_DA_ENTRADA = 1.6; // s: escala de 0,35 para 1 e uma volta
+const DURACAO_DA_ENTRADA = 1.6; // s: a abertura cresce de 0,35 para 1 e dá uma volta
 const LIMITE_DO_PARAR = 4.6; // s: a 404 para antes de 5 s (WCAG 2.2.2)
-const ULTIMO_PULSO_DO_PARAR = 3.7; // s: os últimos anéis somem até 4,6 s
+const VELOCIDADE_DO_GIRO = 0.45; // radianos por segundo (protótipo)
+const INTERVALO_DA_LETRA = 1.1; // s entre as letras do Braille
+const VISTA_DA_FRENTE = { y: -0.35, x: 0.12 };
 
 // Esta parte é lógica
 export function usePulseira3D(refCaixa, opcoes) {
@@ -55,7 +59,7 @@ export function usePulseira3D(refCaixa, opcoes) {
     refOpcoes.current = { ...opcoes, efeitosLigados };
   });
 
-  const { modo, pausado, parteAtiva, aguardarEntrada, sinal } = opcoes;
+  const { modo, pausado, parteAtiva, aguardarEntrada, sinal, sinalAtivo } = opcoes;
 
   // Esta parte é lógica
   // Monta a cena quando o componente aparece e desmonta quando ele sai.
@@ -78,50 +82,47 @@ export function usePulseira3D(refCaixa, opcoes) {
       return;
     }
 
-    const { pulseira } = cena.partes;
+    const { modelo, pivo } = cena;
+    const interativo = modo === "abertura" || modo === "explorar";
+    const giro = () => refOpcoes.current.giro;
+    const inicio = interativo ? giro()?.refAlvo.current ?? VISTA_DA_FRENTE : VISTA_DA_FRENTE;
+
     const estado = {
       rodando: false,
       idQuadro: 0,
       ultimoInstante: 0,
-      tempo: 0, // relógio da animação (para quando pausa)
+      tempo: 0, // relógio da animação
       visivel: false,
+      rotY: inicio.y,
+      rotX: inicio.x,
       indiceDoSinal: -1,
       tempoDoSinal: 0,
       ciclo: 0,
       sinalFixo: null,
-      disparos: new Set(),
-      entrada: refOpcoes.current.aguardarEntrada ? -1 : 0,
+      letra: 0,
+      tempoDaLetra: 0,
+      entrada: refOpcoes.current.aguardarEntrada ? -1 : DURACAO_DA_ENTRADA,
       terminou: false,
       inicioDoParar: null, // instante real (ms) do primeiro quadro do modo "parar"
-      mouse: { x: 0, y: 0 },
       primeiroQuadro: true,
     };
 
     // Esta parte é lógica
-    const umaVez = (nome, acao) => {
-      if (!estado.disparos.has(nome)) {
-        estado.disparos.add(nome);
-        acao();
-      }
-    };
+    const girandoSozinha = () => interativo && !!giro()?.refGirando.current;
 
     // Esta parte é lógica
-    function novoCiclo() {
-      estado.tempoDoSinal = 0;
-      estado.disparos.clear();
+    // A pulseira ainda não chegou ao destino do giro?
+    function aCaminho() {
+      const alvo = giro()?.refAlvo.current;
+      if (!interativo || !alvo) return false;
+      return Math.abs(alvo.y - estado.rotY) > 0.001 || Math.abs(alvo.x - estado.rotX) > 0.001;
     }
 
     // Esta parte é lógica
-    // Modo "abertura": percorre os 5 sinais em sequência.
-    function avancarAbertura(dt) {
-      estado.tempoDoSinal += dt;
-      if (estado.indiceDoSinal < 0 || estado.tempoDoSinal > DURACAO_DO_CICLO) {
-        estado.indiceDoSinal = (estado.indiceDoSinal + 1) % SINAIS_DA_ABERTURA.length;
-        novoCiclo();
-        refOpcoes.current.aoTrocarSinal?.(SINAIS_DA_ABERTURA[estado.indiceDoSinal]);
-      }
-      const atual = SINAIS_DA_ABERTURA[estado.indiceDoSinal];
-      animarSinal(atual.chave, estado.tempoDoSinal, dt, cena, umaVez);
+    // Avisa quem usa qual sinal está passando (legenda e palavra de fundo)
+    function avisarSinal(chave) {
+      if (modo === "abertura") refOpcoes.current.aoTrocarSinal?.(SINAIS_DA_ABERTURA[estado.indiceDoSinal]);
+      else refOpcoes.current.aoTrocarSinal?.({ chave, movimento: MOVIMENTO_DO_SINAL[chave] });
     }
 
     // Esta parte é lógica
@@ -133,91 +134,122 @@ export function usePulseira3D(refCaixa, opcoes) {
     }
 
     // Esta parte é lógica
-    function avancarSinalFixo(dt) {
-      const pedido = refOpcoes.current.sinal ?? "continuar";
-      if (pedido !== estado.sinalFixo) {
-        // O sinal mudou (a pessoa rolou para outro): recomeça do zero
-        estado.sinalFixo = pedido;
-        estado.ciclo = 0;
-        novoCiclo();
-        cena.limparAneis();
-        refOpcoes.current.aoTrocarSinal?.({ chave: chaveDoSinalFixo(), movimento: MOVIMENTO_DO_SINAL[chaveDoSinalFixo()] });
+    // Qual sinal e qual parte aparecem neste quadro.
+    function sinalEParte() {
+      const op = refOpcoes.current;
+      if (modo === "abertura") {
+        const atual = estado.indiceDoSinal >= 0 ? SINAIS_DA_ABERTURA[estado.indiceDoSinal].chave : null;
+        return { sinal: op.efeitosLigados ? atual : null, parte: modelo.parteDoLink[op.parteAtiva] ?? null };
       }
-      estado.tempoDoSinal += dt;
-      if (estado.tempoDoSinal > DURACAO_DO_CICLO) {
-        estado.ciclo += 1;
-        novoCiclo();
-        refOpcoes.current.aoTrocarSinal?.({ chave: chaveDoSinalFixo(), movimento: MOVIMENTO_DO_SINAL[chaveDoSinalFixo()] });
+      if (modo === "explorar") {
+        const sinalEscolhido = op.sinalAtivo ?? (op.parteAtiva === "luzes" ? "continuar" : null);
+        return { sinal: sinalEscolhido, parte: op.parteAtiva ?? null };
       }
-      animarSinal(chaveDoSinalFixo(), estado.tempoDoSinal, dt, cena, umaVez);
+      if (modo === "sinal") return { sinal: chaveDoSinalFixo(), parte: null };
+      return { sinal: estado.terminou || !op.efeitosLigados ? null : "parar", parte: null };
     }
 
     // Esta parte é lógica
-    // Modo "parar" (404): vibra até 4,6 s e para de vez. O limite conta o
-    // tempo REAL (relógio do navegador), e não o tempo da animação: num
-    // aparelho lento, cada passo da animação é limitado a 0,05 s, e o
-    // tempo da animação andaria mais devagar que o real. A WCAG 2.2.2
-    // fala de segundos de verdade.
-    function avancarParar(dt) {
-      const agora = performance.now();
-      if (estado.inicioDoParar === null) estado.inicioDoParar = agora;
-      const decorrido = (agora - estado.inicioDoParar) / 1000;
-      estado.tempoDoSinal += dt;
-      if (decorrido >= LIMITE_DO_PARAR) {
-        estado.terminou = true;
-        cena.limparAneis();
-        apagarPartes(cena);
-        return;
-      }
-      const dentroDoCiclo = estado.tempoDoSinal % DURACAO_DO_CICLO;
-      if (dentroDoCiclo < dt) estado.disparos.clear(); // começou outro ciclo
-      animarSinal("parar", dentroDoCiclo, dt, cena, umaVez, decorrido < ULTIMO_PULSO_DO_PARAR);
-    }
-
-    // Esta parte é lógica
-    // Entrada da abertura: a pulseira cresce de 0,35 para 1 e dá uma
-    // volta completa em 1,6 s (depois da capa).
-    function avancarEntrada(dt) {
-      estado.entrada = Math.min(DURACAO_DA_ENTRADA, estado.entrada + dt);
-      const progresso = estado.entrada / DURACAO_DA_ENTRADA;
-      const suave = 1 - Math.pow(1 - progresso, 3);
-      cena.balanco.scale.setScalar(0.35 + 0.65 * suave);
-      pulseira.rotation.y = -0.55 - (1 - suave) * Math.PI * 2;
-    }
-
-    // Esta parte é lógica
-    // Um quadro da animação.
+    // Um passo da animação (efeitos ligados).
     function passo(dt) {
       const op = refOpcoes.current;
       estado.tempo += dt;
+
+      if (interativo) {
+        const alvo = giro()?.refAlvo.current;
+        if (alvo) {
+          if (girandoSozinha() && !(modo === "abertura" && op.aguardarEntrada)) alvo.y += dt * VELOCIDADE_DO_GIRO;
+          const suave = Math.min(1, dt * 6);
+          estado.rotY += (alvo.y - estado.rotY) * suave;
+          estado.rotX += (alvo.x - estado.rotX) * suave;
+        }
+      } else {
+        // "sinal" e "parar": de frente, balançando de leve
+        estado.rotY = VISTA_DA_FRENTE.y + Math.sin(estado.tempo * 0.5) * 0.25;
+        estado.rotX = VISTA_DA_FRENTE.x;
+      }
+
+      // Abertura: entrada depois da capa e a passagem pelos sinais
       if (modo === "abertura") {
         if (op.aguardarEntrada) {
-          cena.balanco.scale.setScalar(0.35);
-        } else if (estado.entrada < DURACAO_DA_ENTRADA) {
-          if (estado.entrada < 0) estado.entrada = 0;
-          avancarEntrada(dt);
+          pivo.scale.setScalar(0.35);
         } else {
-          cena.balanco.scale.setScalar(1);
-          avancarAbertura(dt);
+          if (estado.entrada < 0) estado.entrada = 0;
+          estado.entrada = Math.min(DURACAO_DA_ENTRADA, estado.entrada + dt);
+          const progresso = 1 - Math.pow(1 - estado.entrada / DURACAO_DA_ENTRADA, 3);
+          pivo.scale.setScalar(0.35 + 0.65 * progresso);
+          if (girandoSozinha()) {
+            estado.tempoDoSinal += dt;
+            if (estado.indiceDoSinal < 0 || estado.tempoDoSinal > DURACAO_DO_CICLO) {
+              estado.indiceDoSinal = (estado.indiceDoSinal + 1) % SINAIS_DA_ABERTURA.length;
+              estado.tempoDoSinal = 0;
+              avisarSinal();
+            }
+          }
         }
-        // Balança devagar e acompanha o mouse (só em telas com mouse)
-        const alvoY = Math.sin(estado.tempo * 0.35) * 0.42 + estado.mouse.x * 0.35;
-        cena.balanco.rotation.y += (alvoY - cena.balanco.rotation.y) * 0.05;
-        cena.balanco.rotation.x += (estado.mouse.y * 0.12 - cena.balanco.rotation.x) * 0.05;
-      } else if (modo === "sinal") {
-        avancarSinalFixo(dt);
-        cena.balanco.rotation.y = Math.sin(estado.tempo * 0.5) * 0.3;
-      } else {
-        avancarParar(dt);
-        if (!estado.terminou) cena.balanco.rotation.y = Math.sin(estado.tempo * 0.5) * 0.25;
       }
-      cena.avancarAneis(dt);
+
+      // Pulseira pequena: o sinal escolhido, em ciclos
+      if (modo === "sinal") {
+        const pedido = op.sinal ?? "continuar";
+        if (pedido !== estado.sinalFixo) {
+          estado.sinalFixo = pedido;
+          estado.ciclo = 0;
+          estado.tempoDoSinal = 0;
+          avisarSinal(chaveDoSinalFixo());
+        }
+        estado.tempoDoSinal += dt;
+        if (estado.tempoDoSinal > DURACAO_DO_CICLO) {
+          estado.ciclo += 1;
+          estado.tempoDoSinal = 0;
+          avisarSinal(chaveDoSinalFixo());
+        }
+      }
+
+      // 404: até 4,6 s de tempo REAL (relógio do navegador), e não do tempo
+      // da animação: num aparelho lento, cada passo é limitado a 0,05 s, e
+      // o tempo da animação andaria mais devagar que o real.
+      if (modo === "parar") {
+        const agora = performance.now();
+        if (estado.inicioDoParar === null) estado.inicioDoParar = agora;
+        if ((agora - estado.inicioDoParar) / 1000 >= LIMITE_DO_PARAR) estado.terminou = true;
+      }
+
+      // Braille: P-U-L-S-E, uma letra a cada 1,1 s, enquanto a pulseira
+      // se move sozinha (ou com a célula Braille escolhida no explorar)
+      const escrevendo = modo === "abertura" ? girandoSozinha() : modo === "explorar" ? girandoSozinha() || op.parteAtiva === "braille" : false;
+      if (escrevendo) {
+        estado.tempoDaLetra += dt;
+        if (estado.tempoDaLetra > INTERVALO_DA_LETRA) {
+          estado.tempoDaLetra = 0;
+          estado.letra = (estado.letra + 1) % PULSE_EM_BRAILLE.length;
+          modelo.escreverBraille(PULSE_EM_BRAILLE[estado.letra]);
+        }
+      }
+
+      // Na abertura com o giro pausado, o sinal atual fica aceso e parado
+      const congelado = modo === "abertura" && !girandoSozinha();
+      modelo.atualizar({ t: estado.tempo, dt, ...sinalEParte(), semMovimento: congelado });
+      pivo.rotation.set(estado.rotX, estado.rotY, 0);
     }
 
     // Esta parte é lógica
-    // Desenha o que está na cena e avisa quem usa (linhas da abertura).
+    // Quadro parado (efeitos desligados): pulseira de frente (ou no destino
+    // escolhido pelos botões), Braille no "P" e o sinal escolhido aceso,
+    // sem tremor nem piscada.
+    function quadroParado() {
+      const alvo = interativo ? giro()?.refAlvo.current : null;
+      estado.rotY = alvo?.y ?? VISTA_DA_FRENTE.y;
+      estado.rotX = alvo?.x ?? VISTA_DA_FRENTE.x;
+      pivo.scale.setScalar(1);
+      pivo.rotation.set(estado.rotX, estado.rotY, 0);
+      modelo.escreverBraille("p");
+      modelo.atualizar({ t: 0, dt: 0, ...sinalEParte(), semMovimento: true });
+    }
+
+    // Esta parte é lógica
+    // Desenha e avisa quem usa (linhas da abertura).
     function desenhar() {
-      destacarParte(cena, refOpcoes.current.parteAtiva, estado.tempo);
       cena.desenhar();
       refOpcoes.current.aoDesenhar?.(cena.projetar);
       if (estado.primeiroQuadro) {
@@ -227,23 +259,17 @@ export function usePulseira3D(refCaixa, opcoes) {
     }
 
     // Esta parte é lógica
-    // Quadro parado dos efeitos desligados: pulseira inteira, de 3/4,
-    // sem anéis e sem nada aceso (só a parte do link focado).
-    function poseParada() {
-      cena.limparAneis();
-      apagarPartes(cena);
-      cena.balanco.scale.setScalar(1);
-      pulseira.rotation.y = -0.55;
-      cena.balanco.rotation.set(0, -0.18, 0);
-    }
-
-    // Esta parte é lógica
+    // Algo precisa se mover neste momento?
     function deveAnimar() {
       const op = refOpcoes.current;
-      if (!estado.visivel || op.pausado || estado.terminou) return false;
-      if (!op.efeitosLigados) return false;
-      if (modo === "abertura" && op.aguardarEntrada) return false;
-      return true;
+      if (!estado.visivel || !op.efeitosLigados || estado.terminou) return false;
+      if (modo === "abertura") {
+        if (op.aguardarEntrada) return false;
+        return girandoSozinha() || aCaminho() || estado.entrada < DURACAO_DA_ENTRADA || !!op.parteAtiva;
+      }
+      if (modo === "explorar") return girandoSozinha() || aCaminho() || !!op.sinalAtivo || !!op.parteAtiva;
+      if (modo === "sinal") return !op.pausado;
+      return true; // "parar", até terminar
     }
 
     // Esta parte é lógica
@@ -255,24 +281,26 @@ export function usePulseira3D(refCaixa, opcoes) {
       if (deveAnimar()) {
         estado.idQuadro = requestAnimationFrame(quadro);
       } else {
-        estado.rodando = false; // pausou, saiu da tela ou terminou
+        estado.rodando = false; // parou, saiu da tela ou terminou
+        if (estado.terminou) {
+          modelo.atualizar({ t: estado.tempo, dt: 0, sinal: null, parte: null, semMovimento: true });
+          desenhar();
+        }
       }
     }
 
     // Esta parte é lógica
-    // Chamada sempre que algo muda (visibilidade, pausa, preferências,
-    // tamanho, tema, parte ativa): liga, desliga ou só redesenha.
+    // Chamada sempre que algo muda (visibilidade, giro, pausa, efeitos,
+    // tamanho, parte ou sinal): liga, desliga ou só redesenha.
     function atualizar() {
       if (!refOpcoes.current.efeitosLigados) {
         cancelAnimationFrame(estado.idQuadro);
         estado.rodando = false;
-        poseParada();
+        quadroParado();
         desenhar();
         return;
       }
-      if (modo === "abertura" && refOpcoes.current.aguardarEntrada) {
-        cena.balanco.scale.setScalar(0.35);
-      }
+      if (modo === "abertura" && refOpcoes.current.aguardarEntrada) pivo.scale.setScalar(0.35);
       if (deveAnimar()) {
         if (!estado.rodando) {
           estado.rodando = true;
@@ -280,10 +308,16 @@ export function usePulseira3D(refCaixa, opcoes) {
           estado.idQuadro = requestAnimationFrame(quadro);
         }
       } else if (!estado.rodando) {
+        // Parado (pausado ou fora da tela): mostra o estado atual
+        modelo.atualizar({ t: estado.tempo, dt: 0, ...sinalEParte(), semMovimento: true });
+        pivo.rotation.set(estado.rotX, estado.rotY, 0);
         desenhar();
       }
     }
     refControle.current = atualizar;
+
+    // O giro (botões, setas, arrasto, giro automático) avisa quando muda
+    const pararDeOuvirGiro = interativo ? giro()?.assinar(atualizar) : null;
 
     // Tamanho: acompanha a caixa (girar o celular, zoom)
     const observadorTamanho = new ResizeObserver(() => {
@@ -300,22 +334,6 @@ export function usePulseira3D(refCaixa, opcoes) {
     });
     observadorVisibilidade.observe(canvas);
 
-    // Tema do aparelho (o interruptor "Efeitos" chega pelo efeito de baixo)
-    const consultaTema = window.matchMedia("(prefers-color-scheme: dark)");
-    const aoMudarTema = () => {
-      cena.aplicarCorDaFaixa();
-      if (!estado.rodando) desenhar();
-    };
-    consultaTema.addEventListener("change", aoMudarTema);
-
-    // Mouse: só na abertura, em telas com mouse (seção 18.9)
-    const temMouse = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const aoMoverMouse = (evento) => {
-      estado.mouse.x = (evento.clientX / window.innerWidth) * 2 - 1;
-      estado.mouse.y = (evento.clientY / window.innerHeight) * 2 - 1;
-    };
-    if (modo === "abertura" && temMouse) window.addEventListener("pointermove", aoMoverMouse);
-
     // Se a placa de vídeo "perder" o WebGL no meio do caminho
     const aoPerderContexto = (evento) => {
       evento.preventDefault();
@@ -325,8 +343,12 @@ export function usePulseira3D(refCaixa, opcoes) {
     canvas.addEventListener("webglcontextlost", aoPerderContexto);
 
     // Primeiro desenho (também é o quadro parado, se for o caso)
-    if (!refOpcoes.current.efeitosLigados) poseParada();
-    else if (modo === "abertura" && refOpcoes.current.aguardarEntrada) cena.balanco.scale.setScalar(0.35);
+    if (!refOpcoes.current.efeitosLigados) quadroParado();
+    else {
+      if (modo === "abertura" && refOpcoes.current.aguardarEntrada) pivo.scale.setScalar(0.35);
+      modelo.atualizar({ t: 0, dt: 0, ...sinalEParte(), semMovimento: true });
+      pivo.rotation.set(estado.rotX, estado.rotY, 0);
+    }
     desenhar();
 
     // Esta parte é lógica
@@ -334,10 +356,9 @@ export function usePulseira3D(refCaixa, opcoes) {
     return () => {
       refControle.current = null;
       cancelAnimationFrame(estado.idQuadro);
+      pararDeOuvirGiro?.();
       observadorTamanho.disconnect();
       observadorVisibilidade.disconnect();
-      consultaTema.removeEventListener("change", aoMudarTema);
-      window.removeEventListener("pointermove", aoMoverMouse);
       canvas.removeEventListener("webglcontextlost", aoPerderContexto);
       cena.liberar();
       canvas.remove();
@@ -345,9 +366,9 @@ export function usePulseira3D(refCaixa, opcoes) {
   }, [refCaixa, modo]);
 
   // Esta parte é lógica
-  // Quando a pausa, a parte acesa, a entrada, o sinal ou o interruptor
-  // "Efeitos" mudam, a cena decide se volta a animar ou só redesenha.
+  // Quando a pausa, a parte, o sinal, a entrada ou o interruptor "Efeitos"
+  // mudam, a cena decide se volta a animar ou só redesenha.
   useEffect(() => {
     refControle.current?.();
-  }, [pausado, parteAtiva, aguardarEntrada, sinal, efeitosLigados]);
+  }, [pausado, parteAtiva, aguardarEntrada, sinal, sinalAtivo, efeitosLigados]);
 }

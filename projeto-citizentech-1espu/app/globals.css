@@ -181,7 +181,11 @@
     --cor-ponto-brilho: rgba(255, 255, 255, 0.08);
     --cor-ponto-sombra: rgba(0, 0, 0, 0.35);
     --cor-palavra-fundo: rgba(255, 255, 255, 0.05);
-    --grao-opacidade: 0.08;
+    /* Opção B da equipe (subfase 9.4): grão preto a 25% no escuro (a 19.3
+       dizia 0,08, que deixava o grão invisível). Como ele fica atrás do
+       conteúdo e só escurece o fundo, o contraste só sobe: marca 5,4:1 no
+       fundo e 5,05:1 na faixa. */
+    --grao-opacidade: 0.25;
     /* Ruído preto no tema escuro (decisão 1 da 9.0) */
     --grao-imagem: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     /* --cor-faixa-3d e --cor-cortina: iguais ao tema claro */

@@ -1,6 +1,7 @@
 import LinkInterno from "@/components/ui/LinkInterno";
 import PaginaComIndice from "@/components/layout/PaginaComIndice";
 import Secao from "@/components/layout/Secao";
+import ExplorarPulseira from "@/components/pulseira/ExplorarPulseira";
 import Cartao from "@/components/ui/Cartao";
 import EspacoImagem from "@/components/ui/EspacoImagem";
 import Botao from "@/components/ui/Botao";
@@ -29,6 +30,8 @@ export const metadata = {
     transporte-publico (H3), todas com tabIndex={-1} para receber o foco;
   - rótulos mono da 18.5, dos protótipos e os decididos pela equipe.
 
+  Fase 9: "A pulseira" ganha a pulseira 3D no modo "explorar" (19.12),
+  depois dos 3 passos.
   Fase 9 (seção 19.5): "A pulseira" e "Equipe" são "bandas" (fundo
   --cor-faixa com o divisor de piso tátil), como na amostra da Solução do
   protótipo pulse-efeitos.html. "Antes e depois" também será banda quando
@@ -122,6 +125,11 @@ export default function PaginaSolucao() {
             </Cartao>
           ))}
         </ol>
+
+        {/* Pulseira 3D no modo "explorar" (seção 19.12, decisão da equipe):
+            palco, "Girar a pulseira", "Partes da pulseira" e "Os sinais no
+            pulso". Ordem da 19.16: vídeo (subfase 9.8) → passos → pulseira. */}
+        <ExplorarPulseira />
 
         <div className="max-w-texto">
           <h3>Apenas dois botões</h3>
