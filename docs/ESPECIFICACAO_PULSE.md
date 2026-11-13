@@ -7,7 +7,9 @@
 >
 > **Fase 8 — nova identidade e movimento (11/11/2026):** a seção 18 traz o novo estilo, cores, fontes, efeitos, a capa, a pulseira 3D, o rodapé (com a faixa dos ODS na Solução) e a página 404. **Onde a seção 18 e uma seção antiga discordarem, vale a 18.** As seções afetadas têm uma nota **(Fase 8)**.
 >
-> Última atualização: 11/11/2026.
+> **Fase 9 — efeitos, paleta nova, pulseira nova e vídeos (12/11/2026):** a seção 19 traz o interruptor "Efeitos", a paleta laranja e grafite, as fontes por pacote, o polimento, os efeitos e as interações novas, a pulseira 3D nova e os vídeos. **Onde a seção 19 discordar da 18 ou de uma seção antiga, vale a 19.** As seções afetadas têm uma nota **(Fase 9)**.
+>
+> Última atualização: 12/11/2026.
 
 ---
 
@@ -31,6 +33,7 @@
 16. Pendências e suposições
 17. Registro de alterações do desenvolvimento
 18. Nova identidade e movimento (Fase 8)
+19. Fase 9: efeitos, paleta nova, pulseira nova e vídeos
 
 ---
 
@@ -81,7 +84,7 @@
 9. **Alvos de toque de no mínimo 48 × 48 px**, com 8 px de espaço entre alvos vizinhos.
 10. **Contorno de foco sempre visível**, 3 px, afastado 2 px do elemento.
 11. **Tema claro e escuro seguindo somente a configuração do aparelho** (`prefers-color-scheme`). Não há botão de tema.
-12. **Respeitar "reduzir movimento"** (`prefers-reduced-motion`): sem animações e barras sempre visíveis. **(Fase 8)** Ver também o piso de acessibilidade da nova identidade (seção 18.2).
+12. **Respeitar "reduzir movimento"** (`prefers-reduced-motion`): sem animações e barras sempre visíveis. **(Fase 8)** Ver também o piso de acessibilidade da nova identidade (seção 18.2). **(Fase 9)** O "reduzir movimento" do aparelho passa a ser só o valor inicial do interruptor "Efeitos", que controla todo o movimento (seção 19.2).
 13. **Funcionar no alto contraste do Windows** (`forced-colors`): áreas separadas por bordas; nada importante só em sombra ou imagem de fundo.
 14. **Sem CAPTCHA, sem limites de tempo, sem gestos obrigatórios** (deslizar etc.), sem vibração do celular (para não confundir com os sinais da Pulse).
 15. **Sem emoji** em texto importante.
@@ -756,7 +759,7 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 - **Ícones continuam ocultos para o leitor de tela** (`aria-hidden="true"`), porque o texto ao lado já diz o mesmo. Assim a leitura fica direta: "Início", e não "Ícone casa, Início".
 - **Sem texto dentro de imagens.** Imagens da pulseira são apresentadas como "ilustração conceitual".
 - **Não usar imagens geradas por IA.** **(Fase 8)** Vale para o Claude Code; a equipe pode colocá-las. Marcadores novos na seção 18.13.
-- Outras mídias, se houver, também são manuais: **`VIDEO-(descrição)-AQUI`** e **`AUDIO-(descrição)-AQUI`**. Sem animação ou vídeo automático de mais de 5 s sem botão de pausa; som só depois de uma ação da pessoa.
+- Outras mídias, se houver, também são manuais: **`VIDEO-(descrição)-AQUI`** e **`AUDIO-(descrição)-AQUI`**. Sem animação ou vídeo automático de mais de 5 s sem botão de pausa; som só depois de uma ação da pessoa. **(Fase 9)** Os vídeos e o componente `VideoPulse` estão na seção 19.13.
 
 ---
 
@@ -915,7 +918,10 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 - Imagens (ilustrações): colocadas manualmente; espaços com `IMAGEM-...-AQUI` e `alt` sugerido (seção 13.2).
 - API: a equipe vai **aguardar a API** para testar o CRUD. Sem mock.
 - Fotos da equipe (Giovana, Giovane, Mie, Pedro e Thiago): colocadas manualmente nos marcadores `IMAGEM-foto de (nome)-AQUI`.
-- Fontes e ícones: colocados manualmente pela equipe nos marcadores (seções 8.2, 13.1 e 18.1). **(Fase 8)** São 3 fontes: Anton, Atkinson Hyperlegible Next e JetBrains Mono (`app/layout.jsx`).
+- Fontes e ícones: colocados manualmente pela equipe nos marcadores (seções 8.2, 13.1 e 18.1). **(Fase 8)** São 3 fontes: Anton, Atkinson Hyperlegible Next e JetBrains Mono (`app/layout.jsx`). **(Fase 9)** As fontes passam a entrar por `next/font/google` (19.4); os ícones continuam manuais.
+- **(Fase 9)** Vídeos: a equipe coloca os arquivos em `public/videos/` (19.13) e, quando tiver, a versão de "A pulseira" com a voz "Trianon-Masp".
+- **(Fase 9)** Imagens: os prompts para gerar as difíceis de achar estão no documento "Prompts das imagens da Pulse"; marcadores novos na 19.14.
+- **(Fase 9, decisão da equipe, 12/11/2026)** Os vídeos de "Os sinais" substituem a pulseira 3D pequena (19.13); a pulseira no modo `explorar` entra em "A pulseira" (19.12); em "Como funciona", as miniaturas são os quadros parados dos vídeos (19.13).
 - Nome definitivo da pulseira ("Pulse" é provisório).
 - ~~**(Fase 7)** Página 404 em português.~~ **(Fase 8)** Feita (`app/not-found.jsx`).
 - **(Fase 8)** Imagens novas: capa (2 versões), 4 sinais e 6 fotos da galeria (seção 18.13), colocadas pela equipe. Ao colocar a imagem da capa, conferir o contraste de 7:1 do rótulo, de "PULSE" e da dica sobre ela.
@@ -1021,6 +1027,8 @@ Decidida pela equipe em 11/11/2026, depois das Fases 0 a 7. **Esta seção vence
 
 ### 18.1 Pacotes e fontes
 
+> **(Fase 9)** As fontes passam a ser carregadas com `next/font/google` (seção 19.4), sem marcadores. Nenhum pacote novo.
+
 Na Fase 8, **o Claude Code instala os pacotes**, depois de mostrar o comando à equipe e receber a confirmação. Nada fora desta lista sem perguntar.
 
 | Pacote | Para quê | Observações |
@@ -1036,6 +1044,8 @@ Na Fase 8, **o Claude Code instala os pacotes**, depois de mostrar o comando à 
 
 ### 18.2 Piso de acessibilidade da nova identidade
 
+> **(Fase 9)** Substituído pela seção 19.1: o granulado pode ficar atrás do texto (contraste mínimo de 4,5:1 onde houver granulado), e o interruptor "Efeitos" substitui o "reduzir movimento" como regra de parada.
+
 Vale junto com a seção 3 e não pode ser quebrado por nenhum efeito:
 
 1. Texto sempre sobre fundo sólido, com contraste de 7:1 ou mais. Texturas, palavras gigantes e degradês só atrás de áreas sem texto.
@@ -1049,6 +1059,8 @@ Vale junto com a seção 3 e não pode ser quebrado por nenhum efeito:
 9. Desempenho: no máximo uma cena 3D visível por vez; a cena só anima enquanto está na tela; densidade de pixels limitada a 1,75; tudo liberado da memória ao sair da página. Se o WebGL falhar, aparece a descrição em texto.
 
 ### 18.3 Cores (substitui a seção 8.1)
+
+> **(Fase 9)** Substituída pela paleta laranja e grafite da seção 19.3.
 
 Os temas continuam seguindo só o aparelho. Contrastes calculados.
 
@@ -1116,6 +1128,8 @@ Continuam valendo: `text-wrap: balance` nos títulos, `overflow-wrap: anywhere` 
 
 ### 18.5 Linguagem visual (substitui o Flat Design 2.0 da seção 8)
 
+> **(Fase 9)** Complementada pela seção 19.5 (seções alternadas, textura com relevo, H2 menor, títulos novos). O Diário ganha microinterações de feedback (19.11).
+
 - **Textura de piso tátil:** grade de domos de 30 px, feita em CSS com dois `radial-gradient` (`--cor-ponto` e `--cor-ponto-brilho`), no fundo das aberturas e das cabeças de página.
 - **Palavras gigantes de fundo** em Anton, `--cor-palavra-fundo`, atrás do objeto principal, com `aria-hidden="true"`.
 - **Um objeto central por tela:** a pulseira 3D na abertura, a foto da situação em "Os sinais".
@@ -1161,6 +1175,8 @@ Ordem: capa (primeira visita da sessão) → abertura com a pulseira → "Nesta 
 
 ### 18.7 Pulseira 3D (`Pulseira3D`)
 
+> **(Fase 9)** Substituída pela pulseira nova da seção 19.12 (laranja, com fecho, célula Braille, luzes de sinal e giro de 360°).
+
 Inspirada em pulseiras esportivas (referência visual da equipe): tira de silicone roxa em laço e um módulo em forma de pílula na frente, da mesma cor. A geometria de referência está em `docs/prototipos/pulse-abertura.html`.
 
 | Parte | Como é feita (Three.js) |
@@ -1189,6 +1205,8 @@ Inspirada em pulseiras esportivas (referência visual da equipe): tira de silico
 **Regras:** carregar com `next/dynamic` e `ssr: false`, mostrando a descrição em texto enquanto carrega e se o WebGL falhar; animar só quando visível (`IntersectionObserver`); botão de pausa onde a animação é contínua; com "reduzir movimento", um quadro parado; cor da tira lida de `--cor-faixa-3d` e atualizada quando o tema muda; liberar geometrias, materiais e o renderizador ao desmontar. A lógica da cena fica num hook (`usePulseira3D`) ou num módulo em `lib/`, marcada com "// Esta parte é lógica".
 
 ### 18.8 Solução (substitui a ordem e partes da seção 6.2)
+
+> **(Fase 9)** Tecnologias vira grade de cartões que viram (19.8); a Galeria vira canvas no computador (19.9); a Equipe vai para um varal (19.10); entram "Antes e depois" (19.7) e os vídeos (19.13).
 
 **Nesta página:** A pulseira · Os sinais · Como funciona · Tecnologias · Galeria · Quem participa · Como ampliar o impacto · O diferencial · Equipe
 
@@ -1268,6 +1286,8 @@ O rodapé é escuro nos dois temas (18.3) e existe em todas as páginas. **Os OD
 
 ### 18.13 Marcadores novos de imagem
 
+> **(Fase 9)** Atualizada pela seção 19.14: a capa usa vídeos, a ilustração da pulseira sai e entram as fotos de "Quem vive o problema" e das peças de Tecnologias.
+
 Seguem as regras da seção 13.2. **As imagens são colocadas pela equipe**, que pode usar fotos próprias, bancos gratuitos ou imagens geradas por IA; o Claude Code nunca gera nem coloca imagens. A regra antiga "não usar imagens geradas por IA" passa a valer só para o Claude Code.
 
 | Marcador | Onde | `alt` sugerido | Legenda visível |
@@ -1344,3 +1364,409 @@ Todos os hooks e funções de animação levam o comentário `// Esta parte é l
 - [ ] ESLint `jsx-a11y` e axe sem violações.
 - [ ] Diário sem efeitos, só com cores e fontes novas.
 - [ ] Todos os marcadores novos (18.13) no lugar e listados para a equipe.
+
+---
+
+## 19. Fase 9: efeitos, paleta nova, pulseira nova e vídeos
+
+Decidida pela equipe em 12/11/2026, depois da Fase 8. **Esta seção vence a 18 e as seções antigas onde elas discordarem.** As seções afetadas têm uma nota **(Fase 9)** apontando para cá.
+
+- **O que muda:**
+  - um interruptor "Efeitos" que controla todo o movimento do site;
+  - paleta laranja e grafite e fontes instaladas por pacote;
+  - polimento geral do layout;
+  - efeitos e interações novos;
+  - Tecnologias em cartões que viram e Galeria em canvas;
+  - Equipe num varal;
+  - a pulseira 3D nova (com luzes e giro de 360°);
+  - os vídeos das animações.
+- **O que não muda:** rotas, a camada de dados e a API, o Diário (só ganha microinterações de feedback), os marcadores, a ordem de leitura e as regras da seção 3. A única exceção é o item 1 da 18.2 (ver 19.1).
+- **Protótipos de referência** (HTML puro, para aprovação; **não copiar o código direto**):
+  - `docs/prototipos/pulse-efeitos.html`: efeitos, paleta, interruptor, interações, Tecnologias, Galeria, Equipe e Diário;
+  - `docs/prototipos/pulse-pulseira-3d.html`: a pulseira nova, com giro de 360°, partes, sinais e luzes.
+
+  O que é só da prévia não entra no site: o aviso "Protótipo da fase 9", o botão "Rever o preloader e a capa", as etiquetas "Amostra da página Solução", os rótulos "ANIMAÇÃO · …" e "IMAGEM · …" e o campo "Destino" do Diário. Esse campo existe só na demonstração; o formulário real continua o da 7.3.
+- **Padrões obrigatórios:**
+  - `docs/PADRAO_MOVIMENTO_PULSE.md` vale para todas as animações de interface: molas do Motion, gestos da marca, presets em `lib/presetsMovimento.js` e coreografia.
+  - `docs/PADRAO_ANIMACOES_VIDEO_PULSE.md` vale só para os vídeos MP4, que são feitos fora do código do site. Fica como referência.
+
+### 19.1 Piso de acessibilidade (substitui a 18.2)
+
+A equipe liberou desfazer o piso, desde que o site continue o mais acessível possível. Só a regra da textura atrás do texto caiu; as outras continuam.
+
+1. **Granulado em todo o site, inclusive atrás do texto.** Onde houver granulado, o contraste mínimo do texto é de 4,5:1 (WCAG 1.4.3). No texto corrido, a meta de 7:1 continua. Títulos, links e botões em laranja ficam no mínimo em AA (19.3).
+2. **Com os efeitos desligados (19.2), nada se move:**
+   - as cenas 3D mostram um quadro parado e os vídeos, o quadro parado;
+   - as seções fixas, o encaixe e o canvas viram listas e grades comuns;
+   - a capa e o preloader não aparecem, e a troca de página é instantânea.
+3. O que se move sozinho por mais de 5 segundos tem botão de pausa visível (WCAG 2.2.2). Nada pisca mais de 3 vezes por segundo (WCAG 2.3.1).
+4. Nenhum conteúdo depende de animação ou de JavaScript para aparecer.
+5. Nada invisível recebe foco.
+6. O cursor do sistema nunca é substituído. Nenhuma ação depende só do mouse ou de um gesto: arrastar sempre tem alternativa em botões e teclas (WCAG 2.5.7).
+7. Decorações ficam com `aria-hidden="true"`: granulado, palavras de fundo, faixa de texto, "PULSE" do rodapé, linhas, barra de progresso e vídeos de fundo.
+8. Ícone sempre com texto visível.
+9. Desempenho:
+   - no máximo uma cena 3D visível por vez;
+   - vídeos só tocam quando estão na tela;
+   - densidade de pixels limitada a 1,75;
+   - tudo liberado da memória ao sair da página.
+10. **Som:** nada toca som sozinho. Os vídeos começam mudos, com o botão "Ativar som" (WCAG 1.4.2), e os sons que informam algo têm legenda (WCAG 1.2.2). Isso substitui a decisão "nada com som no site".
+
+### 19.2 Preferência de movimento única e o interruptor "Efeitos"
+
+Hoje o "reduzir movimento" é conferido em cerca de 20 lugares (análise de 12/11/2026):
+- o hook `usePrefereMovimentoReduzido`, usado em 5 lugares;
+- cerca de 10 consultas diretas a `matchMedia`;
+- 8 classes `motion-safe:` e `motion-reduce:` do Tailwind;
+- 5 blocos `@media (prefers-reduced-motion)` no CSS.
+
+A Fase 9 junta tudo numa preferência só, controlada pelo interruptor.
+
+**Estado e memória**
+- Contexto `ProvedorMovimento` (já existe) com `efeitosLigados` e `alternarEfeitos()`, lido pelo hook `useEfeitos()`.
+- **Valor inicial:**
+  1. a escolha salva no `localStorage`, chave `pulse-efeitos` (`"ligados"` ou `"desligados"`), com `try/catch`;
+  2. sem escolha salva, desligado quando o aparelho pede "reduzir movimento" e ligado nos outros casos.
+- **Sem piscar na carga:** o script do `<head>` (o mesmo da camada da capa) grava `data-efeitos="ligados"` ou `"desligados"` na tag `<html>` antes da pintura. O React lê esse atributo na hidratação.
+- **Mudança do aparelho:** se a pessoa nunca mexeu no interruptor e liga "reduzir movimento" no aparelho com o site aberto, o estado acompanha.
+
+**Onde o estado é aplicado**
+- **CSS:**
+  - variantes do Tailwind `efeitos-ligados:` e `efeitos-desligados:`, criadas com `@custom-variant` a partir de `[data-efeitos]`. Elas substituem as 8 classes `motion-safe:` e `motion-reduce:`;
+  - os 5 blocos `@media (prefers-reduced-motion)` viram regras com `[data-efeitos="desligados"]`.
+- **JavaScript:** as consultas a `matchMedia("(prefers-reduced-motion…)")` e o `usePrefereMovimentoReduzido` dão lugar a `useEfeitos()`. O hook antigo pode continuar existindo só para o valor inicial.
+- **Motion:** `MotionConfig reducedMotion={efeitosLigados ? "never" : "always"}`, com `transition={spring.padrao}` (PADRAO_MOVIMENTO_PULSE, item 4).
+- **Lenis:** desligado (`stop()` e `smoothWheel: false`) com os efeitos desligados; religa ao ligar.
+- **GSAP e ScrollTrigger:** os efeitos ligados à rolagem só são criados com os efeitos ligados. O `useGSAP` depende de `efeitosLigados` e desfaz tudo ao desligar.
+- **Pulseira 3D, vídeos e faixas contínuas:** param e mostram o quadro parado (19.12 e 19.13).
+- **Barras que somem ao rolar (9.3):** sempre visíveis com os efeitos desligados.
+
+**O botão**
+- Fica no cabeçalho, à direita do rótulo "GS 2026.2 · CitizenTech". No celular, o rótulo pode ir para a segunda linha.
+- É um `<button type="button" aria-pressed>`, com o texto visível "Efeitos: ligados" ou "Efeitos: desligados" e um trilho decorativo (`aria-hidden`).
+- Tem 48 px de altura, contorno de 2 px em `--cor-borda` e o trilho preenchido em `--cor-acao` quando ligado, como no protótipo.
+- O nome acessível é o próprio texto, e o `aria-pressed` diz o estado. Não precisa de anúncio extra.
+- Ligar ou desligar vale na hora para a página inteira, sem recarregar.
+
+**Por quê:** muita gente não conhece a configuração do aparelho, e quem é atrapalhado pelo movimento precisa desligá-lo logo na chegada (WCAG 2.2.2, heurística H3).
+
+### 19.3 Cores: paleta laranja e grafite (substitui a 18.3)
+
+Paleta da equipe: laranja principal `#FC4C02`, laranja secundário `#FC5200`, laranja escuro `#CC4200`, branco `#FFFFFF` e grafite `#242428`. Os tons derivados existem só para garantir contraste: cinzas `#4E4E57`, `#6E6E78`, `#9A9AA4` e `#C9C9CF`, faixa clara `#FAFAFA` e grafite mais escuro `#1A1A1D`. Os temas continuam seguindo o aparelho.
+
+**Tokens** (renomear `--cor-ouro` e `--cor-sobre-ouro` para `--cor-acao` e `--cor-sobre-acao`, que não são mais dourados):
+
+| Token | Uso | Tema claro | Tema escuro |
+| --- | --- | --- | --- |
+| `--cor-fundo` | Fundo da página | `#FFFFFF` | `#1A1A1D` |
+| `--cor-faixa` | Seções alternadas ("bandas") | `#FAFAFA` | `#242428` |
+| `--cor-superficie` | Cartões, campos, cabeçalho, barra, diálogo | `#FFFFFF` | `#242428` |
+| `--cor-texto` | Texto principal | `#242428` (15,5:1; 14,8:1 na faixa) | `#FFFFFF` (17,4:1; 15,5:1) |
+| `--cor-texto-2` | Texto secundário | `#4E4E57` (8,2:1; 7,9:1) | `#C9C9CF` (10,5:1; 9,4:1) |
+| `--cor-marca` | Títulos, links, foco, botão secundário | `#CC4200` (4,8:1; 4,6:1) | `#FC4C02` (5,1:1; 4,55:1) |
+| `--cor-destaque` | Rótulos mono e números grandes | `#CC4200` | `#FC4C02` |
+| `--cor-acao` / `--cor-sobre-acao` | Botão principal e item ativo da barra | `#FC4C02` / `#242428` (4,55:1) | igual |
+| `--cor-borda` | Bordas de campos, botões e cartões clicáveis | `#6E6E78` (5,0:1) | `#9A9AA4` (5,5:1) |
+| `--cor-apagada` | Palavras ainda apagadas da frase que acende (19.7) | `#6E6E78` | `#9A9AA4` |
+| `--cor-erro` | Erro (sempre com ícone e texto) | `#B3261E` (6,5:1) | `#FF8A80` (6,8:1) |
+| `--cor-sucesso` | Sucesso | `#1F6B3A` (6,5:1) | `#7FD69B` (8,8:1) |
+| `--cor-aviso` | Aviso | igual à 8.1 | igual à 8.1 |
+
+**Decoração e 3D** (sem texto em cima, exceto o granulado):
+
+| Token | Claro | Escuro | Uso |
+| --- | --- | --- | --- |
+| `--cor-ponto` / `--cor-ponto-brilho` / `--cor-ponto-sombra` | `rgba(36,36,40,.07)` / `rgba(255,255,255,.9)` / `rgba(36,36,40,.10)` | `rgba(255,255,255,.05)` / `rgba(255,255,255,.08)` / `rgba(0,0,0,.35)` | Domos da textura, com relevo |
+| `--grao-opacidade` | `.06` | `.08` | Granulado |
+| `--cor-faixa-3d` | `#FC4C02` | `#FC4C02` | Tira da pulseira 3D |
+| `--cor-cortina` | `#242428` | `#242428` | Transição entre páginas e preloader |
+
+**Rodapé** (escuro nos dois temas): fundo `#242428` no claro e `#141416` no escuro, texto `#FFFFFF` (15,5:1 e 18,4:1), texto secundário `#C9C9CF`, destaque e foco `#FC4C02` (5,4:1 no `#141416`) e bordas `#9A9AA4`.
+
+**Regras**
+- Branco sobre laranja tem só 3,4:1. Só pode em texto grande (24 px, ou 18,7 px em negrito).
+- O laranja escuro sobre o grafite (3,2:1) nunca é usado como texto.
+- Os dois laranjas principais são praticamente iguais (1,03:1) e nunca diferenciam estados.
+- O vermelho de erro fica separado do laranja e sempre vem com ícone e texto.
+- A meta de 7:1 vale para o texto corrido. Títulos, links e botões em laranja ficam no mínimo em AA (4,5:1). Os títulos em Anton são texto grande, mas usam o mesmo laranja.
+- **Conferir o contraste com o granulado por cima:** no tema claro, o link laranja sobre a faixa `#FAFAFA` fica em 4,6:1. Se o granulado baixar algum par para menos de 4,5:1, reduzir a opacidade dele (mínimo de 4%) e registrar.
+- Remover os tokens da 18.3 (roxos, lilás, dourado e creme). A paleta padrão do Tailwind continua desligada.
+
+### 19.4 Fontes por pacote (substitui a instalação manual da 18.1 e da 18.4)
+
+As fontes passam a ser carregadas com **`next/font/google`**, que já vem com o Next e não exige pacote novo. O Next baixa as fontes no momento do build e as serve pelo próprio site (self-hosting), sem chamar o Google quando a página abre. Ele também pré-carrega as fontes e ajusta a fonte de reserva para o texto não "pular" quando a fonte chega.
+
+```js
+// app/layout.jsx
+// Esta parte é lógica
+import { Anton, Atkinson_Hyperlegible_Next, JetBrains_Mono } from "next/font/google";
+const anton = Anton({ weight: "400", subsets: ["latin", "latin-ext"], display: "swap", variable: "--fonte-anton" });
+const atkinson = Atkinson_Hyperlegible_Next({ weight: ["400", "700"], subsets: ["latin", "latin-ext"], display: "swap", variable: "--fonte-atkinson" });
+const mono = JetBrains_Mono({ weight: ["500", "700"], subsets: ["latin", "latin-ext"], display: "swap", variable: "--fonte-jetbrains" });
+// <html lang="pt-BR" className={`${anton.variable} ${atkinson.variable} ${mono.variable}`}>
+```
+
+- `--fonte-titulo`, `--fonte-base` e `--fonte-mono` apontam para essas variáveis, com as reservas da 18.4. Se o nome exato de uma família for outro na versão instalada, conferir na lista do `next/font/google` e avisar.
+- Os marcadores `FONTE-…-AQUI` saem, junto com o passo a passo antigo. Os ícones e as imagens continuam manuais.
+- **Conferir a 320 px**, já com a Anton de verdade, os títulos longos ("Deslocamentos") e os números dos cartões. Essa pendência era da Fase 8.
+
+### 19.5 Linguagem visual e polimento (complementa a 18.5)
+
+Ajustes da análise com os 4 pilares do design (contraste, repetição, alinhamento e proximidade):
+
+| Ajuste | Como |
+| --- | --- |
+| Seções alternadas | `--cor-faixa` nas seções "banda", com um divisor de piso tátil direcional (barras de 6 px de altura) no topo da faixa (`aria-hidden`). Ordem do Início: Abertura → faixa de texto → Tema (banda) → frase que acende → O problema → Quem vive (banda) → Um trajeto com a Pulse |
+| Textura com relevo | Domos com brilho e sombra (`--cor-ponto-brilho` e `--cor-ponto-sombra`) |
+| H2 menor que o H1 | H1 `clamp(2.6rem, 14vw, 5.6rem)` (opção C, mantida); H2 `clamp(2rem, 9vw, 3.2rem)` (o mesmo critério da opção C, para dobrar com zoom de 200%) |
+| Títulos sem quebrar no meio da palavra | `hyphens: manual` e `overflow-wrap: normal` nos H1 e H2. O H2 menor faz "Deslocamentos" caber a 320 px; se não couber, a palavra pode quebrar só nesse caso, como hoje, pela regra do `body` |
+| Títulos novos | Tema: rótulo "CitizenTech", H2 **"Tecnologia que nasce de uma necessidade real"**. O problema: rótulo "O problema", H2 **"Atravessar sem saber quando"**. Aprovados por enquanto. Os ids e os itens do "Nesta página" continuam ("Tema CitizenTech", "O problema") |
+| Duas colunas | Tema, no computador (≥ 64rem): rótulo e H2 à esquerda e texto à direita. A ordem no HTML não muda |
+| Palavra de fundo | Na frente da textura (`z-index`), nunca atrás dela |
+| Barra de navegação | Texto centralizado em cada item. Os espaços vazios dos ícones (`EspacoIcone` sem ícone ainda) não ocupam lugar visível até o ícone entrar. Os itens não selecionados perdem a borda de 1 px (a pílula da barra já mostra a área). O item ativo continua com fundo `--cor-acao` e `aria-current="page"` |
+| Botões | Texto centralizado vertical e horizontalmente |
+| Diário de deslocamentos | Conferir os espaçamentos entre o título, o aviso, o resumo e a lista (múltiplos de 8 px) |
+
+### 19.6 Efeitos (complementa a 18.9)
+
+Todos ficam parados ou somem com os efeitos desligados (19.2).
+
+| Efeito | Onde | Como funciona | Acessibilidade |
+| --- | --- | --- | --- |
+| Rolagem suave | Computador | Lenis com um pouco mais de inércia (`lerp` ≈ 0,09) | No toque, a rolagem continua a do aparelho |
+| Preloader | Antes da capa, na primeira visita | Fundo `#1A1A1D`, contagem de 0 a 100 em Anton laranja e "Pulse · carregando" em mono, por até 1,2 s; some (0,35 s) e revela a capa | `aria-hidden`; não aparece com os efeitos desligados; usa a mesma camada de espera da capa (no máximo 2 s) |
+| Granulado | Site todo | Ruído SVG (`feTurbulence`) num elemento fixo com `pointer-events: none`, opacidade `--grao-opacidade`; troca de posição em 6 passos por segundo | Parado com os efeitos desligados; some no alto contraste do Windows; contraste do texto ≥ 4,5:1 (19.1) |
+| Transição entre páginas | Igual à 8.3 (no Diário, só ao entrar e sair) | Os domos em `--cor-cortina` entram numa varredura diagonal (como pixels), sem glitch | Nada pisca; o leitor anuncia o novo H1 |
+| Barra de progresso da leitura | Embaixo do cabeçalho | Linha de 3 px em `--cor-acao` que cresce da esquerda (`scaleX`) com a rolagem | `aria-hidden`; parada com os efeitos desligados |
+| Rolagem com encaixe | Início: abertura, Tema e Quem vive (`data-encaixe`) | Encaixe do tipo "proximidade": 160 ms depois de a rolagem parar, se uma dessas seções estiver a menos de 30% da altura da tela, a página assenta nela | Nunca obrigatório; desligado com zoom alto, tela baixa e efeitos desligados; nunca durante o arrasto ou o teclado |
+| Seções fixas | "O problema" (Início) e "Como funciona" (Solução) | O título fica fixo de um lado e o conteúdo rola do outro, só no computador (≥ 64rem e altura ≥ 600 px) | A ordem do HTML continua a de leitura; com zoom alto, vira lista comum |
+| Texto que se constrói | Texto de Tema, O problema e Quem vive | O bloco aparece através de uma máscara de domos quando entra na tela (ScrollTrigger) | O texto está no HTML desde o início; com o foco, aparece na hora; sem máscara no alto contraste |
+| Contagem dos números | Cartões de dados de "O problema" | De 0 até o valor em 1,2 s, ao entrar na tela | O número animado tem `aria-hidden`, e um texto oculto lê o valor real ("Cerca de 90%", "7,9 milhões") |
+| Parallax | Fotos de "Quem vive", polaroides e textura das cabeças de página | Velocidades diferentes, até cerca de 60 px (`data-velocidade` de ±0,06) | O texto nunca se move |
+| Faixa de texto | Entre a abertura e o Tema | "Pulse · um guia no pulso" em Anton, andando sem parar e acelerando um pouco com a rolagem | `aria-hidden`; parada com os efeitos desligados (WCAG 2.2.2) |
+| Linha antes do rótulo | Cabeças de seção | Uma linha laranja de 24 px se desenha antes do rótulo mono quando a seção chega. Os títulos ficam sem efeito | Decorativa |
+| Botão magnético | Só os botões laranja principais | O conteúdo do botão segue o mouse até 8 px; a área de clique fica parada | Só com `pointer: fine` |
+| Filtro nas fotos | Galeria, polaroides, "Quem vive" e Tecnologias | Foto em tons de cinza com pontilhado de domos; ao passar o mouse ou focar, ganha cor e zoom de 1,05 | No celular, ganha cor ao entrar na tela; com `prefers-contrast: more` e alto contraste, já aparece colorida |
+| Rodapé revelado | Todas as páginas | O conteúdo sobe e revela o rodapé fixo por baixo, com "PULSE" gigante em laranja | "PULSE" com `aria-hidden`; sem o efeito, o rodapé é normal |
+
+### 19.7 Interações novas
+
+| Interação | Onde | Como funciona | Acessibilidade |
+| --- | --- | --- | --- |
+| Frase que acende | Início, entre Tema e O problema | Seção `aria-label="Frase de abertura"` com "Atravessar a rua não deveria depender de **adivinhar.**" (Atkinson negrito, grande). Cada palavra vai de `--cor-apagada` para `--cor-texto` conforme a rolagem; "adivinhar." acende em `--cor-destaque` | O texto inteiro está no HTML; o leitor lê a frase de uma vez; com os efeitos desligados, já aparece acesa |
+| Um trajeto com a Pulse | Início, depois de "Quem vive o problema" | Rótulo "No caminho", H2 "Um trajeto com a Pulse". O mapa SVG (`aria-hidden`) desenha a rota com a rolagem (`stroke-dashoffset`), e o ponto passa pelas paradas. A lista `<ol>` das 5 paradas (Saída, Esquina, Semáforo fechado, Ponto de ônibus e Destino), com os textos do protótipo, acende a parada atual. Depois, o botão "Conheça a solução" | A lista é o conteúdo real; o mapa é decorativo; com os efeitos desligados, a rota já aparece inteira |
+| Antes e depois | Solução, depois de "Como funciona" | Rótulo "A diferença", H2 "Antes e depois" e a instrução do protótipo. Os dois vídeos gêmeos ficam sobrepostos, e um `<input type="range">` move a divisória (`clip-path`). Os textos "Sem a Pulse" e "Com a Pulse" (H3) vêm logo abaixo | O controle tem `aria-label="Comparar sem a Pulse e com a Pulse"` e `aria-describedby` nos textos; setas do teclado; os vídeos ficam `aria-hidden` (o texto diz o mesmo) |
+| Barra de progresso | Todas as páginas | Ver 19.6 | — |
+| Rodapé revelado | Todas as páginas | Ver 19.6 | — |
+
+### 19.8 Tecnologias em cartões que viram (substitui o carrossel da 18.8)
+
+- Rótulo "Por dentro", H2 "Tecnologias" e o texto "O que faz a Pulse funcionar. Vire um cartão para ver a peça."
+- Grade de 8 cartões, sem rolagem lateral e sem a barra de rolagem do navegador: 1 coluna no celular, 2 a partir de 40rem e 4 a partir de 64rem.
+- **Frente:** rótulo mono, H3 e descrição (textos da 6.2).
+- **Verso:** a foto da peça, com o marcador `IMAGEM-peça (nome da tecnologia)-AQUI` (19.14).
+- Botão no pé do cartão: **"Ver a peça"** ou **"Ver o texto"**, com ícone e texto e `aria-pressed`. O cartão gira 180° em 0,55 s (`rotateY` com `backface-visibility: hidden`).
+- O verso escondido tem `inert`, para não receber foco nem ser lido. Ao virar, o foco continua no botão.
+- Com os efeitos desligados, a troca é instantânea.
+- O `Carrossel` e o `useCarrossel` saem. Se não forem usados em mais nenhum lugar, apagar.
+
+### 19.9 Galeria em canvas (substitui a galeria horizontal da 18.8 no computador)
+
+- **No computador** (≥ 64rem, altura ≥ 600 px e efeitos ligados), as 6 fotos ficam espalhadas num plano maior que a janela, que se arrasta em qualquer direção (`pointer events`, com inércia leve).
+- **Alternativas ao arrasto:**
+  - a janela é uma `region` com `aria-label="Galeria para explorar"`, `tabindex="0"` e a instrução visível "Arraste a área para explorar as fotos. Pelo teclado, entre na área com Tab e use as setas.";
+  - as setas movem o plano;
+  - os botões "Esquerda", "Cima", "Baixo", "Direita" e "Centralizar", com ícone e texto (WCAG 2.5.7), também movem o plano;
+  - quando o foco cai numa foto, o plano se move até ela.
+- **No celular, com zoom alto ou com os efeitos desligados:** grade comum de fotos, sem os botões.
+- Cada foto é uma `<figure>` com o marcador, o `alt` e a legenda da 18.13. O filtro da 19.6 também vale aqui.
+- `GaleriaHorizontal` e `useGaleriaHorizontal` dão lugar a `GaleriaCanvas` e `useGaleriaCanvas`.
+
+### 19.10 Equipe num varal (complementa a 18.8)
+
+- Os 5 polaroides ficam menores, pendurados num varal: uma linha fina com uma leve curva (`aria-hidden`) e um prendedor laranja em cada foto.
+- **Nomes:** só o primeiro nome (Giovana, Giovane, Mie, Pedro e Thiago), sem a linha de função.
+- **Com o mouse:**
+  - a foto se endireita, sobe 6 px e ganha cor;
+  - o nome ganha um traço laranja que se desenha (`background-size`).
+- O balanço é leve e só com o mouse. Nada depende dele.
+- **Layout:** 2 por linha no celular, 3 + 2 no tablet e 5 lado a lado no computador. Nenhum polaroide pode sair da tela.
+- `alt` "Foto de (nome)", como antes.
+
+### 19.11 Diário: microinterações de feedback (complementa a 18.5)
+
+O Diário continua sem textura, palavra de fundo e cenas, mas ganha feedback nas ações (PADRAO_MOVIMENTO_PULSE):
+
+- **Salvar:** o botão se preenche e uma marca de "certo" se desenha (`pathLength` de 0 a 1) depois da resposta de sucesso. O texto "Registro salvo." continua sendo anunciado como hoje.
+- **Excluir e Desfazer:**
+  - o cartão sai com `AnimatePresence mode="popLayout"`;
+  - com "Desfazer", volta com o gesto PULSO (batida dupla curta);
+  - as mensagens de status continuam numa região que nunca sai da tela.
+- **Erro de preenchimento:** tremor horizontal curto no campo (±4 px, 0,3 s), sempre junto da mensagem em texto.
+- **Pausar ↔ Retomar** (em todo o site): o ícone troca com uma rotação curta.
+- **Limites:**
+  - tudo em menos de 1 s, sem repetir;
+  - nada atrasa o anúncio ao leitor de tela;
+  - com os efeitos desligados, só a troca de opacidade.
+
+### 19.12 Pulseira 3D nova (substitui a 18.7; era da Fase 10 e foi antecipada)
+
+A geometria, os materiais e os sinais estão em `docs/prototipos/pulse-pulseira-3d.html` (função `criarPulseira()`). **O modelo é um módulo único** (`lib/pulseira3d/modelo.js`), usado pelo site e pelos vídeos.
+
+| Parte | Como é |
+| --- | --- |
+| Tira | Pulseira esportiva laranja (`--cor-faixa-3d`): faixa extrudada ao longo de uma elipse fechada, com frisos, fivela embaixo do pulso, furos de ajuste e passador |
+| Módulo | Achatado e arredondado, corpo em `#CC4200` e face grafite |
+| Botão do destino | Grande, saltado, côncavo, com dois anéis em relevo e colar laranja |
+| Botão de modo | Pequeno, em pílula, saltado, com um ponto em relevo e colar laranja |
+| Célula Braille | 6 pinos retráteis no centro do módulo (escrevem P-U-L-S-E) |
+| Alto-falante e microfone | Furos na face |
+| Zonas de vibração | Por dentro da tira, nos dois lados do pulso |
+| Atuador de pressão | Por dentro, embaixo do módulo |
+| Contatos de carga | Dois pinos de metal na ponta de baixo do módulo (carregador magnético) |
+| Luzes de sinal | 5 pontos de cada lado da face, com brilho radial |
+
+**Sinais**
+
+| Sinal | Vibração | Luzes |
+| --- | --- | --- |
+| Virar à esquerda / à direita | Zona do lado | O lado correspondente aceso |
+| Parar | As duas zonas | Os dois lados acesos |
+| Aguardar | Três vibrações curtas em 1 s, a cada 1,6 s | Três piscadas em 1 s (no máximo 3 por segundo) |
+| Continuar | O atuador aperta e solta devagar | Uma luz que sobe pelas laterais |
+
+As luzes complementam o tato para quem tem baixa visão e para quem acompanha a pessoa. A informação principal continua sendo a vibração.
+
+**Modos**
+- `"abertura"` (Início):
+  - gira sozinha devagar e passa pelos sinais;
+  - o botão "Pausar o giro" / "Girar sozinha" tem `aria-pressed`;
+  - ela também gira arrastando, pelas setas e pelos botões "Girar para a esquerda" e "Girar para a direita";
+  - os 6 links e as linhas da 18.6 continuam, ligados às partes equivalentes do modelo novo: o motor esquerdo e o direito viram as zonas de vibração, e a parte de baixo da tira vira o fecho. As linhas mais criativas continuam para a Fase 10.
+- `"explorar"` (Solução, "A pulseira", decisão da equipe; ver 19.13):
+  - o palco é `role="group"` com `aria-roledescription="modelo 3D"` e `aria-label="Pulseira Pulse em 3D. Use as setas do teclado para girar."`;
+  - controles "Girar para a esquerda", "Girar para a direita", "Ver por dentro", "Vista da frente" e "Pausar o giro";
+  - listas "Partes da pulseira" (8 botões) e "Os sinais no pulso" (5 botões), com `aria-pressed` e a explicação numa área `aria-live="polite"`, com os textos do protótipo. A pulseira gira até a parte e a acende.
+- `"sinal"` e `"parar"`: iguais à 18.7, com o modelo novo.
+
+**Descrição em texto** (reserva e `aria-describedby`): o texto do protótipo, que começa com "Pulseira Pulse: tira esportiva laranja de silicone, com fecho embaixo do pulso…".
+
+**Regras:** continuam as da 18.7 (`next/dynamic` com `ssr: false`, reserva em texto, animação só quando visível, limpeza de memória). Com os efeitos desligados: quadro parado na vista da frente, sem giro automático; os botões de girar continuam funcionando, sem animação.
+
+### 19.13 Vídeos (novo)
+
+Os vídeos foram feitos pelo Claude fora do código do site, no padrão PADRAO_ANIMACOES_VIDEO_PULSE. **A equipe coloca os arquivos** em `public/videos/`. O Claude Code cria o componente e deixa um marcador `VIDEO-(nome)-AQUI` em cada lugar, com o caminho esperado em comentário.
+
+**Componente `VideoPulse`**
+- `<video playsinline muted loop preload="metadata" poster="…-quadro-parado.jpg">`. Toca só com os efeitos ligados e o vídeo na tela (`IntersectionObserver`); fora da tela, pausa.
+- **Botão de pausa:** "Pausar" / "Reproduzir", com ícone, texto e `aria-pressed`, sempre visível (WCAG 2.2.2).
+- **Vídeos com som:**
+  - têm também o botão "Ativar som" / "Desativar som", com `aria-pressed`;
+  - o som só liga por esse botão (WCAG 1.4.2);
+  - `<track kind="captions" srclang="pt-BR" label="Português">` com o `.vtt`. As legendas aparecem quando o som está ligado e também podem ser ligadas pelo controle do navegador.
+- **Efeitos desligados:** mostra o quadro parado e o botão "Reproduzir". Se a pessoa apertar, o vídeo toca uma vez e para.
+- **Texto equivalente:** o texto da seção diz o mesmo que o vídeo (WCAG 1.2.1).
+  - Vídeos de conteúdo: `aria-describedby` apontando para esse texto.
+  - Vídeos de fundo: `aria-hidden`, sem foco.
+- **Sem os arquivos** (antes de a equipe colocar): o espaço mantém a proporção 16:9 e mostra só o marcador, sem erro.
+
+| Vídeo (arquivos em `public/videos/`) | Onde | Som | Tipo |
+| --- | --- | --- | --- |
+| `animacao-capa.mp4` / `animacao-capa-vertical.mp4` | Capa (computador / celular) | não | Fundo, loop contínuo; substitui as imagens de capa |
+| `animacao-o-problema.mp4` | Início, "O problema" (lado que rola) | sim | Conteúdo |
+| `animacao-a-pulseira.mp4` | Solução, "A pulseira", antes dos 3 passos | sim | Conteúdo; substitui `IMAGEM-ilustração conceitual da pulseira-AQUI` |
+| `animacao-dois-botoes.mp4` | Solução, "Apenas dois botões" | sim | Conteúdo |
+| `animacao-vibracoes.mp4`, `animacao-semaforos.mp4`, `animacao-dois-modos.mp4`, `animacao-transporte.mp4` | Solução, "Como funciona": fundo que troca conforme o item com o mouse, o foco ou a rolagem | não | Fundo, com véu sólido atrás do texto |
+| `animacao-antes-sem.mp4` + `animacao-antes-com.mp4` | Solução, "Antes e depois" | não | Par gêmeo: tocam e pausam juntos, com o mesmo `currentTime` |
+| `animacao-sinal-continuar.mp4`, `-parar`, `-virar`, `-aguardar` | Solução, "Os sinais", um por sinal (ver abaixo) | sim | Conteúdo |
+
+- **Como funciona (decisão da equipe):** os 4 itens usam o quadro parado do vídeo correspondente como miniatura, sem imagem nova. O fundo da seção troca com o mouse e o foco (no computador) ou com a rolagem (no celular), em 0,4 s.
+- **Os sinais (decisão da equipe):** o vídeo de cada sinal **substitui a pulseira 3D pequena** junto do índice. Isso deixa uma cena 3D a menos na página. A foto da situação continua.
+- **Capa:**
+  - escolhe o vídeo horizontal ou o vertical pela orientação da tela, só no navegador;
+  - o texto da capa fica sobre a faixa sólida, como antes;
+  - com os efeitos desligados, não há capa.
+- **Voz "Trianon-Masp":** a equipe pode trocar `animacao-a-pulseira.mp4` pela versão com voz. O nome do arquivo não muda.
+
+### 19.14 Imagens (atualiza a 18.13)
+
+As imagens continuam colocadas pela equipe. Os prompts para gerar as que são difíceis de achar de graça estão no documento "Prompts das imagens da Pulse". As fotos não mostram a pulseira e usam a bengala toda branca (Lei 14.951/2024).
+
+| Marcador | Situação na Fase 9 |
+| --- | --- |
+| `IMAGEM-capa versão computador (horizontal)-AQUI` e `…celular (vertical)-AQUI` | Saem: a capa usa os vídeos (19.13) |
+| `IMAGEM-ilustração conceitual da pulseira-AQUI` | Sai: "A pulseira" usa o vídeo e a pulseira 3D no modo `explorar` |
+| `IMAGEM-sinal …-AQUI` (4) e `IMAGEM-galeria …-AQUI` (6) | Continuam, com os `alt` da 18.13 |
+| `IMAGEM-foto de (nome)-AQUI` (5) | Continuam (polaroides) |
+| `IMAGEM-ilustração de uma travessia-AQUI` | Continua no Início, se a equipe quiser uma imagem parada além do vídeo de "O problema"; se não, sai |
+| **Novo:** `IMAGEM-pessoa cega usando o celular-AQUI` | "Quem vive o problema", cartão "Pessoa cega". `alt`: "Pessoa cega usando o celular com leitor de tela." |
+| **Novo:** `IMAGEM-pessoa com baixa visão ampliando a tela-AQUI` | "Quem vive o problema", cartão "Pessoa com baixa visão". `alt`: "Pessoa com baixa visão ampliando a tela do celular." |
+| **Novo:** `IMAGEM-peça (nome)-AQUI` (8) | Verso dos cartões de Tecnologias. `alt`: "Foto da peça: (nome da tecnologia)." |
+
+**Ícones novos** (`ICONE-…-AQUI`, Phosphor Bold): `ArrowsClockwise` (virar o cartão), `SpeakerHigh` e `SpeakerSlash` (som), `ArrowsOutCardinal` (centralizar a galeria), `ArrowUp` e `ArrowDown` (mover a galeria), `ArrowCounterClockwise` e `ArrowClockwise` (girar a pulseira), `Eye` (ver por dentro).
+
+### 19.15 Componentes e hooks novos (complementa a 18.14)
+
+| Componente | Pasta | Função |
+| --- | --- | --- |
+| `InterruptorEfeitos` | `components/layout/` | Botão "Efeitos" do cabeçalho |
+| `Granulado` | `components/ui/` | Camada de ruído |
+| `Preloader` | `components/abertura/` | Contagem antes da capa |
+| `BarraProgresso` | `components/layout/` | Progresso da leitura |
+| `FaixaTexto` | `components/ui/` | Faixa contínua "Pulse · um guia no pulso" |
+| `FraseAcende` | `components/abertura/` | Frase que acende palavra por palavra |
+| `TrajetoPulse` | `components/abertura/` | Mapa e paradas do trajeto |
+| `NumeroContado` | `components/ui/` | Número que conta até o valor |
+| `TextoConstroi` | `components/ui/` | Bloco que aparece pela máscara de domos |
+| `BotaoMagnetico` | `components/ui/` | Variante do botão principal |
+| `VideoPulse` | `components/ui/` | Vídeo com pausa, som, legendas e quadro parado |
+| `AntesDepois` | `components/solucao/` | Comparação com os vídeos gêmeos |
+| `ComoFuncionaFundo` | `components/solucao/` | Lista com o fundo de vídeo que troca |
+| `CartaoTecnologia` | `components/solucao/` | Cartão que vira |
+| `GaleriaCanvas` | `components/solucao/` | Galeria de arrastar |
+| `ExplorarPulseira` | `components/pulseira/` | Palco, controles, partes e sinais (modo `explorar`) |
+
+| Hook | Função |
+| --- | --- |
+| `useEfeitos` | Lê e muda a preferência de movimento única (19.2) |
+| `useEncaixe` | Rolagem com encaixe por proximidade |
+| `useProgressoLeitura` | Fração lida da página |
+| `useFraseAcende` | Palavra acesa conforme a rolagem |
+| `useTrajeto` | Desenho da rota e a parada atual |
+| `useContagem` | Contagem de 0 até o valor |
+| `useMagnetico` | Deslocamento do conteúdo do botão |
+| `useVideoPulse` | Visibilidade, pausa, som e sincronia dos vídeos gêmeos |
+| `useGaleriaCanvas` | Posição do plano, arrasto, teclado e foco |
+| `useGiroPulseira` | Giro automático, arrasto, teclado, partes e sinais |
+
+`lib/presetsMovimento.js` (molas, saída, cascata, pulso, guia e tremor) segue o PADRAO_MOVIMENTO_PULSE.
+
+### 19.16 Leitor de tela na Fase 9 (complementa a 18.15)
+
+- **Cabeçalho:** Pulse → "Efeitos: ligados, botão de alternância, pressionado" (o texto exato varia com o leitor).
+- **Início:**
+  - abertura com a pulseira e os botões de giro → faixa de texto (não lida) → Tema → "Frase de abertura", lida inteira;
+  - O problema: os números lidos pelo valor real, depois o vídeo ("Pausar", "Ativar som") e a lista;
+  - Quem vive (fotos com `alt`) → "Um trajeto com a Pulse", com a lista de 5 paradas (o mapa não é lido).
+- **Solução:**
+  - "A pulseira": vídeo, passos e "Pulseira Pulse em 3D", com os grupos "Girar a pulseira", "Partes da pulseira" e "Os sinais no pulso";
+  - "Como funciona": 4 itens; o vídeo de fundo não é lido;
+  - "Antes e depois": controle deslizante com os dois textos;
+  - Tecnologias: 8 cartões, cada um com o botão "Ver a peça" (alternância); o verso escondido não é lido;
+  - Galeria: a região "Galeria para explorar" com a instrução e o grupo "Mover a galeria", ou a grade;
+  - Equipe: 5 fotos.
+- **Rodapé:** "PULSE" gigante e a barra de progresso não são lidos.
+
+### 19.17 Critérios de aceite da Fase 9
+
+- [ ] Interruptor "Efeitos": desligado, nada se move em nenhuma página (`document.getAnimations()` vazio, nenhum quadro 3D novo, vídeos parados no quadro parado); a escolha sobrevive a recarregar; começa desligado com "reduzir movimento" no aparelho.
+- [ ] Nenhuma consulta direta a `prefers-reduced-motion` fora do `ProvedorMovimento` e do script do `<head>`.
+- [ ] Contraste recalculado com os tokens da 19.3, nos dois temas, no rodapé e com o granulado.
+- [ ] Fontes carregadas por `next/font/google`, sem pedido ao Google no navegador; títulos a 320 px conferidos.
+- [ ] 320 px sem rolagem lateral; zoom de 400% com seções fixas, encaixe e canvas desligados; nenhum polaroide cortado.
+- [ ] Teclado alcança tudo: galeria (setas e botões), pulseira (setas e botões), cartões que viram, controle do antes e depois, vídeos.
+- [ ] Vídeos: começam mudos; o som só com "Ativar som"; legendas nos que têm som; pausa sempre visível; sem os arquivos, nenhum erro.
+- [ ] Pulseira 3D: uma cena por vez, liberada ao sair; reserva em texto sem WebGL; giro parado com os efeitos desligados.
+- [ ] Nada pisca mais de 3 vezes por segundo (Aguardar: três piscadas em 1 s).
+- [ ] ESLint `jsx-a11y` e axe sem violações nos dois temas.
+- [ ] Marcadores novos (19.13 e 19.14) no lugar e listados para a equipe.

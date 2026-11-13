@@ -1,0 +1,433 @@
+<title>Pulse — Pulseira 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Atkinson+Hyperlegible+Next:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Protótipo da modelagem nova da pulseira (fase 10 adiantada): tira esportiva laranja com fecho, módulo com face grafite,
+   botões táteis, célula Braille com pinos retráteis, zonas de vibração, atuador de pressão e contatos de carga. Gira 360°. */
+:root {
+  --bg: #FFFFFF; --surface: #FFFFFF; --band: #FAFAFA; --fg: #242428; --fg2: #4E4E57; --brand: #CC4200;
+  --border: #6E6E78; --laranja: #FC4C02; --sobre-laranja: #242428; --rotulo: #CC4200;
+  --dot: rgba(36, 36, 40, .07); --dot-hi: rgba(255, 255, 255, .9); --dot-sombra: rgba(36, 36, 40, .10);
+  --font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
+  --font-body: "Atkinson Hyperlegible Next", Verdana, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #1A1A1D; --surface: #242428; --band: #242428; --fg: #FFFFFF; --fg2: #C9C9CF; --brand: #FC4C02; --border: #9A9AA4; --rotulo: #FC4C02;
+    --dot: rgba(255, 255, 255, .05); --dot-hi: rgba(255, 255, 255, .08); --dot-sombra: rgba(0, 0, 0, .35); color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #1A1A1D; --surface: #242428; --band: #242428; --fg: #FFFFFF; --fg2: #C9C9CF; --brand: #FC4C02; --border: #9A9AA4; --rotulo: #FC4C02;
+  --dot: rgba(255, 255, 255, .05); --dot-hi: rgba(255, 255, 255, .08); --dot-sombra: rgba(0, 0, 0, .35); color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 1.125rem; line-height: 1.55; overflow-x: clip; }
+:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; border-radius: 8px; }
+.wrap { max-width: 76rem; margin: 0 auto; padding: 32px max(16px, env(safe-area-inset-left, 0px)) 48px max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
+.rotulo { font: 700 .8rem var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--rotulo); margin: 0; display: flex; align-items: center; gap: 12px; }
+.rotulo::before { content: ""; width: 32px; height: 3px; border-radius: 3px; background: var(--laranja); }
+h1 { margin: 0; font: 400 clamp(2.4rem, 7vw, 4.6rem)/1 var(--font-display); text-transform: uppercase; color: var(--brand); max-width: 18ch; text-wrap: balance; }
+h2 { margin: 0; font-size: 1.15rem; }
+p { margin: 0; }
+.resumo { color: var(--fg2); max-width: 46ch; }
+.grade { display: grid; gap: 20px; }
+@media (min-width: 1000px) { .grade { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; } .lado { position: sticky; top: 24px; } }
+
+.palco { position: relative; aspect-ratio: 1 / 1; max-height: 78svh; width: 100%; border-radius: 28px; overflow: hidden; touch-action: none; cursor: grab;
+  background-color: var(--band);
+  background-image: radial-gradient(circle at 40% 36%, var(--dot-hi) 0 2px, transparent 3px), radial-gradient(circle, var(--dot) 0 7px, transparent 8px), radial-gradient(circle at 56% 60%, var(--dot-sombra) 0 7.5px, transparent 8.5px);
+  background-size: 30px 30px; }
+.palco.arrastando { cursor: grabbing; }
+.palco canvas { display: block; width: 100%; height: 100%; }
+.palco .dica { position: absolute; left: 12px; bottom: 12px; font: 700 .75rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; background: var(--surface); color: var(--fg2); border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; }
+.reserva { display: grid; place-items: center; height: 100%; padding: 24px; text-align: center; color: var(--fg2); }
+
+.controles { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--border); background: var(--surface); color: var(--fg); font: 700 1rem var(--font-body); cursor: pointer; }
+.btn:hover { border-color: var(--brand); }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn[aria-pressed="true"] { background: var(--laranja); border-color: var(--laranja); color: var(--sobre-laranja); }
+
+.cartao { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 16px; display: grid; gap: 12px; }
+.lista { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.explica { min-height: 5.6em; border-left: 4px solid var(--laranja); padding: 4px 0 4px 14px; color: var(--fg2); }
+.explica strong { color: var(--fg); display: block; }
+.nota { color: var(--fg2); font-size: 1rem; border: 1px dashed var(--border); border-radius: 12px; padding: 12px 14px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<main class="wrap">
+  <p class="rotulo">Protótipo · modelagem nova</p>
+  <h1>A pulseira Pulse</h1>
+  <p class="resumo">Gire a pulseira em 360 graus e conheça cada parte. Arraste com o dedo ou o mouse, ou use os botões e as setas do teclado.</p>
+
+  <div class="grade">
+    <div style="display:grid;gap:12px">
+      <div class="palco" id="palco" tabindex="0" role="group" aria-roledescription="modelo 3D" aria-label="Pulseira Pulse em 3D. Use as setas do teclado para girar." aria-describedby="descricao">
+        <div class="reserva" id="reserva"><p id="descricao">Pulseira Pulse: tira esportiva laranja de silicone, com fecho embaixo do pulso. Na frente, um módulo com face grafite e, de cima para baixo: os furos do microfone, o botão grande do destino (côncavo, com anéis em relevo), a célula Braille com 6 pinos que sobem e descem e o botão pequeno de modo (com um ponto em relevo). Por dentro da tira ficam as zonas de vibração, nos dois lados do pulso, e o atuador de pressão, embaixo do módulo. Nas laterais da face, cinco pontos de luz de cada lado acendem junto com a vibração. Os contatos de carga ficam na ponta de baixo do módulo.</p></div>
+        <span class="dica" aria-hidden="true">Arraste para girar</span>
+      </div>
+      <div class="controles" role="group" aria-label="Girar a pulseira">
+        <button class="btn" type="button" data-girar="-45"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Girar para a esquerda</button>
+        <button class="btn" type="button" data-girar="45"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>Girar para a direita</button>
+        <button class="btn" type="button" data-girar="180"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/></svg>Ver por dentro</button>
+        <button class="btn" type="button" id="frente">Vista da frente</button>
+        <button class="btn" type="button" id="auto" aria-pressed="true"></button>
+      </div>
+    </div>
+
+    <div class="lado" style="display:grid;gap:16px">
+      <section class="cartao" aria-labelledby="h-partes">
+        <h2 id="h-partes">Partes da pulseira</h2>
+        <ul class="lista" id="partes"></ul>
+        <p class="explica" id="explica-parte" aria-live="polite"><strong>Escolha uma parte</strong>A pulseira gira até ela e a parte acende.</p>
+      </section>
+      <section class="cartao" aria-labelledby="h-sinais">
+        <h2 id="h-sinais">Os sinais no pulso</h2>
+        <ul class="lista" id="sinais"></ul>
+        <p class="explica" id="explica-sinal" aria-live="polite"><strong>Escolha um sinal</strong>Veja onde a pulseira vibra ou aperta.</p>
+      </section>
+      <p class="nota">Protótipo para aprovação da forma, das cores e das partes. No site, a pulseira continua carregada só no navegador, com a descrição em texto como reserva, e para com o interruptor "Efeitos".</p>
+    </div>
+  </div>
+</main>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const reduzir = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const COR = { tira: 0xFC4C02, modulo: 0xCC4200, face: 0x242428, poco: 0x141416, claro: 0xECECEF, claro2: 0xC9C9CF, metal: 0xB0B0B8, laranja: 0xFC4C02 };
+
+/* =====================================================================
+   Modelo da pulseira — módulo único (o site e as animações usam o mesmo)
+   ===================================================================== */
+function criarPulseira() {
+  const RY = 1.1, RZ = 0.86, LARG = 0.5, ESP = 0.09;
+  const g = new THREE.Group();
+  const partes = {};
+
+  // ponto da tira num ângulo (0 = frente, em cima do pulso) e a direção "para fora"
+  const naTira = (th) => {
+    const p = new THREE.Vector3(0, RY * Math.sin(th), RZ * Math.cos(th));
+    const n = new THREE.Vector3(0, p.y / (RY * RY), p.z / (RZ * RZ)).normalize();
+    return { p, n };
+  };
+  const orientar = (obj, n) => obj.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), n);
+
+  // --- Tira esportiva: seção retangular arredondada percorrendo o contorno do pulso
+  const pts = [];
+  for (let i = 0; i < 160; i++) { const th = (i / 160) * Math.PI * 2; pts.push(naTira(th).p); }
+  const caminho = new THREE.CatmullRomCurve3(pts, true);
+  const forma = new THREE.Shape();
+  const hx = LARG / 2, hy = ESP / 2, r = 0.04; // x = largura (ao longo do braço), y = espessura
+  forma.moveTo(-hx + r, -hy); forma.lineTo(hx - r, -hy); forma.quadraticCurveTo(hx, -hy, hx, -hy + r);
+  forma.lineTo(hx, hy - r); forma.quadraticCurveTo(hx, hy, hx - r, hy); forma.lineTo(-hx + r, hy);
+  forma.quadraticCurveTo(-hx, hy, -hx, hy - r); forma.lineTo(-hx, -hy + r); forma.quadraticCurveTo(-hx, -hy, -hx + r, -hy);
+  const matTira = new THREE.MeshPhysicalMaterial({ color: COR.tira, roughness: .58, sheen: .5, sheenRoughness: .6, sheenColor: new THREE.Color(0xFF9A66) });
+  const tira = new THREE.Mesh(new THREE.ExtrudeGeometry(forma, { steps: 320, bevelEnabled: false, extrudePath: caminho }), matTira);
+  g.add(tira);
+
+  // Ranhuras finas na parte de cima da tira (textura de silicone)
+  const matRanhura = new THREE.MeshStandardMaterial({ color: 0xD94200, roughness: .7 });
+  for (const lado of [-1, 1]) for (let k = 0; k < 9; k++) {
+    const th = lado * (0.42 + k * 0.075);
+    const { p, n } = naTira(th);
+    const m = new THREE.Mesh(new THREE.BoxGeometry(LARG * .78, 0.012, 0.01), matRanhura);
+    m.position.copy(p).addScaledVector(n, ESP / 2 + 0.002); orientar(m, n); m.rotateZ(Math.PI / 2 * 0); g.add(m);
+  }
+
+  // --- Furos de ajuste e fecho (embaixo do pulso)
+  const matEscuro = new THREE.MeshBasicMaterial({ color: COR.poco });
+  for (let k = 0; k < 6; k++) {
+    const th = Math.PI + 0.38 + k * 0.12;
+    const { p, n } = naTira(th);
+    const furo = new THREE.Mesh(new THREE.CircleGeometry(0.03, 20), matEscuro);
+    furo.position.copy(p).addScaledVector(n, ESP / 2 + 0.003); orientar(furo, n); g.add(furo);
+  }
+  const fecho = new THREE.Group();
+  const matMetal = new THREE.MeshStandardMaterial({ color: COR.face, metalness: .6, roughness: .35 });
+  const { p: pf, n: nf } = naTira(Math.PI);
+  const moldura = new THREE.Mesh(new RoundedBoxGeometry(LARG + 0.08, 0.26, 0.07, 4, 0.025), matMetal);
+  fecho.add(moldura);
+  const lingueta = new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.2, 0.05, 3, 0.02), new THREE.MeshStandardMaterial({ color: COR.metal, metalness: .8, roughness: .3 }));
+  lingueta.position.z = 0.03; fecho.add(lingueta);
+  fecho.position.copy(pf).addScaledVector(nf, ESP / 2 + 0.03); orientar(fecho, nf); g.add(fecho);
+  const passador = new THREE.Mesh(new RoundedBoxGeometry(LARG + 0.06, 0.08, 0.05, 3, 0.02), matTira);
+  const { p: pp, n: np } = naTira(Math.PI - 0.32); passador.position.copy(pp).addScaledVector(np, ESP / 2 + 0.02); orientar(passador, np); g.add(passador);
+  partes.fecho = { objetos: [moldura, lingueta], angulo: Math.PI };
+
+  // --- Módulo: corpo laranja escuro e face grafite
+  const zMod = RZ + 0.05;
+  const corpo = new THREE.Mesh(new RoundedBoxGeometry(0.66, 1.14, 0.24, 6, 0.09), new THREE.MeshPhysicalMaterial({ color: COR.modulo, roughness: .32, clearcoat: .8, clearcoatRoughness: .2 }));
+  corpo.position.set(0, 0, zMod); g.add(corpo);
+  const face = new THREE.Mesh(new RoundedBoxGeometry(0.56, 1.04, 0.04, 5, 0.018), new THREE.MeshPhysicalMaterial({ color: COR.face, roughness: .45, clearcoat: .5, clearcoatRoughness: .3 }));
+  face.position.set(0, 0, zMod + 0.11); g.add(face);
+  const F = zMod + 0.13; // superfície da face
+
+  // Microfone: três furos em cima
+  for (const x of [-0.05, 0, 0.05]) { const m = new THREE.Mesh(new THREE.CircleGeometry(0.014, 16), matEscuro); m.position.set(x, 0.44, F + 0.001); g.add(m); }
+
+  // Botão do destino: grande e saltado, com colar laranja (contraste), topo côncavo e dois anéis em relevo (tato)
+  const matClaro = new THREE.MeshStandardMaterial({ color: 0xF4F4F5, roughness: .35, emissive: COR.laranja, emissiveIntensity: 0 });
+  const matRelevo = new THREE.MeshStandardMaterial({ color: 0x9A9AA4, roughness: .45 });
+  const bDest = new THREE.Group();
+  const aro = new THREE.Mesh(new THREE.CylinderGeometry(0.175, 0.185, 0.03, 64).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: COR.laranja, roughness: .35, emissive: COR.laranja, emissiveIntensity: .2 }));
+  aro.position.z = 0.012; bDest.add(aro);
+  const disco = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.15, 0.075, 64).rotateX(Math.PI / 2), matClaro);
+  disco.position.z = 0.05; bDest.add(disco);
+  const fundoConcavo = new THREE.Mesh(new THREE.CircleGeometry(0.105, 48), new THREE.MeshStandardMaterial({ color: 0xDADADF, roughness: .5 }));
+  fundoConcavo.position.z = 0.0885; bDest.add(fundoConcavo);
+  for (const rr of [0.05, 0.1]) { const anel = new THREE.Mesh(new THREE.TorusGeometry(rr, 0.008, 10, 56), matRelevo); anel.position.z = 0.09; bDest.add(anel); }
+  bDest.position.set(0, 0.22, F); g.add(bDest);
+  partes.destino = { objetos: [disco, aro], angulo: 0, grupo: bDest };
+
+  // Célula Braille: poço escuro com 6 pinos retráteis (2 colunas × 3 linhas)
+  const poco = new THREE.Mesh(new RoundedBoxGeometry(0.17, 0.25, 0.02, 3, 0.008), new THREE.MeshStandardMaterial({ color: COR.poco, roughness: .6 }));
+  poco.position.set(0, -0.08, F - 0.004); g.add(poco);
+  const pinos = [];
+  const matPino = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: .35, emissive: COR.laranja, emissiveIntensity: 0 });
+  for (let c = 0; c < 2; c++) for (let l = 0; l < 3; l++) {
+    const pino = new THREE.Mesh(new THREE.CapsuleGeometry(0.019, 0.02, 4, 12).rotateX(Math.PI / 2), matPino);
+    pino.position.set(-0.035 + c * 0.07, -0.08 + 0.068 - l * 0.068, F - 0.02);
+    pino.userData.alvo = 0; g.add(pino); pinos[c * 3 + l] = pino; // índice 0..5 = pontos 1,2,3,4,5,6
+  }
+  partes.braille = { objetos: [poco], angulo: 0 };
+
+  // Botão de modo: pequeno, em pílula saltada, com colar laranja e um ponto em relevo no centro
+  const bModo = new THREE.Group();
+  const colar = new THREE.Mesh(new RoundedBoxGeometry(0.3, 0.15, 0.03, 4, 0.012), new THREE.MeshStandardMaterial({ color: COR.laranja, roughness: .35, emissive: COR.laranja, emissiveIntensity: .2 }));
+  colar.position.z = 0.012; bModo.add(colar);
+  const pilula = new THREE.Mesh(new RoundedBoxGeometry(0.25, 0.11, 0.07, 5, 0.045), matClaro.clone());
+  pilula.position.z = 0.045; bModo.add(pilula);
+  const ponto = new THREE.Mesh(new THREE.SphereGeometry(0.022, 20, 14), matRelevo);
+  ponto.position.z = 0.082; bModo.add(ponto);
+  bModo.position.set(0, -0.37, F); g.add(bModo);
+  partes.modo = { objetos: [pilula, colar], angulo: 0, grupo: bModo };
+  const colarModo = colar;
+
+  // Alto-falante: frestas nas duas laterais do módulo
+  for (const lado of [-1, 1]) for (let k = 0; k < 4; k++) {
+    const f = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.07, 0.016), matEscuro);
+    f.position.set(lado * 0.331, -0.05 - k * 0.05, zMod + 0.02); f.rotation.x = Math.PI / 2 * 0; g.add(f);
+  }
+
+  // Luzes de sinal: 5 pontos de luz em cada lateral da face (esquerda e direita de quem olha),
+  // que acendem junto com a vibração. Complementam o tato: a informação principal continua sendo a vibração.
+  const luzes = { esquerda: [], direita: [] };
+  const geoLuz = new RoundedBoxGeometry(0.042, 0.095, 0.022, 2, 0.014);
+  const geoBrilho = new THREE.PlaneGeometry(0.2, 0.24);
+  const texBrilho = (() => { const c = document.createElement("canvas"); c.width = c.height = 64; const x = c.getContext("2d"); const gr = x.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(.4, "rgba(255,255,255,.45)"); gr.addColorStop(1, "rgba(255,255,255,0)"); x.fillStyle = gr; x.fillRect(0, 0, 64, 64); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; })();
+  for (const [lado, sx] of [["esquerda", -1], ["direita", 1]]) for (let k = 0; k < 5; k++) {
+    const luz = new THREE.Mesh(geoLuz, new THREE.MeshStandardMaterial({ color: 0x4E4E57, roughness: .3, emissive: COR.laranja, emissiveIntensity: 0 }));
+    luz.position.set(sx * 0.302, -0.3 + k * 0.15, zMod + 0.123); luz.userData.fixo = true; g.add(luz); luzes[lado].push(luz);
+    const brilho = new THREE.Mesh(geoBrilho, new THREE.MeshBasicMaterial({ color: 0xFF6A1A, map: texBrilho, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+    brilho.position.set(sx * 0.302, -0.3 + k * 0.15, zMod + 0.14); g.add(brilho); luz.userData.brilho = brilho;
+  }
+  partes.luzes = { objetos: [...luzes.esquerda, ...luzes.direita], angulo: 0 };
+
+  // Contatos de carga: dois pinos de metal na ponta de baixo do módulo
+  const contatos = [];
+  for (const x of [-0.07, 0.07]) {
+    const c = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.02, 24), new THREE.MeshStandardMaterial({ color: COR.metal, metalness: .9, roughness: .25, emissive: COR.laranja, emissiveIntensity: 0 }));
+    c.position.set(x, -0.575, zMod + 0.02); g.add(c); contatos.push(c);
+  }
+  partes.carga = { objetos: contatos, angulo: 0, inclinar: -0.9 };
+
+  // --- Por dentro: zonas de vibração (lados do pulso) e atuador de pressão (embaixo do módulo)
+  const zonas = {};
+  for (const [nome, th] of [["direita", 1.25], ["esquerda", -1.25]]) {
+    const { p, n } = naTira(th);
+    const zona = new THREE.Mesh(new RoundedBoxGeometry(LARG * .7, 0.32, 0.024, 4, 0.01), new THREE.MeshStandardMaterial({ color: 0xD9D9DE, roughness: .5, emissive: COR.laranja, emissiveIntensity: .05 }));
+    zona.position.copy(p).addScaledVector(n, -ESP / 2 - 0.01); orientar(zona, n.clone().negate());
+    zona.userData.base = zona.position.clone(); zona.userData.n = n.clone();
+    g.add(zona); zonas[nome] = zona;
+  }
+  partes.vibracao = { objetos: [zonas.esquerda, zonas.direita], angulo: Math.PI - 0.75, inclinar: 0.5 };
+  const { p: pa, n: na } = naTira(0);
+  const atuador = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.03, 48).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xD9D9DE, roughness: .5, emissive: COR.laranja, emissiveIntensity: .05 }));
+  atuador.position.copy(pa).addScaledVector(na, -ESP / 2 - 0.012); atuador.userData.base = atuador.position.clone();
+  g.add(atuador);
+  partes.pressao = { objetos: [atuador], angulo: Math.PI - 0.45, inclinar: 0.1 };
+
+  // ---- Destaque de uma parte (acende em laranja)
+  const todosDestacaveis = Object.values(partes).flatMap(p => p.objetos);
+  function destacar(nome, t) {
+    todosDestacaveis.forEach(o => { if (o.material.emissiveIntensity !== undefined && !o.userData.fixo) o.material.emissiveIntensity = (o === aro || o === colarModo) ? .2 : 0; });
+    if (!nome) return;
+    const k = .55 + .35 * Math.sin(t * 4);
+    partes[nome].objetos.forEach(o => { if (o.material.emissive) o.material.emissiveIntensity = k; });
+  }
+
+  // ---- Braille: letras de "PULSE" (pontos 1–6)
+  const LETRAS = { p: [1, 2, 3, 4], u: [1, 3, 6], l: [1, 2, 3], s: [2, 3, 4], e: [1, 5] };
+  function braille(letra) { const pts = LETRAS[letra] || []; pinos.forEach((pino, i) => pino.userData.alvo = pts.includes(i + 1) ? 1 : 0); }
+
+  // ---- Um quadro: pinos e sinais
+  function quadro(t, dt, sinal, semMovimento) {
+    pinos.forEach(pino => {
+      const alvoZ = F - 0.02 + pino.userData.alvo * 0.034;
+      pino.position.z = semMovimento ? alvoZ : pino.position.z + (alvoZ - pino.position.z) * Math.min(1, dt * 10);
+    });
+    // zonas e atuador voltam ao repouso
+    for (const z of Object.values(zonas)) { z.position.copy(z.userData.base); z.material.emissiveIntensity = .05; }
+    atuador.position.copy(atuador.userData.base); atuador.material.emissiveIntensity = .05;
+    const vibra = (z, forca) => { z.material.emissiveIntensity = .4 + .6 * forca; if (!semMovimento) z.position.addScaledVector(z.userData.n, Math.sin(t * 70) * .006 * forca); };
+    if (sinal === "continuar") { const k = semMovimento ? 1 : .5 + .5 * Math.sin(t * 2.4); atuador.material.emissiveIntensity = .4 + .6 * k; atuador.position.addScaledVector(na, -0.012 * k); }
+    if (sinal === "parar") { vibra(zonas.esquerda, 1); vibra(zonas.direita, 1); }
+    if (sinal === "esquerda") vibra(zonas.esquerda, 1);
+    if (sinal === "direita") vibra(zonas.direita, 1);
+    if (sinal === "aguardar") { const c = (t % 1.6); const on = semMovimento ? 1 : (c < 1.0 && (c % 0.34) < 0.17 ? 1 : 0); vibra(zonas.esquerda, on); vibra(zonas.direita, on); }
+    // luzes de sinal (no máximo 3 piscadas por segundo)
+    const acender = (lista, k) => lista.forEach(l => { l.material.emissiveIntensity = k * 2.4; l.material.color.setHex(k > .05 ? 0xFF8A50 : 0x4E4E57); l.userData.brilho.material.opacity = k * .8; });
+    acender(luzes.esquerda, 0); acender(luzes.direita, 0);
+    const forte = semMovimento ? 1 : .75 + .25 * Math.sin(t * 9);
+    if (sinal === "parar") { acender(luzes.esquerda, 1); acender(luzes.direita, 1); }
+    if (sinal === "esquerda") acender(luzes.esquerda, forte);
+    if (sinal === "direita") acender(luzes.direita, forte);
+    if (sinal === "aguardar") { const c = (t % 1.6); const on = semMovimento ? 1 : (c < 1.0 && (c % 0.34) < 0.17 ? 1 : 0); acender(luzes.esquerda, on); acender(luzes.direita, on); }
+    if (sinal === "continuar") {
+      // luz que "anda" de baixo para cima nas duas laterais: siga em frente
+      for (const lado of ["esquerda", "direita"]) luzes[lado].forEach((l, k) => {
+        const fase = semMovimento ? 1 : Math.max(0, 1 - Math.abs(((t * 1.6) % 1.4) - k * 0.22) / 0.22);
+        l.material.emissiveIntensity = fase * 2.4; l.material.color.setHex(fase > .05 ? 0xFF8A50 : 0x4E4E57); l.userData.brilho.material.opacity = fase * .8;
+      });
+    }
+  }
+
+  return { grupo: g, partes, destacar, braille, quadro };
+}
+
+/* =====================================================================
+   Cena, luz e interação
+   ===================================================================== */
+const palco = document.getElementById("palco");
+let renderizador;
+try {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("webgl2", { antialias: true, alpha: true });
+  if (!ctx) throw new Error("sem-webgl");
+  renderizador = new THREE.WebGLRenderer({ canvas, context: ctx, antialias: true, alpha: true });
+  canvas.setAttribute("aria-hidden", "true");
+  document.getElementById("reserva").hidden = true;
+  palco.prepend(canvas);
+} catch (e) { /* sem WebGL: fica a descrição em texto */ }
+
+if (renderizador) {
+  renderizador.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
+  renderizador.outputColorSpace = THREE.SRGBColorSpace;
+  renderizador.toneMapping = THREE.ACESFilmicToneMapping;
+  renderizador.toneMappingExposure = 1.05;
+  const cena = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderizador);
+  cena.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  const chave = new THREE.DirectionalLight(0xffffff, 1.6); chave.position.set(3, 4, 5); cena.add(chave);
+  const contorno = new THREE.DirectionalLight(0xFFB088, 1.2); contorno.position.set(-4, 1, -3); cena.add(contorno);
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50); camera.position.set(0, 0.25, 7.2); camera.lookAt(0, 0, 0);
+
+  const pulseira = criarPulseira();
+  const pivo = new THREE.Group(); pivo.add(pulseira.grupo); cena.add(pivo);
+  // documento: o módulo único pode ser exportado (GLTF) e reaproveitado nas animações
+  window.__pulseira = pulseira;
+
+  let rotY = -0.6, rotX = 0.18, alvoY = rotY, alvoX = rotX, autoGiro = !reduzir, arrasto = null, parteAtiva = null, sinalAtivo = null;
+  const btnAuto = document.getElementById("auto");
+  const rotularAuto = () => { btnAuto.setAttribute("aria-pressed", String(autoGiro)); btnAuto.innerHTML = autoGiro ? '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>Pausar o giro' : '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg>Girar sozinha'; };
+  rotularAuto();
+  btnAuto.addEventListener("click", () => { autoGiro = !autoGiro; rotularAuto(); });
+  const pararAuto = () => { if (autoGiro) { autoGiro = false; rotularAuto(); } };
+
+  document.querySelectorAll("[data-girar]").forEach(b => b.addEventListener("click", () => { pararAuto(); alvoY += THREE.MathUtils.degToRad(+b.dataset.girar); }));
+  document.getElementById("frente").addEventListener("click", () => { pararAuto(); alvoY = Math.round(alvoY / (Math.PI * 2)) * Math.PI * 2 - 0.35; alvoX = 0.12; });
+  palco.addEventListener("keydown", e => {
+    const passos = { ArrowLeft: [-0.3, 0], ArrowRight: [0.3, 0], ArrowUp: [0, -0.15], ArrowDown: [0, 0.15] };
+    const p = passos[e.key]; if (!p) return; e.preventDefault(); pararAuto(); alvoY += p[0]; alvoX = THREE.MathUtils.clamp(alvoX + p[1], -0.9, 0.9);
+  });
+  palco.addEventListener("pointerdown", e => { pararAuto(); arrasto = { x: e.clientX, y: e.clientY, ry: alvoY, rx: alvoX }; palco.setPointerCapture(e.pointerId); palco.classList.add("arrastando"); });
+  palco.addEventListener("pointermove", e => { if (!arrasto) return; alvoY = arrasto.ry + (e.clientX - arrasto.x) * 0.012; alvoX = THREE.MathUtils.clamp(arrasto.rx + (e.clientY - arrasto.y) * 0.006, -0.9, 0.9); });
+  const soltar = () => { arrasto = null; palco.classList.remove("arrastando"); };
+  palco.addEventListener("pointerup", soltar); palco.addEventListener("pointercancel", soltar);
+
+  // Lista de partes
+  const PARTES = [
+    ["destino", "Botão do destino", "Aperte e diga para onde quer ir. É o maior, côncavo e com dois anéis em relevo, para ser achado pelo tato. O aro laranja ajuda quem tem baixa visão."],
+    ["modo", "Botão de modo", "Troca entre sonoro e tátil ou só tátil. É pequeno, em forma de pílula, com um ponto em relevo no centro."],
+    ["braille", "Célula Braille", "Seis pinos no centro do módulo sobem e descem e formam letras em Braille, por exemplo quantos minutos faltam para o ônibus (função opcional). Aqui ela escreve P-U-L-S-E."],
+    ["vibracao", "Zonas de vibração", "Por dentro da tira, nos dois lados do pulso. Vibram do lado da conversão: à esquerda para virar à esquerda, à direita para virar à direita."],
+    ["pressao", "Atuador de pressão", "Por dentro, embaixo do módulo. Aperta o pulso de leve e sem parar para dizer Continuar."],
+    ["luzes", "Luzes de sinal", "Cinco pontos de luz em cada lateral da face. Acendem junto com a vibração: do lado esquerdo para virar à esquerda, do direito para a direita, os dois para parar e, em Continuar, uma luz que sobe. Ajudam quem tem baixa visão e quem acompanha a pessoa; a informação principal continua sendo o tato."],
+    ["carga", "Contatos de carga", "Dois pontos de metal na ponta de baixo do módulo. O carregador magnético gruda ali, sem nenhuma entrada aberta por onde possam entrar água ou poeira."],
+    ["fecho", "Fecho", "Fivela embaixo do pulso, com furos para ajustar o tamanho da tira."]
+  ];
+  const ulPartes = document.getElementById("partes"), expParte = document.getElementById("explica-parte");
+  ulPartes.innerHTML = PARTES.map(([id, nome]) => `<li><button class="btn" type="button" aria-pressed="false" data-parte="${id}">${nome}</button></li>`).join("");
+  ulPartes.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    const id = b.dataset.parte, ativo = parteAtiva !== id;
+    ulPartes.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", "false"));
+    parteAtiva = ativo ? id : null;
+    if (ativo) {
+      b.setAttribute("aria-pressed", "true");
+      const info = PARTES.find(p => p[0] === id), cfg = pulseira.partes[id];
+      expParte.innerHTML = `<strong>${info[1]}</strong>${info[2]}`;
+      pararAuto();
+      const voltas = Math.round(alvoY / (Math.PI * 2)) * Math.PI * 2;
+      alvoY = voltas + cfg.angulo + (cfg.angulo === 0 ? -0.35 : 0);
+      alvoX = cfg.inclinar ?? 0.12;
+    } else expParte.innerHTML = "<strong>Escolha uma parte</strong>A pulseira gira até ela e a parte acende.";
+  }));
+
+  // Sinais
+  const SINAIS = [
+    ["continuar", "Continuar", "O atuador de pressão aperta o pulso de leve, sem parar, até você andar. Nas laterais, uma luz sobe, como uma seta para a frente.", "luzes"],
+    ["parar", "Parar", "As duas zonas vibram juntas, sem parar, até você parar. As luzes dos dois lados ficam acesas.", "luzes"],
+    ["esquerda", "Virar à esquerda", "Só a zona do lado esquerdo vibra, e acendem as luzes do lado esquerdo.", "luzes"],
+    ["direita", "Virar à direita", "Só a zona do lado direito vibra, e acendem as luzes do lado direito.", "luzes"],
+    ["aguardar", "Aguardar", "Três vibrações curtas nas duas zonas, repetidas em intervalos, e as luzes piscam junto.", "luzes"]
+  ];
+  const ulSinais = document.getElementById("sinais"), expSinal = document.getElementById("explica-sinal");
+  ulSinais.innerHTML = SINAIS.map(([id, nome]) => `<li><button class="btn" type="button" aria-pressed="false" data-sinal="${id}">${nome}</button></li>`).join("");
+  ulSinais.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    const id = b.dataset.sinal, ativo = sinalAtivo !== id;
+    ulSinais.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", "false"));
+    sinalAtivo = ativo ? id : null;
+    if (ativo) {
+      b.setAttribute("aria-pressed", "true");
+      const s = SINAIS.find(x => x[0] === id); expSinal.innerHTML = `<strong>${s[1]}</strong>${s[2]}`;
+      pararAuto(); const voltas = Math.round(alvoY / (Math.PI * 2)) * Math.PI * 2; alvoY = voltas - 0.3; alvoX = 0.12;
+    } else expSinal.innerHTML = "<strong>Escolha um sinal</strong>Veja onde a pulseira vibra ou aperta.";
+  }));
+
+  // Tamanho
+  const ajustar = () => { const r = palco.getBoundingClientRect(); renderizador.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; camera.updateProjectionMatrix(); };
+  new ResizeObserver(ajustar).observe(palco); ajustar();
+
+  // Laço: só anima enquanto aparece na tela
+  let visivel = true, ultimo = performance.now(), letra = 0, tLetra = 0;
+  new IntersectionObserver(([r]) => { visivel = r.isIntersecting; }).observe(palco);
+  const PULSE = ["p", "u", "l", "s", "e"];
+  pulseira.braille("p");
+  function laco(agora) {
+    const dt = Math.min(.05, (agora - ultimo) / 1000); ultimo = agora;
+    if (visivel) {
+      const t = agora / 1000;
+      if (autoGiro) alvoY += dt * 0.45;
+      const k = reduzir ? 1 : Math.min(1, dt * 6);
+      rotY += (alvoY - rotY) * k; rotX += (alvoX - rotX) * k;
+      pivo.rotation.set(rotX, rotY, 0);
+      tLetra += dt; if (tLetra > 1.1) { tLetra = 0; letra = (letra + 1) % PULSE.length; pulseira.braille(PULSE[letra]); }
+      pulseira.destacar(parteAtiva, t);
+      pulseira.quadro(t, dt, sinalAtivo || (parteAtiva === "luzes" ? "continuar" : null), reduzir);
+      renderizador.render(cena, camera);
+    }
+    requestAnimationFrame(laco);
+  }
+  requestAnimationFrame(laco);
+  window.__girarPara = (y, x) => { autoGiro = false; rotularAuto(); alvoY = rotY = y; alvoX = rotX = x; };
+}
+</script>

@@ -5,7 +5,7 @@
 > - As regras completas estão em `docs/ESPECIFICACAO_PULSE.md`. A seção 17 dela reúne todas as decisões desta lista.
 > - O registro do uso de IA é mantido pela equipe em `AI.md`.
 >
-> Última atualização: 11/11/2026.
+> Última atualização: 12/11/2026.
 
 ---
 
@@ -22,6 +22,7 @@
 | 6 | Responsividade para tablet e computador | `37175ba` |
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
 | 8 | Nova identidade e movimento (seção 18): cores, fontes, capa, pulseira 3D, rolagens, carrossel, galeria, transição entre páginas, rodapé com os ODS, 404 | — (commits por subfase, feitos pela equipe) |
+| 9 | **Planejada** (seção 19): interruptor "Efeitos", paleta laranja e grafite, fontes por `next/font/google`, polimento, efeitos e interações novos, Tecnologias em cartões que viram, Galeria em canvas, Equipe no varal, pulseira 3D nova e vídeos | — (em andamento, por subfases; commits feitos pela equipe) |
 
 **Em números (depois da Fase 8):** 7 rotas + página 404 · 46 componentes (o mínimo é 8) · 23 custom hooks (o mínimo é 2) · 2 serviços · 3 arquivos de funções puras + 3 módulos de movimento e 3D (`lib/movimento.js`, `lib/pulseira3d/cena.js` e `lib/pulseira3d/sinais.js`).
 
@@ -745,6 +746,94 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 
 ---
 
+## Fase 9 — Efeitos, paleta nova, pulseira nova e vídeos
+
+A equipe aprovou a Fase 9 (seção 19 da especificação, com os protótipos `pulse-efeitos.html` e `pulse-pulseira-3d.html` e os padrões `PADRAO_MOVIMENTO_PULSE.md` e `PADRAO_ANIMACOES_VIDEO_PULSE.md`). A fase é feita em 11 subfases (9.0 a 9.10), com uma pausa para aprovação no fim de cada uma. **Cada mudança está registrada aqui.** As decisões vão para a seção 17 da especificação, marcadas como **Equipe** ou **Implementação**.
+
+### 9.0 — Leitura e plano (sem código)
+
+**O que foi feito:** leitura da seção 19, das notas (Fase 9) das outras seções, dos 2 protótipos e dos 2 padrões; exame do projeto; plano das subfases 9.1 a 9.10; inventário dos lugares que conferem "reduzir movimento"; riscos.
+
+**Conferido no projeto:** nenhum pacote novo é necessário (`next/font` vem com o Next; `SplitText` e `ScrollTrigger` vêm no `gsap` 3.15; `RoundedBoxGeometry` e `RoomEnvironment` vêm no `three`). Os 15 vídeos, os quadros parados e as legendas já estão em `public/videos/` (17 MB no total).
+
+**Inventário de "reduzir movimento"** (a 19.2 estimou cerca de 28 lugares; a contagem real é 22): o hook `usePrefereMovimentoReduzido` em 4 lugares, 10 consultas diretas a `matchMedia`, 5 classes `motion-safe:`/`motion-reduce:` e 3 blocos `@media (prefers-reduced-motion)`, mais o `MotionConfig`. Todos passam para a preferência única na 9.1.
+
+**Decisões da equipe** (vão para a seção 17 da especificação como **Equipe**):
+
+| # | Decisão |
+| --- | --- |
+| 1 | **Granulado atrás do conteúdo.** A conta prévia mostrou que o grão cinza por cima de tudo (como no protótipo) baixa 3 pares para menos de 4,5:1, mesmo com o mínimo de 4% (laranja `#CC4200` na faixa clara: 4,44; laranja `#FC4C02` na faixa escura e texto do botão principal: 4,25). Por isso o grão fica só no fundo da página e das faixas (cartões, botões e campos o cobrem), com a cor por tema: clara no tema claro e escura no escuro. Assim o contraste nunca cai. |
+| 2 | **Vídeos com os caminhos ligados.** Como os arquivos já estão em `public/videos/`, o `VideoPulse` usa os caminhos reais. O marcador `VIDEO-(nome)-AQUI` fica em comentário, e, sem o arquivo, a caixa mostra o marcador, sem erro. |
+| 3 | **O padrão de movimento vence** nos 3 pontos em que discorda da seção 19: preloader de 1,4 s (e não 1,2 s); cartão de Tecnologias com `spring.suave` (0,42 s, e não 0,55 s em CSS); "texto que se constrói" com o gesto GUIA, sem a máscara de domos (os domos ficam só na capa, na cortina e na troca de foto). |
+| 4 | **Espaço vazio de ícone some em todo o site** até o ícone entrar, para a barra e os botões ficarem com o texto centralizado. Revê a regra antiga "mantém o tamanho final". |
+
+**Propostas da implementação aceitas no plano** (seção 17 como **Implementação**):
+- **Lenis sem `stop()`.** A 19.2 pede `stop()` com os efeitos desligados, mas o `stop()` põe no `<html>` uma classe com `overflow: clip` (do CSS do próprio Lenis) e cancela a roda do mouse: a página deixaria de rolar. Com os efeitos desligados, o Lenis nem é criado; ao religar, é criado de novo.
+- **Abertura:** "Pausar o giro" para também a passagem automática dos sinais (WCAG 2.2.2), e a caixa da pulseira recebe foco para as setas do teclado.
+- **Seções fixas com `position: sticky`** do CSS (o GSAP só lê o progresso), para não desalinhar as âncoras e o Lenis.
+
+**Onde o protótipo discorda e a especificação vence:** valores `"ligados"`/`"desligados"` no `localStorage`; sem capa nem preloader com os efeitos desligados; encaixe a menos de 30% da altura; tamanhos do H1 e do H2 e `hyphens: manual` da 19.5; a abertura usa a pulseira nova; nada do que é "só da prévia".
+
+**Onde fica a documentação:** a versão atual está em `projeto-citizentech-1espu/docs/`. A pasta `docs/` da raiz do repositório tem cópias antigas (da Fase 8). Apagar ou não essas cópias fica com a equipe.
+
+### 9.1 — Base: preferência de movimento única e o interruptor "Efeitos"
+
+**O que mudou para quem usa:** o cabeçalho ganhou o botão "Efeitos: ligados" / "Efeitos: desligados", à direita do rótulo "GS 2026.2 · CitizenTech". Desligado, nada se move em nenhuma página: sem rolagem suave, sem capa, sem cortina entre páginas, sem faixa dos ODS andando, sem "Os sinais" e galeria em rolagem fixa, com a pulseira 3D parada e as barras sempre visíveis. A escolha vale na hora e continua depois de recarregar. Sem escolha salva, o botão começa desligado quando o aparelho pede "reduzir movimento".
+
+**Arquivos:**
+
+| Arquivo | Mudança |
+| --- | --- |
+| `lib/presetsMovimento.js` (novo) | Molas (`spring.rapida`, `padrao`, `suave`), `saida`, `cascata` e os gestos `pulso`, `guia` e `tremor`, iguais ao PADRAO_MOVIMENTO_PULSE |
+| `lib/efeitos.js` (novo) | O estado único: lê e grava o atributo `data-efeitos` do `<html>` e a escolha no `localStorage` (`pulse-efeitos`, com `try/catch`), e avisa quem assina |
+| `hooks/useEfeitos.js` (novo) | Contexto e hook `useEfeitos()`: `efeitosLigados`, `efeitosConhecidos` e `alternarEfeitos()` |
+| `hooks/useRolagemSuave.js` (novo) | Devolve o Lenis do site, ou `null` com os efeitos desligados (substitui o `useLenis` do pacote) |
+| `components/layout/ProvedorMovimento.jsx` | Fornece o estado; acompanha o aparelho só sem escolha salva; cria o Lenis ao ligar e o destrói ao desligar; `MotionConfig` com `spring.padrao` e `reducedMotion` "never"/"always" |
+| `components/layout/InterruptorEfeitos.jsx` (novo) | Botão com `aria-pressed`, texto visível, trilho decorativo (`aria-hidden`), 48 px, contorno de 2 px em `--cor-borda` e a bolinha com `spring.rapida` |
+| `components/layout/Cabecalho.jsx` | Botão "Efeitos" à direita do rótulo; abaixo de 640 px, o rótulo desce para a linha de baixo |
+| `app/layout.jsx` | Script do `<head>` grava `data-efeitos` antes da pintura e só prepara a camada da capa com os efeitos ligados |
+| `app/globals.css` | Variantes `efeitos-ligados:` e `efeitos-desligados:`; os 3 blocos `@media (prefers-reduced-motion)` viraram regras com `data-efeitos` |
+| `hooks/useCapaIntro.js` | Sem capa com os efeitos desligados (e ela conta como vista); usa `useRolagemSuave` |
+| `hooks/useTransicaoPagina.js`, `useLinhasPartes.js`, `useInclinacaoMouse.js`, `useCarrossel.js` | Leem o estado único (`efeitosLigadosAgora()`) em vez do aparelho |
+| `hooks/usePulseira3D.js` | Usa `useEfeitos()`; ligar e desligar redesenha na hora (quadro parado ou animação) |
+| `hooks/useDirecaoRolagem.js`, `useRolagemFixa.js`, `useGaleriaHorizontal.js`, `components/ui/PalavraFundo.jsx`, `components/abertura/AberturaPulseira.jsx` | Usam `useEfeitos()`; a revelação da abertura passou para o gesto GUIA com `spring.padrao` |
+| `components/abertura/CapaIntro.jsx`, `PartesSolucao.jsx`, `components/ui/Botao.jsx`, `components/solucao/CartaoIntegrante.jsx`, `FaixaODS.jsx` | `motion-safe:` e `motion-reduce:` → `efeitos-ligados:` e `efeitos-desligados:` |
+| `hooks/usePrefereMovimentoReduzido.js` | Continua, mas só o `ProvedorMovimento` usa (valor inicial e mudança do aparelho) |
+| Comentários em 11 arquivos | "reduzir movimento" → "efeitos desligados" |
+
+**Decisões da implementação** (seção 17 como **Implementação**):
+- **O estado mora no `<html>`.** O script do `<head>` grava `data-efeitos` antes de a página aparecer. Assim o CSS, o texto do botão e as cores do trilho já nascem certos, sem "piscar". O React lê o mesmo atributo.
+- **No servidor, o estado é "desconhecido"** e conta como desligado. Por isso nada (Lenis, GSAP, 3D) começa antes de o React ler o valor real, e nada precisa ser desfeito logo depois.
+- **Sem JavaScript, nada se move.** Sem o atributo, as regras de "efeitos desligados" valem (`:root:not([data-efeitos="ligados"])`), então a faixa dos ODS fica parada em lista. Sem JavaScript o botão de pausa não funcionaria, então a faixa não pode andar.
+- **O Lenis não fica em volta das páginas.** Ele é criado e destruído num efeito do provedor. Se ficasse em volta (como o `ReactLenis`), ligar e desligar remontaria o site inteiro, e um formulário do Diário perderia o que foi digitado.
+- **Com os efeitos desligados, a capa conta como vista:** se a pessoa ligar os efeitos no meio da visita, a capa não aparece de repente na frente da página.
+
+**Verificação automática** (Chrome sem janela, servidor de produção): ESLint sem problemas, `next build` sem erros e **48 de 48 testes**:
+- valor inicial: sem "reduzir movimento" → ligados, com Lenis; com "reduzir movimento" → desligados, sem Lenis, sem capa e sem camada de espera;
+- efeitos desligados, nas 6 rotas (Início, Solução, Simulador, Diário, Novo registro e 404): `document.getAnimations()` vazio, nenhum quadro 3D novo em 1 s e a roda do mouse rola a página;
+- botão: liga na hora, salva `"ligados"`, liga o modo fixo de "Os sinais" sem recarregar; recarregar mantém a escolha mesmo com "reduzir movimento" no aparelho; desligar no meio da página desfaz o Lenis e o modo fixo e zera as animações;
+- mudança do aparelho com o site aberto: sem escolha salva, o estado acompanha (e volta); com escolha salva, o aparelho não manda mais;
+- efeitos ligados: capa na primeira visita, pulseira animando, roda do mouse suave; alternar duas vezes não apaga o texto digitado no formulário do Diário;
+- 320 px, nas 6 rotas: sem rolagem lateral, botão com 48 px ou mais, "Pulse" e "Efeitos" na mesma linha;
+- teclado: o Tab chega ao botão (depois de "Pular para o conteúdo" e "Pulse"); Enter liga e Espaço desliga;
+- nenhum erro ou aviso no console;
+- busca no código: `prefers-reduced-motion` só no script do `<head>` e no hook usado pelo `ProvedorMovimento`; nenhum `motion-safe:` ou `motion-reduce:`.
+
+**Como testar à mão:**
+1. `npm run dev` e abra `http://localhost:3000`. O botão "Efeitos" está no cabeçalho, à direita.
+2. Clique nele: o texto muda para "Efeitos: desligados" e a bolinha vai para a esquerda. Role a página com a roda do mouse: a rolagem fica seca, sem suavização. Na Solução, "Os sinais" e a galeria viram listas comuns. Na Início, a pulseira para.
+3. Recarregue a página (`F5`): continua "desligados". Clique de novo para ligar e recarregue: continua "ligados".
+4. Apague a escolha (DevTools > Application > Local Storage > apague `pulse-efeitos`), ligue "reduzir movimento" no aparelho (Windows: Configurações > Acessibilidade > Efeitos visuais > Efeitos de animação desligado) e recarregue: começa "desligados".
+5. Teclado: aperte `Tab` até o botão (é o terceiro foco) e use `Enter` ou `Espaço`.
+6. Leitor de tela (NVDA): no botão, ele diz algo como "Efeitos: ligados, botão de alternância, pressionado".
+7. No modo celular do navegador (320 px): "Pulse" e o botão na primeira linha e o rótulo na segunda, sem rolagem lateral.
+
+**Marcadores desta subfase:** nenhum novo. O `ICONE-Pulse-AQUI` do cabeçalho continua onde estava.
+
+**Sugestão de commit:** `Adiciona interruptor de efeitos e preferência de movimento única`
+
+---
+
 ## Como os testes automáticos foram feitos
 
 - Scripts temporários, **fora do projeto**, controlaram o Chrome sem janela pelo protocolo de depuração: clicam, preenchem formulários, apertam Tab e medem a tela.
@@ -783,14 +872,16 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 
 | Pendência | Quem resolve |
 | --- | --- |
-| Colocar as 3 fontes (Anton, Atkinson Hyperlegible Next e JetBrains Mono), os ícones, as imagens e as fotos nos marcadores | Equipe |
+| Colocar os ícones, as imagens e as fotos nos marcadores. As 3 fontes entram por `next/font/google` na Fase 9 (seção 19.4) | Equipe |
+| Gerar as imagens com os prompts do documento "Prompts das imagens da Pulse" e colocá-las (Fase 9) | Equipe |
+| Colocar os vídeos, os quadros parados e as legendas em `public/videos/` (seção 19.13); gerar a voz "Trianon-Masp" para "A pulseira" | Equipe |
 | Conectar a API externa (`.env.local` + blocos `API-EXTERNA-AQUI`) | Equipe |
 | Fazer o simulador (`SIMULADOR-AQUI`) e decidir sobre a vibração do celular | Integrante do simulador + equipe |
 | ~~Textos da página 404 em português~~ Feita na subfase 8.7 (`app/not-found.jsx`) | — |
 | Textos para esperas acima de 10 s (aviso + cancelar) | Equipe (passar os textos) |
 | ~~Alinhamento do logo com a grade no computador~~ Resolvido na Fase 8 (área de 76rem em tudo). Cabeçalho fixo com zoom de 400% | Equipe avalia |
 | Testes manuais da Fase 7 e da Fase 8 (leitor de tela, aparelhos reais, desempenho da pulseira no celular) | Equipe |
-| Depois de colocar a imagem da capa: conferir o contraste de 7:1 do rótulo, de "PULSE" e da dica | Equipe |
+| ~~Depois de colocar a imagem da capa: conferir o contraste~~ Na Fase 9, a capa usa vídeo, com a frase sobre a faixa sólida | — |
 | Depois de colocar a Anton: conferir a 320 px os títulos longos e os números (hoje medidos com a Impact, a reserva) | Equipe |
 | Frase da capa ("Um guia no pulso para atravessar a cidade.") é provisória | Equipe |
 | Confirmar ou mudar as decisões marcadas "Implementação" na seção 17 da especificação | Equipe |
