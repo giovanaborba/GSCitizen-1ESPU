@@ -5,6 +5,7 @@ import Pulseira3D from "@/components/pulseira/Pulseira3D";
 import EspacoImagem from "@/components/ui/EspacoImagem";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 import { useRolagemFixa } from "@/hooks/useRolagemFixa";
+import RotuloSecao from "@/components/layout/RotuloSecao";
 
 /*
   SinaisRolagemFixa — seção "Os sinais" da Solução (seções 18.8 e 18.14).
@@ -103,7 +104,7 @@ export default function SinaisRolagemFixa() {
 
   return (
     <section className={`mt-20 ${podeFixar ? "sinais-fixo" : ""}`}>
-      <p className="rotulo-mono text-destaque">Linguagem da Pulse</p>
+      <RotuloSecao>Linguagem da Pulse</RotuloSecao>
       <h2 id="os-sinais" tabIndex={-1} className="mt-3 scroll-mt-10">
         Os sinais
       </h2>

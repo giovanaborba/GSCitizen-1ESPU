@@ -7,6 +7,7 @@ import BarraNavegacao from "@/components/layout/BarraNavegacao";
 import FocoNaTroca from "@/components/layout/FocoNaTroca";
 import Provedores from "@/components/layout/Provedores";
 import ProvedorMovimento from "@/components/layout/ProvedorMovimento";
+import Granulado from "@/components/ui/Granulado";
 
 /*
   FONTES (seções 18.4 e 19.4), carregadas com next/font/google.
@@ -133,6 +134,8 @@ export default function RootLayout({ children }) {
             <Cabecalho />
             {/* tabIndex={-1}: deixa o "Pular para o conteúdo" mover o foco para cá */}
             <main id="conteudo" tabIndex={-1}>
+              {/* Granulado atrás do conteúdo (seção 19.6, decorativo) */}
+              <Granulado />
               {children}
             </main>
             <Rodape />

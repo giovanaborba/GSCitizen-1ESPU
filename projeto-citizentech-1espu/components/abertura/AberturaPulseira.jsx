@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import Pulseira3D from "@/components/pulseira/Pulseira3D";
 import CapaIntro from "@/components/abertura/CapaIntro";
+import Preloader from "@/components/abertura/Preloader";
 import PartesSolucao, { PARTES_DA_SOLUCAO } from "@/components/abertura/PartesSolucao";
 import PalavraFundo from "@/components/ui/PalavraFundo";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useCapaIntro } from "@/hooks/useCapaIntro";
+import { useEncaixe } from "@/hooks/useEncaixe";
 import { useLinhasPartes } from "@/hooks/useLinhasPartes";
 import { SINAIS_DA_ABERTURA } from "@/lib/pulseira3d/sinais";
 import { spring } from "@/lib/presetsMovimento";
@@ -51,6 +54,9 @@ export default function AberturaPulseira() {
   const capa = useCapaIntro();
   const { refPalco, refSvg, registrarNo, aoDesenhar } = useLinhasPartes(parteAtiva);
   const parada = !efeitosLigados || !cenaAnimando;
+  // Rolagem com encaixe na Início (seção 19.6): a abertura, o Tema e
+  // "Quem vive o problema" têm data-encaixe.
+  useEncaixe();
 
   // Esta parte é lógica
   function alternarPausa() {
@@ -91,9 +97,30 @@ export default function AberturaPulseira() {
   return (
     // overflow-x-clip: a palavra de fundo tem a largura da tela; o que
     // passar é cortado, sem criar rolagem lateral.
-    <section aria-labelledby="titulo-inicio" className="relative overflow-x-clip margem-lateral pt-8 pb-10">
+    <section
+      aria-labelledby="titulo-inicio"
+      data-encaixe=""
+      className="relative overflow-x-clip margem-lateral pt-8 pb-10"
+    >
       {/* Esta parte é lógica */}
-      {capa.capaNaTela && <CapaIntro refCapa={capa.refCapa} saindo={capa.saindo} aoTocar={capa.sair} />}
+      {/* Capa e preloader são desenhados direto no <body> (portal): com o
+          rodapé revelado (19.6), o <main> ganha uma camada própria, e
+          eles ficariam atrás do cabeçalho. Só existem no navegador, depois
+          da hidratação, então o document.body já existe. */}
+      {capa.capaNaTela &&
+        createPortal(
+          <>
+            <CapaIntro refCapa={capa.refCapa} saindo={capa.saindo} aoTocar={capa.sair} />
+            {capa.preloaderNaTela && (
+              <Preloader
+                refPreloader={capa.refPreloader}
+                refContador={capa.refContador}
+                aoTocar={capa.sair}
+              />
+            )}
+          </>,
+          document.body,
+        )}
 
       <div className="relative mx-auto grid max-w-pagina gap-2">
         <motion.div {...revelacao()} className="grid justify-items-center gap-3 text-center">

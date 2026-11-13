@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import LinkInterno from "@/components/ui/LinkInterno";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 import InterruptorEfeitos from "@/components/layout/InterruptorEfeitos";
+import BarraProgresso from "@/components/layout/BarraProgresso";
 import { useDirecaoRolagem } from "@/hooks/useDirecaoRolagem";
 
 /*
@@ -77,6 +78,8 @@ export default function Cabecalho() {
           <InterruptorEfeitos />
         </div>
       </div>
+      {/* Progresso da leitura, embaixo do cabeçalho (seção 19.6) */}
+      <BarraProgresso />
     </header>
   );
 }

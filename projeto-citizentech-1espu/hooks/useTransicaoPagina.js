@@ -2,21 +2,28 @@ import { createContext, useContext, useEffect, useLayoutEffect, useRef } from "r
 import { usePathname, useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { efeitosLigadosAgora } from "@/lib/efeitos";
+import { desenharDomos, limparDomos } from "@/lib/cortinaDomos";
 
 /*
-  useTransicaoPagina — transição de piso tátil entre páginas (seção 18.9).
+  useTransicaoPagina — transição de piso tátil entre páginas (seções 18.9
+  e 19.6).
 
-  Como funciona a cortina: é uma camada grafite vista por uma "peneira" de
-  domos (CSS .cortina-piso). A variável --d é o raio de cada domo:
-  0 px = invisível; 22 px = os domos se encostam e cobrem a tela.
+  Como funciona a cortina (Fase 9): é um <canvas> em tela cheia onde os
+  domos grafite (--cor-cortina) entram numa varredura diagonal, como
+  pixels, do canto de cima à esquerda ao de baixo à direita, e depois
+  saem na mesma ordem (desenho em lib/cortinaDomos.js). Sem "glitch":
+  cada domo só cresce ou só encolhe uma vez.
 
   1. A pessoa toca num link interno. O <Link> do Next chama onNavigate.
      A guarda de saída decide primeiro ("Descartar as respostas?"). Se a
      saída estiver livre, ela chama navegar(evento, destino), daqui.
-  2. navegar cancela a navegação normal (evento.preventDefault()), faz os
-     domos crescerem (200 ms) e só então chama router.push(destino).
-  3. Quando o endereço muda (usePathname), os domos encolhem (220 ms) e
-     revelam a página nova. O foco continua indo para o <h1> (FocoNaTroca).
+  2. navegar cancela a navegação normal (evento.preventDefault()), faz a
+     varredura cobrir a tela (0,42 s) e só então chama
+     router.push(destino).
+  3. Quando o endereço muda (usePathname), a varredura revela a página
+     nova (0,42 s). O foco continua indo para o <h1> (FocoNaTroca).
+  Duração: a da cortina no PADRAO_MOVIMENTO_PULSE (item 5c, 0,42 s), em
+  cada sentido, como no protótipo.
 
   Casos especiais:
   - Voltar e Avançar do navegador: não passam pelo <Link>, então só a
@@ -31,9 +38,8 @@ import { efeitosLigadosAgora } from "@/lib/efeitos";
     some mesmo assim, para nunca prender a pessoa atrás dela.
 */
 
-const RAIO_COBRE_TELA = 22; // px, em células de 30 px
-const DURACAO_ENTRADA = 0.2; // segundos
-const DURACAO_SAIDA = 0.22; // segundos
+const DURACAO_ENTRADA = 0.42; // segundos (PADRAO_MOVIMENTO_PULSE, item 5c)
+const DURACAO_SAIDA = 0.42; // segundos
 const LIMITE_DE_ESPERA = 3000; // ms
 
 // Contexto: deixa navegar e irPara disponíveis para a guarda de saída
@@ -66,41 +72,53 @@ function caminhoDe(destino) {
 }
 
 // Esta parte é lógica
-function mostrarCortina(cortina, raio) {
-  cortina.dataset.ativa = "";
-  gsap.set(cortina, { "--d": `${raio}px` });
+function corDaCortina() {
+  return getComputedStyle(document.documentElement).getPropertyValue("--cor-cortina").trim() || "#242428";
 }
 
 // Esta parte é lógica
-// Encolhe os domos e esconde a cortina no fim.
-function encolherCortina(cortina, estado) {
-  clearTimeout(estado.limite);
-  estado.animacao?.kill();
-  estado.animacao = gsap.to(cortina, {
-    "--d": "0px",
-    duration: DURACAO_SAIDA,
-    ease: "power2.out",
-    onComplete: () => {
-      delete cortina.dataset.ativa;
-      estado.cobrindo = false;
-    },
+// Mostra a cortina já num ponto da varredura (0 = vazia; 1 = cobrindo).
+function mostrarCortina(cortina, cobrindo) {
+  cortina.dataset.ativa = "";
+  desenharDomos(cortina, cobrindo ? 1 : 0, true, corDaCortina());
+}
+
+// Esta parte é lógica
+// Anima a varredura: o GSAP leva "progresso" de 0 a 1, e cada passo
+// redesenha o canvas.
+function varrer(cortina, entrando, duracao, aoTerminar) {
+  const cor = corDaCortina();
+  const valor = { progresso: 0 };
+  return gsap.to(valor, {
+    progresso: 1,
+    duration: duracao,
+    ease: "none", // cada domo já cresce aos poucos; o conjunto anda reto
+    onUpdate: () => desenharDomos(cortina, valor.progresso, entrando, cor),
+    onComplete: aoTerminar,
   });
 }
 
 // Esta parte é lógica
-// Faz os domos crescerem até cobrir a tela e, no fim, troca de página.
+// Revela a página nova e esconde a cortina no fim.
+function encolherCortina(cortina, estado) {
+  clearTimeout(estado.limite);
+  estado.animacao?.kill();
+  estado.animacao = varrer(cortina, false, DURACAO_SAIDA, () => {
+    delete cortina.dataset.ativa;
+    limparDomos(cortina);
+    estado.cobrindo = false;
+  });
+}
+
+// Esta parte é lógica
+// Cobre a tela com a varredura e, no fim, troca de página.
 function cobrirETrocar(cortina, estado, trocarDePagina) {
   estado.cobrindo = true;
   estado.animacao?.kill();
-  mostrarCortina(cortina, 0);
-  estado.animacao = gsap.to(cortina, {
-    "--d": `${RAIO_COBRE_TELA}px`,
-    duration: DURACAO_ENTRADA,
-    ease: "power2.in",
-    onComplete: () => {
-      trocarDePagina();
-      estado.limite = setTimeout(() => encolherCortina(cortina, estado), LIMITE_DE_ESPERA);
-    },
+  mostrarCortina(cortina, false);
+  estado.animacao = varrer(cortina, true, DURACAO_ENTRADA, () => {
+    trocarDePagina();
+    estado.limite = setTimeout(() => encolherCortina(cortina, estado), LIMITE_DE_ESPERA);
   });
 }
 
@@ -160,7 +178,7 @@ export function useTransicaoPagina() {
     // Troca que não passou por um link (Voltar/Avançar): só a saída
     if (semMovimento() || !deveAnimarTroca(origem, caminho)) return;
     estado.current.cobrindo = true;
-    mostrarCortina(cortina, RAIO_COBRE_TELA);
+    mostrarCortina(cortina, true);
     encolherCortina(cortina, estado.current);
   }, [caminho]);
 

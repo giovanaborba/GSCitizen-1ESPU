@@ -1,4 +1,5 @@
 import AberturaPulseira from "@/components/abertura/AberturaPulseira";
+import FaixaTexto from "@/components/ui/FaixaTexto";
 import PaginaComIndice from "@/components/layout/PaginaComIndice";
 import Secao from "@/components/layout/Secao";
 import Cartao from "@/components/ui/Cartao";
@@ -27,6 +28,8 @@ export const metadata = {
     divisor de piso tátil). A ordem completa da 19.5 (faixa de texto,
     frase que acende e "Um trajeto com a Pulse") entra nas subfases 9.4
     e 9.6.
+  - Faixa de texto ("Pulse · um guia no pulso") logo depois da abertura
+    e antes do "Nesta página": "entre a abertura e o Tema" (19.5 e 19.6).
   - Títulos novos de Tema e O problema. Os ids e os itens do "Nesta
     página" continuam ("Tema CitizenTech", "O problema").
   - Tema em duas colunas no computador.
@@ -43,6 +46,9 @@ export default function PaginaInicio() {
       {/* Capa, abertura com a pulseira 3D, H1 e resumo (seção 18.6) */}
       <AberturaPulseira />
 
+      {/* Faixa de texto entre a abertura e o Tema (seção 19.6, decorativa) */}
+      <FaixaTexto />
+
       <PaginaComIndice
         itensIndice={SECOES}
         acaoFinal={<Botao href="/solucao">Conheça a solução</Botao>}
@@ -53,6 +59,7 @@ export default function PaginaInicio() {
           rotulo="CitizenTech"
           banda
           duasColunas
+          encaixe
         >
           <p>
             CitizenTech é tecnologia criada a partir das necessidades reais das
@@ -128,7 +135,7 @@ export default function PaginaInicio() {
           </div>
         </Secao>
 
-        <Secao id="quem-vive-o-problema" titulo="Quem vive o problema" rotulo="As pessoas" banda>
+        <Secao id="quem-vive-o-problema" titulo="Quem vive o problema" rotulo="As pessoas" banda encaixe>
           <p>
             Pessoas cegas ou com qualquer nível de deficiência visual que
             dificulte os deslocamentos, especialmente quem usa as ruas e o

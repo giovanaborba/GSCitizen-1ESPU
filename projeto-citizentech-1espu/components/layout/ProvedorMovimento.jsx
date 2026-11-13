@@ -40,6 +40,7 @@ import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido
      no CSS do próprio Lenis, e ainda cancela a roda do mouse. A página
      deixaria de rolar.
      - autoRaf: false → quem "dá corda" ao Lenis é o relógio do GSAP;
+     - lerp: 0.09 → um pouco mais de inércia (seção 19.6);
      - anchors: true → links para "#algum-id" rolam suave, descontando o
        scroll-padding-top do <html>. O clique continua sendo um link
        normal: o foco vai para o destino;
@@ -58,10 +59,15 @@ import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido
 // Esta parte é lógica
 registrarPluginsGsap();
 
+// lerp (seção 19.6): a cada quadro, a rolagem anda 9% do caminho que
+// falta até o destino. Quanto menor o número, mais "inércia" (a página
+// continua deslizando um pouco depois da roda parar). O padrão do Lenis
+// é 0,1; a Fase 9 pede um pouco mais de inércia (≈ 0,09).
 const OPCOES_LENIS = {
   autoRaf: false,
   anchors: true,
   smoothWheel: true,
+  lerp: 0.09,
 };
 
 // Esta parte é lógica

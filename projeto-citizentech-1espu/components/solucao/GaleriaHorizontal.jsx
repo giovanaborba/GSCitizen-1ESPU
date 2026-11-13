@@ -2,6 +2,7 @@
 
 import EspacoImagem from "@/components/ui/EspacoImagem";
 import { useGaleriaHorizontal } from "@/hooks/useGaleriaHorizontal";
+import RotuloSecao from "@/components/layout/RotuloSecao";
 
 /*
   GaleriaHorizontal — seção "Galeria" da Solução (seções 18.8 e 18.14).
@@ -63,7 +64,7 @@ export default function GaleriaHorizontal() {
 
   return (
     <section className="mt-20">
-      <p className="rotulo-mono text-destaque">A cidade</p>
+      <RotuloSecao>A cidade</RotuloSecao>
       <h2 id="galeria" tabIndex={-1} className="mt-3 scroll-mt-10">
         Galeria
       </h2>

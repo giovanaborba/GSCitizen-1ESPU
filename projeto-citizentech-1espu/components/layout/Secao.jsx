@@ -1,3 +1,5 @@
+import RotuloSecao from "@/components/layout/RotuloSecao";
+
 /*
   Secao — uma seção de conteúdo com <h2> (seção 5, item 3.3), no visual
   das Fases 8 e 9 (seções 18.5 e 19.5).
@@ -22,6 +24,15 @@
     e o título ficam à esquerda e o texto à direita, começando na altura
     do título. No celular, um embaixo do outro. A ordem no HTML (e do
     leitor de tela) não muda: rótulo → título → texto.
+  - encaixe (seção 19.6): marca a seção com data-encaixe, para a rolagem
+    com encaixe por proximidade (useEncaixe) poder assentar nela.
+
+  Rótulo (RotuloSecao): a linha laranja antes dele se desenha quando a
+  seção chega (19.6).
+
+  Granulado nas bandas (19.6): o grão da página fica atrás de tudo, então
+  o fundo opaco da banda o cobriria. Por isso a banda tem a própria camada
+  de grão, por cima do fundo dela e atrás do conteúdo.
 
   Como a banda vai de ponta a ponta: a Secao fica dentro da área de 76rem
   da página. O fundo e o divisor são duas camadas decorativas
@@ -38,6 +49,7 @@ export default function Secao({
   larga = false,
   banda = false,
   duasColunas = false,
+  encaixe = false,
   className = "",
   children,
 }) {
@@ -53,7 +65,10 @@ export default function Secao({
   }`;
 
   return (
-    <section className={`${classesSecao} ${classesGrade} ${className}`}>
+    <section
+      data-encaixe={encaixe ? "" : undefined}
+      className={`${classesSecao} ${classesGrade} ${className}`}
+    >
       {/* Esta parte é lógica */}
       {banda && (
         <>
@@ -63,11 +78,15 @@ export default function Secao({
           />
           <span
             aria-hidden="true"
+            className="grao absolute inset-y-0 left-1/2 -z-10 w-screen -translate-x-1/2"
+          />
+          <span
+            aria-hidden="true"
             className="divisor-piso absolute top-0 left-1/2 w-screen -translate-x-1/2"
           />
         </>
       )}
-      {rotulo && <p className={`rotulo-mono text-destaque ${classesRotulo}`}>{rotulo}</p>}
+      {rotulo && <RotuloSecao className={classesRotulo}>{rotulo}</RotuloSecao>}
       <h2 id={id} tabIndex={-1} className={classesTitulo}>
         {titulo}
       </h2>

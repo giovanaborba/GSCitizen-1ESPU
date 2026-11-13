@@ -86,6 +86,8 @@
      domos (decisão da equipe na 9.2) */
   --cor-palavra-fundo: rgba(36, 36, 40, 0.06);
   --grao-opacidade: 0.06; /* granulado (19.6) */
+  /* Ruído do granulado: branco no tema claro (decisão 1 da 9.0) */
+  --grao-imagem: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --cor-faixa-3d: #fc4c02; /* tira da pulseira 3D */
   --cor-cortina: #242428; /* transição entre páginas e preloader */
 
@@ -180,6 +182,8 @@
     --cor-ponto-sombra: rgba(0, 0, 0, 0.35);
     --cor-palavra-fundo: rgba(255, 255, 255, 0.05);
     --grao-opacidade: 0.08;
+    /* Ruído preto no tema escuro (decisão 1 da 9.0) */
+    --grao-imagem: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     /* --cor-faixa-3d e --cor-cortina: iguais ao tema claro */
 
     /* Rodapé: mais escuro que a página, para se separar dela.
@@ -549,29 +553,141 @@ html.lenis {
   initial-value: 0px;
 }
 @layer components {
-  /* Cortina da transição entre páginas (seção 18.9), usada pelo
-     TransicaoPagina. É uma camada grafite vista através de uma "peneira" de
-     domos: cada célula de 30 px mostra um círculo de raio --d. Com --d =
-     0 nada aparece; com --d = 22 px os círculos se encostam e cobrem a
-     tela inteira. O GSAP anima o --d. Não recebe clique
-     (pointer-events: none) e fica escondida do leitor de tela
-     (aria-hidden no componente). Só aparece com data-ativa. */
+  /* Cortina da transição entre páginas (seções 18.9 e 19.6), usada pelo
+     TransicaoPagina. É um <canvas> em tela cheia onde os domos de
+     --cor-cortina entram numa varredura diagonal, como pixels (o desenho
+     fica em lib/cortinaDomos.js). Não recebe clique (pointer-events:
+     none) e fica escondida do leitor de tela (aria-hidden no
+     componente). Só aparece com data-ativa. */
   .cortina-piso {
-    --d: 0px;
     position: fixed;
     inset: 0;
     z-index: 60;
     display: none;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    background-color: var(--cor-cortina);
-    -webkit-mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
-    mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
-    -webkit-mask-size: 30px 30px;
-    mask-size: 30px 30px;
   }
 
   .cortina-piso[data-ativa] {
     display: block;
+  }
+
+  /* Granulado (seções 19.1 e 19.6; decisão 1 da equipe na 9.0): ruído
+     feito com um filtro SVG (feTurbulence), numa camada que não recebe
+     clique. Fica ATRÁS do conteúdo: só no fundo da página (.grao-pagina,
+     fixo, dentro do <main>) e no fundo das bandas (Secao). Cartões,
+     botões e campos o cobrem. A cor do grão segue o tema (--grao-imagem):
+     branco no claro e preto no escuro, para o contraste do texto nunca
+     cair (registro, subfases 9.2 e 9.4).
+     A camada de dentro (::before) é 12% maior que a de fora e troca de
+     posição em 6 passos por segundo (só transform, sem repintar). Com os
+     efeitos desligados, fica parada (regra do fim deste arquivo); no
+     alto contraste do Windows, some. */
+  .grao {
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .grao::before {
+    content: "";
+    position: absolute;
+    inset: -6%;
+    opacity: var(--grao-opacidade);
+    background-image: var(--grao-imagem);
+    background-size: 180px 180px;
+    animation: grao 1s steps(6) infinite;
+  }
+
+  .grao-pagina {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+  }
+
+  @keyframes grao {
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    20% {
+      transform: translate(-3%, 2%);
+    }
+    40% {
+      transform: translate(2%, -3%);
+    }
+    60% {
+      transform: translate(-2%, -1%);
+    }
+    80% {
+      transform: translate(3%, 3%);
+    }
+  }
+
+  /* Preloader (seção 19.6): antes da capa, na primeira visita, só com os
+     efeitos ligados. Fundo #1A1A1D, contagem de 0 a 100 em Anton laranja
+     (5,1:1) e "Pulse · carregando" em mono (#C9C9CF, 10,5:1). Fica por
+     cima da capa (que já está montada por baixo). Decorativo
+     (aria-hidden no componente). */
+  .preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 71;
+    display: grid;
+    place-items: center;
+    background-color: #1a1a1d;
+    color: #ffffff;
+  }
+
+  /* Faixa de texto (seção 19.6): "Pulse · um guia no pulso" em Anton,
+     andando sem parar entre a abertura e o Tema. Fundo laranja da marca,
+     letras na cor do fundo da página (4,8:1 no claro; 5,1:1 no escuro).
+     Duas cópias do texto lado a lado: quando a primeira sai inteira, o
+     trilho volta para o começo sem aparecer o "pulo". Decorativa
+     (aria-hidden no componente). Sem JavaScript ou com os efeitos
+     desligados, fica parada. */
+  .faixa-texto {
+    overflow: hidden;
+    padding-block: 0.625rem;
+    background-color: var(--cor-marca);
+    color: var(--cor-fundo);
+  }
+
+  .faixa-texto-trilho {
+    display: flex;
+    width: max-content;
+    font-family: var(--fonte-titulo);
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    line-height: 1.1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .faixa-texto-trilho > span {
+    padding-right: 1.2em;
+  }
+
+  /* Rodapé revelado (seção 19.6): com os efeitos ligados e o rodapé mais
+     baixo que 80% da tela, o hook useRodapeRevelado marca o <html> com
+     data-rodape-revela. O <main> vira uma "folha" opaca por cima, e o
+     rodapé fica preso embaixo (sticky): ao chegar ao fim, a folha sobe e
+     revela o rodapé por baixo. Sem a marca, o rodapé é normal.
+     O <main> ganha uma camada própria (z-index: 1); por isso a capa e o
+     preloader são desenhados direto no <body> (portal), para continuarem
+     por cima do cabeçalho. */
+  html[data-rodape-revela] #conteudo {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 4rem;
+    background-color: var(--cor-fundo);
+    box-shadow: 0 24px 40px rgba(26, 26, 29, 0.25);
+  }
+
+  html[data-rodape-revela] .rodape {
+    position: sticky;
+    bottom: 0;
+    z-index: 0;
+    margin-top: 0;
   }
 
   /* Textura de piso tátil que some nas bordas (decisão da equipe, opção
@@ -822,7 +938,8 @@ html.lenis {
   }
 
   .palavra-fundo,
-  .divisor-piso {
+  .divisor-piso,
+  .grao {
     display: none;
   }
 

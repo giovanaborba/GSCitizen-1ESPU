@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import LinkInterno from "@/components/ui/LinkInterno";
 import FaixaODS from "@/components/solucao/FaixaODS";
+import { useRodapeRevelado } from "@/hooks/useRodapeRevelado";
 
 /*
   Rodape — seção 18.10 (substitui o rodapé da seção 5).
@@ -10,6 +11,13 @@ import FaixaODS from "@/components/solucao/FaixaODS";
   - links Início, Solução, Simulador e Diário (48 px de altura), que
     passam pela guarda de saída e pela transição (LinkInterno);
   - a linha de créditos.
+  Fase 9 (seção 19.6):
+  - "PULSE" gigante em laranja no alto do rodapé, decorativo
+    (aria-hidden; o leitor de tela não o lê, 19.16). Contraste do laranja
+    sobre o rodapé: 4,55:1 no claro e 5,4:1 no escuro;
+  - rodapé revelado: com os efeitos ligados, o conteúdo da página sobe e
+    revela o rodapé preso embaixo (useRodapeRevelado). Sem o efeito, o
+    rodapé é normal.
   Só na página Solução, acima dos links, vem a faixa contínua dos ODS
   (decisão da equipe).
 
@@ -32,10 +40,21 @@ const LINKS = [
 export default function Rodape() {
   // Esta parte é lógica
   const naSolucao = usePathname() === "/solucao";
+  const refRodape = useRodapeRevelado();
 
   return (
-    <footer className="rodape mt-16 bg-rodape-fundo pt-14 pb-[var(--espaco-fim)] text-rodape-texto">
+    <footer
+      ref={refRodape}
+      className="rodape mt-16 bg-rodape-fundo pt-14 pb-[var(--espaco-fim)] text-rodape-texto"
+    >
       <div className="margem-lateral mx-auto w-full max-w-pagina">
+        <p
+          aria-hidden="true"
+          className="mb-6 overflow-hidden font-titulo text-[clamp(5.5rem,27vw,21rem)] leading-[0.8] tracking-[0.01em] whitespace-nowrap text-rodape-destaque uppercase"
+        >
+          Pulse
+        </p>
+
         {/* Esta parte é lógica */}
         {naSolucao && <FaixaODS />}
 
