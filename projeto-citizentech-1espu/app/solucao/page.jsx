@@ -28,6 +28,11 @@ export const metadata = {
     os-sinais, tecnologias (H2) e dois-modos, semaforos,
     transporte-publico (H3), todas com tabIndex={-1} para receber o foco;
   - rótulos mono da 18.5, dos protótipos e os decididos pela equipe.
+
+  Fase 9 (seção 19.5): "A pulseira" e "Equipe" são "bandas" (fundo
+  --cor-faixa com o divisor de piso tátil), como na amostra da Solução do
+  protótipo pulse-efeitos.html. "Antes e depois" também será banda quando
+  entrar (subfase 9.7).
 */
 const SECOES = [
   { id: "a-pulseira", texto: "A pulseira" },
@@ -90,7 +95,7 @@ export default function PaginaSolucao() {
       acaoFinal={<Botao href="/simulador">Experimente o simulador</Botao>}
     >
       {/* ---------------------------------------------------------- */}
-      <Secao id="a-pulseira" titulo="A pulseira" rotulo="Como usar" larga>
+      <Secao id="a-pulseira" titulo="A pulseira" rotulo="Como usar" larga banda>
         <p className="max-w-texto">
           Você diz para onde quer ir e recebe as orientações do trajeto
           direto no pulso. A Pulse funciona sozinha, sem precisar estar
@@ -271,7 +276,7 @@ export default function PaginaSolucao() {
       </Secao>
 
       {/* ---------------------------------------------------------- */}
-      <Secao id="equipe" titulo="Equipe" rotulo="Quem fez" larga>
+      <Secao id="equipe" titulo="Equipe" rotulo="Quem fez" larga banda>
         <p className="max-w-texto">
           Integrantes do grupo que criou a Pulse na Global Solution 2026 da FIAP.
         </p>

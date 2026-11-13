@@ -19,8 +19,17 @@ export const metadata = {
   Responde às perguntas 02 (qual problema) e 01 (quem é o cidadão
   beneficiado) do briefing da GS.
 
-  Rótulos mono: "Tema" e "O problema" (seção 18.5) e "As pessoas"
+  Rótulos mono: "CitizenTech", "O problema" (seção 19.5) e "As pessoas"
   (decisão da equipe na Fase 8).
+
+  Fase 9 (seção 19.5):
+  - Tema e Quem vive o problema são "bandas" (fundo --cor-faixa com o
+    divisor de piso tátil). A ordem completa da 19.5 (faixa de texto,
+    frase que acende e "Um trajeto com a Pulse") entra nas subfases 9.4
+    e 9.6.
+  - Títulos novos de Tema e O problema. Os ids e os itens do "Nesta
+    página" continuam ("Tema CitizenTech", "O problema").
+  - Tema em duas colunas no computador.
 */
 const SECOES = [
   { id: "tema-citizentech", texto: "Tema CitizenTech" },
@@ -38,7 +47,13 @@ export default function PaginaInicio() {
         itensIndice={SECOES}
         acaoFinal={<Botao href="/solucao">Conheça a solução</Botao>}
       >
-        <Secao id="tema-citizentech" titulo="Tema CitizenTech" rotulo="Tema">
+        <Secao
+          id="tema-citizentech"
+          titulo="Tecnologia que nasce de uma necessidade real"
+          rotulo="CitizenTech"
+          banda
+          duasColunas
+        >
           <p>
             CitizenTech é tecnologia criada a partir das necessidades reais das
             pessoas, para ampliar direitos e reduzir desigualdades. É o tema da
@@ -47,7 +62,7 @@ export default function PaginaInicio() {
           <p>Nosso ponto de partida é a acessibilidade nas ruas de São Paulo.</p>
         </Secao>
 
-        <Secao id="o-problema" titulo="O problema" rotulo="O problema" larga>
+        <Secao id="o-problema" titulo="Atravessar sem saber quando" rotulo="O problema" larga>
           <p className="max-w-texto">
             Sem enxergar as cores do semáforo, a pessoa depende da audição para
             atravessar. Muitos semáforos não têm sinal sonoro, e o risco de
@@ -113,7 +128,7 @@ export default function PaginaInicio() {
           </div>
         </Secao>
 
-        <Secao id="quem-vive-o-problema" titulo="Quem vive o problema" rotulo="As pessoas">
+        <Secao id="quem-vive-o-problema" titulo="Quem vive o problema" rotulo="As pessoas" banda>
           <p>
             Pessoas cegas ou com qualquer nível de deficiência visual que
             dificulte os deslocamentos, especialmente quem usa as ruas e o

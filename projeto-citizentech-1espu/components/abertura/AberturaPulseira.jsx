@@ -132,17 +132,21 @@ export default function AberturaPulseira() {
           </svg>
 
           <div className="relative abertura-larga:col-start-2 abertura-larga:row-span-3 abertura-larga:row-start-1">
+            {/* Camadas, de trás para a frente (seção 19.5): textura →
+                palavra de fundo → pulseira. A palavra fica na frente da
+                textura, nunca atrás dela (a textura tem fundo e a
+                cobriria). */}
+            {/* Textura de piso tátil só atrás da pulseira (decorativa) */}
+            <div aria-hidden="true" className="textura-piso textura-centro absolute -inset-6" />
             {/* Palavra de fundo: com a altura da pulseira (nunca desce até
                 a linha do sinal, que fica abaixo) e a largura da tela.
-                Contraste dos textos dos links que passam por cima dela:
-                8,1:1 ou mais nos dois temas (registro, subfase 8.5). */}
+                Contraste dos textos dos links que passam por cima dela
+                recalculado na 9.3 (registro de desenvolvimento). */}
             <PalavraFundo
               texto={palavra}
               animarTroca
               className="inset-y-0 left-1/2 w-screen -translate-x-1/2"
             />
-            {/* Textura de piso tátil só atrás da pulseira (decorativa) */}
-            <div aria-hidden="true" className="textura-piso textura-centro absolute -inset-6" />
             <Pulseira3D
               modo="abertura"
               pausado={pausado}

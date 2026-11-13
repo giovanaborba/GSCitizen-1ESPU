@@ -68,10 +68,6 @@
      escuro). O texto laranja ficaria em 4,1:1, abaixo do mínimo; por isso
      o botão secundário troca o texto para --cor-texto no hover. */
   --cor-hover: color-mix(in srgb, var(--cor-marca) 12%, transparent);
-  /* Borda dos itens não selecionados da barra (seção 9.2). Com o laranja,
-     a marca a 70% ficaria abaixo de 3:1, então usa a cor das bordas
-     (5,0:1). Sai na subfase 9.3 (19.5: esses itens perdem a borda). */
-  --cor-linha-item: var(--cor-borda);
   /* Status (19.3). O aviso e os fundos claros continuam os da seção 8.1. */
   --cor-erro: #b3261e; /* 6,5:1 */
   --cor-erro-fundo: #fdecec; /* erro sobre ele: 5,7:1 */
@@ -167,7 +163,7 @@
     /* --cor-acao e --cor-sobre-acao: iguais ao tema claro */
     --cor-borda: #9a9aa4; /* 6,2:1 / 5,5:1 */
     --cor-apagada: #9a9aa4;
-    /* --cor-hover e --cor-linha-item seguem a marca sozinhos. */
+    /* --cor-hover segue a marca sozinho. */
     --cor-erro: #ff8a80; /* 7,6:1 / 6,8:1 */
     --cor-sucesso: #7fd69b; /* 9,9:1 / 8,8:1 */
     --cor-aviso: #ffe7a3; /* igual à 8.1: 12,7:1 na superfície */
@@ -220,7 +216,6 @@
   --color-hover: var(--cor-hover);
   --color-borda: var(--cor-borda);
   --color-apagada: var(--cor-apagada);
-  --color-linha-item: var(--cor-linha-item);
   --color-erro: var(--cor-erro);
   --color-erro-fundo: var(--cor-erro-fundo);
   --color-sucesso: var(--cor-sucesso);
@@ -254,10 +249,14 @@
   /* H1 da abertura do Início: mesma regra (3,6rem ÷ 640 px ≈ 9vw) */
   --text-h1-abertura: clamp(2.1rem, 9vw, 3.6rem);
   --text-h1-abertura--line-height: 1;
-  --text-h2: clamp(2.2rem, 10vw, 4rem);
+  /* H2 menor que o H1 (seção 19.5), com o mesmo critério da opção C:
+     2rem → 3,2rem, chegando ao máximo perto de 570 px (3,2rem ÷ 9vw),
+     então ele também dobra com zoom de 200%. O H2 menor faz
+     "Deslocamentos" caber a 320 px. */
+  --text-h2: clamp(2rem, 9vw, 3.2rem);
   --text-h2--line-height: 1;
   /* H2 em espaço estreito (título do diálogo): o menor tamanho do H2 */
-  --text-h2-compacto: 2.2rem;
+  --text-h2-compacto: 2rem;
   --text-h2-compacto--line-height: 1;
   --text-h3: 1.25rem;
   --text-h3--line-height: 1.35;
@@ -365,6 +364,19 @@
     text-transform: uppercase;
     letter-spacing: 0.01em;
     color: var(--cor-marca);
+    /* Títulos sem quebrar no meio da palavra (seção 19.5): sem hífen
+       automático e sem a quebra "em qualquer lugar" do corpo. A linha
+       quebra entre palavras.
+       Por que "break-word" e não "normal" (como escrito na 19.5): a 19.5
+       também pede que a palavra possa quebrar "só se não couber". Com
+       "normal", ela nunca quebra: com o texto ampliado a 200% a 320 px,
+       "Deslocamentos" e outros títulos passavam da tela (rolagem lateral
+       de 239 px no Diário, WCAG 1.4.10). "break-word" quebra a palavra
+       SÓ quando ela não cabe sozinha na linha; diferente do "anywhere"
+       do corpo, ele não deixa a palavra encolher para caber ao lado de
+       outra, que era o que cortava os títulos no meio. */
+    hyphens: manual;
+    overflow-wrap: break-word;
   }
 
   h1 {
@@ -477,19 +489,21 @@ html.lenis {
   transition-duration: var(--duracao-transicao);
 }
 
-/* Textura de piso tátil (seção 18.5): uma grade de domos de 30 px, como
-   o piso de alerta das calçadas. São dois radial-gradient: o domo
-   (--cor-ponto) e um brilho pequeno em cima dele (--cor-ponto-brilho).
+/* Textura de piso tátil com relevo (seções 18.5 e 19.5): uma grade de
+   domos de 30 px, como o piso de alerta das calçadas. São três
+   radial-gradient, do de cima para o de baixo: o brilho pequeno no alto
+   do domo (--cor-ponto-brilho), o domo (--cor-ponto) e uma sombra um
+   pouco deslocada para baixo e para a direita (--cor-ponto-sombra). A
+   luz "vem de cima", e o domo parece saltado.
    Só vai no fundo de aberturas e cabeças de página, nunca atrás de texto
    longo. No Diário, não é usada. Uso: class="textura-piso" */
 @utility textura-piso {
   background-color: var(--cor-fundo);
   background-image:
-    radial-gradient(circle at 42% 38%, var(--cor-ponto-brilho) 0 2px, transparent 3px),
-    radial-gradient(circle, var(--cor-ponto) 0 7px, transparent 8px);
-  background-size:
-    30px 30px,
-    30px 30px;
+    radial-gradient(circle at 40% 36%, var(--cor-ponto-brilho) 0 2px, transparent 3px),
+    radial-gradient(circle at 50% 50%, var(--cor-ponto) 0 7px, transparent 8px),
+    radial-gradient(circle at 56% 60%, var(--cor-ponto-sombra) 0 7.5px, transparent 8.5px);
+  background-size: 30px 30px;
 }
 
 /* Rótulo mono acima dos títulos (eyebrow), seção 18.4: "TEMA",
@@ -576,6 +590,22 @@ html.lenis {
   .textura-lado {
     -webkit-mask-image: linear-gradient(to left, #000 15%, transparent 75%);
     mask-image: linear-gradient(to left, #000 15%, transparent 75%);
+  }
+
+  /* Divisor de piso tátil direcional (seção 19.5), no topo das seções
+     "banda": barras de 6 px de altura, como o piso direcional das
+     calçadas (o que indica o caminho a seguir), em cinza bem suave e
+     sumindo nas pontas. Decorativo (aria-hidden no componente Secao). */
+  .divisor-piso {
+    height: 6px;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--cor-borda) 22%, transparent) 0 26px,
+      transparent 26px 40px
+    );
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
   }
 
   /* "Os sinais" em rolagem fixa (seção 18.8). Só valem com a classe
@@ -791,7 +821,8 @@ html.lenis {
     background-image: none;
   }
 
-  .palavra-fundo {
+  .palavra-fundo,
+  .divisor-piso {
     display: none;
   }
 

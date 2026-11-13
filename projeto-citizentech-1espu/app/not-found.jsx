@@ -45,8 +45,9 @@ export default function PaginaNaoEncontrada() {
         {/* Coluna da pulseira (decorativa). "@container": a palavra de
             fundo mede o tamanho por esta coluna (cqw). */}
         <div className="@container relative grid gap-3">
-          <PalavraFundo texto="Parar" tamanho="min(21rem, 38cqw)" />
+          {/* De trás para a frente (19.5): textura → palavra → pulseira */}
           <div aria-hidden="true" className="textura-piso textura-centro absolute -inset-4" />
+          <PalavraFundo texto="Parar" tamanho="min(21rem, 38cqw)" />
           <Pulseira3D modo="parar" className="mx-auto aspect-square w-full max-w-[22rem]" />
           <p aria-hidden="true" className="relative text-center text-auxiliar text-texto-2">
             A pulseira faz o sinal de parar.
