@@ -7,7 +7,7 @@ A partir de agora, use este padrão em todas as animações de interface que voc
 - GSAP + ScrollTrigger: só o que é ligado à rolagem (rota que se desenha, "Os sinais", galeria, frase que acende). Segue a rolagem da pessoa, então não usa spring.
 - CSS: hover simples (já decidido na fase 8 para o botão dourado/laranja).
 - Os vídeos das animações (arquivos MP4) são mídia e não seguem este arquivo. Eles só precisam de: começar mudos, botão de pausar, quadro parado com os efeitos desligados e legendas.
-- O projeto é em JavaScript: arquivos .js e .jsx, nomes em português, e toda parte lógica com o comentário "// Esta parte é lógica".
+- O projeto é em JavaScript: arquivos .js e .jsx, nomes em português, e toda parte lógica com o comentário "// Esta parte é lógica". (Fase 9: essa marcação foi retirada a pedido da equipe; o código não a usa mais.)
 
 2. LINGUAGEM DE MOVIMENTO (o que torna a Pulse diferente de uma animação genérica)
 Cada animação precisa responder: o que ela comunica? (estado, direção, hierarquia ou marca). Se não comunica nada, ela sai.

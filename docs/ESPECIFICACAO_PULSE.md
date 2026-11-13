@@ -9,7 +9,7 @@
 >
 > **Fase 9 — efeitos, paleta nova, pulseira nova e vídeos (12/11/2026):** a seção 19 traz o interruptor "Efeitos", a paleta laranja e grafite, as fontes por pacote, o polimento, os efeitos e as interações novas, a pulseira 3D nova e os vídeos. **Onde a seção 19 discordar da 18 ou de uma seção antiga, vale a 19.** As seções afetadas têm uma nota **(Fase 9)**.
 >
-> Última atualização: 12/11/2026.
+> Última atualização: 13/11/2026 (Fase 9 concluída). As decisões da Fase 9 estão na seção 17 e, onde mudam o texto da seção 19 ou de uma seção antiga, numa nota **(Fase 9)** ao lado.
 
 ---
 
@@ -59,7 +59,7 @@
 - Uso obrigatório de **`useState` e `useEffect`**.
 - **No mínimo 2 custom hooks**, separando lógica de negócio e gerenciamento de estado da camada visual (a seção 14 sugere 5).
 - **Separação de responsabilidades**: lógica de negócio e acesso a dados fora dos componentes de apresentação (explicação na seção 14.2).
-- **Consumir uma API externa com CRUD completo**: criar, consultar, atualizar e excluir (o Diário). **A API entra depois**; o código já fica preparado (seção 7.6).
+- **Consumir uma API externa com CRUD completo**: criar, consultar, atualizar e excluir (o Diário). **A API entra depois**; o código já fica preparado (seção 7.6). **(Fase 9)** A equipe escolheu o **MockAPI** (mockapi.io); falta configurar o endereço (passo a passo no registro, subfase 9.9).
 - Boas práticas de desenvolvimento e **versionamento** (Git). **Os commits são feitos manualmente pela equipe**, com uma mensagem simples sugerida ao fim de cada fase.
 - Briefing da GS: **nada de dados pessoais reais**. Usar dados simulados ou públicos e citar a fonte.
 - O registro do uso de IA no **`prompts.md`** (exigência da GS) é feito manualmente pela equipe.
@@ -411,6 +411,7 @@ Ao salvar:
 ### 7.6 Acesso a dados (API externa)
 
 - **A API externa não será colocada agora.** O código fica preparado com um **serviço único** (`services/registrosService.js`), com 5 funções. Quando a API chegar, **só esse arquivo muda**; as telas e os hooks continuam iguais.
+- **(Fase 9)** A equipe escolheu o **MockAPI** (mockapi.io). O formato dele (`GET` e `POST` em `/registros`; `GET`, `PUT` e `DELETE` em `/registros/:id`; lista como array; `id` em texto) é o que o serviço já espera, então o código não muda. Falta só a equipe criar o recurso `registros` e pôr o endereço no `.env.local` e na hospedagem (passo a passo no registro, subfase 9.9).
 
 | Função | O que faz | Chamada esperada na API (REST) | Devolve |
 | --- | --- | --- | --- |
@@ -734,7 +735,7 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 | Desfazer | `ArrowCounterClockwise` |
 | Fechar | `X` |
 | Erro | `WarningCircle` |
-| Sucesso | `CheckCircle` |
+| Sucesso | ~~`CheckCircle`~~ **(Fase 9)** sem ícone da equipe: o "certo" é desenhado por código (`CertoDesenhado`) |
 | Aviso | `Warning` |
 | Espaço de imagem | `Image` |
 
@@ -830,7 +831,7 @@ projeto-citizentech-1espu/
 | --- | --- |
 | Linguagem | **JavaScript** (`.js` e `.jsx`), componentes funcionais. **Sem TypeScript.** |
 | Nomes | Componentes, hooks e variáveis em **português**, como nesta especificação |
-| Parte lógica | Todo trecho lógico recebe, logo acima, o comentário **`// Esta parte é lógica`** (em JSX: `{/* Esta parte é lógica */}`). Vale para hooks, serviços, validação, cálculos e funções que tratam eventos dentro dos componentes. |
+| Parte lógica | **(Fase 9) Regra retirada a pedido da equipe:** o código não usa mais a marcação. Regra antiga: todo trecho lógico recebia, logo acima, o comentário **`// Esta parte é lógica`** (em JSX: `{/* Esta parte é lógica */}`). Vale para hooks, serviços, validação, cálculos e funções que tratam eventos dentro dos componentes. |
 | Pacotes e configuração | Não instalar pacotes nem mudar configurações. Se algo for necessário, informar à equipe o que instalar e por quê. |
 | Commits | Feitos **manualmente pela equipe**. Ao fim de cada fase, sugerir uma mensagem simples em português (ex.: `Adiciona layout comum e barra de navegação`). |
 | `prompts.md` | Mantido manualmente pela equipe. Não editar. |
@@ -872,7 +873,7 @@ function PaginaDiario() {
 ```
 
 Por que isso importa:
-1. **A API entra depois.** Quando ela chegar, muda **só o serviço**. As telas continuam iguais.
+1. **A API entra depois.** Quando ela chegar, muda **só o serviço**. As telas continuam iguais. **(Fase 9:** a API escolhida é o MockAPI, e nem o serviço precisou mudar.**)**
 2. **É um requisito da disciplina:** separar a lógica de negócio, o acesso a dados e a camada visual.
 3. **Cada parte fica mais fácil de entender e corrigir.** Se a lista não aparece, o problema está no serviço ou no hook, não espalhado pelas telas.
 
@@ -947,7 +948,7 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 
 ## 17. Registro de alterações do desenvolvimento
 
-Decisões tomadas durante as Fases 0 a 8. **Equipe** = escolhida pela equipe quando perguntada. **Implementação** = proposta durante a implementação, para cobrir uma lacuna ou um limite técnico; vale até a equipe decidir diferente.
+Decisões tomadas durante as Fases 0 a 9. **Equipe** = escolhida pela equipe quando perguntada. **Implementação** = proposta durante a implementação, para cobrir uma lacuna ou um limite técnico; vale até a equipe decidir diferente.
 
 | Fase | Decisão | Origem | Seção |
 | --- | --- | --- | --- |
@@ -1013,6 +1014,46 @@ Decisões tomadas durante as Fases 0 a 8. **Equipe** = escolhida pela equipe qua
 | 8 | Carrossel: a lista recebe o foco (área rolável sem nada focável); contagem com `aria-live="polite"`; botão desabilitado com borda tracejada, sem perder contraste e sem trocar o cursor | Implementação | 18.8 |
 | 8 | Condições de tela em `rem` (1000 px = 62,5rem; 1100 px = 68,75rem), para ficarem na ordem certa com as do Tailwind | Implementação | 18.8, 18.12 |
 | 8 | Polaroides com cores fixas nos dois temas (branco e `#1E0F4A`) | Implementação | 18.8 |
+| 9 | Granulado atrás do conteúdo (só no fundo da página e das bandas), branco no tema claro e preto no escuro: assim ele nunca baixa o contraste | Equipe | 19.1, 19.3, 19.6 |
+| 9 | Vídeos com os caminhos reais de `public/videos/` (os arquivos já estavam lá); o marcador `VIDEO-…-AQUI` fica em comentário | Equipe | 19.13 |
+| 9 | O padrão de movimento vence a seção 19 em 3 pontos: preloader de 1,4 s; cartão de Tecnologias com `spring.suave` (0,42 s); "texto que se constrói" com o gesto GUIA, sem a máscara de domos | Equipe | 19.6, 19.8 |
+| 9 | O espaço vazio do ícone não ocupa lugar até o ícone entrar (texto dos botões e da barra centralizado) | Equipe | 13.1, 19.5 |
+| 9 | Palavra de fundo em grafite suave (`rgba(36,36,40,.06)` no claro; `rgba(255,255,255,.05)` no escuro); botões dos ODS no rodapé em `#1A1A1D` (claro) e `#242428` (escuro) | Equipe | 19.3 |
+| 9 | Granulado do tema escuro a 25% (opção B; a 19.3 dizia 8%, que ficava invisível) | Equipe | 19.3, 19.6 |
+| 9 | "Girar sozinha" com texto fixo e `aria-pressed`; só o ícone troca | Equipe | 19.12 |
+| 9 | Cena 3D compilada sem travar a página (`compileAsync`, opção B), com o visual completo | Equipe | 19.12 |
+| 9 | "Como funciona" no celular, com zoom alto ou com os efeitos desligados: lista com as miniaturas; o fundo que troca é só do computador | Equipe | 19.6, 19.13 |
+| 9 | Tecnologias: botão com texto fixo "Ver a peça" e `aria-pressed` | Equipe | 19.8 |
+| 9 | Polaroides: com o mouse, endireitam e sobem 6 px com a mola, sem acompanhar o mouse (sai a inclinação da 18.8) | Equipe | 19.10 |
+| 9 | Botões dos vídeos com o texto da ação ("Pausar"/"Reproduzir", "Ativar som"/"Desativar som"), sem `aria-pressed` | Equipe | 19.13 |
+| 9 | "Os sinais": o vídeo do sinal atual fica junto do índice no modo fixo (15rem no computador; 8rem ao lado dos botões no celular); na lista comum, cada sinal tem o seu vídeo | Equipe | 19.13 |
+| 9 | Sai o marcador `IMAGEM-ilustração de uma travessia-AQUI`: o vídeo de "O problema" ocupa o lugar | Equipe | 19.14 |
+| 9 | Capa: véu grafite `#1A1A1D` a 60% sobre o vídeo e o rótulo "GS 2026.2 · CitizenTech" numa faixa sólida (sem isso, 2,5:1 e 1,0:1) | Equipe | 19.13, 18.6 |
+| 9 | Sem as marcações "Esta parte é lógica" no código | Equipe | 14.1 |
+| 9 | API externa do Diário: MockAPI (formato igual ao do `registrosService`) | Equipe | 2, 7.6 |
+| 9 | Salvar: o "certo" se desenha na mensagem "Registro salvo." (e não no botão), para o anúncio não esperar animação | Equipe | 19.11 |
+| 9 | Excluir: só a volta com o PULSO no "Desfazer" (a exclusão acontece em outra página) | Equipe | 19.11 |
+| 9 | Lenis sem `stop()`: com os efeitos desligados, ele nem é criado (o `stop()` travaria a rolagem) | Implementação | 19.2 |
+| 9 | O estado dos efeitos mora no atributo `data-efeitos` do `<html>`, gravado antes da pintura; no servidor e sem JavaScript, conta como desligado | Implementação | 19.2 |
+| 9 | Seções fixas com `position: sticky` do CSS (o GSAP só lê o progresso); só a partir de 64rem e 600 px de altura | Implementação | 19.6 |
+| 9 | "Pausar o giro" da abertura para também os sinais e o Braille (WCAG 2.2.2) | Implementação | 19.12 |
+| 9 | Hover do botão secundário com texto grafite (o laranja ficaria em 4,0:1) | Implementação | 19.3 |
+| 9 | Títulos com `overflow-wrap: break-word` (a 19.5 pedia `normal`, que impede a quebra mesmo quando a palavra não cabe) | Implementação | 19.5 |
+| 9 | Bandas da Solução: "A pulseira", "Antes e depois" e "Equipe"; 72 px de espaço interno | Implementação | 19.5 |
+| 9 | Granulado em duas camadas (página e bandas), movido só por `transform`, 12% maior que a tela | Implementação | 19.6 |
+| 9 | Capa e preloader desenhados no `<body>` (portal), por causa do rodapé revelado | Implementação | 19.6 |
+| 9 | Linha do rótulo com `scaleX` e `spring.padrao`; cortina em `<canvas>` (um raio por domo); preloader pulado por qualquer tecla, gesto ou foco | Implementação | 19.6 |
+| 9 | Encaixe só depois da roda do mouse, nunca com o foco num campo; faixa de texto pausada pelo botão "Efeitos"; barra de progresso escondida com os efeitos desligados; rodapé revelado só se tiver menos de 80% da tela | Implementação | 19.6 |
+| 9 | Parallax só da imagem, dentro da moldura parada; filtro e parallax só quando há uma `<img>` | Implementação | 19.6 |
+| 9 | "Um trajeto com a Pulse" e "Antes e depois" no "Nesta página" | Implementação | 19.7 |
+| 9 | Botão magnético em todos os botões laranja principais, dentro do próprio `Botao` | Implementação | 19.6 |
+| 9 | Cartões de Tecnologias com as duas faces na mesma célula da grade (crescem com o texto ampliado); giro de duração 0 com os efeitos desligados; foto da peça colorida, como no protótipo | Implementação | 19.8 |
+| 9 | Galeria: fotos em 4:3; `touch-action: pan-y` no toque; fotos focáveis só no modo canvas; Tab e Shift+Tab entre as fotos com `preventScroll`; inércia com a mola do padrão | Implementação | 19.9 |
+| 9 | Polaroide sobe 6 px (19.10), e não 2 px (o padrão fala dos clicáveis); varal em trechos com leve curva; parallax leve na foto | Implementação | 19.10 |
+| 9 | Vídeos: botões embaixo do vídeo; fundos (capa e "Como funciona") sem botões, pausados pelo botão "Efeitos"; um botão para o par de "Antes e depois"; nome pelo título que já existe; sem o arquivo, caixa 16:9 com o marcador; memória liberada ao sair | Implementação | 19.13 |
+| 9 | PULSO também no registro salvo e no alterado; o "certo" é desenho por código e substitui `ICONE-CheckCircle-AQUI` nas mensagens de sucesso; o tremor vale para todos os campos com erro | Implementação | 19.11 |
+| 9 | Variante `secundario-sobre-cor` (fundo sólido) nos botões sobre os fundos de status: o laranja sobre eles ficava em 4,2–4,3:1 | Implementação | 19.3 |
+| 9 | Galeria: 4 avisos da configuração `strict` do `jsx-a11y` aceitos como exceção (janela com `tabIndex`, fotos focáveis e teclado na janela e nos botões), porque a 19.9 pede esse comportamento | Implementação | 15, 19.9 |
 
 
 ---
@@ -1202,7 +1243,7 @@ Inspirada em pulseiras esportivas (referência visual da equipe): tira de silico
 - `"sinal"`: repete um sinal fixo (usado em "Os sinais"; em "Virar", alterna esquerda e direita). `aria-hidden`, porque o texto do sinal está ao lado.
 - `"parar"`: usado na 404; vibra por no máximo 4,6 s e para. `aria-hidden`.
 
-**Regras:** carregar com `next/dynamic` e `ssr: false`, mostrando a descrição em texto enquanto carrega e se o WebGL falhar; animar só quando visível (`IntersectionObserver`); botão de pausa onde a animação é contínua; com "reduzir movimento", um quadro parado; cor da tira lida de `--cor-faixa-3d` e atualizada quando o tema muda; liberar geometrias, materiais e o renderizador ao desmontar. A lógica da cena fica num hook (`usePulseira3D`) ou num módulo em `lib/`, marcada com "// Esta parte é lógica".
+**Regras:** carregar com `next/dynamic` e `ssr: false`, mostrando a descrição em texto enquanto carrega e se o WebGL falhar; animar só quando visível (`IntersectionObserver`); botão de pausa onde a animação é contínua; com "reduzir movimento", um quadro parado; cor da tira lida de `--cor-faixa-3d` e atualizada quando o tema muda; liberar geometrias, materiais e o renderizador ao desmontar. A lógica da cena fica num hook (`usePulseira3D`) ou num módulo em `lib/`, ~~marcada com "// Esta parte é lógica"~~ **(Fase 9: marcação retirada)**.
 
 ### 18.8 Solução (substitui a ordem e partes da seção 6.2)
 
@@ -1320,8 +1361,8 @@ Continuam: `IMAGEM-ilustração de uma travessia-AQUI` (Início), `IMAGEM-ilustr
 | `PalavraFundo` | `components/ui/` | Palavra gigante decorativa |
 | `TexturaPiso` | `components/ui/` | Fundo de piso tátil (ou só uma classe CSS) |
 | `SinaisRolagemFixa` | `components/solucao/` | Seção "Os sinais" |
-| `Carrossel` | `components/ui/` | Carrossel com botões e contagem (Tecnologias) |
-| `GaleriaHorizontal` | `components/solucao/` | Galeria |
+| `Carrossel` | `components/ui/` | Carrossel com botões e contagem (Tecnologias). **(Fase 9: apagado; 19.8)** |
+| `GaleriaHorizontal` | `components/solucao/` | Galeria. **(Fase 9: apagado; 19.9)** |
 | `CartaoIntegrante` | `components/solucao/` | Passa a ser polaroide |
 | `TransicaoPagina` | `components/layout/` | Provedor da transição entre páginas |
 | `Rodape` | `components/layout/` | Links e créditos, no visual novo, em todas as páginas |
@@ -1333,13 +1374,13 @@ Continuam: `IMAGEM-ilustração de uma travessia-AQUI` (Início), `IMAGEM-ilustr
 | `useCapaIntro` | Primeira visita da sessão, eventos de saída, estado "saindo" |
 | `usePulseira3D` | Montagem da cena, sinais, pausa, visibilidade, limpeza |
 | `useRolagemFixa` | Progresso da rolagem → índice ativo; liga e desliga o modo fixo |
-| `useCarrossel` | Posição, contagem, pontas e passos |
+| `useCarrossel` | Posição, contagem, pontas e passos. **(Fase 9: apagado)** |
 | `useFaixaODS` | Pausa (botão, mouse e foco) e o ODS em destaque na área da frase |
-| `useGaleriaHorizontal` | Altura do trilho e deslocamento da lista |
+| `useGaleriaHorizontal` | Altura do trilho e deslocamento da lista. **(Fase 9: apagado)** |
 | `useTransicaoPagina` | Animação de entrada e saída da cortina |
-| `useInclinacaoMouse` | Inclinação dos cartões com o mouse |
+| `useInclinacaoMouse` | Inclinação dos cartões com o mouse. **(Fase 9: apagado; os polaroides não acompanham mais o mouse, 19.10)** |
 
-Todos os hooks e funções de animação levam o comentário `// Esta parte é lógica`. Componentes de apresentação continuam sem `fetch`.
+~~Todos os hooks e funções de animação levam o comentário `// Esta parte é lógica`.~~ **(Fase 9: regra retirada.)** Componentes de apresentação continuam sem `fetch`.
 
 ### 18.15 Leitor de tela na nova identidade (complementa a seção 15 do documento de decisões)
 
@@ -1477,7 +1518,7 @@ Paleta da equipe: laranja principal `#FC4C02`, laranja secundário `#FC5200`, la
 | Token | Claro | Escuro | Uso |
 | --- | --- | --- | --- |
 | `--cor-ponto` / `--cor-ponto-brilho` / `--cor-ponto-sombra` | `rgba(36,36,40,.07)` / `rgba(255,255,255,.9)` / `rgba(36,36,40,.10)` | `rgba(255,255,255,.05)` / `rgba(255,255,255,.08)` / `rgba(0,0,0,.35)` | Domos da textura, com relevo |
-| `--grao-opacidade` | `.06` | `.08` | Granulado |
+| `--grao-opacidade` | `.06` | `.08` (**Fase 9: `.25`**, grão preto, decisão da equipe na 9.4) | Granulado (**atrás do conteúdo**: branco no claro, preto no escuro; decisão da equipe na 9.0) |
 | `--cor-faixa-3d` | `#FC4C02` | `#FC4C02` | Tira da pulseira 3D |
 | `--cor-cortina` | `#242428` | `#242428` | Transição entre páginas e preloader |
 
@@ -1498,7 +1539,6 @@ As fontes passam a ser carregadas com **`next/font/google`**, que já vem com o 
 
 ```js
 // app/layout.jsx
-// Esta parte é lógica
 import { Anton, Atkinson_Hyperlegible_Next, JetBrains_Mono } from "next/font/google";
 const anton = Anton({ weight: "400", subsets: ["latin", "latin-ext"], display: "swap", variable: "--fonte-anton" });
 const atkinson = Atkinson_Hyperlegible_Next({ weight: ["400", "700"], subsets: ["latin", "latin-ext"], display: "swap", variable: "--fonte-atkinson" });
@@ -1534,13 +1574,13 @@ Todos ficam parados ou somem com os efeitos desligados (19.2).
 | Efeito | Onde | Como funciona | Acessibilidade |
 | --- | --- | --- | --- |
 | Rolagem suave | Computador | Lenis com um pouco mais de inércia (`lerp` ≈ 0,09) | No toque, a rolagem continua a do aparelho |
-| Preloader | Antes da capa, na primeira visita | Fundo `#1A1A1D`, contagem de 0 a 100 em Anton laranja e "Pulse · carregando" em mono, por até 1,2 s; some (0,35 s) e revela a capa | `aria-hidden`; não aparece com os efeitos desligados; usa a mesma camada de espera da capa (no máximo 2 s) |
-| Granulado | Site todo | Ruído SVG (`feTurbulence`) num elemento fixo com `pointer-events: none`, opacidade `--grao-opacidade`; troca de posição em 6 passos por segundo | Parado com os efeitos desligados; some no alto contraste do Windows; contraste do texto ≥ 4,5:1 (19.1) |
+| Preloader | Antes da capa, na primeira visita | Fundo `#1A1A1D`, contagem de 0 a 100 em Anton laranja e "Pulse · carregando" em mono, por até 1,2 s (**Fase 9: 1,4 s**, decisão da equipe na 9.0); some (0,35 s) e revela a capa | `aria-hidden`; não aparece com os efeitos desligados; usa a mesma camada de espera da capa (no máximo 2 s) |
+| Granulado | Site todo | Ruído SVG (`feTurbulence`) num elemento fixo com `pointer-events: none` (**Fase 9: atrás do conteúdo**, decisão da equipe na 9.0), opacidade `--grao-opacidade`; troca de posição em 6 passos por segundo | Parado com os efeitos desligados; some no alto contraste do Windows; contraste do texto ≥ 4,5:1 (19.1) |
 | Transição entre páginas | Igual à 8.3 (no Diário, só ao entrar e sair) | Os domos em `--cor-cortina` entram numa varredura diagonal (como pixels), sem glitch | Nada pisca; o leitor anuncia o novo H1 |
 | Barra de progresso da leitura | Embaixo do cabeçalho | Linha de 3 px em `--cor-acao` que cresce da esquerda (`scaleX`) com a rolagem | `aria-hidden`; parada com os efeitos desligados |
 | Rolagem com encaixe | Início: abertura, Tema e Quem vive (`data-encaixe`) | Encaixe do tipo "proximidade": 160 ms depois de a rolagem parar, se uma dessas seções estiver a menos de 30% da altura da tela, a página assenta nela | Nunca obrigatório; desligado com zoom alto, tela baixa e efeitos desligados; nunca durante o arrasto ou o teclado |
 | Seções fixas | "O problema" (Início) e "Como funciona" (Solução) | O título fica fixo de um lado e o conteúdo rola do outro, só no computador (≥ 64rem e altura ≥ 600 px) | A ordem do HTML continua a de leitura; com zoom alto, vira lista comum |
-| Texto que se constrói | Texto de Tema, O problema e Quem vive | O bloco aparece através de uma máscara de domos quando entra na tela (ScrollTrigger) | O texto está no HTML desde o início; com o foco, aparece na hora; sem máscara no alto contraste |
+| Texto que se constrói | Texto de Tema, O problema e Quem vive | O bloco aparece através de uma máscara de domos quando entra na tela (ScrollTrigger). **Fase 9 (decisão da equipe na 9.0):** entra com o gesto GUIA, sem a máscara | O texto está no HTML desde o início; com o foco, aparece na hora; sem máscara no alto contraste |
 | Contagem dos números | Cartões de dados de "O problema" | De 0 até o valor em 1,2 s, ao entrar na tela | O número animado tem `aria-hidden`, e um texto oculto lê o valor real ("Cerca de 90%", "7,9 milhões") |
 | Parallax | Fotos de "Quem vive", polaroides e textura das cabeças de página | Velocidades diferentes, até cerca de 60 px (`data-velocidade` de ±0,06) | O texto nunca se move |
 | Faixa de texto | Entre a abertura e o Tema | "Pulse · um guia no pulso" em Anton, andando sem parar e acelerando um pouco com a rolagem | `aria-hidden`; parada com os efeitos desligados (WCAG 2.2.2) |
@@ -1565,7 +1605,7 @@ Todos ficam parados ou somem com os efeitos desligados (19.2).
 - Grade de 8 cartões, sem rolagem lateral e sem a barra de rolagem do navegador: 1 coluna no celular, 2 a partir de 40rem e 4 a partir de 64rem.
 - **Frente:** rótulo mono, H3 e descrição (textos da 6.2).
 - **Verso:** a foto da peça, com o marcador `IMAGEM-peça (nome da tecnologia)-AQUI` (19.14).
-- Botão no pé do cartão: **"Ver a peça"** ou **"Ver o texto"**, com ícone e texto e `aria-pressed`. O cartão gira 180° em 0,55 s (`rotateY` com `backface-visibility: hidden`).
+- Botão no pé do cartão: **"Ver a peça"** ou **"Ver o texto"**, com ícone e texto e `aria-pressed`. O cartão gira 180° em 0,55 s (`rotateY` com `backface-visibility: hidden`). **(Fase 9, decisões da equipe na 9.0 e na 9.7:** texto fixo "Ver a peça", com `aria-pressed="true"` enquanto o cartão está virado; o giro usa a mola `spring.suave`, 0,42 s.**)**
 - O verso escondido tem `inert`, para não receber foco nem ser lido. Ao virar, o foco continua no botão.
 - Com os efeitos desligados, a troca é instantânea.
 - O `Carrossel` e o `useCarrossel` saem. Se não forem usados em mais nenhum lugar, apagar.
@@ -1597,9 +1637,9 @@ Todos ficam parados ou somem com os efeitos desligados (19.2).
 
 O Diário continua sem textura, palavra de fundo e cenas, mas ganha feedback nas ações (PADRAO_MOVIMENTO_PULSE):
 
-- **Salvar:** o botão se preenche e uma marca de "certo" se desenha (`pathLength` de 0 a 1) depois da resposta de sucesso. O texto "Registro salvo." continua sendo anunciado como hoje.
+- **Salvar:** o botão se preenche e uma marca de "certo" se desenha (`pathLength` de 0 a 1) depois da resposta de sucesso. O texto "Registro salvo." continua sendo anunciado como hoje. **(Fase 9, decisão da equipe na 9.9:** o site vai direto para o Diário, e o "certo" se desenha na mensagem "Registro salvo.", e não no botão; assim o anúncio não espera nenhuma animação. O cartão do registro salvo ou alterado chega com o gesto PULSO.**)**
 - **Excluir e Desfazer:**
-  - o cartão sai com `AnimatePresence mode="popLayout"`;
+  - o cartão sai com `AnimatePresence mode="popLayout"` **(Fase 9, decisão da equipe na 9.9:** a exclusão acontece na página do registro, então só a volta com o PULSO aparece; a lista fica pronta para saídas**)**;
   - com "Desfazer", volta com o gesto PULSO (batida dupla curta);
   - as mensagens de status continuam numa região que nunca sai da tela.
 - **Erro de preenchimento:** tremor horizontal curto no campo (±4 px, 0,3 s), sempre junto da mensagem em texto.
@@ -1659,9 +1699,9 @@ Os vídeos foram feitos pelo Claude fora do código do site, no padrão PADRAO_A
 
 **Componente `VideoPulse`**
 - `<video playsinline muted loop preload="metadata" poster="…-quadro-parado.jpg">`. Toca só com os efeitos ligados e o vídeo na tela (`IntersectionObserver`); fora da tela, pausa.
-- **Botão de pausa:** "Pausar" / "Reproduzir", com ícone, texto e `aria-pressed`, sempre visível (WCAG 2.2.2).
+- **Botão de pausa:** "Pausar" / "Reproduzir", com ícone, texto e `aria-pressed`, sempre visível (WCAG 2.2.2). **(Fase 9, decisão da equipe na 9.8:** o texto diz a ação e troca junto com o ícone, **sem** `aria-pressed`. Os botões ficam logo abaixo do vídeo.**)**
 - **Vídeos com som:**
-  - têm também o botão "Ativar som" / "Desativar som", com `aria-pressed`;
+  - têm também o botão "Ativar som" / "Desativar som", com `aria-pressed` **(Fase 9: sem `aria-pressed`, como o botão de pausa)**;
   - o som só liga por esse botão (WCAG 1.4.2);
   - `<track kind="captions" srclang="pt-BR" label="Português">` com o `.vtt`. As legendas aparecem quando o som está ligado e também podem ser ligadas pelo controle do navegador.
 - **Efeitos desligados:** mostra o quadro parado e o botão "Reproduzir". Se a pessoa apertar, o vídeo toca uma vez e para.
@@ -1681,10 +1721,10 @@ Os vídeos foram feitos pelo Claude fora do código do site, no padrão PADRAO_A
 | `animacao-sinal-continuar.mp4`, `-parar`, `-virar`, `-aguardar` | Solução, "Os sinais", um por sinal (ver abaixo) | sim | Conteúdo |
 
 - **Como funciona (decisão da equipe):** os 4 itens usam o quadro parado do vídeo correspondente como miniatura, sem imagem nova. O fundo da seção troca com o mouse e o foco (no computador) ou com a rolagem (no celular), em 0,4 s.
-- **Os sinais (decisão da equipe):** o vídeo de cada sinal **substitui a pulseira 3D pequena** junto do índice. Isso deixa uma cena 3D a menos na página. A foto da situação continua.
+- **Os sinais (decisão da equipe):** o vídeo de cada sinal **substitui a pulseira 3D pequena** junto do índice. Isso deixa uma cena 3D a menos na página. A foto da situação continua. **(Fase 9, decisão da equipe na 9.8:** no modo fixo, o vídeo do sinal atual fica na coluna do índice no computador (15rem) e com 8rem, ao lado dos botões, no celular; na lista comum, cada sinal mostra o seu vídeo.**)**
 - **Capa:**
   - escolhe o vídeo horizontal ou o vertical pela orientação da tela, só no navegador;
-  - o texto da capa fica sobre a faixa sólida, como antes;
+  - o texto da capa fica sobre a faixa sólida, como antes **(Fase 9, decisão da equipe na 9.8:** um véu grafite `#1A1A1D` a 60% cobre o vídeo, e o rótulo "GS 2026.2 · CitizenTech" também fica numa faixa sólida; sem isso, o contraste caía a 2,5:1 e 1,0:1**)**;
   - com os efeitos desligados, não há capa.
 - **Voz "Trianon-Masp":** a equipe pode trocar `animacao-a-pulseira.mp4` pela versão com voz. O nome do arquivo não muda.
 
@@ -1698,7 +1738,7 @@ As imagens continuam colocadas pela equipe. Os prompts para gerar as que são di
 | `IMAGEM-ilustração conceitual da pulseira-AQUI` | Sai: "A pulseira" usa o vídeo e a pulseira 3D no modo `explorar` |
 | `IMAGEM-sinal …-AQUI` (4) e `IMAGEM-galeria …-AQUI` (6) | Continuam, com os `alt` da 18.13 |
 | `IMAGEM-foto de (nome)-AQUI` (5) | Continuam (polaroides) |
-| `IMAGEM-ilustração de uma travessia-AQUI` | Continua no Início, se a equipe quiser uma imagem parada além do vídeo de "O problema"; se não, sai |
+| `IMAGEM-ilustração de uma travessia-AQUI` | Continua no Início, se a equipe quiser uma imagem parada além do vídeo de "O problema"; se não, sai. **(Fase 9, decisão da equipe na 9.8: saiu; o vídeo ocupa o lugar.)** |
 | **Novo:** `IMAGEM-pessoa cega usando o celular-AQUI` | "Quem vive o problema", cartão "Pessoa cega". `alt`: "Pessoa cega usando o celular com leitor de tela." |
 | **Novo:** `IMAGEM-pessoa com baixa visão ampliando a tela-AQUI` | "Quem vive o problema", cartão "Pessoa com baixa visão". `alt`: "Pessoa com baixa visão ampliando a tela do celular." |
 | **Novo:** `IMAGEM-peça (nome)-AQUI` (8) | Verso dos cartões de Tecnologias. `alt`: "Foto da peça: (nome da tecnologia)." |
@@ -1741,6 +1781,13 @@ As imagens continuam colocadas pela equipe. Os prompts para gerar as que são di
 
 `lib/presetsMovimento.js` (molas, saída, cascata, pulso, guia e tremor) segue o PADRAO_MOVIMENTO_PULSE.
 
+**(Fase 9, implementação)** Também entraram:
+- componentes `RotuloSecao` (rótulo com a linha que se desenha), `FotoFiltro` (filtro e parallax das fotos), `IconeAlternado` (troca de ícone com rotação), `CertoDesenhado` (o "certo" das mensagens de sucesso) e `Tremor` (gesto de erro nos campos);
+- hooks `useComoFuncionaFundo`, `useLinhaRotulo`, `useFaixaTexto`, `useTextoConstroi`, `useParallax`, `useFiltroFoto`, `useRodapeRevelado` e `useRolagemSuave`;
+- módulos `lib/efeitos.js` (o estado do interruptor), `lib/cortinaDomos.js` (a cortina em `<canvas>`) e `lib/pulseira3d/modelo.js` (o modelo único da pulseira).
+
+Saíram `Carrossel`, `useCarrossel`, `GaleriaHorizontal`, `useGaleriaHorizontal` e `useInclinacaoMouse`.
+
 ### 19.16 Leitor de tela na Fase 9 (complementa a 18.15)
 
 - **Cabeçalho:** Pulse → "Efeitos: ligados, botão de alternância, pressionado" (o texto exato varia com o leitor).
@@ -1759,14 +1806,24 @@ As imagens continuam colocadas pela equipe. Os prompts para gerar as que são di
 
 ### 19.17 Critérios de aceite da Fase 9
 
-- [ ] Interruptor "Efeitos": desligado, nada se move em nenhuma página (`document.getAnimations()` vazio, nenhum quadro 3D novo, vídeos parados no quadro parado); a escolha sobrevive a recarregar; começa desligado com "reduzir movimento" no aparelho.
-- [ ] Nenhuma consulta direta a `prefers-reduced-motion` fora do `ProvedorMovimento` e do script do `<head>`.
-- [ ] Contraste recalculado com os tokens da 19.3, nos dois temas, no rodapé e com o granulado.
-- [ ] Fontes carregadas por `next/font/google`, sem pedido ao Google no navegador; títulos a 320 px conferidos.
-- [ ] 320 px sem rolagem lateral; zoom de 400% com seções fixas, encaixe e canvas desligados; nenhum polaroide cortado.
-- [ ] Teclado alcança tudo: galeria (setas e botões), pulseira (setas e botões), cartões que viram, controle do antes e depois, vídeos.
-- [ ] Vídeos: começam mudos; o som só com "Ativar som"; legendas nos que têm som; pausa sempre visível; sem os arquivos, nenhum erro.
-- [ ] Pulseira 3D: uma cena por vez, liberada ao sair; reserva em texto sem WebGL; giro parado com os efeitos desligados.
-- [ ] Nada pisca mais de 3 vezes por segundo (Aguardar: três piscadas em 1 s).
-- [ ] ESLint `jsx-a11y` e axe sem violações nos dois temas.
-- [ ] Marcadores novos (19.13 e 19.14) no lugar e listados para a equipe.
+- [x] Interruptor "Efeitos": desligado, nada se move em nenhuma página (`document.getAnimations()` vazio, nenhum quadro 3D novo, vídeos parados no quadro parado); a escolha sobrevive a recarregar; começa desligado com "reduzir movimento" no aparelho.
+- [x] Nenhuma consulta direta a `prefers-reduced-motion` fora do `ProvedorMovimento` e do script do `<head>`.
+- [x] Contraste recalculado com os tokens da 19.3, nos dois temas, no rodapé e com o granulado.
+- [x] Fontes carregadas por `next/font/google`, sem pedido ao Google no navegador; títulos a 320 px conferidos.
+- [x] 320 px sem rolagem lateral; zoom de 400% com seções fixas, encaixe e canvas desligados; nenhum polaroide cortado.
+- [x] Teclado alcança tudo: galeria (setas e botões), pulseira (setas e botões), cartões que viram, controle do antes e depois, vídeos.
+- [x] Vídeos: começam mudos; o som só com "Ativar som"; legendas nos que têm som; pausa sempre visível; sem os arquivos, nenhum erro.
+- [x] Pulseira 3D: uma cena por vez, liberada ao sair; reserva em texto sem WebGL; giro parado com os efeitos desligados.
+- [x] Nada pisca mais de 3 vezes por segundo (Aguardar: três piscadas em 1 s).
+- [x] ESLint `jsx-a11y` e axe sem violações nos dois temas.
+- [x] Marcadores novos (19.13 e 19.14) no lugar e listados para a equipe.
+
+**Resultado da revisão automática (Fase 9, subfase 9.10):**
+- ESLint do projeto: 0 problemas. `jsx-a11y` completo (configuração `strict`, 33 regras): só as 4 exceções da Galeria registradas na seção 17.
+- axe-core 4.14 (WCAG 2.2 A/AA): 0 violações em 24 páginas-estado (6 rotas × 2 temas × efeitos ligados e desligados) e no Diário com as mensagens de sucesso na tela.
+- Efeitos desligados, nas 6 rotas e nos 2 temas: nenhuma animação, nenhum quadro 3D novo em 1 s e nenhum vídeo tocando.
+- Teclado (Início, Solução e Diário): primeiro foco no "Pular para o conteúdo"; cada foco visível, com contorno e fora do cabeçalho e da barra; a Solução alcança a pulseira, os 8 cartões, o "Antes e depois", os vídeos e a Galeria.
+- 320 px, zoom de 400% e texto em 200%: sem rolagem lateral nas 6 rotas; com zoom de 400%, sem seções fixas e sem canvas.
+- Alvos de toque com 48 × 48 px ou mais; imagens com `alt`; nenhum botão só com ícone; alto contraste (simulado) e sem WebGL aprovados; nenhum pedido ao Google Fonts.
+
+Os testes que só uma pessoa faz (leitor de tela, aparelho real, alto contraste real, desempenho no celular) estão em `docs/REGISTRO_DESENVOLVIMENTO.md`, subfase 9.10.
