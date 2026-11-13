@@ -1,10 +1,13 @@
+import { efeitosLigadosAgora } from "@/lib/efeitos";
+
 /*
   useInclinacaoMouse — o cartão inclina acompanhando o mouse (seções
   18.8, 18.9 e 18.14). Usado nos polaroides da Equipe.
 
-  Só funciona com mouse ("hover: hover" e "pointer: fine") e sem "reduzir
-  movimento". No toque, no teclado e com "reduzir movimento", o cartão
-  fica parado na inclinação dele. Nunca troca o cursor.
+  Só funciona com mouse ("hover: hover" e "pointer: fine") e com os
+  efeitos ligados (seção 19.2). No toque, no teclado e com os efeitos
+  desligados, o cartão fica parado na inclinação dele. Nunca troca o
+  cursor.
 
   Com o mouse em cima: o cartão se endireita, sobe 6 px e inclina até 10°
   para o lado do mouse. Ao sair, volta à inclinação de antes.
@@ -18,8 +21,7 @@ const INCLINACAO_MAXIMA = 10; // graus
 // Esta parte é lógica
 function podeInclinar() {
   return (
-    window.matchMedia(CONSULTA_COM_MOUSE).matches &&
-    !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    window.matchMedia(CONSULTA_COM_MOUSE).matches && efeitosLigadosAgora()
   );
 }
 

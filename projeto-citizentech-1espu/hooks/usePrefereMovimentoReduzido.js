@@ -7,6 +7,10 @@ import { useSyncExternalStore } from "react";
   Usa useSyncExternalStore, o hook do React feito para ler algo que vive
   FORA do React (aqui, a configuração do sistema) e atualizar a tela
   quando esse valor muda, sem a tela "piscar" com um valor errado.
+
+  Fase 9 (seção 19.2): o "reduzir movimento" do aparelho virou só o valor
+  inicial do interruptor "Efeitos". Este hook é usado APENAS pelo
+  ProvedorMovimento. Os componentes usam useEfeitos().
 */
 const CONSULTA = "(prefers-reduced-motion: reduce)";
 

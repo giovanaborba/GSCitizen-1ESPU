@@ -68,7 +68,7 @@ export default function PaginaSimulador() {
         - alvos de toque de 48 × 48 px ou mais; foco sempre visível;
         - texto com contraste de 7:1, usando as cores de globals.css;
         - mensagens de sinal anunciadas ao leitor de tela (ex.: role="status");
-        - funcionar a 320 px de largura e com "reduzir movimento".
+        - funcionar a 320 px de largura e com os efeitos desligados.
         ##################################################################
       */}
       <section

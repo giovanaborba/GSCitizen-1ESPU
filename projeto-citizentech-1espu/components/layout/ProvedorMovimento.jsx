@@ -1,32 +1,56 @@
 "use client";
 
-import { useEffect } from "react";
-import { ReactLenis, useLenis } from "lenis/react";
+import { useEffect, useSyncExternalStore } from "react";
+import Lenis from "lenis";
 import { MotionConfig } from "motion/react";
 import { registrarPluginsGsap, sincronizarLenisComGsap } from "@/lib/movimento";
+import { spring } from "@/lib/presetsMovimento";
+import {
+  DESCONHECIDO,
+  LIGADOS,
+  assinarEfeitos,
+  definirEfeitos,
+  lerEfeitos,
+  lerEfeitosNoServidor,
+  lerEscolhaSalva,
+} from "@/lib/efeitos";
+import { ContextoEfeitos } from "@/hooks/useEfeitos";
+import { ContextoRolagemSuave } from "@/hooks/useRolagemSuave";
 import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido";
 
 /*
-  ProvedorMovimento — seções 18.1 e 18.9.
-  Fica no layout, em volta de todas as páginas, e prepara o movimento:
+  ProvedorMovimento — seções 18.1, 18.9 e 19.2.
+  Fica no layout, em volta de todas as páginas, e é a ÚNICA regra de
+  movimento do site (Fase 9):
 
-  1. Lenis (rolagem suave com a roda do mouse), na raiz da página:
+  1. Interruptor "Efeitos": guarda se os efeitos estão ligados e entrega
+     isso a todos pelo hook useEfeitos(). O valor mora no atributo
+     data-efeitos do <html> (lib/efeitos.js), gravado antes da pintura
+     pelo script do <head>.
+     - Valor inicial: a escolha salva (localStorage "pulse-efeitos") ou,
+       sem escolha, o "reduzir movimento" do aparelho.
+     - Mudança do aparelho: se a pessoa nunca mexeu no interruptor e
+       muda o "reduzir movimento" com o site aberto, o estado acompanha.
+       Este é o único lugar (fora do script do <head>) que consulta o
+       aparelho.
+  2. Lenis (rolagem suave com a roda do mouse): só existe com os efeitos
+     ligados. Com os efeitos desligados, ele nem é criado, e a rolagem é a
+     do navegador. Por que não usar lenis.stop(), como sugeria a 19.2: o
+     stop() põe a classe "lenis-stopped" no <html>, que tem overflow: clip
+     no CSS do próprio Lenis, e ainda cancela a roda do mouse. A página
+     deixaria de rolar.
      - autoRaf: false → quem "dá corda" ao Lenis é o relógio do GSAP;
-     - anchors: true → links para "#algum-id" (Pular para o conteúdo,
-       Nesta página, links da abertura) também rolam suave. O Lenis já
-       desconta o scroll-padding-top do <html> (altura do cabeçalho +
-       16 px, definido no globals.css), então o título não fica escondido.
-       O clique continua sendo um link normal: o navegador leva o foco
-       para o destino, e o leitor de tela e o Tab continuam dali;
-     - com "reduzir movimento", os saltos para âncoras são instantâneos
-       (o Lenis já faz isso sozinho) e a roda do mouse deixa de ser
-       suavizada (smoothWheel: false). Sem esse ajuste, o Lenis ainda
-       "amortecia" a roda por cerca de 0,1 s, e a seção 18.2 pede que
-       nada se mova;
+     - anchors: true → links para "#algum-id" rolam suave, descontando o
+       scroll-padding-top do <html>. O clique continua sendo um link
+       normal: o foco vai para o destino;
      - no toque (celular), a rolagem continua a do aparelho.
-  2. GSAP: registra o ScrollTrigger uma vez.
-  3. Motion: MotionConfig reducedMotion="user" faz todas as animações do
-     Motion respeitarem o "reduzir movimento" do aparelho.
+     O Lenis é criado e destruído aqui, num efeito, e NÃO em volta das
+     páginas: assim ligar e desligar não remonta o site (um formulário
+     do Diário, por exemplo, não perde o que foi digitado).
+  3. GSAP: registra o ScrollTrigger uma vez.
+  4. Motion: MotionConfig com a mola padrão (PADRAO_MOVIMENTO_PULSE, item
+     4). Com os efeitos desligados, reducedMotion="always" tira os
+     movimentos de posição e escala e mantém só as trocas de opacidade.
 
   Não desenha nada na tela: só envolve o conteúdo.
 */
@@ -34,43 +58,75 @@ import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido
 // Esta parte é lógica
 registrarPluginsGsap();
 
-// Opções fixas, fora do componente, para não recriar o Lenis a cada
-// renderização. Uma para cada preferência de movimento.
 const OPCOES_LENIS = {
   autoRaf: false,
   anchors: true,
   smoothWheel: true,
 };
-const OPCOES_LENIS_MOVIMENTO_REDUZIDO = {
-  ...OPCOES_LENIS,
-  smoothWheel: false,
-};
 
 // Esta parte é lógica
-// Liga o Lenis ao relógio do GSAP assim que o Lenis existir. Fica num
-// componente separado porque o useLenis só funciona dentro do ReactLenis.
-function SincronizarComGsap() {
-  const lenis = useLenis();
+// O Lenis atual (ou null) fica guardado fora do React, como os efeitos
+// em lib/efeitos.js. O efeito que cria o Lenis só "avisa" que ele mudou,
+// e o React lê o valor novo por useSyncExternalStore. (Mudar o estado do
+// React direto dentro do efeito faria a tela renderizar duas vezes.)
+let lenisAtual = null;
+const ouvintesDoLenis = new Set();
 
-  useEffect(() => {
-    if (!lenis) return;
-    return sincronizarLenisComGsap(lenis);
-  }, [lenis]);
-
-  return null;
+function definirLenis(instancia) {
+  lenisAtual = instancia;
+  for (const aoMudar of ouvintesDoLenis) aoMudar();
 }
+
+function assinarLenis(aoMudar) {
+  ouvintesDoLenis.add(aoMudar);
+  return () => ouvintesDoLenis.delete(aoMudar);
+}
+
+const lerLenis = () => lenisAtual;
+const lerLenisNoServidor = () => null;
 
 export default function ProvedorMovimento({ children }) {
   // Esta parte é lógica
-  const movimentoReduzido = usePrefereMovimentoReduzido();
+  const valor = useSyncExternalStore(assinarEfeitos, lerEfeitos, lerEfeitosNoServidor);
+  const efeitosConhecidos = valor !== DESCONHECIDO;
+  const efeitosLigados = valor === LIGADOS;
+  const aparelhoPedeReduzir = usePrefereMovimentoReduzido();
+  const lenis = useSyncExternalStore(assinarLenis, lerLenis, lerLenisNoServidor);
+
+  // Esta parte é lógica
+  // O aparelho só manda enquanto a pessoa não escolheu no interruptor.
+  useEffect(() => {
+    if (!efeitosConhecidos || lerEscolhaSalva() !== null) return;
+    definirEfeitos(!aparelhoPedeReduzir, { salvar: false });
+  }, [aparelhoPedeReduzir, efeitosConhecidos]);
+
+  // Esta parte é lógica
+  // Cria o Lenis ao ligar os efeitos e o destrói ao desligar (ou ao sair).
+  useEffect(() => {
+    if (!efeitosLigados) return;
+    const instancia = new Lenis(OPCOES_LENIS);
+    const desfazerSincronia = sincronizarLenisComGsap(instancia);
+    definirLenis(instancia);
+    return () => {
+      desfazerSincronia();
+      instancia.destroy();
+      definirLenis(null);
+    };
+  }, [efeitosLigados]);
+
+  // Esta parte é lógica
+  // Botão "Efeitos": inverte o estado atual e guarda a escolha.
+  function alternarEfeitos() {
+    definirEfeitos(lerEfeitos() !== LIGADOS, { salvar: true });
+  }
 
   return (
-    <ReactLenis
-      root
-      options={movimentoReduzido ? OPCOES_LENIS_MOVIMENTO_REDUZIDO : OPCOES_LENIS}
-    >
-      <SincronizarComGsap />
-      <MotionConfig reducedMotion="user">{children}</MotionConfig>
-    </ReactLenis>
+    <ContextoEfeitos.Provider value={{ efeitosLigados, efeitosConhecidos, alternarEfeitos }}>
+      <ContextoRolagemSuave.Provider value={lenis}>
+        <MotionConfig transition={spring.padrao} reducedMotion={efeitosLigados ? "never" : "always"}>
+          {children}
+        </MotionConfig>
+      </ContextoRolagemSuave.Provider>
+    </ContextoEfeitos.Provider>
   );
 }

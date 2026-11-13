@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { efeitosLigadosAgora } from "@/lib/efeitos";
 
 /*
   useCarrossel — estado do carrossel de Tecnologias (seções 18.8 e 18.14).
@@ -9,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
   - se está no começo ou no fim (os botões "Anterior" e "Próximo" ficam
     com aria-disabled nas pontas);
   - passo(direcao): rola um cartão para trás (-1) ou para a frente (+1),
-    suave ou instantâneo com "reduzir movimento".
+    suave com os efeitos ligados e instantâneo com eles desligados.
   Sem avanço automático.
 
   "medida" começa null: até o JavaScript medir, os botões e a contagem
@@ -73,10 +74,9 @@ export function useCarrossel() {
     if ((direcao < 0 && medida.noInicio) || (direcao > 0 && medida.noFim)) return;
     const primeiro = lista.children[0];
     const espaco = parseFloat(getComputedStyle(lista).columnGap) || 0;
-    const reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     lista.scrollBy({
       left: direcao * (primeiro.getBoundingClientRect().width + espaco),
-      behavior: reduzir ? "auto" : "smooth",
+      behavior: efeitosLigadosAgora() ? "smooth" : "auto",
     });
   }
 

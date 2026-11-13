@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useLenis } from "lenis/react";
 import { gsap } from "gsap";
+import { useEfeitos } from "@/hooks/useEfeitos";
+import { useRolagemSuave } from "@/hooks/useRolagemSuave";
 
 /*
   useCapaIntro — capa da primeira visita da sessão (seções 18.6 e 18.14).
@@ -12,13 +13,15 @@ import { gsap } from "gsap";
     navegadores), a capa aparece;
   - só no navegador, depois da hidratação (o momento em que o React
     "assume" a página que veio pronta do servidor). Sem JavaScript, a
-    capa não existe.
+    capa não existe;
+  - só com os efeitos ligados (seção 19.1). Com os efeitos desligados, a
+    capa não aparece e já conta como vista: se a pessoa ligar os efeitos
+    no meio da visita, a capa não "pula" na frente da página.
 
   Como sai: com um clique ou toque na capa, a roda do mouse, o dedo
   arrastando, qualquer tecla ou qualquer foco (o primeiro Tab, no "Pular
   para o conteúdo", já abre o site). A saída é em "piso tátil": a capa
-  vira uma peneira de domos que encolhem em 1 s. Com "reduzir movimento",
-  a saída é instantânea.
+  vira uma peneira de domos que encolhem em 1 s.
 
   Fases: "ativa" → "saindo" → "fim". Devolve:
   - capaNaTela: a capa está na tela (ativa ou saindo);
@@ -60,9 +63,10 @@ export function useCapaIntro() {
   const [fase, setFase] = useState("ativa");
   const refCapa = useRef(null);
   const refAnimacao = useRef(null);
-  const lenis = useLenis();
+  const lenis = useRolagemSuave();
+  const { efeitosLigados, efeitosConhecidos } = useEfeitos();
 
-  const capaNaTela = precisa && fase !== "fim";
+  const capaNaTela = precisa && efeitosLigados && fase !== "fim";
   const saindo = capaNaTela && fase === "saindo";
 
   // Esta parte é lógica
@@ -74,12 +78,15 @@ export function useCapaIntro() {
   // Esta parte é lógica
   function sair() {
     if (!capaNaTela || fase !== "ativa") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      terminar();
-      return;
-    }
     setFase("saindo");
   }
+
+  // Esta parte é lógica
+  // Efeitos desligados (de verdade, não só "ainda não sei"): não há capa,
+  // e ela conta como vista nesta sessão.
+  useEffect(() => {
+    if (efeitosConhecidos && !efeitosLigados && precisa) marcarCapaVista();
+  }, [efeitosConhecidos, efeitosLigados, precisa]);
 
   // Esta parte é lógica
   // Tira a camada de espera do <head> quando ela já não é necessária: a
@@ -103,14 +110,7 @@ export function useCapaIntro() {
   // Qualquer gesto, tecla ou foco abre o site.
   useEffect(() => {
     if (!capaNaTela || fase !== "ativa") return;
-    const pedirSaida = () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        marcarCapaVista();
-        setFase("fim");
-      } else {
-        setFase("saindo");
-      }
-    };
+    const pedirSaida = () => setFase("saindo");
     const opcoes = { passive: true };
     window.addEventListener("wheel", pedirSaida, opcoes);
     window.addEventListener("touchmove", pedirSaida, opcoes);

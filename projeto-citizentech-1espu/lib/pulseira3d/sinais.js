@@ -96,7 +96,7 @@ export function animarSinal(chave, t, dt, cena, umaVez, podeSoltarPulso = true) 
 }
 
 // Esta parte é lógica
-// Apaga tudo: usado no quadro parado ("reduzir movimento") e no fim da 404.
+// Apaga tudo: usado no quadro parado (efeitos desligados) e no fim da 404.
 export function apagarPartes(cena) {
   const { motorEsquerdo, motorDireito, atuador, botaoDestino, botaoModo } = cena.partes;
   for (const parte of [motorEsquerdo, motorDireito, atuador, botaoDestino, botaoModo]) {

@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLenis } from "lenis/react";
 import { useConsultaMidia } from "@/hooks/useConsultaMidia";
+import { useEfeitos } from "@/hooks/useEfeitos";
+import { useRolagemSuave } from "@/hooks/useRolagemSuave";
 import { registrarPluginsGsap } from "@/lib/movimento";
 
 /*
@@ -16,8 +17,8 @@ import { registrarPluginsGsap } from "@/lib/movimento";
     50–75% Virar, 75–100% Aguardar. Ele só LÊ a rolagem; quem prende o
     palco é o CSS (sem "pin" do GSAP).
 
-  O modo fixo só liga sem "reduzir movimento", com a janela de pelo menos
-  560 px de altura e 340 px de largura (seção 18.8). Fora disso (e sem
+  O modo fixo só liga com os efeitos ligados (seção 19.2) e com a janela
+  de pelo menos 560 px de altura e 340 px de largura (seção 18.8). Fora disso (e sem
   JavaScript), os 4 sinais aparecem em lista comum.
 
   Devolve:
@@ -27,8 +28,7 @@ import { registrarPluginsGsap } from "@/lib/movimento";
   - irPara(indice, evento): clique num link do índice "Sinais".
 */
 
-const CONSULTA_MODO_FIXO =
-  "(prefers-reduced-motion: no-preference) and (min-height: 560px) and (min-width: 340px)";
+const CONSULTA_MODO_FIXO = "(min-height: 560px) and (min-width: 340px)";
 
 // Esta parte é lógica
 // Onde o palco gruda (abaixo do cabeçalho e da faixa do índice), em px.
@@ -38,11 +38,12 @@ function topoDoPalco(palco) {
 
 // Esta parte é lógica
 export function useRolagemFixa(quantidade) {
-  const podeFixar = useConsultaMidia(CONSULTA_MODO_FIXO);
+  const { efeitosLigados } = useEfeitos();
+  const podeFixar = useConsultaMidia(CONSULTA_MODO_FIXO) && efeitosLigados;
   const [ativo, setAtivo] = useState(0);
   const refTrilho = useRef(null);
   const refPalco = useRef(null);
-  const lenis = useLenis();
+  const lenis = useRolagemSuave();
 
   // Esta parte é lógica
   // Liga o ScrollTrigger só no modo fixo. O useGSAP desfaz tudo sozinho

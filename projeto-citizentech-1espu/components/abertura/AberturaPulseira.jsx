@@ -7,10 +7,11 @@ import CapaIntro from "@/components/abertura/CapaIntro";
 import PartesSolucao, { PARTES_DA_SOLUCAO } from "@/components/abertura/PartesSolucao";
 import PalavraFundo from "@/components/ui/PalavraFundo";
 import EspacoIcone from "@/components/ui/EspacoIcone";
-import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido";
+import { useEfeitos } from "@/hooks/useEfeitos";
 import { useCapaIntro } from "@/hooks/useCapaIntro";
 import { useLinhasPartes } from "@/hooks/useLinhasPartes";
 import { SINAIS_DA_ABERTURA } from "@/lib/pulseira3d/sinais";
+import { spring } from "@/lib/presetsMovimento";
 
 /*
   AberturaPulseira — abertura do Início (seções 18.6 e 18.14).
@@ -20,9 +21,10 @@ import { SINAIS_DA_ABERTURA } from "@/lib/pulseira3d/sinais";
   solução, lista, 6 links". A capa e a palavra de fundo são decorativas
   (aria-hidden).
 
-  - Capa (primeira visita da sessão): enquanto ela está na tela, os
-    títulos e os links ficam escondidos e a pulseira espera. Quando a
-    capa sai, eles aparecem (opacidade e subida de 10 px, 0,6 s) e a
+  - Capa (primeira visita da sessão, só com os efeitos ligados):
+    enquanto ela está na tela, os títulos e os links ficam escondidos e a
+    pulseira espera. Quando a capa sai, eles aparecem com o gesto GUIA
+    (opacidade e subida de 12 px, mola padrão, na ordem de leitura) e a
     pulseira entra.
   - Palavra de fundo: acompanha o sinal (Esquerda, Direita, Aguardar,
     Parar, Continuar). Com a pulseira parada, fica "Pulse".
@@ -31,9 +33,10 @@ import { SINAIS_DA_ABERTURA } from "@/lib/pulseira3d/sinais";
   - Computador (≥ 1000 px): pulseira no centro, 3 links de cada lado e
     linhas tracejadas ligando cada link à sua parte.
 
-  Com "reduzir movimento": pulseira parada, legenda "Sinais da Pulse" /
-  "Veja cada sinal explicado na página Solução." (decisão da equipe), sem
-  botão de pausa, capa e revelação instantâneas, linhas paradas. A mesma
+  Com os efeitos desligados (interruptor "Efeitos", seção 19.2): pulseira
+  parada, legenda "Sinais da Pulse" / "Veja cada sinal explicado na
+  página Solução." (decisão da equipe), sem botão de pausa, sem capa,
+  linhas paradas. Ligar ou desligar vale na hora. A mesma
   legenda parada aparece enquanto a cena 3D não fica pronta, sem
   JavaScript e se o WebGL falhar: nesses casos nada se move, e um botão
   "Pausar animação" sem efeito confundiria.
@@ -44,10 +47,10 @@ export default function AberturaPulseira() {
   const [sinalAtual, setSinalAtual] = useState(SINAIS_DA_ABERTURA[0]);
   const [cenaAnimando, setCenaAnimando] = useState(false);
   const [parteAtiva, setParteAtiva] = useState(null);
-  const movimentoReduzido = usePrefereMovimentoReduzido();
+  const { efeitosLigados } = useEfeitos();
   const capa = useCapaIntro();
   const { refPalco, refSvg, registrarNo, aoDesenhar } = useLinhasPartes(parteAtiva);
-  const parada = movimentoReduzido || !cenaAnimando;
+  const parada = !efeitosLigados || !cenaAnimando;
 
   // Esta parte é lógica
   function alternarPausa() {
@@ -65,18 +68,20 @@ export default function AberturaPulseira() {
   }
 
   // Esta parte é lógica
-  // Revelação depois da capa (Motion): escondido enquanto a capa está na
-  // tela; ao sair, aparece com opacidade e subida de 10 px em 0,6 s.
+  // Revelação depois da capa (Motion, gesto GUIA do padrão de movimento):
+  // escondido enquanto a capa está na tela; ao sair, aparece com
+  // opacidade e subida de 12 px, com a mola padrão. Os 3 grupos entram na
+  // ordem de leitura, com 60 ms entre eles.
   // "initial: false": na primeira pintura (e sem JavaScript), o texto já
   // aparece no lugar, sem animação.
   function revelacao(atraso = 0) {
     if (capa.capaNaTela) {
-      return { initial: false, animate: { opacity: 0, y: 10 }, transition: { duration: 0 } };
+      return { initial: false, animate: { opacity: 0, y: 12 }, transition: { duration: 0 } };
     }
     return {
       initial: false,
       animate: { opacity: 1, y: 0 },
-      transition: movimentoReduzido ? { duration: 0 } : { duration: 0.6, ease: "easeOut", delay: atraso },
+      transition: { ...spring.padrao, delay: atraso },
     };
   }
 
@@ -152,7 +157,7 @@ export default function AberturaPulseira() {
           </div>
 
           <motion.div
-            {...revelacao(0.08)}
+            {...revelacao(0.06)}
             className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center abertura-larga:col-start-2 abertura-larga:row-start-4"
           >
             {/* Esta parte é lógica */}
@@ -187,7 +192,7 @@ export default function AberturaPulseira() {
             parteAtiva={parteAtiva}
             aoMudarParte={setParteAtiva}
             registrarNo={registrarNo}
-            animacao={revelacao(0.16)}
+            animacao={revelacao(0.12)}
           />
         </div>
       </div>

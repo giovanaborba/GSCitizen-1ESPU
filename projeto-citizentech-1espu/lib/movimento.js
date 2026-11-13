@@ -11,8 +11,8 @@ import { useGSAP } from "@gsap/react";
   - ScrollTrigger: plugin do GSAP que liga uma animação à rolagem
     (ex.: "Os sinais" e a Galeria, nas próximas subfases).
   - Lenis: deixa a rolagem com a roda do mouse suave. No toque, a rolagem
-    continua a do aparelho. Com "reduzir movimento", ele mesmo se desliga
-    (opção respectReducedMotion, ligada por padrão).
+    continua a do aparelho. Fase 9: o Lenis só existe com os efeitos
+    ligados (quem o cria e destrói é o ProvedorMovimento, seção 19.2).
 
   Por que sincronizar: se cada um tivesse o seu relógio, o ScrollTrigger
   poderia ler a posição da rolagem um quadro atrasado e a animação

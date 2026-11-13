@@ -18,7 +18,13 @@
   5. Utilitários próprios (margem lateral, textura de piso tátil,
      rótulo mono, palavra de fundo).
   6. Alto contraste do Windows (forced-colors).
-  7. Reduzir movimento (prefers-reduced-motion).
+  7. Efeitos desligados (interruptor "Efeitos", seção 19.2).
+
+  Movimento (Fase 9): a única regra é o atributo data-efeitos da tag
+  <html> ("ligados" ou "desligados"), gravado pelo script do <head> e
+  mudado pelo botão "Efeitos". Nenhuma regra deste arquivo consulta o
+  "reduzir movimento" do aparelho: ele é só o valor inicial do botão.
+  Sem JavaScript, o atributo não existe e tudo fica parado.
 
   Fontes: os marcadores FONTE-...-AQUI ficam em app/layout.jsx, onde as
   fontes serão carregadas. Aqui ficam só as variáveis --fonte-titulo,
@@ -277,6 +283,15 @@
 @custom-variant faixa-fixa (@media (min-width: 64rem) and (min-height: 43.75rem));
 @custom-variant abertura-larga (@media (min-width: 62.5rem));
 
+/* Fase 9 — variantes do interruptor "Efeitos" (seção 19.2), no lugar de
+   motion-safe: e motion-reduce: do Tailwind (que seguiam só o aparelho):
+   - efeitos-ligados: vale só com data-efeitos="ligados" no <html>;
+   - efeitos-desligados: vale com "desligados" e também sem o atributo
+     (sem JavaScript), para nada se mover nesse caso.
+   Exemplo: class="efeitos-ligados:hover:-translate-y-0.5" */
+@custom-variant efeitos-ligados (&:where([data-efeitos="ligados"], [data-efeitos="ligados"] *));
+@custom-variant efeitos-desligados (&:where(:root:not([data-efeitos="ligados"]), :root:not([data-efeitos="ligados"]) *));
+
 /* ---------------------------------------------------------------------
    4. BASE
    --------------------------------------------------------------------- */
@@ -409,11 +424,9 @@
   }
 }
 
-/* Rolagem suave só para quem não pediu para reduzir movimento */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
+/* Rolagem suave do navegador só com os efeitos ligados (seção 19.2) */
+html[data-efeitos="ligados"] {
+  scroll-behavior: smooth;
 }
 
 /* Quando o Lenis está ativo (classe .lenis no <html>), a suavidade é
@@ -544,7 +557,7 @@ html.lenis {
 
   /* "Os sinais" em rolagem fixa (seção 18.8). Só valem com a classe
      .sinais-fixo, que o componente põe quando o modo fixo pode ligar
-     (nunca com "reduzir movimento").
+     (nunca com os efeitos desligados).
      - Foto: troca em "piso tátil", uma peneira de domos de 26 px cujo
        raio (--d) cresce de 0 a 20 px em 0,7 s. O --d é registrado com
        @property (abaixo) para o navegador conseguir animá-lo.
@@ -598,9 +611,9 @@ html.lenis {
   }
 
   /* O logo "pulsa" uma vez (até 1 s) e some; depois o conteúdo aparece.
-     Com "reduzir movimento", o logo nem aparece (classe
-     motion-reduce:hidden no componente) e o conteúdo já vem pronto (as
-     animações são desligadas no fim deste arquivo). */
+     Com os efeitos desligados não há capa (19.1); mesmo assim, o logo
+     tem a classe efeitos-desligados:hidden no componente, e as animações
+     são desligadas no fim deste arquivo. */
   .capa-logo {
     animation: capa-logo-some 0.3s ease 0.7s both;
   }
@@ -703,27 +716,26 @@ html.lenis {
     }
   }
 
-  /* Com "reduzir movimento": nada anda. Os 3 botões ficam parados, um
-     embaixo do outro, sem a cópia e sem o botão de pausa (18.10). */
-  @media (prefers-reduced-motion: reduce) {
-    .faixa-ods-trilho {
-      display: block;
-      width: auto;
-      animation: none;
-    }
+  /* Com os efeitos desligados (e sem JavaScript): nada anda. Os 3 botões
+     ficam parados, um embaixo do outro, sem a cópia e sem o botão de
+     pausa (18.10 e 19.2). */
+  :root:not([data-efeitos="ligados"]) .faixa-ods-trilho {
+    display: block;
+    width: auto;
+    animation: none;
+  }
 
-    .faixa-ods-lista {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0.75rem;
-      padding: 0;
-    }
+  :root:not([data-efeitos="ligados"]) .faixa-ods-lista {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 0;
+  }
 
-    /* (O botão de pausa some pela classe motion-reduce:hidden, no
-       próprio componente.) */
-    .faixa-ods-lista[aria-hidden="true"] {
-      display: none;
-    }
+  /* (O botão de pausa some pela classe efeitos-desligados:hidden, no
+     próprio componente.) */
+  :root:not([data-efeitos="ligados"]) .faixa-ods-lista[aria-hidden="true"] {
+    display: none;
   }
 }
 
@@ -765,16 +777,18 @@ html.lenis {
 }
 
 /* ---------------------------------------------------------------------
-   7. REDUZIR MOVIMENTO (prefers-reduced-motion)
-   Sem animações nem transições. As barras que somem ao rolar ficam
-   sempre visíveis (isso também é tratado no hook useDirecaoRolagem).
+   7. EFEITOS DESLIGADOS (interruptor "Efeitos", seção 19.2)
+   Sem animações nem transições de CSS, e sem rolagem suave. Vale também
+   sem JavaScript (sem o atributo). As barras que somem ao rolar ficam
+   sempre visíveis (isso é tratado no hook useDirecaoRolagem). As
+   animações feitas com o Motion seguem o MotionConfig do
+   ProvedorMovimento (só troca de opacidade).
    --------------------------------------------------------------------- */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition: none !important;
-    scroll-behavior: auto !important;
-  }
+:root:not([data-efeitos="ligados"]),
+:root:not([data-efeitos="ligados"]) *,
+:root:not([data-efeitos="ligados"]) *::before,
+:root:not([data-efeitos="ligados"]) *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
 }

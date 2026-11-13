@@ -52,7 +52,7 @@ export default function CapaIntro({ refCapa, saindo, aoTocar }) {
       <div className="absolute inset-0" />
 
       {/* O logo "pulsa" uma vez (até 1 s). É código, não imagem (18.13). */}
-      <div className="capa-logo absolute inset-0 grid place-items-center motion-reduce:hidden">
+      <div className="capa-logo absolute inset-0 grid place-items-center efeitos-desligados:hidden">
         <svg
           viewBox="0 0 100 100"
           fill="none"

@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
+import { efeitosLigadosAgora } from "@/lib/efeitos";
 
 /*
   useLinhasPartes — as linhas tracejadas que ligam os links "Partes da
@@ -9,7 +10,7 @@ import { useEffect, useLayoutEffect, useRef } from "react";
   - Para cada link, a linha vai da parte da pulseira até o "nó" dourado
     do link, numa curva suave. As linhas são SVG decorativo (aria-hidden)
     e só aparecem a partir de 1000 px.
-  - O tracejado anda devagar. Com "reduzir movimento", fica parado.
+  - O tracejado anda devagar. Com os efeitos desligados, fica parado.
   - Ao passar o mouse ou focar um link, a linha dele engrossa (classe
     "ativa"), e a pulseira acende a parte (parteAtiva).
 
@@ -37,8 +38,7 @@ function desenharLinhas({ svg, palco, nos, parteAtiva, projetar }) {
   if (!svg || !palco || !window.matchMedia(CONSULTA_TELA_LARGA).matches) return;
 
   const origem = palco.getBoundingClientRect();
-  const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const deslocamento = reduzido ? 0 : -((performance.now() / 1000) * VELOCIDADE_DO_TRACEJADO) % 10;
+  const deslocamento = efeitosLigadosAgora() ? -((performance.now() / 1000) * VELOCIDADE_DO_TRACEJADO) % 10 : 0;
 
   for (const linha of svg.querySelectorAll("[data-linha]")) {
     const nome = linha.dataset.linha;
@@ -99,8 +99,8 @@ export function useLinhasPartes(parteAtiva) {
   }
 
   // Esta parte é lógica
-  // Se o palco mudar de tamanho com a pulseira parada (pausa, "reduzir
-  // movimento", janela redimensionada), redesenha com a última posição.
+  // Se o palco mudar de tamanho com a pulseira parada (pausa, efeitos
+  // desligados, janela redimensionada), redesenha com a última posição.
   useEffect(() => {
     const palco = refPalco.current;
     if (!palco) return;

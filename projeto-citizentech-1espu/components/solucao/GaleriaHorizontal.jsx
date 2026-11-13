@@ -8,11 +8,11 @@ import { useGaleriaHorizontal } from "@/hooks/useGaleriaHorizontal";
 
   - Rótulo "A cidade", H2 "Galeria", texto e uma lista de 6 <figure>, cada
     uma com a foto (marcador e alt) e a legenda (<figcaption>).
-  - Computador (≥ 900 × 600 px, sem "reduzir movimento"): o palco fica
+  - Computador (≥ 900 × 600 px, com os efeitos ligados): o palco fica
     parado e a lista anda para a esquerda conforme a rolagem (ver
     useGaleriaHorizontal). Fotos de 16 a 24rem; as pares, 64 px mais
     baixas. A galeria usa a tela inteira.
-  - Celular, zoom alto ou "reduzir movimento": grade comum.
+  - Celular, zoom alto ou efeitos desligados: grade comum.
 
   Quando as fotos entrarem: troque cada EspacoImagem por <Image> (ou
   <img>) com o alt da lista abaixo (seção 13.2).

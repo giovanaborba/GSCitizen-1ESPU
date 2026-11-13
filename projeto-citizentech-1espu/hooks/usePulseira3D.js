@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { criarCena } from "@/lib/pulseira3d/cena";
+import { useEfeitos } from "@/hooks/useEfeitos";
 import {
   DURACAO_DO_CICLO,
   MOVIMENTO_DO_SINAL,
@@ -24,7 +25,8 @@ import {
 
   Regras de desempenho e de acessibilidade (seção 18.2):
   - só anima enquanto está visível na tela (IntersectionObserver);
-  - com "reduzir movimento", desenha um quadro parado e não anima;
+  - com os efeitos desligados (interruptor "Efeitos", seção 19.2),
+    desenha um quadro parado e não anima. Ligar ou desligar vale na hora;
   - pausa quando pedido; no modo "parar", para sozinha antes de 5 s;
   - a cor da tira segue o tema do aparelho;
   - ao sair da página, libera tudo da memória.
@@ -41,20 +43,16 @@ const LIMITE_DO_PARAR = 4.6; // s: a 404 para antes de 5 s (WCAG 2.2.2)
 const ULTIMO_PULSO_DO_PARAR = 3.7; // s: os últimos anéis somem até 4,6 s
 
 // Esta parte é lógica
-function prefereMovimentoReduzido() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-// Esta parte é lógica
 export function usePulseira3D(refCaixa, opcoes) {
   // As opções mudam a cada renderização, mas a cena é montada uma vez só.
   // Por isso elas ficam numa ref, lida a cada quadro da animação.
-  const refOpcoes = useRef(opcoes);
+  const { efeitosLigados } = useEfeitos();
+  const refOpcoes = useRef({ ...opcoes, efeitosLigados });
   const refControle = useRef(null);
 
   // Esta parte é lógica
   useLayoutEffect(() => {
-    refOpcoes.current = opcoes;
+    refOpcoes.current = { ...opcoes, efeitosLigados };
   });
 
   const { modo, pausado, parteAtiva, aguardarEntrada, sinal } = opcoes;
@@ -229,7 +227,7 @@ export function usePulseira3D(refCaixa, opcoes) {
     }
 
     // Esta parte é lógica
-    // Quadro parado do "reduzir movimento": pulseira inteira, de 3/4,
+    // Quadro parado dos efeitos desligados: pulseira inteira, de 3/4,
     // sem anéis e sem nada aceso (só a parte do link focado).
     function poseParada() {
       cena.limparAneis();
@@ -243,7 +241,7 @@ export function usePulseira3D(refCaixa, opcoes) {
     function deveAnimar() {
       const op = refOpcoes.current;
       if (!estado.visivel || op.pausado || estado.terminou) return false;
-      if (prefereMovimentoReduzido()) return false;
+      if (!op.efeitosLigados) return false;
       if (modo === "abertura" && op.aguardarEntrada) return false;
       return true;
     }
@@ -265,7 +263,7 @@ export function usePulseira3D(refCaixa, opcoes) {
     // Chamada sempre que algo muda (visibilidade, pausa, preferências,
     // tamanho, tema, parte ativa): liga, desliga ou só redesenha.
     function atualizar() {
-      if (prefereMovimentoReduzido()) {
+      if (!refOpcoes.current.efeitosLigados) {
         cancelAnimationFrame(estado.idQuadro);
         estado.rodando = false;
         poseParada();
@@ -302,14 +300,12 @@ export function usePulseira3D(refCaixa, opcoes) {
     });
     observadorVisibilidade.observe(canvas);
 
-    // Preferências do aparelho: movimento e tema
-    const consultaMovimento = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Tema do aparelho (o interruptor "Efeitos" chega pelo efeito de baixo)
     const consultaTema = window.matchMedia("(prefers-color-scheme: dark)");
     const aoMudarTema = () => {
       cena.aplicarCorDaFaixa();
       if (!estado.rodando) desenhar();
     };
-    consultaMovimento.addEventListener("change", atualizar);
     consultaTema.addEventListener("change", aoMudarTema);
 
     // Mouse: só na abertura, em telas com mouse (seção 18.9)
@@ -329,7 +325,7 @@ export function usePulseira3D(refCaixa, opcoes) {
     canvas.addEventListener("webglcontextlost", aoPerderContexto);
 
     // Primeiro desenho (também é o quadro parado, se for o caso)
-    if (prefereMovimentoReduzido()) poseParada();
+    if (!refOpcoes.current.efeitosLigados) poseParada();
     else if (modo === "abertura" && refOpcoes.current.aguardarEntrada) cena.balanco.scale.setScalar(0.35);
     desenhar();
 
@@ -340,7 +336,6 @@ export function usePulseira3D(refCaixa, opcoes) {
       cancelAnimationFrame(estado.idQuadro);
       observadorTamanho.disconnect();
       observadorVisibilidade.disconnect();
-      consultaMovimento.removeEventListener("change", atualizar);
       consultaTema.removeEventListener("change", aoMudarTema);
       window.removeEventListener("pointermove", aoMoverMouse);
       canvas.removeEventListener("webglcontextlost", aoPerderContexto);
@@ -350,9 +345,9 @@ export function usePulseira3D(refCaixa, opcoes) {
   }, [refCaixa, modo]);
 
   // Esta parte é lógica
-  // Quando a pausa, a parte acesa, a entrada ou o sinal mudam, a cena
-  // decide se volta a animar ou só redesenha.
+  // Quando a pausa, a parte acesa, a entrada, o sinal ou o interruptor
+  // "Efeitos" mudam, a cena decide se volta a animar ou só redesenha.
   useEffect(() => {
     refControle.current?.();
-  }, [pausado, parteAtiva, aguardarEntrada, sinal]);
+  }, [pausado, parteAtiva, aguardarEntrada, sinal, efeitosLigados]);
 }

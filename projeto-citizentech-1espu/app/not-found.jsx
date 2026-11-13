@@ -19,7 +19,7 @@ export const metadata = {
   - Texto e pulseira lado a lado a partir de 900 px; no celular, o texto
     primeiro e a pulseira embaixo (seção 18.12).
   - A pulseira faz o sinal de parar por menos de 5 s e para (WCAG
-    2.2.2); com "reduzir movimento", fica parada desde o começo.
+    2.2.2); com os efeitos desligados, fica parada desde o começo.
   - A palavra "Parar" e a textura ficam só atrás da pulseira: o tamanho
     da palavra acompanha a largura dessa coluna (unidade cqw), então
     nenhum texto da página fica sobre elas (seção 18.2, item 1).

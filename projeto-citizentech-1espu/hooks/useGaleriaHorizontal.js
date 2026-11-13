@@ -3,28 +3,28 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useConsultaMidia } from "@/hooks/useConsultaMidia";
+import { useEfeitos } from "@/hooks/useEfeitos";
 import { registrarPluginsGsap } from "@/lib/movimento";
 
 /*
   useGaleriaHorizontal — a galeria que corre na horizontal com a rolagem
   (seções 18.8 e 18.14).
 
-  Modo horizontal (computador: largura ≥ 900 px, altura ≥ 600 px e sem
-  "reduzir movimento"):
+  Modo horizontal (computador: largura ≥ 900 px, altura ≥ 600 px e com
+  os efeitos ligados, seção 19.2):
   - o "trilho" ganha a altura da área visível + a largura que sobra da
     lista (o quanto ela é maior que a tela);
   - o "palco" fica parado (position: sticky) e a lista anda para a
     esquerda conforme a pessoa rola (ScrollTrigger, ligado à rolagem);
   - se o foco do teclado cair em algo dentro de uma foto, a página rola
     até ela, para ela aparecer.
-  Fora disso (celular, zoom alto, "reduzir movimento" e sem
+  Fora disso (celular, zoom alto, efeitos desligados e sem
   JavaScript): grade comum de fotos.
 
   Devolve horizontal, refTrilho, refPalco e refLista.
 */
 
-const CONSULTA_HORIZONTAL =
-  "(prefers-reduced-motion: no-preference) and (min-width: 900px) and (min-height: 600px)";
+const CONSULTA_HORIZONTAL = "(min-width: 900px) and (min-height: 600px)";
 
 // Esta parte é lógica
 function topoDoPalco(palco) {
@@ -38,7 +38,8 @@ function sobraDaLista(lista) {
 
 // Esta parte é lógica
 export function useGaleriaHorizontal() {
-  const horizontal = useConsultaMidia(CONSULTA_HORIZONTAL);
+  const { efeitosLigados } = useEfeitos();
+  const horizontal = useConsultaMidia(CONSULTA_HORIZONTAL) && efeitosLigados;
   const refTrilho = useRef(null);
   const refPalco = useRef(null);
   const refLista = useRef(null);

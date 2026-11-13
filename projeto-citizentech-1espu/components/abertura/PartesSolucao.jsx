@@ -75,7 +75,7 @@ export default function PartesSolucao({ parteAtiva, aoMudarParte, registrarNo, a
                   naEsquerda ? "abertura-larga:grid-cols-[1fr_auto] abertura-larga:text-right" : ""
                 } ${
                   ativa
-                    ? "border-marca bg-superficie motion-safe:-translate-y-0.5"
+                    ? "border-marca bg-superficie efeitos-ligados:-translate-y-0.5"
                     : "border-borda bg-superficie abertura-larga:border-transparent abertura-larga:bg-transparent"
                 }`}
               >

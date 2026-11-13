@@ -14,7 +14,7 @@ import { useRolagemFixa } from "@/hooks/useRolagemFixa";
   pulseira pequena (decorativa) e "Pausar animação" → os 4 sinais, cada
   um num <article> com a foto, o H3 e os pares "Modo tátil:"…
 
-  Modo fixo (computador e celular, sem "reduzir movimento", janela com
+  Modo fixo (computador e celular, com os efeitos ligados, janela com
   pelo menos 560 × 340 px — ver useRolagemFixa):
   - o palco fica parado enquanto a pessoa rola, e o sinal muda com a
     rolagem; a foto troca em "piso tátil" e o texto esmaece e sobe;

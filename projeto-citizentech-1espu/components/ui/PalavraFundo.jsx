@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido";
+import { useEfeitos } from "@/hooks/useEfeitos";
 
 /*
   PalavraFundo — palavra gigante decorativa (seções 18.5 e 18.14).
@@ -18,8 +18,8 @@ import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido
     de 5 letras contam como 5, para não ficarem enormes (como no
     protótipo).
   - "animarTroca": quando a palavra muda, a antiga esmaece e a nova
-    aparece (0,35 s cada, seção 18.6). Com "reduzir movimento", a troca é
-    instantânea.
+    aparece (0,35 s cada, seção 18.6). Com os efeitos desligados, a troca
+    é instantânea.
   - "className": a área que a palavra ocupa (padrão: a área toda do pai,
     "inset-0"). Ex.: a abertura usa a altura da pulseira e a largura da
     tela inteira.
@@ -36,8 +36,8 @@ function tamanhoDaPalavra(texto) {
 
 export default function PalavraFundo({ texto, animarTroca = false, className = "inset-0", tamanho }) {
   // Esta parte é lógica
-  const movimentoReduzido = usePrefereMovimentoReduzido();
-  const duracao = animarTroca && !movimentoReduzido ? 0.35 : 0;
+  const { efeitosLigados } = useEfeitos();
+  const duracao = animarTroca && efeitosLigados ? 0.35 : 0;
 
   return (
     <span

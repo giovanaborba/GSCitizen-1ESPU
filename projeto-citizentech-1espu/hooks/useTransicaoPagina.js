@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { gsap } from "gsap";
+import { efeitosLigadosAgora } from "@/lib/efeitos";
 
 /*
   useTransicaoPagina — transição de piso tátil entre páginas (seção 18.9).
@@ -24,7 +25,8 @@ import { gsap } from "gsap";
     do Diário. Entre /diario, /diario/novo, /diario/[id] e
     /diario/[id]/editar, a troca é instantânea, inclusive depois de
     salvar ou excluir e no "Descartar respostas".
-  - "Reduzir movimento" e alto contraste do Windows: troca instantânea.
+  - Efeitos desligados (interruptor "Efeitos", seção 19.2) e alto
+    contraste do Windows: troca instantânea.
   - Trava de segurança: se a página nova não chegar em 3 s, a cortina
     some mesmo assim, para nunca prender a pessoa atrás dela.
 */
@@ -53,8 +55,7 @@ export function deveAnimarTroca(origem, destino) {
 // Esta parte é lógica
 function semMovimento() {
   return (
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-    window.matchMedia("(forced-colors: active)").matches
+    !efeitosLigadosAgora() || window.matchMedia("(forced-colors: active)").matches
   );
 }
 

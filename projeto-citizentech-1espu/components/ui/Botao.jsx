@@ -25,7 +25,8 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
   de altura.
   - principal: dourado com texto #120B24 (8,3:1). No hover, NÃO troca de
     cor (seção 18.3): ganha uma sombra leve e sobe 2 px. A subida só
-    acontece sem "reduzir movimento" (motion-safe:); a sombra vale sempre.
+    acontece com os efeitos ligados (efeitos-ligados:, seção 19.2); a
+    sombra vale sempre.
   - secundario: contorno de 2 px na cor da marca; no hover, fundo leve
     (--cor-hover: marca a 12%).
 */
@@ -34,7 +35,7 @@ const ESTILO_BASE =
 
 const ESTILO_VARIANTE = {
   principal:
-    "border-ouro bg-ouro text-sobre-ouro hover:shadow-barra motion-safe:hover:-translate-y-0.5",
+    "border-ouro bg-ouro text-sobre-ouro hover:shadow-barra efeitos-ligados:hover:-translate-y-0.5",
   secundario: "border-marca bg-transparent text-marca hover:bg-hover",
   perigo: "border-erro bg-transparent text-erro hover:bg-erro-fundo",
   "perigo-preenchido": "border-erro bg-erro text-perigo-texto",

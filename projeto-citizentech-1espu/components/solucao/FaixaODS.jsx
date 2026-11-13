@@ -20,7 +20,7 @@ import { useFaixaODS } from "@/hooks/useFaixaODS";
   Movimento:
   - A faixa para com o mouse em cima, com o foco dentro e com o botão
     "Pausar"/"Retomar" (WCAG 2.2.2).
-  - Com "reduzir movimento": nada anda; os 3 botões ficam um embaixo do
+  - Com os efeitos desligados (seção 19.2): nada anda; os 3 botões ficam um embaixo do
     outro, sem a cópia e sem o botão de pausa (CSS em globals.css).
 */
 const ODS = [
@@ -98,7 +98,7 @@ export default function FaixaODS() {
           aria-pressed={pausada}
           aria-controls={ID_FAIXA}
           onClick={alternarPausa}
-          className="faixa-ods-pausa inline-flex min-h-12 motion-reduce:hidden items-center gap-2 rounded-full border-2 border-rodape-borda px-5 font-bold text-rodape-texto hover:border-rodape-ouro"
+          className="faixa-ods-pausa inline-flex min-h-12 efeitos-desligados:hidden items-center gap-2 rounded-full border-2 border-rodape-borda px-5 font-bold text-rodape-texto hover:border-rodape-ouro"
         >
           {/* Esta parte é lógica */}
           {pausada ? (

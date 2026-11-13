@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import LinkInterno from "@/components/ui/LinkInterno";
 import EspacoIcone from "@/components/ui/EspacoIcone";
+import InterruptorEfeitos from "@/components/layout/InterruptorEfeitos";
 import { useDirecaoRolagem } from "@/hooks/useDirecaoRolagem";
 
 /*
@@ -11,8 +12,9 @@ import { useDirecaoRolagem } from "@/hooks/useDirecaoRolagem";
   - à esquerda, o link "Pulse" para a Início, com o nome em Anton
     (seção 18.4) e o marcador do ícone;
   - à direita, o rótulo mono "GS 2026.2 · CitizenTech" (decisão da
-    equipe na Fase 8). No celular estreito ou com texto ampliado, o
-    rótulo desce para a linha de baixo, sem rolagem lateral.
+    equipe na Fase 8) e, à direita dele, o botão "Efeitos" (Fase 9,
+    seção 19.2). No celular, o rótulo desce para a linha de baixo, sem
+    rolagem lateral.
 
   Em Início e Solução, no celular, sai da tela ao rolar para baixo
   (useDirecaoRolagem). Esconde só visualmente: continua acessível.
@@ -54,7 +56,11 @@ export default function Cabecalho() {
         escondido ? "max-md:-translate-y-full" : ""
       }`}
     >
-      <div className="margem-lateral mx-auto flex min-h-16 w-full max-w-pagina flex-wrap items-center justify-between gap-x-4 py-2">
+      {/* Ordem no HTML (e do leitor de tela): Pulse → rótulo → "Efeitos".
+          No celular (abaixo de 640 px), o rótulo desce para a linha de
+          baixo (order), e "Pulse" e "Efeitos" ficam na primeira. Só os
+          dois links/botões recebem foco, e a ordem deles não muda. */}
+      <div className="margem-lateral mx-auto flex min-h-16 w-full max-w-pagina flex-wrap items-center gap-x-4 gap-y-1 py-2">
         <LinkInterno
           href="/"
           className="inline-flex min-h-12 items-center gap-2 font-titulo text-logo text-marca"
@@ -63,7 +69,13 @@ export default function Cabecalho() {
           <EspacoIcone nome="Pulse" />
           <span>Pulse</span>
         </LinkInterno>
-        <p className="rotulo-mono text-texto-2">GS 2026.2 · CitizenTech</p>
+        <p className="rotulo-mono text-texto-2 max-sm:order-last max-sm:basis-full max-sm:pb-1 max-sm:text-right sm:ml-auto">
+          GS 2026.2 · CitizenTech
+        </p>
+        {/* Botão "Efeitos" (seção 19.2), à direita do rótulo */}
+        <div className="ml-auto sm:ml-0">
+          <InterruptorEfeitos />
+        </div>
       </div>
     </header>
   );

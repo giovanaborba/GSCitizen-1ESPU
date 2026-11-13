@@ -16,7 +16,7 @@ import { useSecaoAtual } from "@/hooks/useSecaoAtual";
     tirar espaço da tela.
   - A pílula da seção atual fica dourada, com aria-current="true" (o
     leitor de tela diz "atual"). É só troca de cor: vale também com
-    "reduzir movimento".
+    os efeitos desligados.
   - A altura da faixa fixa fica em --altura-indice, para os saltos às
     âncoras pararem abaixo dela (scroll-padding-top).
   - A rolagem até a seção é suave pelo Lenis, e instantânea com "reduzir

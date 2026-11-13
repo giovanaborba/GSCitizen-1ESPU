@@ -8,7 +8,7 @@ import Botao from "@/components/ui/Botao";
   tipo:
   - "carregando": "Carregando os registros…" + indicador simples, com
     role="status". Só aparece se demorar mais de 1 s (seção 11.1: abaixo de
-    1 s, nenhum indicador). O indicador não gira com "reduzir movimento".
+    1 s, nenhum indicador). O indicador não gira com os efeitos desligados.
   - "vazio": H2 "Nenhum deslocamento registrado ainda" + "Novo registro".
   - "erro": role="alert" + "Tentar de novo".
 

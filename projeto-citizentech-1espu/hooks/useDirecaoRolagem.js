@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido";
+import { useEfeitos } from "@/hooks/useEfeitos";
 
 /*
   useDirecaoRolagem — custom hook da seção 9.3.
@@ -12,7 +12,8 @@ import { usePrefereMovimentoReduzido } from "@/hooks/usePrefereMovimentoReduzido
   - Rolou para cima mais que ~64 px → mostra.
   - Mostra também: no topo, perto do fim da página e quando qualquer
     elemento do cabeçalho ou da barra recebe foco.
-  - Com "reduzir movimento": sempre visível.
+  - Com os efeitos desligados (interruptor "Efeitos", seção 19.2):
+    sempre visível.
 
   Quem usa o hook esconde SÓ visualmente (transform), nunca com
   display: none, para o leitor de tela continuar alcançando as barras.
@@ -24,7 +25,7 @@ const CONSULTA_CELULAR = "(max-width: 47.99rem)"; // abaixo de 768 px
 // Esta parte é lógica
 export function useDirecaoRolagem() {
   const caminho = usePathname();
-  const movimentoReduzido = usePrefereMovimentoReduzido();
+  const { efeitosLigados } = useEfeitos();
   const ativo = ROTAS_COM_BARRAS_QUE_SOMEM.includes(caminho);
 
   // Guarda EM QUAL rota as barras foram escondidas. Ao trocar de página,
@@ -33,7 +34,7 @@ export function useDirecaoRolagem() {
 
   // Esta parte é lógica
   useEffect(() => {
-    if (!ativo || movimentoReduzido) return;
+    if (!ativo || !efeitosLigados) return;
 
     const consultaCelular = window.matchMedia(CONSULTA_CELULAR);
     // Distância mínima = altura do cabeçalho (4rem), em pixels
@@ -100,7 +101,7 @@ export function useDirecaoRolagem() {
       window.removeEventListener("scroll", aoRolar);
       document.removeEventListener("focusin", aoReceberFoco);
     };
-  }, [ativo, movimentoReduzido, caminho]);
+  }, [ativo, efeitosLigados, caminho]);
 
-  return ativo && !movimentoReduzido && rotaEscondida === caminho;
+  return ativo && efeitosLigados && rotaEscondida === caminho;
 }
