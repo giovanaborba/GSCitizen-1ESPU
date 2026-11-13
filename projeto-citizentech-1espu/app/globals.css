@@ -311,6 +311,11 @@
    - abertura-larga: os 6 links da abertura ficam 3 de cada lado da
      pulseira, com as linhas (≥ 1000 px, seção 18.6). */
 @custom-variant faixa-fixa (@media (min-width: 64rem) and (min-height: 43.75rem));
+/* Fase 9 — seções fixas (19.6): só no computador, a partir de 64rem de
+   largura e 600 px de altura. Com zoom alto, a largura "vira" menos de
+   64rem e a seção volta a ser uma lista comum. Uso junto com
+   efeitos-ligados: (com os efeitos desligados, nada fica fixo). */
+@custom-variant secao-fixa (@media (min-width: 64rem) and (min-height: 37.5rem));
 @custom-variant abertura-larga (@media (min-width: 62.5rem));
 
 /* Fase 9 — variantes do interruptor "Efeitos" (seção 19.2), no lugar de
@@ -671,6 +676,206 @@ html.lenis {
     padding-right: 1.2em;
   }
 
+  /* Frase que acende (seção 19.7). Sem a marca data-frase-ligada (sem
+     JavaScript ou com os efeitos desligados), a frase aparece toda acesa,
+     com "adivinhar." em --cor-destaque. Com a marca, as palavras ainda
+     não alcançadas ficam em --cor-apagada (texto grande: 5,0:1 no claro e
+     6,2:1 no escuro). A troca de cor acompanha a rolagem. */
+  .frase-acende {
+    color: var(--cor-texto);
+  }
+
+  .frase-acende [data-destaque] {
+    color: var(--cor-destaque);
+  }
+
+  .frase-acende [data-frase-ligada] [data-palavra] {
+    color: var(--cor-apagada);
+    transition: color 0.25s ease;
+  }
+
+  .frase-acende [data-frase-ligada] [data-palavra][data-acesa] {
+    color: var(--cor-texto);
+  }
+
+  .frase-acende [data-frase-ligada] [data-destaque][data-acesa] {
+    color: var(--cor-destaque);
+  }
+
+  /* Filtro nas fotos e parallax (seção 19.6), componente FotoFiltro.
+     Só com os efeitos ligados e só quando há uma imagem de verdade
+     (:has(img)): o marcador não muda. A imagem fica em tons de cinza com
+     um pontilhado de domos por cima; com o mouse (na foto ou no cartão),
+     o foco ou data-colorida (celular), ganha cor e zoom de 1,05.
+     Animam só filter, transform e opacity (exceção aprovada no padrão de
+     movimento para o filter). */
+  .foto-filtro {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-cartao);
+  }
+
+  .foto-filtro-camada {
+    --escala: 1;
+    transform: translateY(var(--paralaxe, 0px)) scale(var(--escala));
+  }
+
+  /* Parallax: a imagem fica 12% maior que a moldura, para andar sem
+     mostrar vão (useParallax) */
+  .foto-filtro[data-paralaxe] .foto-filtro-camada {
+    --escala: 1.12;
+  }
+
+  html[data-efeitos="ligados"] .foto-filtro:has(img) .foto-filtro-camada {
+    filter: grayscale(1) contrast(1.1);
+    transition:
+      filter 0.35s ease,
+      transform 0.35s ease;
+  }
+
+  html[data-efeitos="ligados"] .foto-filtro:has(img)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(26, 26, 29, 0.5) 0 3px, transparent 3.5px) 0 0 / 10px 10px;
+    transition: opacity 0.35s ease;
+  }
+
+  html[data-efeitos="ligados"] :is(.foto-filtro:hover, .foto-filtro:focus-within, .foto-filtro[data-colorida], :hover > .foto-filtro, :focus-within > .foto-filtro):has(img) .foto-filtro-camada {
+    filter: none;
+    --escala: 1.05;
+  }
+
+  html[data-efeitos="ligados"] :is(.foto-filtro[data-paralaxe]:hover, .foto-filtro[data-paralaxe]:focus-within, .foto-filtro[data-paralaxe][data-colorida], :hover > .foto-filtro[data-paralaxe], :focus-within > .foto-filtro[data-paralaxe]) .foto-filtro-camada {
+    --escala: 1.176; /* 1,12 × 1,05 */
+  }
+
+  html[data-efeitos="ligados"] :is(.foto-filtro:hover, .foto-filtro:focus-within, .foto-filtro[data-colorida], :hover > .foto-filtro, :focus-within > .foto-filtro)::after {
+    opacity: 0;
+  }
+
+  @media (prefers-contrast: more) {
+    html[data-efeitos="ligados"] .foto-filtro:has(img) .foto-filtro-camada {
+      filter: none;
+    }
+
+    html[data-efeitos="ligados"] .foto-filtro:has(img)::after {
+      display: none;
+    }
+  }
+
+  /* Um trajeto com a Pulse (seção 19.7), componente TrajetoPulse. Mapa
+     decorativo (aria-hidden) e lista das paradas. */
+  .trajeto-mapa .quadra {
+    fill: color-mix(in srgb, var(--cor-borda) 16%, transparent);
+  }
+
+  .trajeto-mapa .rua {
+    fill: none;
+    stroke: color-mix(in srgb, var(--cor-borda) 45%, transparent);
+    stroke-width: 3;
+    stroke-dasharray: 2 8;
+    stroke-linecap: round;
+  }
+
+  .trajeto-mapa .caminho {
+    fill: none;
+    stroke: var(--cor-marca);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .trajeto-mapa .parada {
+    fill: var(--cor-superficie);
+    stroke: var(--cor-marca);
+    stroke-width: 4;
+  }
+
+  .trajeto-mapa .numero {
+    font: 700 15px var(--fonte-mono);
+    fill: var(--cor-texto);
+    text-anchor: middle;
+  }
+
+  .trajeto-mapa [data-chegou] .parada {
+    fill: var(--cor-acao);
+    stroke: var(--cor-sobre-acao);
+  }
+
+  .trajeto-mapa [data-chegou] .numero {
+    fill: var(--cor-sobre-acao);
+  }
+
+  .trajeto-mapa .ponto {
+    fill: var(--cor-acao);
+    stroke: var(--cor-sobre-acao);
+    stroke-width: 3;
+  }
+
+  .trajeto-paradas {
+    counter-reset: parada;
+  }
+
+  .trajeto-paradas > li {
+    counter-increment: parada;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 2px 10px;
+    align-items: start;
+    padding: 8px 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 0.875rem;
+    background-color: var(--cor-superficie);
+  }
+
+  .trajeto-paradas > li::before {
+    content: counter(parada);
+    grid-row: span 2;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid var(--cor-marca);
+    border-radius: 50%;
+    font: 700 0.9rem var(--fonte-mono);
+    color: var(--cor-texto);
+  }
+
+  .trajeto-paradas > li > span {
+    font-size: 1rem;
+    line-height: 1.35;
+    color: var(--cor-texto-2);
+  }
+
+  /* Com a rota andando (data-trajeto-ligado): a parada atual em destaque
+     e as já alcançadas com o número em laranja */
+  [data-trajeto-ligado] .trajeto-paradas > li[data-atual] {
+    border: 2px solid var(--cor-acao);
+    box-shadow: var(--sombra-barra);
+  }
+
+  [data-trajeto-ligado] .trajeto-paradas > li[data-chegou]::before {
+    border-color: var(--cor-sobre-acao);
+    background-color: var(--cor-acao);
+    color: var(--cor-sobre-acao);
+  }
+
+  /* Modo fixo (useTrajeto): o palco fica preso abaixo do cabeçalho e do
+     "Nesta página" enquanto o trilho, mais alto, rola por trás */
+  [data-trajeto-fixo] .trajeto-trilho {
+    height: 340svh;
+  }
+
+  [data-trajeto-fixo] .trajeto-palco {
+    position: sticky;
+    top: calc(var(--altura-cabecalho) + var(--altura-indice, 0px));
+    min-height: calc(100svh - var(--altura-cabecalho) - var(--altura-indice, 0px));
+    align-content: center;
+  }
+
   /* Rodapé revelado (seção 19.6): com os efeitos ligados e o rodapé mais
      baixo que 80% da tela, o hook useRodapeRevelado marca o <html> com
      data-rodape-revela. O <main> vira uma "folha" opaca por cima, e o
@@ -945,6 +1150,15 @@ html.lenis {
   .divisor-piso,
   .grao {
     display: none;
+  }
+
+  /* Fotos coloridas, sem o pontilhado (19.6) */
+  .foto-filtro-camada {
+    filter: none !important;
+  }
+
+  .foto-filtro::after {
+    display: none !important;
   }
 
   /* As cores de borda são trocadas automaticamente pelo Windows pela cor

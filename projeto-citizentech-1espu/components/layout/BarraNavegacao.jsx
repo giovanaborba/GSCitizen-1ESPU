@@ -32,6 +32,11 @@ const LAYOUT_CELULAR = {
   Pouca altura (max-height: 480 px): a barra deixa de flutuar e fica no fim
   da página, no fluxo normal.
 
+  Cliques (correção da subfase 9.6): a <nav> ocupa a largura da tela,
+  mas só a pílula recebe o mouse e o toque (pointer-events). Antes, as
+  áreas transparentes dos dois lados da pílula bloqueavam o clique e o
+  mouse no conteúdo que passava atrás delas.
+
   Visual da Fase 8 (seção 18.9): pílula com fundo --cor-superficie,
   borda e item ativo laranja. O canto do contorno é o canto do item + o
   espaço interno + a borda (1,25rem + 7 px no celular; 3rem ÷ 2 + 7 px a
@@ -92,7 +97,7 @@ export default function BarraNavegacao() {
     <nav
       aria-label="Navegação principal"
       data-barra-rolagem
-      className={`margem-lateral fixed inset-x-0 bottom-[calc(var(--distancia-barra)+env(safe-area-inset-bottom))] z-40 transition-transform duration-200 pouca-altura:static pouca-altura:mt-8 pouca-altura:translate-y-0! ${
+      className={`margem-lateral pointer-events-none fixed inset-x-0 bottom-[calc(var(--distancia-barra)+env(safe-area-inset-bottom))] z-40 transition-transform duration-200 pouca-altura:static pouca-altura:mt-8 pouca-altura:translate-y-0! ${
         escondida
           ? "max-md:translate-y-[calc(100%+var(--distancia-barra)+env(safe-area-inset-bottom))]"
           : ""
@@ -101,7 +106,7 @@ export default function BarraNavegacao() {
       <div className="@container">
         <ul
           ref={refLista}
-          className={`mx-auto gap-1.5 rounded-[calc(1.25rem+7px)] border border-borda bg-superficie p-1.5 shadow-barra md:flex md:rounded-[calc(1.5rem+7px)] md:w-fit md:flex-wrap md:justify-center ${
+          className={`pointer-events-auto mx-auto gap-1.5 rounded-[calc(1.25rem+7px)] border border-borda bg-superficie p-1.5 shadow-barra md:flex md:rounded-[calc(1.5rem+7px)] md:w-fit md:flex-wrap md:justify-center ${
             LAYOUT_CELULAR[String(cabeEmUmaLinha)]
           }`}
         >

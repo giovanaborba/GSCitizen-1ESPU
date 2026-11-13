@@ -10,6 +10,10 @@ import { useEffect, useState } from "react";
   mesmo desconto das âncoras, scroll-padding-top). No fim da página, vale
   a última seção. Antes da primeira, nenhuma.
 
+  Seções fixas (Fase 9, ex.: "Um trajeto com a Pulse"): o título fica
+  preso no meio da tela e nunca chega à linha. Nelas, a seção marcada com
+  data-secao-fixa conta a partir do começo dela.
+
   Recalcula ao rolar e ao mudar o tamanho da tela, no máximo uma vez por
   quadro. Não anima nada: só troca a cor, então vale também com "reduzir
   movimento".
@@ -26,10 +30,12 @@ function medirSecaoAtual(ids) {
   for (const id of ids) {
     const titulo = document.getElementById(id);
     if (!titulo) continue;
+    const secaoFixa = titulo.closest("[data-secao-fixa]");
     // Títulos com rótulo param um pouco mais abaixo (scroll-margin-top),
     // para o rótulo aparecer: essa margem também conta.
-    const margem = parseFloat(getComputedStyle(titulo).scrollMarginTop) || 0;
-    if (titulo.getBoundingClientRect().top - margem <= linha + 2) atual = id;
+    const margem = secaoFixa ? 0 : parseFloat(getComputedStyle(titulo).scrollMarginTop) || 0;
+    const topo = (secaoFixa ?? titulo).getBoundingClientRect().top;
+    if (topo - margem <= linha + 2) atual = id;
   }
   const noFim = window.innerHeight + window.scrollY >= raiz.scrollHeight - 2;
   if (noFim && ids.length) atual = ids[ids.length - 1];

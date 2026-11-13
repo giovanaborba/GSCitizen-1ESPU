@@ -24,6 +24,20 @@ import { criarPulseira } from "@/lib/pulseira3d/modelo";
   cor e o brilho). Geometrias, materiais e texturas ocupam memória da
   placa de vídeo e são liberados à mão quando a cena sai da tela.
 
+  Travar menos a página (opção B da equipe, subfase 9.5): antes do
+  primeiro quadro, a placa de vídeo precisa "compilar" os shaders (os
+  pequenos programas que desenham cada material). Feito de uma vez, isso
+  travava a página por até 1,6 s. Por isso criarCena é assíncrona: ela
+  pede ao Three.js a compilação dos materiais em paralelo (compileAsync,
+  que usa a extensão KHR_parallel_shader_compile do navegador) e só
+  devolve a cena quando os shaders estão prontos. Enquanto isso, a página
+  continua respondendo e a descrição em texto continua no lugar da
+  pulseira. O que ainda trava, na primeira visita, é parte da geração do
+  ambiente de reflexos (PMREMGenerator.fromScene, cerca de 0,7 s no
+  Windows): o Three.js 0.186 não tem uma versão assíncrona dela (veja
+  criarAmbiente). Nas visitas seguintes, o navegador guarda os shaders, e
+  ela leva poucos milissegundos.
+
   Este arquivo não sabe de React: só cria a cena e devolve as peças para
   o hook usePulseira3D animar.
 */
@@ -68,15 +82,67 @@ function criarRenderizador(canvas) {
 }
 
 // Esta parte é lógica
-// Cria tudo e devolve as peças. "modo": "abertura" | "explorar" | "sinal" | "parar".
-export function criarCena(canvas, modo) {
+// O navegador sabe compilar shaders em paralelo? (extensão
+// KHR_parallel_shader_compile). Sem ela, o compileAsync do Three.js só
+// escreveria um aviso no console, sem ganho: a compilação fica para o
+// primeiro desenho, como antes.
+function compilaEmParalelo(renderizador) {
+  return renderizador.extensions.has("KHR_parallel_shader_compile");
+}
+
+// Esta parte é lógica
+// Ambiente de reflexos (RoomEnvironment): uma "sala clara" virtual que se
+// reflete no plástico e no metal. O gerador de reflexos (PMREMGenerator)
+// tem dois shaders próprios, pesados (desfoque e reflexo). Aqui eles são
+// criados antes e compilados em paralelo, junto com os materiais da sala,
+// para a geração do ambiente travar menos a página (a maior trava da
+// primeira visita caiu de ~1,1 s para ~0,7 s no Windows).
+// Usa campos internos do Three.js (_setSize, _allocateTargets,
+// _blurMaterial, _ggxMaterial), que existem na versão travada no projeto
+// (0.186.1). Se um dia mudarem, o try/catch deixa o ambiente ser gerado do
+// jeito normal (mais lento, mas funcionando).
+async function criarAmbiente(renderizador) {
+  const gerador = new THREE.PMREMGenerator(renderizador);
+  const sala = new RoomEnvironment();
+  if (compilaEmParalelo(renderizador)) {
+    try {
+      gerador._setSize(256); // o mesmo tamanho que o fromScene usa (padrão)
+      const alvoTemporario = gerador._allocateTargets();
+      const cenaDeCompilacao = new THREE.Scene();
+      for (const material of [gerador._blurMaterial, gerador._ggxMaterial]) {
+        if (material) cenaDeCompilacao.add(new THREE.Mesh(new THREE.BufferGeometry(), material));
+      }
+      // O gerador desenha numa textura intermediária (sem ajuste de tons e
+      // em cores lineares), e não na tela. Os shaders compilados para a
+      // tela seriam outros. Por isso a compilação usa essa textura como
+      // destino.
+      renderizador.setRenderTarget(alvoTemporario);
+      try {
+        await renderizador.compileAsync(cenaDeCompilacao, new THREE.OrthographicCamera());
+        await renderizador.compileAsync(sala, new THREE.PerspectiveCamera(90, 1, 0.1, 100));
+      } finally {
+        renderizador.setRenderTarget(null);
+        alvoTemporario.dispose();
+        cenaDeCompilacao.traverse((objeto) => objeto.geometry?.dispose());
+      }
+    } catch {
+      // segue sem a compilação antecipada
+    }
+  }
+  const ambiente = gerador.fromScene(sala, 0.04).texture;
+  return { gerador, sala, ambiente };
+}
+
+// Esta parte é lógica
+// Cria tudo e devolve (numa Promise) as peças, depois de compilar os
+// shaders sem travar a página. "modo": "abertura" | "explorar" | "sinal" |
+// "parar". Sem WebGL, a Promise é rejeitada (quem chama mostra o texto).
+export async function criarCena(canvas, modo) {
   const renderizador = criarRenderizador(canvas);
   const cena = new THREE.Scene();
 
   // Ambiente (reflexos) e luzes, como no protótipo
-  const gerador = new THREE.PMREMGenerator(renderizador);
-  const sala = new RoomEnvironment();
-  const ambiente = gerador.fromScene(sala, 0.04).texture;
+  const { gerador, sala, ambiente } = await criarAmbiente(renderizador);
   cena.environment = ambiente;
   const principal = new THREE.DirectionalLight(0xffffff, 1.6);
   principal.position.set(3, 4, 5);
@@ -95,6 +161,17 @@ export function criarCena(canvas, modo) {
   cena.add(pivo);
 
   const posicaoTemporaria = new THREE.Vector3();
+
+  // Compila os shaders de todos os materiais em paralelo, sem travar.
+  // Se falhar (navegador antigo), o primeiro desenho compila do jeito
+  // antigo, e tudo continua funcionando.
+  if (compilaEmParalelo(renderizador)) {
+    try {
+      await renderizador.compileAsync(cena, camera);
+    } catch {
+      // segue sem a compilação antecipada
+    }
+  }
 
   // Esta parte é lógica
   function redimensionar(largura, altura) {
