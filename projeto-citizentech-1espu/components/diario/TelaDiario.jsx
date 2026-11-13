@@ -21,6 +21,10 @@ import { useResumoIndicadores } from "@/hooks/useResumoIndicadores";
   useMensagemDiario.
 
   Estados (seção 11.2): carregando, erro, vazio ou com registros.
+
+  Fase 9 (seção 19.11): a mensagem pode trazer "idDestaque", o registro
+  que acabou de ser salvo ou restaurado. Ele chega na lista com o gesto
+  PULSO.
   Sem a API, a lista mostra o erro de conexão.
 */
 export default function TelaDiario() {
@@ -41,9 +45,10 @@ export default function TelaDiario() {
     if (restaurando || !mensagem?.registroExcluido) return;
     setRestaurando(true);
     try {
-      await restaurar(mensagem.registroExcluido);
+      const restaurado = await restaurar(mensagem.registroExcluido);
       setFalhasAoDesfazer(0);
-      definirMensagem({ tipo: "sucesso", texto: "Registro restaurado." });
+      // idDestaque: o cartão restaurado chega com o gesto PULSO (19.11)
+      definirMensagem({ tipo: "sucesso", texto: "Registro restaurado.", idDestaque: restaurado.id });
     } catch {
       setFalhasAoDesfazer((anterior) => anterior + 1);
     } finally {
@@ -122,7 +127,7 @@ export default function TelaDiario() {
               Novo registro
             </Botao>
           </p>
-          <ListaRegistros registros={registros} />
+          <ListaRegistros registros={registros} idDestaque={mensagem?.idDestaque} />
         </>
       )}
     </div>

@@ -9,6 +9,7 @@ import Preloader from "@/components/abertura/Preloader";
 import PartesSolucao, { PARTES_DA_SOLUCAO } from "@/components/abertura/PartesSolucao";
 import PalavraFundo from "@/components/ui/PalavraFundo";
 import EspacoIcone from "@/components/ui/EspacoIcone";
+import IconeAlternado from "@/components/ui/IconeAlternado";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useCapaIntro } from "@/hooks/useCapaIntro";
 import { useEncaixe } from "@/hooks/useEncaixe";
@@ -222,13 +223,15 @@ export default function AberturaPulseira() {
                     onClick={giro.alternarGiro}
                     className={ESTILO_BOTAO_GIRO}
                   >
-                    {giro.girando ? (
-                      // ICONE-Pause-AQUI
-                      <EspacoIcone nome="Pause" />
-                    ) : (
-                      // ICONE-Play-AQUI
-                      <EspacoIcone nome="Play" />
-                    )}
+                    <IconeAlternado chave={giro.girando ? "pausar" : "girar"}>
+                      {giro.girando ? (
+                        // ICONE-Pause-AQUI
+                        <EspacoIcone nome="Pause" />
+                      ) : (
+                        // ICONE-Play-AQUI
+                        <EspacoIcone nome="Play" />
+                      )}
+                    </IconeAlternado>
                     Girar sozinha
                   </button>
                 )}

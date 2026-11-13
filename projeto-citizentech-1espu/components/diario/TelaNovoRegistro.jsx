@@ -18,8 +18,9 @@ export default function TelaNovoRegistro() {
   const { definirMensagem } = useMensagemDiario();
 
   async function aoSalvar(dados) {
-    await criar(dados);
-    definirMensagem({ tipo: "sucesso", texto: "Registro salvo." });
+    const novo = await criar(dados);
+    // idDestaque: na lista, o registro novo chega com o gesto PULSO (19.11)
+    definirMensagem({ tipo: "sucesso", texto: "Registro salvo.", idDestaque: novo.id });
     router.push("/diario");
   }
 

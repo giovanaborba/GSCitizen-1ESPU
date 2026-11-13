@@ -16,6 +16,9 @@ import { OPCOES, PERGUNTAS } from "@/lib/rotulos";
   A lógica (valores, validação, foco, salvar) fica no hook
   useFormularioRegistro. Este componente só monta a tela.
 
+  Fase 9 (19.11): a cada envio com erro, os campos com erro tremem
+  (componente Tremor), junto da mensagem em texto de cada um.
+
   Props:
   - valoresIniciais  vazios (novo) ou os do registro (editar)
   - aoSalvar(dados)  salva e navega; lança erro se falhar
@@ -24,7 +27,7 @@ import { OPCOES, PERGUNTAS } from "@/lib/rotulos";
 const GRUPOS = ["meio", "chegouSemSePerder", "precisouDeAjuda", "travessias", "orientacoes"];
 
 export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoCancelar }) {
-  const { valores, erros, enviando, falhouAoSalvar, falhasAoSalvar, alterar, enviar } =
+  const { valores, erros, enviando, falhouAoSalvar, falhasAoSalvar, enviosComErro, alterar, enviar } =
     useFormularioRegistro({ valoresIniciais, aoSalvar });
   const { aoNavegar } = useGuardaDeSaida();
   const hoje = useHoje();
@@ -45,6 +48,7 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
         valor={valores.data}
         aoMudar={(valor) => alterar("data", valor)}
         erro={erros.data}
+        tremer={enviosComErro}
       />
 
       {GRUPOS.map((campo) => (
@@ -56,6 +60,7 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
           valor={valores[campo]}
           aoMudar={(valor) => alterar(campo, valor)}
           erro={erros[campo]}
+          tremer={enviosComErro}
         />
       ))}
 
@@ -67,6 +72,7 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
         valor={valores.observacoes}
         aoMudar={(valor) => alterar("observacoes", valor)}
         erro={erros.observacoes}
+        tremer={enviosComErro}
       />
 
       <div>

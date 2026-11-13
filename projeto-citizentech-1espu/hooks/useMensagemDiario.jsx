@@ -19,6 +19,8 @@ import { usePathname } from "next/navigation";
     "Desfazer".
 
   Formato: { tipo: "sucesso", texto: "Registro excluído.", registroExcluido }
+  Fase 9 (seção 19.11): "idDestaque" (opcional) é o id do registro que
+  acabou de ser salvo ou restaurado; ele chega na lista com o gesto PULSO.
 */
 const ContextoMensagem = createContext(null);
 

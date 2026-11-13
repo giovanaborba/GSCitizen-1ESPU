@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Pulseira3D from "@/components/pulseira/Pulseira3D";
 import EspacoIcone from "@/components/ui/EspacoIcone";
+import IconeAlternado from "@/components/ui/IconeAlternado";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useGiroPulseira } from "@/hooks/useGiroPulseira";
 
@@ -130,13 +131,15 @@ export default function ExplorarPulseira() {
                 onClick={giro.alternarGiro}
                 className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}
               >
-                {giro.girando ? (
-                  // ICONE-Pause-AQUI
-                  <EspacoIcone nome="Pause" />
-                ) : (
-                  // ICONE-Play-AQUI
-                  <EspacoIcone nome="Play" />
-                )}
+                <IconeAlternado chave={giro.girando ? "pausar" : "girar"}>
+                  {giro.girando ? (
+                    // ICONE-Pause-AQUI
+                    <EspacoIcone nome="Pause" />
+                  ) : (
+                    // ICONE-Play-AQUI
+                    <EspacoIcone nome="Play" />
+                  )}
+                </IconeAlternado>
                 Girar sozinha
               </button>
             )}

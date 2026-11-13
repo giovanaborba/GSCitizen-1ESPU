@@ -1,4 +1,5 @@
 import ErroCampo from "@/components/ui/ErroCampo";
+import Tremor from "@/components/ui/Tremor";
 
 /*
   GrupoOpcoes — seção 10, item 7. Botões de opção (radio).
@@ -12,10 +13,14 @@ import ErroCampo from "@/components/ui/ErroCampo";
     do próprio círculo do radio: a cor nunca é a única pista).
   - As setas do teclado trocam a opção dentro do grupo (padrão do HTML).
 
-  Props: nome, legenda, opcoes [{ valor, rotulo }], valor, aoMudar, erro
+  Fase 9 (19.11): "tremer" (número de envios com erro) faz as opções
+  tremerem quando o grupo tem erro (gesto de ERRO do padrão de movimento).
+
+  Props: nome, legenda, opcoes [{ valor, rotulo }], valor, aoMudar, erro,
+         tremer
   O "valor" pode ser texto ou true/false.
 */
-export default function GrupoOpcoes({ nome, legenda, opcoes, valor, aoMudar, erro }) {
+export default function GrupoOpcoes({ nome, legenda, opcoes, valor, aoMudar, erro, tremer = 0 }) {
   const idErro = `erro-${nome}`;
 
   return (
@@ -27,7 +32,7 @@ export default function GrupoOpcoes({ nome, legenda, opcoes, valor, aoMudar, err
         </ErroCampo>
       )}
 
-      <div className="mt-2 grid gap-2">
+      <Tremor gatilho={tremer} ativo={Boolean(erro)} className="mt-2 grid gap-2">
         {opcoes.map((opcao) => {
           const id = `campo-${nome}-${String(opcao.valor)}`;
           const marcada = valor === opcao.valor;
@@ -54,7 +59,7 @@ export default function GrupoOpcoes({ nome, legenda, opcoes, valor, aoMudar, err
             </label>
           );
         })}
-      </div>
+      </Tremor>
     </fieldset>
   );
 }

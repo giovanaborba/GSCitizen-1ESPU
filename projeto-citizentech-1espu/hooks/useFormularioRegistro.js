@@ -35,6 +35,9 @@ export function useFormularioRegistro({ valoresIniciais, aoSalvar }) {
   // para a mensagem ser anunciada de novo a cada falha
   const [falhouAoSalvar, setFalhouAoSalvar] = useState(false);
   const [falhasAoSalvar, setFalhasAoSalvar] = useState(0);
+  // Fase 9 (19.11): cada envio com erro de preenchimento soma 1; os campos
+  // com erro usam esse número para tremer (componente Tremor)
+  const [enviosComErro, setEnviosComErro] = useState(0);
   const campoParaFocar = useRef(null);
   const { definirBloqueio } = useGuardaDeSaida();
 
@@ -82,6 +85,7 @@ export function useFormularioRegistro({ valoresIniciais, aoSalvar }) {
 
     if (!estaValido(novosErros)) {
       campoParaFocar.current = primeiroCampoComErro(novosErros);
+      setEnviosComErro((anterior) => anterior + 1);
       return;
     }
 
@@ -98,5 +102,5 @@ export function useFormularioRegistro({ valoresIniciais, aoSalvar }) {
     }
   }
 
-  return { valores, erros, enviando, falhouAoSalvar, falhasAoSalvar, alterar, enviar };
+  return { valores, erros, enviando, falhouAoSalvar, falhasAoSalvar, enviosComErro, alterar, enviar };
 }

@@ -1,4 +1,5 @@
 import ErroCampo from "@/components/ui/ErroCampo";
+import Tremor from "@/components/ui/Tremor";
 
 /*
   Campo — seção 10, item 8. Campo de data ou área de texto.
@@ -8,10 +9,13 @@ import ErroCampo from "@/components/ui/ErroCampo";
   - Com erro: aria-invalid="true" (o leitor de tela diz "inválido"),
     borda de 2 px na cor de erro e mensagem com ícone junto do campo.
 
+  Fase 9 (19.11): "tremer" (número de envios com erro) faz o campo tremer
+  quando ele tem erro (gesto de ERRO do padrão de movimento).
+
   Props: nome, rotulo, tipo ("date" ou "textarea"), valor, aoMudar, erro,
-         dica, max
+         dica, max, tremer
 */
-export default function Campo({ nome, rotulo, tipo = "date", valor, aoMudar, erro, dica, max }) {
+export default function Campo({ nome, rotulo, tipo = "date", valor, aoMudar, erro, dica, max, tremer = 0 }) {
   const idCampo = `campo-${nome}`;
   const idDica = `dica-${nome}`;
   const idErro = `erro-${nome}`;
@@ -42,30 +46,32 @@ export default function Campo({ nome, rotulo, tipo = "date", valor, aoMudar, err
         </ErroCampo>
       )}
 
-      {tipo === "textarea" ? (
-        <textarea
-          id={idCampo}
-          name={nome}
-          rows={5}
-          value={valor}
-          onChange={aoDigitar}
-          aria-invalid={erro ? true : undefined}
-          aria-describedby={descricao}
-          className={`${classesControle} resize-y`}
-        />
-      ) : (
-        <input
-          id={idCampo}
-          name={nome}
-          type={tipo}
-          max={max}
-          value={valor}
-          onChange={aoDigitar}
-          aria-invalid={erro ? true : undefined}
-          aria-describedby={descricao}
-          className={`${classesControle} min-h-14`}
-        />
-      )}
+      <Tremor gatilho={tremer} ativo={Boolean(erro)}>
+        {tipo === "textarea" ? (
+          <textarea
+            id={idCampo}
+            name={nome}
+            rows={5}
+            value={valor}
+            onChange={aoDigitar}
+            aria-invalid={erro ? true : undefined}
+            aria-describedby={descricao}
+            className={`${classesControle} resize-y`}
+          />
+        ) : (
+          <input
+            id={idCampo}
+            name={nome}
+            type={tipo}
+            max={max}
+            value={valor}
+            onChange={aoDigitar}
+            aria-invalid={erro ? true : undefined}
+            aria-describedby={descricao}
+            className={`${classesControle} min-h-14`}
+          />
+        )}
+      </Tremor>
     </div>
   );
 }

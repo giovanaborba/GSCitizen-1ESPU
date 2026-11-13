@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 import Botao from "@/components/ui/Botao";
+import CertoDesenhado from "@/components/ui/CertoDesenhado";
 
 /*
   MensagemStatus — seção 10, item 9, e seção 11.
@@ -17,12 +18,19 @@ import Botao from "@/components/ui/Botao";
   mudanças DENTRO de uma região de status que já existia na página. Então
   a região é criada vazia e o texto entra logo em seguida.
 
+  Fase 9 (seção 19.11, decisão da equipe na 9.9): na mensagem de
+  sucesso, o ícone é o "certo" que se desenha (CertoDesenhado), de novo a
+  cada texto novo ("Registro excluído." → "Registro restaurado."). O
+  anúncio continua igual: o texto entra na região de status como antes,
+  sem esperar o desenho.
+
   Props:
   - texto, tipo, aoFechar
   - acao: { texto, icone, aoClicar, ocupada }  (opcional, ex.: Desfazer)
 */
 const ESTILOS = {
-  sucesso: { icone: "CheckCircle", classes: "border-sucesso bg-sucesso-fundo text-sucesso" }, // ICONE-CheckCircle-AQUI
+  // Sucesso: o "certo" é desenhado por código (CertoDesenhado), sem marcador
+  sucesso: { icone: null, classes: "border-sucesso bg-sucesso-fundo text-sucesso" },
   erro: { icone: "WarningCircle", classes: "border-erro bg-erro-fundo text-erro" }, // ICONE-WarningCircle-AQUI
   aviso: { icone: "Warning", classes: "border-aviso bg-aviso-fundo text-aviso" }, // ICONE-Warning-AQUI
 };
@@ -41,7 +49,7 @@ export default function MensagemStatus({ tipo = "sucesso", texto, aoFechar, acao
       <div role={tipo === "erro" ? "alert" : "status"}>
         {pronta && (
           <p className="flex items-start gap-2 font-bold">
-            <EspacoIcone nome={estilo.icone} />
+            {estilo.icone ? <EspacoIcone nome={estilo.icone} /> : <CertoDesenhado key={texto} />}
             <span>{texto}</span>
           </p>
         )}

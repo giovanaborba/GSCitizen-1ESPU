@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import EspacoIcone from "@/components/ui/EspacoIcone";
+import IconeAlternado from "@/components/ui/IconeAlternado";
 import EspacoImagem from "@/components/ui/EspacoImagem";
 import { useVideoPulse } from "@/hooks/useVideoPulse";
 
@@ -56,13 +57,15 @@ export function ControlesVideo({ tocando, aoAlternarPausa, comSom = false, somLi
   return (
     <div className={`flex flex-wrap gap-2 ${className}`}>
       <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={aoAlternarPausa} className={ESTILO_BOTAO}>
-        {tocando ? (
-          // ICONE-Pause-AQUI
-          <EspacoIcone nome="Pause" />
-        ) : (
-          // ICONE-Play-AQUI
-          <EspacoIcone nome="Play" />
-        )}
+        <IconeAlternado chave={tocando ? "pausar" : "reproduzir"}>
+          {tocando ? (
+            // ICONE-Pause-AQUI
+            <EspacoIcone nome="Pause" />
+          ) : (
+            // ICONE-Play-AQUI
+            <EspacoIcone nome="Play" />
+          )}
+        </IconeAlternado>
         {tocando ? "Pausar" : "Reproduzir"}
       </motion.button>
       {comSom && (

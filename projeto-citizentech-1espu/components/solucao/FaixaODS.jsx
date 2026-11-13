@@ -1,6 +1,7 @@
 "use client";
 
 import EspacoIcone from "@/components/ui/EspacoIcone";
+import IconeAlternado from "@/components/ui/IconeAlternado";
 import { useFaixaODS } from "@/hooks/useFaixaODS";
 
 /*
@@ -98,13 +99,15 @@ export default function FaixaODS() {
           onClick={alternarPausa}
           className="faixa-ods-pausa inline-flex min-h-12 efeitos-desligados:hidden items-center gap-2 rounded-full border-2 border-rodape-borda px-5 font-bold text-rodape-texto hover:border-rodape-destaque"
         >
-          {pausada ? (
-            // ICONE-Play-AQUI
-            <EspacoIcone nome="Play" />
-          ) : (
-            // ICONE-Pause-AQUI
-            <EspacoIcone nome="Pause" />
-          )}
+          <IconeAlternado chave={pausada ? "retomar" : "pausar"}>
+            {pausada ? (
+              // ICONE-Play-AQUI
+              <EspacoIcone nome="Play" />
+            ) : (
+              // ICONE-Pause-AQUI
+              <EspacoIcone nome="Pause" />
+            )}
+          </IconeAlternado>
           <span>{pausada ? "Retomar" : "Pausar"}</span>
         </button>
       </div>

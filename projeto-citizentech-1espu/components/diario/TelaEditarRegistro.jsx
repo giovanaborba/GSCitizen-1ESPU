@@ -34,8 +34,9 @@ export default function TelaEditarRegistro({ id }) {
   }
 
   async function aoSalvar(dados) {
-    await atualizar(id, dados);
-    definirMensagem({ tipo: "sucesso", texto: "Registro salvo." });
+    const atualizado = await atualizar(id, dados);
+    // idDestaque: na lista, o registro alterado chega com o gesto PULSO (19.11)
+    definirMensagem({ tipo: "sucesso", texto: "Registro salvo.", idDestaque: atualizado.id });
     router.push("/diario");
   }
 
