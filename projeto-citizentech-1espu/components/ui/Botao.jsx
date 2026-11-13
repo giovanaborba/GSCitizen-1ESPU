@@ -7,6 +7,11 @@ import BotaoMagnetico from "@/components/ui/BotaoMagnetico";
   Variantes:
   - "principal": preenchido (ação principal da tela)
   - "secundario": só contorno
+  - "secundario-sobre-cor": o secundário com fundo sólido (--cor-superficie),
+    para quando ele fica sobre um fundo colorido (mensagens de sucesso,
+    erro e aviso). Revisão da Fase 9 (9.10): o laranja #CC4200 sobre os
+    fundos claros de status ficava abaixo de 4,5:1 (4,22:1 no erro,
+    4,3:1 no sucesso); sobre a superfície branca, fica com 4,8:1.
   - "perigo": contorno na cor de erro (ex.: "Excluir registro" na página)
   - "perigo-preenchido": preenchido na cor de erro (ex.: confirmar no diálogo)
 
@@ -40,6 +45,7 @@ const ESTILO_VARIANTE = {
   principal:
     "border-acao bg-acao text-sobre-acao hover:shadow-barra efeitos-ligados:hover:-translate-y-0.5",
   secundario: "border-marca bg-transparent text-marca hover:bg-hover hover:text-texto",
+  "secundario-sobre-cor": "border-marca bg-superficie text-marca hover:text-texto",
   perigo: "border-erro bg-transparent text-erro hover:bg-erro-fundo",
   "perigo-preenchido": "border-erro bg-erro text-perigo-texto",
 };

@@ -58,7 +58,7 @@ export default function MensagemStatus({ tipo = "sucesso", texto, aoFechar, acao
       <div className="mt-4 flex flex-wrap gap-2">
         {acao && (
           <Botao
-            variante="secundario"
+            variante="secundario-sobre-cor"
             icone={acao.icone}
             aria-disabled={acao.ocupada || undefined}
             onClick={acao.aoClicar}
@@ -67,7 +67,7 @@ export default function MensagemStatus({ tipo = "sucesso", texto, aoFechar, acao
           </Botao>
         )}
         {/* ICONE-X-AQUI */}
-        <Botao variante="secundario" icone="X" aria-label="Fechar mensagem" onClick={aoFechar}>
+        <Botao variante="secundario-sobre-cor" icone="X" aria-label="Fechar mensagem" onClick={aoFechar}>
           Fechar
         </Botao>
       </div>

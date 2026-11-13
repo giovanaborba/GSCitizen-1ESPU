@@ -80,7 +80,7 @@ function EstadoErro({ aoTentarDeNovo, focarAoMontar }) {
       </div>
       <p className="mt-4">
         {/* ICONE-ArrowClockwise-AQUI */}
-        <Botao ref={refBotao} variante="secundario" icone="ArrowClockwise" onClick={aoTentarDeNovo}>
+        <Botao ref={refBotao} variante="secundario-sobre-cor" icone="ArrowClockwise" onClick={aoTentarDeNovo}>
           Tentar de novo
         </Botao>
       </p>
