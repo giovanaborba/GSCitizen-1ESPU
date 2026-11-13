@@ -1,5 +1,6 @@
 import LinkInterno from "@/components/ui/LinkInterno";
 import EspacoIcone from "@/components/ui/EspacoIcone";
+import BotaoMagnetico from "@/components/ui/BotaoMagnetico";
 
 /*
   Botao — seção 10, item 4.
@@ -26,7 +27,8 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
   - principal: laranja #FC4C02 com texto grafite #242428 (4,55:1). No
     hover, NÃO troca de cor: ganha uma sombra leve e sobe 2 px. A subida
     só acontece com os efeitos ligados (efeitos-ligados:, seção 19.2); a
-    sombra vale sempre.
+    sombra vale sempre. Fase 9 (19.6): é sempre magnético (o conteúdo
+    segue o mouse até 8 px), pelo componente BotaoMagnetico.
   - secundario: contorno de 2 px na cor da marca; no hover, fundo leve
     (--cor-hover: marca a 12%) e texto grafite. O texto laranja sobre esse
     fundo ficaria em 4,1:1, abaixo do mínimo de 4,5:1.
@@ -52,6 +54,16 @@ export default function Botao({
   ...resto
 }) {
   const classes = `${ESTILO_BASE} ${ESTILO_VARIANTE[variante]} ${className}`;
+
+  // Esta parte é lógica
+  // Botão laranja principal: conteúdo magnético (seção 19.6)
+  if (variante === "principal") {
+    return (
+      <BotaoMagnetico href={href} icone={icone} type={type} className={classes} {...resto}>
+        {children}
+      </BotaoMagnetico>
+    );
+  }
 
   const conteudo = (
     <>
