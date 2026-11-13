@@ -34,7 +34,6 @@
 */
 const URL_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-// Esta parte é lógica
 /**
  * Erro de domínio usado em todo o Diário. A interface olha só para
  * "codigo" e escolhe a mensagem certa (seção 11).
@@ -47,13 +46,11 @@ export class ErroConexao extends Error {
   }
 }
 
-// Esta parte é lógica
 /** true quando o erro veio de um cancelamento (ex.: a pessoa saiu da tela). */
 export function foiCancelado(erro) {
   return erro?.name === "AbortError";
 }
 
-// Esta parte é lógica
 /**
  * Faz uma requisição à API e devolve:
  * - o corpo JSON da resposta, se houver;

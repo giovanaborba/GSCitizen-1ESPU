@@ -39,12 +39,10 @@ import { spring } from "@/lib/presetsMovimento";
   (largura do item, definida pela lista na página Solução).
 */
 export default function CartaoIntegrante({ nome, inclinacao = 0, velocidade = 0, className = "" }) {
-  // Esta parte é lógica
   const { efeitosLigados } = useEfeitos();
 
   return (
     <li className={`varal-trecho relative pt-[18px] ${className}`}>
-      {/* Esta parte é lógica */}
       <motion.div
         initial={false}
         animate={{ rotate: inclinacao, y: 0 }}

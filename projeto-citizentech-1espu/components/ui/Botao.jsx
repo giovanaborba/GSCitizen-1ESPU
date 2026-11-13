@@ -55,7 +55,6 @@ export default function Botao({
 }) {
   const classes = `${ESTILO_BASE} ${ESTILO_VARIANTE[variante]} ${className}`;
 
-  // Esta parte é lógica
   // Botão laranja principal: conteúdo magnético (seção 19.6)
   if (variante === "principal") {
     return (
@@ -72,7 +71,6 @@ export default function Botao({
     </>
   );
 
-  // Esta parte é lógica
   if (href) {
     return (
       <LinkInterno href={href} className={classes} {...resto}>

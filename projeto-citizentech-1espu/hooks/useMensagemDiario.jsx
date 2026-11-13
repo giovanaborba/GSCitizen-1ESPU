@@ -26,7 +26,6 @@ export function ProvedorMensagemDiario({ children }) {
   const caminho = usePathname();
   const [estado, setEstado] = useState({ mensagem: null, caminho });
 
-  // Esta parte é lógica
   // Ao trocar de página, só fica a mensagem que pertence à página nova.
   // (Ajustar o estado durante a renderização é o jeito recomendado pelo
   // React para "reiniciar" um valor quando outro muda.)
@@ -37,12 +36,10 @@ export function ProvedorMensagemDiario({ children }) {
     });
   }
 
-  // Esta parte é lógica
   function definirMensagem(mensagem, rota = "/diario") {
     setEstado((anterior) => ({ ...anterior, mensagem: { ...mensagem, rota } }));
   }
 
-  // Esta parte é lógica
   function limparMensagem() {
     setEstado((anterior) => ({ ...anterior, mensagem: null }));
   }
@@ -56,7 +53,6 @@ export function ProvedorMensagemDiario({ children }) {
   );
 }
 
-// Esta parte é lógica
 export function useMensagemDiario() {
   const contexto = useContext(ContextoMensagem);
   if (!contexto) {

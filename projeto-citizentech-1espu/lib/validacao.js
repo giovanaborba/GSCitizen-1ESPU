@@ -44,7 +44,6 @@ export const MENSAGENS_DE_ERRO = {
   observacoes: "Use no máximo 300 caracteres nas observações.",
 };
 
-// Esta parte é lógica
 /** Valores de um formulário novo, todo vazio. */
 export function valoresIniciais() {
   return {
@@ -58,7 +57,6 @@ export function valoresIniciais() {
   };
 }
 
-// Esta parte é lógica
 /** Valores do formulário a partir de um registro existente (tela "Editar"). */
 export function valoresDoRegistro(registro) {
   return {
@@ -72,7 +70,6 @@ export function valoresDoRegistro(registro) {
   };
 }
 
-// Esta parte é lógica
 /**
  * Conta caracteres como a pessoa vê (um acento ou um emoji conta como 1).
  */
@@ -80,13 +77,11 @@ export function contarCaracteres(texto) {
   return Array.from(texto ?? "").length;
 }
 
-// Esta parte é lógica
 /** true se o valor é uma das opções permitidas do campo (rotulos.js). */
 function ehOpcaoValida(campo, valor) {
   return OPCOES[campo].some((opcao) => opcao.valor === valor);
 }
 
-// Esta parte é lógica
 /**
  * Valida todos os campos de uma vez.
  * @param {object} valores  formato descrito no topo do arquivo
@@ -116,19 +111,16 @@ export function validarRegistro(valores, hoje = hojeISO()) {
   return erros;
 }
 
-// Esta parte é lógica
 /** true quando não há nenhum erro. */
 export function estaValido(erros) {
   return Object.keys(erros).length === 0;
 }
 
-// Esta parte é lógica
 /** Nome do primeiro campo com erro, na ordem da tela (para mover o foco). */
 export function primeiroCampoComErro(erros) {
   return ORDEM_DOS_CAMPOS.find((campo) => campo in erros) ?? null;
 }
 
-// Esta parte é lógica
 /**
  * true se a pessoa já preencheu ou mudou alguma resposta. Usado no aviso
  * "Descartar as respostas?" (seção 7.3).
@@ -140,7 +132,6 @@ export function foiAlterado(valores, referencia) {
   return ORDEM_DOS_CAMPOS.some((campo) => valores[campo] !== referencia[campo]);
 }
 
-// Esta parte é lógica
 /** Dados enviados ao serviço: os valores com as observações sem espaços nas pontas. */
 export function dadosParaSalvar(valores) {
   return { ...valores, observacoes: (valores.observacoes ?? "").trim() };

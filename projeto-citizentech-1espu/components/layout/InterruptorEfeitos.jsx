@@ -26,7 +26,6 @@ import { spring } from "@/lib/presetsMovimento";
   lugar, sem deslizar.
 */
 export default function InterruptorEfeitos() {
-  // Esta parte é lógica
   const { efeitosLigados, efeitosConhecidos, alternarEfeitos } = useEfeitos();
 
   return (
@@ -42,7 +41,6 @@ export default function InterruptorEfeitos() {
         aria-hidden="true"
         className="relative h-6 w-10 shrink-0 rounded-full border-2 border-borda bg-[color-mix(in_srgb,var(--cor-borda)_35%,transparent)] efeitos-ligados:border-sobre-acao efeitos-ligados:bg-acao"
       >
-        {/* Esta parte é lógica */}
         {/* Antes de o React assumir a página, a posição vem do CSS (já
             certa). Depois, a bolinha passa para o Motion, nascendo no lugar
             certo (initial={false}), e só desliza quando a pessoa aperta. */}

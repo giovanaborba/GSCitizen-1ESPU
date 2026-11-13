@@ -41,7 +41,6 @@ import { useId, useState } from "react";
 export const DESCRICAO_DA_PULSEIRA =
   "Pulseira Pulse: tira esportiva laranja de silicone, com fecho embaixo do pulso. Na frente, um módulo com face grafite e, de cima para baixo: os furos do microfone, o botão grande do destino (côncavo, com anéis em relevo), a célula Braille com 6 pinos que sobem e descem e o botão pequeno de modo (com um ponto em relevo). Por dentro da tira ficam as zonas de vibração, nos dois lados do pulso, e o atuador de pressão, embaixo do módulo. Nas laterais da face, cinco pontos de luz de cada lado acendem junto com a vibração. Os contatos de carga ficam na ponta de baixo do módulo.";
 
-// Esta parte é lógica
 const CenaPulseira = dynamic(() => import("@/components/pulseira/CenaPulseira"), {
   ssr: false,
   loading: () => null,
@@ -67,13 +66,11 @@ export default function Pulseira3D({
   const idDescricao = useId();
   const interativo = modo === "abertura" || modo === "explorar";
 
-  // Esta parte é lógica
   function aoFicarPronta() {
     setPronta(true);
     aoPronta?.();
   }
 
-  // Esta parte é lógica
   function aoFalharCena() {
     setFalhou(true);
     aoFalhar?.();
@@ -83,7 +80,6 @@ export default function Pulseira3D({
 
   return (
     <div className={`relative ${className}`}>
-      {/* Esta parte é lógica */}
       {!falhou && !adiar && (
         <CenaPulseira
           modo={modo}
@@ -102,7 +98,6 @@ export default function Pulseira3D({
           aoFalhar={aoFalharCena}
         />
       )}
-      {/* Esta parte é lógica */}
       {/* A descrição: visível como reserva; com a cena pronta, só para o
           leitor de tela (nos modos com palco). No fluxo normal (não
           sobreposta): com texto ampliado, a caixa cresce junto. */}

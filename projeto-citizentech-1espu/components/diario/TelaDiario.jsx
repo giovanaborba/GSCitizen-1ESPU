@@ -31,13 +31,11 @@ export default function TelaDiario() {
   const [falhasAoDesfazer, setFalhasAoDesfazer] = useState(0);
   const [tentativas, setTentativas] = useState(0);
 
-  // Esta parte é lógica
   function aoTentarDeNovo() {
     setTentativas((anterior) => anterior + 1);
     recarregar();
   }
 
-  // Esta parte é lógica
   // "Desfazer" (seção 7.5): recria o registro e anuncia "Registro restaurado."
   async function aoDesfazer() {
     if (restaurando || !mensagem?.registroExcluido) return;
@@ -53,13 +51,11 @@ export default function TelaDiario() {
     }
   }
 
-  // Esta parte é lógica
   function aoFecharMensagem() {
     setFalhasAoDesfazer(0);
     limparMensagem();
   }
 
-  // Esta parte é lógica
   const situacao = carregando
     ? "carregando"
     : erro
@@ -82,7 +78,6 @@ export default function TelaDiario() {
         </p>
       </Cartao>
 
-      {/* Esta parte é lógica */}
       {mensagem && (
         <div className="mt-8">
           <MensagemStatus
@@ -108,7 +103,6 @@ export default function TelaDiario() {
         </div>
       )}
 
-      {/* Esta parte é lógica */}
       {situacao === "carregando" && <EstadoTela tipo="carregando" />}
       {situacao === "erro" && (
         <EstadoTela

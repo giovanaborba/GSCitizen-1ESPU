@@ -23,7 +23,6 @@ import { ordenarDoMaisRecente } from "@/lib/datas";
   - recarregar  busca a lista de novo (botão "Tentar de novo")
   - criar, atualizar, excluir, restaurar  (restaurar = "Desfazer")
 */
-// Esta parte é lógica
 export function useRegistros({ carregarAoIniciar = true } = {}) {
   const [registros, setRegistros] = useState([]);
   const [carregando, setCarregando] = useState(carregarAoIniciar);
@@ -31,7 +30,6 @@ export function useRegistros({ carregarAoIniciar = true } = {}) {
   // Cada novo número faz o useEffect buscar a lista outra vez
   const [tentativa, setTentativa] = useState(0);
 
-  // Esta parte é lógica
   useEffect(() => {
     if (!carregarAoIniciar) return;
 
@@ -53,21 +51,18 @@ export function useRegistros({ carregarAoIniciar = true } = {}) {
     return () => controle.abort();
   }, [carregarAoIniciar, tentativa]);
 
-  // Esta parte é lógica
   function recarregar() {
     setCarregando(true);
     setErro(null);
     setTentativa((anterior) => anterior + 1);
   }
 
-  // Esta parte é lógica
   async function criar(dados) {
     const novo = await criarNoServico(dados);
     setRegistros((lista) => ordenarDoMaisRecente([...lista, novo]));
     return novo;
   }
 
-  // Esta parte é lógica
   async function atualizar(id, dados) {
     const atualizado = await atualizarNoServico(id, dados);
     setRegistros((lista) =>
@@ -76,13 +71,11 @@ export function useRegistros({ carregarAoIniciar = true } = {}) {
     return atualizado;
   }
 
-  // Esta parte é lógica
   async function excluir(id) {
     await excluirNoServico(id);
     setRegistros((lista) => lista.filter((registro) => registro.id !== id));
   }
 
-  // Esta parte é lógica
   // "Desfazer" (seção 7.5): recria o registro com os mesmos dados (POST).
   // O serviço ignora o id antigo, e a API gera um novo.
   async function restaurar(registroExcluido) {

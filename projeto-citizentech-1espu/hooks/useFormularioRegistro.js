@@ -25,7 +25,6 @@ import {
   - aoSalvar(dados)  função da página que salva e navega. Se der erro,
                      ela deve lançar (throw) o erro.
 */
-// Esta parte é lógica
 export function useFormularioRegistro({ valoresIniciais, aoSalvar }) {
   const [valores, setValores] = useState(valoresIniciais);
   // Os valores do início nunca mudam: servem de comparação para o "sujo"
@@ -41,7 +40,6 @@ export function useFormularioRegistro({ valoresIniciais, aoSalvar }) {
 
   const sujo = foiAlterado(valores, referencia);
 
-  // Esta parte é lógica
   // Depois que os erros aparecem na tela, leva o foco ao primeiro campo
   // com problema (em grupos de opções, à primeira opção do grupo).
   useEffect(() => {
@@ -51,7 +49,6 @@ export function useFormularioRegistro({ valoresIniciais, aoSalvar }) {
     document.querySelector(`[name="${campo}"]`)?.focus();
   }, [erros]);
 
-  // Esta parte é lógica
   // Liga o aviso "Descartar as respostas?" enquanto houver respostas
   // não salvas. Ao salvar, o aviso é desligado para a navegação seguir.
   useEffect(() => {
@@ -59,7 +56,6 @@ export function useFormularioRegistro({ valoresIniciais, aoSalvar }) {
     return () => definirBloqueio(false);
   }, [sujo, enviando, definirBloqueio]);
 
-  // Esta parte é lógica
   // Fechar a aba ou recarregar com respostas não salvas: aviso padrão do
   // navegador (o texto é do próprio navegador; não dá para trocar).
   useEffect(() => {
@@ -72,12 +68,10 @@ export function useFormularioRegistro({ valoresIniciais, aoSalvar }) {
     return () => window.removeEventListener("beforeunload", aoSairDaPagina);
   }, [sujo, enviando]);
 
-  // Esta parte é lógica
   function alterar(campo, valor) {
     setValores((anteriores) => ({ ...anteriores, [campo]: valor }));
   }
 
-  // Esta parte é lógica
   async function enviar(evento) {
     evento.preventDefault();
     if (enviando) return; // "não aceita um segundo toque"

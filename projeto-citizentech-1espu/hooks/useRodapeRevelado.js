@@ -21,12 +21,10 @@ import { useEfeitos } from "@/hooks/useEfeitos";
 */
 const LIMITE = 0.8; // fração da altura da tela
 
-// Esta parte é lógica
 export function useRodapeRevelado() {
   const refRodape = useRef(null);
   const { efeitosLigados } = useEfeitos();
 
-  // Esta parte é lógica
   useEffect(() => {
     const rodape = refRodape.current;
     const raiz = document.documentElement;

@@ -31,7 +31,6 @@ import Granulado from "@/components/ui/Granulado";
   display "swap": o texto aparece na hora com a reserva e troca quando a
   fonte chega (o texto nunca fica invisível).
 */
-// Esta parte é lógica
 const anton = Anton({
   weight: "400",
   subsets: ["latin", "latin-ext"],
@@ -74,7 +73,6 @@ export const viewport = {
   viewportFit: "cover",
 };
 
-// Esta parte é lógica
 // Script do <head>: roda antes de a página aparecer.
 // 1. Interruptor "Efeitos" (seção 19.2): grava data-efeitos="ligados" ou
 //    "desligados" na tag <html>, para o CSS e o React já nascerem certos,

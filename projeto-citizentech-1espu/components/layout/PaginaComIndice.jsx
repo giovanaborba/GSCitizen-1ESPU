@@ -44,7 +44,6 @@ export default function PaginaComIndice({
 }) {
   return (
     <div className="overflow-x-clip pb-8">
-      {/* Esta parte é lógica */}
       {titulo && (
         <div className="relative margem-lateral pt-10 pb-6">
           <div
@@ -62,7 +61,6 @@ export default function PaginaComIndice({
       <div className="margem-lateral">
         <div className="mx-auto max-w-pagina">
           {children}
-          {/* Esta parte é lógica */}
           {secaoLarga}
           {acaoFinal && <p className="mt-16">{acaoFinal}</p>}
         </div>

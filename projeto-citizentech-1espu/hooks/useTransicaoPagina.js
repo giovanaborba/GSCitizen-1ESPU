@@ -45,12 +45,10 @@ const LIMITE_DE_ESPERA = 3000; // ms
 // Contexto: deixa navegar e irPara disponíveis para a guarda de saída
 export const ContextoTransicao = createContext(null);
 
-// Esta parte é lógica
 export function estaNoDiario(caminho) {
   return caminho === "/diario" || caminho.startsWith("/diario/");
 }
 
-// Esta parte é lógica
 // A cortina só anima quando a página muda de verdade e quando a troca
 // não acontece inteira dentro do Diário.
 export function deveAnimarTroca(origem, destino) {
@@ -58,32 +56,27 @@ export function deveAnimarTroca(origem, destino) {
   return !(estaNoDiario(origem) && estaNoDiario(destino));
 }
 
-// Esta parte é lógica
 function semMovimento() {
   return (
     !efeitosLigadosAgora() || window.matchMedia("(forced-colors: active)").matches
   );
 }
 
-// Esta parte é lógica
 // "/solucao#os-sinais" → "/solucao"
 function caminhoDe(destino) {
   return new URL(destino, window.location.href).pathname;
 }
 
-// Esta parte é lógica
 function corDaCortina() {
   return getComputedStyle(document.documentElement).getPropertyValue("--cor-cortina").trim() || "#242428";
 }
 
-// Esta parte é lógica
 // Mostra a cortina já num ponto da varredura (0 = vazia; 1 = cobrindo).
 function mostrarCortina(cortina, cobrindo) {
   cortina.dataset.ativa = "";
   desenharDomos(cortina, cobrindo ? 1 : 0, true, corDaCortina());
 }
 
-// Esta parte é lógica
 // Anima a varredura: o GSAP leva "progresso" de 0 a 1, e cada passo
 // redesenha o canvas.
 function varrer(cortina, entrando, duracao, aoTerminar) {
@@ -98,7 +91,6 @@ function varrer(cortina, entrando, duracao, aoTerminar) {
   });
 }
 
-// Esta parte é lógica
 // Revela a página nova e esconde a cortina no fim.
 function encolherCortina(cortina, estado) {
   clearTimeout(estado.limite);
@@ -110,7 +102,6 @@ function encolherCortina(cortina, estado) {
   });
 }
 
-// Esta parte é lógica
 // Cobre a tela com a varredura e, no fim, troca de página.
 function cobrirETrocar(cortina, estado, trocarDePagina) {
   estado.cobrindo = true;
@@ -122,7 +113,6 @@ function cobrirETrocar(cortina, estado, trocarDePagina) {
   });
 }
 
-// Esta parte é lógica
 export function useTransicaoPagina() {
   const router = useRouter();
   const caminho = usePathname();
@@ -131,7 +121,6 @@ export function useTransicaoPagina() {
   // cobrindo: a cortina está na tela esperando a página nova
   const estado = useRef({ cobrindo: false, animacao: null, limite: null });
 
-  // Esta parte é lógica
   // Chamada pelo onNavigate dos links (através da guarda de saída).
   function navegar(evento, destino) {
     const cortina = refCortina.current;
@@ -143,7 +132,6 @@ export function useTransicaoPagina() {
     cobrirETrocar(cortina, estado.current, () => router.push(destino));
   }
 
-  // Esta parte é lógica
   // Navegação feita por código (ex.: "Descartar respostas").
   function irPara(destino) {
     const cortina = refCortina.current;
@@ -159,7 +147,6 @@ export function useTransicaoPagina() {
     cobrirETrocar(cortina, estado.current, () => router.push(destino));
   }
 
-  // Esta parte é lógica
   // O endereço mudou. useLayoutEffect roda ANTES de a tela ser pintada:
   // assim, no Voltar do navegador, a cortina já aparece cobrindo, sem a
   // página nova "piscar" antes.
@@ -182,7 +169,6 @@ export function useTransicaoPagina() {
     encolherCortina(cortina, estado.current);
   }, [caminho]);
 
-  // Esta parte é lógica
   // Ao desmontar, para a animação e o relógio de segurança.
   useEffect(() => {
     const atual = estado.current;
@@ -195,7 +181,6 @@ export function useTransicaoPagina() {
   return { refCortina, navegar, irPara };
 }
 
-// Esta parte é lógica
 // Para a guarda de saída usar a transição.
 export function useNavegacaoComTransicao() {
   const contexto = useContext(ContextoTransicao);

@@ -27,11 +27,9 @@ import { useSecaoAtual } from "@/hooks/useSecaoAtual";
 const CONSULTA_FAIXA_FIXA = "(min-width: 64rem) and (min-height: 43.75rem)";
 
 export default function IndiceNestaPagina({ itens }) {
-  // Esta parte é lógica
   const atual = useSecaoAtual(itens);
   const refIndice = useRef(null);
 
-  // Esta parte é lógica
   // Guarda a altura da faixa quando ela gruda (e 0 quando não gruda).
   useEffect(() => {
     const indice = refIndice.current;
@@ -67,7 +65,6 @@ export default function IndiceNestaPagina({ itens }) {
           Nesta página
         </h2>
         <ul className="flex flex-wrap gap-2">
-          {/* Esta parte é lógica */}
           {itens.map((item) => {
             const ehAtual = atual === item.id;
             return (

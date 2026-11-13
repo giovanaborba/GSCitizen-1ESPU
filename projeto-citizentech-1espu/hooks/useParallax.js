@@ -24,12 +24,10 @@ const LIMITE = 60; // px
 const FOLGA = 0.06; // fração da altura (a imagem tem 112%)
 const MARGEM = 200; // px além da tela em que ainda calcula
 
-// Esta parte é lógica
 export function useParallax(velocidade) {
   const refMoldura = useRef(null);
   const { efeitosLigados } = useEfeitos();
 
-  // Esta parte é lógica
   useEffect(() => {
     const moldura = refMoldura.current;
     if (!moldura || !efeitosLigados || !velocidade || !moldura.querySelector("img")) return;

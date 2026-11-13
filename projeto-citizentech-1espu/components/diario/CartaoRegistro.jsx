@@ -24,7 +24,6 @@ export default function CartaoRegistro({ registro }) {
       </h3>
 
       <ul className="mt-4 flex flex-wrap gap-2">
-        {/* Esta parte é lógica */}
         {etiquetas.map((etiqueta) => (
           <li
             key={etiqueta}

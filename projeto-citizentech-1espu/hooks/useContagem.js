@@ -23,18 +23,15 @@ import { useEfeitos } from "@/hooks/useEfeitos";
 */
 const DURACAO = 1.2; // segundos (19.6)
 
-// Esta parte é lógica
 // 7.9 → "7,9"; com o texto ao redor: "Cerca de " + "90" + "%"
 export function formatarNumero(numero, casas, antes = "", depois = "") {
   return `${antes}${numero.toFixed(casas).replace(".", ",")}${depois}`;
 }
 
-// Esta parte é lógica
 export function useContagem({ valor, casas = 0, antes = "", depois = "" }) {
   const refNumero = useRef(null);
   const { efeitosLigados } = useEfeitos();
 
-  // Esta parte é lógica
   useEffect(() => {
     const numero = refNumero.current;
     if (!numero || !efeitosLigados) return;

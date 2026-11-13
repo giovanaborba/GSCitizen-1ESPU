@@ -41,13 +41,11 @@ const ESTILO_FACE =
   "[grid-area:1/1] rounded-t-cartao border border-b-0 backface-hidden";
 
 export default function CartaoTecnologia({ rotulo, nome, descricao }) {
-  // Esta parte é lógica
   const [virado, setVirado] = useState(false);
   const { efeitosLigados } = useEfeitos();
 
   return (
     <li className="grid min-h-56 grid-cols-1 grid-rows-[1fr_auto] perspective-distant">
-      {/* Esta parte é lógica */}
       <motion.div
         initial={false}
         animate={{ rotateY: virado ? 180 : 0 }}
@@ -72,7 +70,6 @@ export default function CartaoTecnologia({ rotulo, nome, descricao }) {
         </div>
       </motion.div>
 
-      {/* Esta parte é lógica */}
       <motion.button
         type="button"
         aria-pressed={virado}

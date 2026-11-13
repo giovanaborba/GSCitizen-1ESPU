@@ -31,7 +31,6 @@ export default function MensagemStatus({ tipo = "sucesso", texto, aoFechar, acao
   const estilo = ESTILOS[tipo];
   const [pronta, setPronta] = useState(false);
 
-  // Esta parte é lógica
   useEffect(() => {
     const espera = setTimeout(() => setPronta(true), 100);
     return () => clearTimeout(espera);
@@ -40,7 +39,6 @@ export default function MensagemStatus({ tipo = "sucesso", texto, aoFechar, acao
   return (
     <div className={`rounded-cartao border-2 p-4 ${estilo.classes}`}>
       <div role={tipo === "erro" ? "alert" : "status"}>
-        {/* Esta parte é lógica */}
         {pronta && (
           <p className="flex items-start gap-2 font-bold">
             <EspacoIcone nome={estilo.icone} />
@@ -50,7 +48,6 @@ export default function MensagemStatus({ tipo = "sucesso", texto, aoFechar, acao
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
-        {/* Esta parte é lógica */}
         {acao && (
           <Botao
             variante="secundario"

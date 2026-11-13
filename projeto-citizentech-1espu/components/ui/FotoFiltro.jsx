@@ -28,7 +28,6 @@ import { useParallax } from "@/hooks/useParallax";
   (a imagem ou o marcador).
 */
 export default function FotoFiltro({ velocidade = 0, className = "", children }) {
-  // Esta parte é lógica
   const refMoldura = useParallax(velocidade);
   useFiltroFoto(refMoldura);
 

@@ -151,13 +151,11 @@ const ITENS = [
   },
 ];
 
-// Esta parte é lógica
 function quadroParado(video) {
   return `/videos/${video}-quadro-parado.jpg`;
 }
 
 export default function ComoFuncionaFundo() {
-  // Esta parte é lógica
   const { modoFixo, ativo, refLista, propsDoItem } = useComoFuncionaFundo();
 
   return (
@@ -165,7 +163,6 @@ export default function ComoFuncionaFundo() {
       {/* Fundo que troca (só no modo fixo). Ocupa a largura da tela; o que
           passar dela é cortado pelo overflow-x-clip do PaginaComIndice. */}
       <div aria-hidden="true" className={CLASSES_FUNDO}>
-        {/* Esta parte é lógica */}
         {ITENS.map((item, indice) => (
           <motion.div
             key={item.chave}
@@ -195,7 +192,6 @@ export default function ComoFuncionaFundo() {
           ref={refLista}
           className="grid grid-cols-1 gap-5 md:grid-cols-2 efeitos-ligados:secao-fixa:max-w-120 efeitos-ligados:secao-fixa:grid-cols-1 efeitos-ligados:secao-fixa:gap-[40vh] efeitos-ligados:secao-fixa:pt-[16vh] efeitos-ligados:secao-fixa:pb-[30vh]"
         >
-          {/* Esta parte é lógica */}
           {ITENS.map((item, indice) => (
             <li
               key={item.chave}

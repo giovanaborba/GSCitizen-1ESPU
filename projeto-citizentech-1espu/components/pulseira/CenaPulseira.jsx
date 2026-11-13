@@ -24,10 +24,8 @@ import { usePulseira3D } from "@/hooks/usePulseira3D";
 */
 export default function CenaPulseira({ modo, interativo, pronta, idDescricao, giro, ...opcoes }) {
   const refCaixa = useRef(null);
-  // Esta parte é lógica
   usePulseira3D(refCaixa, { modo, giro: giro?.conexao, ...opcoes });
 
-  // Esta parte é lógica
   // Uma <div> só, sempre a mesma: o canvas criado pelo hook fica dentro
   // dela. Só os atributos mudam quando a cena fica pronta.
   const ehPalco = interativo && pronta;

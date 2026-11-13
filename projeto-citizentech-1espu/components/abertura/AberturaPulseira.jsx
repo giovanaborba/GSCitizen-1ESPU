@@ -59,7 +59,6 @@ import { spring } from "@/lib/presetsMovimento";
 const ESTILO_BOTAO_GIRO =
   "inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-borda bg-superficie px-4 font-bold text-texto hover:border-marca";
 export default function AberturaPulseira() {
-  // Esta parte é lógica
   const [sinalAtual, setSinalAtual] = useState(SINAIS_DA_ABERTURA[0]);
   const [cenaPronta, setCenaPronta] = useState(false);
   const [parteAtiva, setParteAtiva] = useState(null);
@@ -72,17 +71,14 @@ export default function AberturaPulseira() {
   // "Quem vive o problema" têm data-encaixe.
   useEncaixe();
 
-  // Esta parte é lógica
   function aoCenaPronta() {
     setCenaPronta(true);
   }
 
-  // Esta parte é lógica
   function aoCenaFalhar() {
     setCenaPronta(false);
   }
 
-  // Esta parte é lógica
   // Revelação depois da capa (Motion, gesto GUIA do padrão de movimento):
   // escondido enquanto a capa está na tela; ao sair, aparece com
   // opacidade e subida de 12 px, com a mola padrão. Os 3 grupos entram na
@@ -100,7 +96,6 @@ export default function AberturaPulseira() {
     };
   }
 
-  // Esta parte é lógica
   const palavra = parada || capa.capaNaTela ? "Pulse" : sinalAtual.palavra;
 
   return (
@@ -111,7 +106,6 @@ export default function AberturaPulseira() {
       data-encaixe=""
       className="relative overflow-x-clip margem-lateral pt-8 pb-10"
     >
-      {/* Esta parte é lógica */}
       {/* Capa e preloader são desenhados direto no <body> (portal): com o
           rodapé revelado (19.6), o <main> ganha uma camada própria, e
           eles ficariam atrás do cabeçalho. Só existem no navegador, depois
@@ -155,7 +149,6 @@ export default function AberturaPulseira() {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 hidden size-full overflow-visible abertura-larga:block"
           >
-            {/* Esta parte é lógica */}
             {PARTES_DA_SOLUCAO.map((item) => (
               <g key={item.parte}>
                 <path
@@ -201,14 +194,12 @@ export default function AberturaPulseira() {
             {...revelacao(0.06)}
             className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center abertura-larga:col-start-2 abertura-larga:row-start-4"
           >
-            {/* Esta parte é lógica */}
             <span aria-hidden="true" className="rotulo-mono text-destaque">
               {parada ? "Sinais da Pulse" : `Sinal · ${sinalAtual.nome}`}
             </span>
             <span aria-hidden="true" className="text-auxiliar text-texto-2">
               {parada ? "Veja cada sinal explicado na página Solução." : sinalAtual.descricao}
             </span>
-            {/* Esta parte é lógica */}
             {/* Botões de giro: só com a cena pronta (sem cena, não há o
                 que girar). Com os efeitos desligados, giram sem animação,
                 e "Girar sozinha" some (nada se move sozinho). */}
@@ -224,7 +215,6 @@ export default function AberturaPulseira() {
                   <EspacoIcone nome="ArrowClockwise" />
                   Girar para a direita
                 </button>
-                {/* Esta parte é lógica */}
                 {efeitosLigados && (
                   <button
                     type="button"
@@ -232,7 +222,6 @@ export default function AberturaPulseira() {
                     onClick={giro.alternarGiro}
                     className={ESTILO_BOTAO_GIRO}
                   >
-                    {/* Esta parte é lógica */}
                     {giro.girando ? (
                       // ICONE-Pause-AQUI
                       <EspacoIcone nome="Pause" />

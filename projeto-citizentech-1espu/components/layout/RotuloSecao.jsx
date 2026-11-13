@@ -14,7 +14,6 @@ import { useLinhaRotulo } from "@/hooks/useLinhaRotulo";
     duas colunas).
 */
 export default function RotuloSecao({ children, className = "" }) {
-  // Esta parte é lógica
   const refLinha = useLinhaRotulo();
 
   return (

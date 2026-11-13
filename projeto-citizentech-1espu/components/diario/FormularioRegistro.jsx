@@ -29,7 +29,6 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
   const { aoNavegar } = useGuardaDeSaida();
   const hoje = useHoje();
 
-  // Esta parte é lógica
   function aoCancelar(evento) {
     aoNavegar(evento, destinoCancelar);
   }
@@ -48,7 +47,6 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
         erro={erros.data}
       />
 
-      {/* Esta parte é lógica */}
       {GRUPOS.map((campo) => (
         <GrupoOpcoes
           key={campo}
@@ -72,7 +70,6 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
       />
 
       <div>
-        {/* Esta parte é lógica */}
         {falhouAoSalvar && (
           // key: a cada nova falha a mensagem é recriada e anunciada de novo
           <ErroCampo key={falhasAoSalvar} papel="alert" className="mb-4">

@@ -41,7 +41,6 @@ const PARADAS = [
 ];
 
 export default function TrajetoPulse() {
-  // Esta parte é lógica
   const { refSecao, refTrilho, refPalco, refCaminho, refPonto, refLista } = useTrajeto(FRACOES);
 
   return (
@@ -71,7 +70,6 @@ export default function TrajetoPulse() {
             <rect className="quadra" x="230" y="270" width="340" height="100" rx="10" />
             <path className="rua" d="M10 175 H590 M200 10 V390 M370 10 V390 M10 245 H590" />
             <path ref={refCaminho} className="caminho" d={CAMINHO} />
-            {/* Esta parte é lógica */}
             {POSICOES.map(([x, y], i) => (
               <g key={i} data-parada-mapa="" data-chegou="">
                 <circle className="parada" cx={x} cy={y} r="15" />
@@ -84,7 +82,6 @@ export default function TrajetoPulse() {
           </svg>
 
           <ol ref={refLista} className="trajeto-paradas grid grid-cols-1 gap-2">
-            {/* Esta parte é lógica */}
             {PARADAS.map((parada) => (
               <li key={parada.nome}>
                 <strong>{parada.nome}</strong>

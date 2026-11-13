@@ -46,7 +46,6 @@ const VELOCIDADE_DO_GIRO = 0.45; // radianos por segundo (protótipo)
 const INTERVALO_DA_LETRA = 1.1; // s entre as letras do Braille
 const VISTA_DA_FRENTE = { y: -0.35, x: 0.12 };
 
-// Esta parte é lógica
 export function usePulseira3D(refCaixa, opcoes) {
   // As opções mudam a cada renderização, mas a cena é montada uma vez só.
   // Por isso elas ficam numa ref, lida a cada quadro da animação.
@@ -54,14 +53,12 @@ export function usePulseira3D(refCaixa, opcoes) {
   const refOpcoes = useRef({ ...opcoes, efeitosLigados });
   const refControle = useRef(null);
 
-  // Esta parte é lógica
   useLayoutEffect(() => {
     refOpcoes.current = { ...opcoes, efeitosLigados };
   });
 
   const { modo, pausado, parteAtiva, aguardarEntrada, sinal, sinalAtivo } = opcoes;
 
-  // Esta parte é lógica
   // Monta a cena quando o componente aparece e desmonta quando ele sai.
   useEffect(() => {
     const caixa = refCaixa.current;
@@ -72,7 +69,6 @@ export function usePulseira3D(refCaixa, opcoes) {
     canvas.setAttribute("aria-hidden", "true"); // quem descreve é a caixa
     caixa.appendChild(canvas);
 
-    // Esta parte é lógica
     // Liga a cena pronta: animação, observadores e a limpeza dela.
     function montar(cena) {
       const { modelo, pivo } = cena;
@@ -100,10 +96,8 @@ export function usePulseira3D(refCaixa, opcoes) {
         primeiroQuadro: true,
       };
 
-      // Esta parte é lógica
       const girandoSozinha = () => interativo && !!giro()?.refGirando.current;
 
-      // Esta parte é lógica
       // A pulseira ainda não chegou ao destino do giro?
       function aCaminho() {
         const alvo = giro()?.refAlvo.current;
@@ -111,14 +105,12 @@ export function usePulseira3D(refCaixa, opcoes) {
         return Math.abs(alvo.y - estado.rotY) > 0.001 || Math.abs(alvo.x - estado.rotX) > 0.001;
       }
 
-      // Esta parte é lógica
       // Avisa quem usa qual sinal está passando (legenda e palavra de fundo)
       function avisarSinal(chave) {
         if (modo === "abertura") refOpcoes.current.aoTrocarSinal?.(SINAIS_DA_ABERTURA[estado.indiceDoSinal]);
         else refOpcoes.current.aoTrocarSinal?.({ chave, movimento: MOVIMENTO_DO_SINAL[chave] });
       }
 
-      // Esta parte é lógica
       // Modo "sinal": repete um sinal. No "virar", alterna esquerda e direita.
       function chaveDoSinalFixo() {
         const pedido = refOpcoes.current.sinal ?? "continuar";
@@ -126,7 +118,6 @@ export function usePulseira3D(refCaixa, opcoes) {
         return estado.ciclo % 2 === 0 ? "esquerda" : "direita";
       }
 
-      // Esta parte é lógica
       // Qual sinal e qual parte aparecem neste quadro.
       function sinalEParte() {
         const op = refOpcoes.current;
@@ -142,7 +133,6 @@ export function usePulseira3D(refCaixa, opcoes) {
         return { sinal: estado.terminou || !op.efeitosLigados ? null : "parar", parte: null };
       }
 
-      // Esta parte é lógica
       // Um passo da animação (efeitos ligados).
       function passo(dt) {
         const op = refOpcoes.current;
@@ -226,7 +216,6 @@ export function usePulseira3D(refCaixa, opcoes) {
         pivo.rotation.set(estado.rotX, estado.rotY, 0);
       }
 
-      // Esta parte é lógica
       // Quadro parado (efeitos desligados): pulseira de frente (ou no destino
       // escolhido pelos botões), Braille no "P" e o sinal escolhido aceso,
       // sem tremor nem piscada.
@@ -240,7 +229,6 @@ export function usePulseira3D(refCaixa, opcoes) {
         modelo.atualizar({ t: 0, dt: 0, ...sinalEParte(), semMovimento: true });
       }
 
-      // Esta parte é lógica
       // Desenha e avisa quem usa (linhas da abertura).
       function desenhar() {
         cena.desenhar();
@@ -251,7 +239,6 @@ export function usePulseira3D(refCaixa, opcoes) {
         }
       }
 
-      // Esta parte é lógica
       // Algo precisa se mover neste momento?
       function deveAnimar() {
         const op = refOpcoes.current;
@@ -265,7 +252,6 @@ export function usePulseira3D(refCaixa, opcoes) {
         return true; // "parar", até terminar
       }
 
-      // Esta parte é lógica
       function quadro(instante) {
         const dt = Math.min((instante - estado.ultimoInstante) / 1000, 0.05);
         estado.ultimoInstante = instante;
@@ -282,7 +268,6 @@ export function usePulseira3D(refCaixa, opcoes) {
         }
       }
 
-      // Esta parte é lógica
       // Chamada sempre que algo muda (visibilidade, giro, pausa, efeitos,
       // tamanho, parte ou sinal): liga, desliga ou só redesenha.
       function atualizar() {
@@ -344,7 +329,6 @@ export function usePulseira3D(refCaixa, opcoes) {
       }
       desenhar();
 
-      // Esta parte é lógica
       // Limpeza da cena montada (chamada pela limpeza do efeito, abaixo)
       return () => {
         refControle.current = null;
@@ -357,7 +341,6 @@ export function usePulseira3D(refCaixa, opcoes) {
       };
     }
 
-    // Esta parte é lógica
     // A cena é criada sem travar a página: criarCena compila os shaders em
     // paralelo e devolve uma Promise. Se o componente sair antes de ela
     // ficar pronta, ela é liberada assim que terminar.
@@ -378,7 +361,6 @@ export function usePulseira3D(refCaixa, opcoes) {
         refOpcoes.current.aoFalhar?.();
       });
 
-    // Esta parte é lógica
     // Limpeza ao sair da página
     return () => {
       cancelado = true;
@@ -388,7 +370,6 @@ export function usePulseira3D(refCaixa, opcoes) {
     };
   }, [refCaixa, modo]);
 
-  // Esta parte é lógica
   // Quando a pausa, a parte, o sinal, a entrada ou o interruptor "Efeitos"
   // mudam, a cena decide se volta a animar ou só redesenha.
   useEffect(() => {

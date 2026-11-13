@@ -26,12 +26,10 @@ const VELOCIDADE = 60; // px por segundo
 const PESO_DA_ROLAGEM = 0.6; // quanto a rolagem acelera a faixa
 const SUAVIZACAO = 0.2; // a velocidade da rolagem muda aos poucos
 
-// Esta parte é lógica
 export function useFaixaTexto() {
   const refTrilho = useRef(null);
   const { efeitosLigados } = useEfeitos();
 
-  // Esta parte é lógica
   useEffect(() => {
     const trilho = refTrilho.current;
     if (!trilho || !efeitosLigados) return;
@@ -41,7 +39,6 @@ export function useFaixaTexto() {
     let rolagemAnterior = window.scrollY;
     let naTela = false;
 
-    // Esta parte é lógica
     // Chamada a cada quadro pelo relógio do GSAP (deltaTime em ms)
     function quadro(_tempo, deltaTime) {
       const passo = window.scrollY - rolagemAnterior;

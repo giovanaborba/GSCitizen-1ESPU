@@ -11,7 +11,6 @@ import { ROTULOS_INDICADORES, rotuloTotal } from "@/lib/rotulos";
 
   Devolve uma lista de { chave, numero, rotulo }, na ordem da tela.
 */
-// Esta parte é lógica
 export function useResumoIndicadores(registros) {
   const total = registros.length;
   const semAjuda = registros.filter((registro) => registro.precisouDeAjuda === false).length;

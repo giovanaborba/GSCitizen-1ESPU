@@ -25,13 +25,11 @@ import { useEfeitos } from "@/hooks/useEfeitos";
 */
 const CONSULTA_FIXA = "(min-width: 64rem) and (min-height: 37.5rem)";
 
-// Esta parte é lógica
 function alturaDoTopo() {
   const estilo = getComputedStyle(document.documentElement);
   return (parseFloat(estilo.getPropertyValue("--altura-cabecalho")) || 0) + (parseFloat(estilo.getPropertyValue("--altura-indice")) || 0);
 }
 
-// Esta parte é lógica
 export function useTrajeto(fracoes) {
   const refSecao = useRef(null);
   const refTrilho = useRef(null);
@@ -41,7 +39,6 @@ export function useTrajeto(fracoes) {
   const refLista = useRef(null);
   const { efeitosLigados } = useEfeitos();
 
-  // Esta parte é lógica
   useEffect(() => {
     const secao = refSecao.current;
     const trilho = refTrilho.current;
@@ -57,7 +54,6 @@ export function useTrajeto(fracoes) {
     const consulta = window.matchMedia(CONSULTA_FIXA);
     let quadro = 0;
 
-    // Esta parte é lógica
     // Modo fixo só se o palco couber inteiro abaixo do cabeçalho.
     function decidirModo() {
       secao.removeAttribute("data-trajeto-fixo");
@@ -65,7 +61,6 @@ export function useTrajeto(fracoes) {
       secao.toggleAttribute("data-trajeto-fixo", consulta.matches && cabe);
     }
 
-    // Esta parte é lógica
     function desenhar(fracao) {
       const feito = fracao * comprimento;
       caminho.style.strokeDasharray = `${comprimento}`;
@@ -83,7 +78,6 @@ export function useTrajeto(fracoes) {
       paradasNaLista.forEach((item, i) => item.toggleAttribute("data-atual", i === atual));
     }
 
-    // Esta parte é lógica
     function atualizar() {
       quadro = 0;
       const altura = window.innerHeight;

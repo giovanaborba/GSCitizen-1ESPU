@@ -74,7 +74,6 @@ export const VISTA_DAS_PARTES = {
   zonaDireita: { angulo: 1.25 },
 };
 
-// Esta parte é lógica
 // Ponto da tira num ângulo (0 = frente, em cima do pulso) e a direção
 // "para fora" da tira naquele ponto.
 function naTira(angulo) {
@@ -83,13 +82,11 @@ function naTira(angulo) {
   return { ponto, normal };
 }
 
-// Esta parte é lógica
 // Vira um objeto para "olhar" na direção da normal.
 function orientar(objeto, normal) {
   objeto.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
 }
 
-// Esta parte é lógica
 // Textura do brilho das luzes: um degradê circular, branco no meio.
 function criarTexturaDoBrilho() {
   const canvas = document.createElement("canvas");
@@ -106,7 +103,6 @@ function criarTexturaDoBrilho() {
   return textura;
 }
 
-// Esta parte é lógica
 // Cria a pulseira. "corDaTira": a cor de --cor-faixa-3d.
 export function criarPulseira(corDaTira = "#FC4C02") {
   const grupo = new THREE.Group();
@@ -387,7 +383,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
 
   const destacaveis = [...new Set(Object.values(partes).flatMap((parte) => parte.objetos))];
 
-  // Esta parte é lógica
   // Mostra uma letra de "PULSE" em Braille (os pinos sobem ou descem).
   function escreverBraille(letra) {
     const pontosDaLetra = LETRAS_BRAILLE[letra] ?? [];
@@ -396,7 +391,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     });
   }
 
-  // Esta parte é lógica
   function acenderLuzes(lista, forca) {
     for (const luz of lista) {
       luz.material.emissiveIntensity = forca * 2.4;
@@ -405,7 +399,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     }
   }
 
-  // Esta parte é lógica
   // Um quadro da pulseira.
   // - t: tempo em segundos; dt: tempo desde o quadro anterior
   // - sinal: "esquerda" | "direita" | "parar" | "aguardar" | "continuar" | null
@@ -483,7 +476,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     }
   }
 
-  // Esta parte é lógica
   // Libera da memória o que só este modelo criou (as geometrias e os
   // materiais saem junto com a cena, em cena.js).
   function liberar() {

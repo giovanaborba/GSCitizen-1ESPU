@@ -16,7 +16,6 @@ import { ContextoTransicao, useTransicaoPagina } from "@/hooks/useTransicaoPagin
   Toda a lógica da animação está no hook useTransicaoPagina.
 */
 export default function TransicaoPagina({ children }) {
-  // Esta parte é lógica
   const { refCortina, navegar, irPara } = useTransicaoPagina();
 
   return (

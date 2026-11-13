@@ -32,31 +32,26 @@ export default function TelaRegistro({ id }) {
 
   const data = registro ? formatarData(registro.data) : "";
 
-  // Esta parte é lógica
   // Título da aba: "Registro de DD/MM/AAAA — Pulse" quando o registro chega;
   // "Registro não encontrado" quando ele não existe (decisão da equipe).
   useTituloDaAba(
     registro ? `Registro de ${data} — Pulse` : naoEncontrado ? "Registro não encontrado" : null,
   );
 
-  // Esta parte é lógica
   function aoTentarDeNovo() {
     setTentativas((anterior) => anterior + 1);
     recarregar();
   }
 
-  // Esta parte é lógica
   function aoPedirExclusao() {
     setFalhouAoExcluir(false);
     setDialogoAberto(true);
   }
 
-  // Esta parte é lógica
   function aoManter() {
     setDialogoAberto(false);
   }
 
-  // Esta parte é lógica
   async function aoConfirmarExclusao() {
     setExcluindo(true);
     setFalhouAoExcluir(false);
@@ -70,7 +65,6 @@ export default function TelaRegistro({ id }) {
     }
   }
 
-  // Esta parte é lógica
   if (naoEncontrado) {
     return (
       <div className="margem-lateral mx-auto max-w-texto py-8">
@@ -88,7 +82,6 @@ export default function TelaRegistro({ id }) {
       {/* Enquanto carrega, o título é só "Registro"; com os dados, ganha a data */}
       <TituloPagina titulo={registro ? `Registro de ${data}` : "Registro"} />
 
-      {/* Esta parte é lógica */}
       {carregando && <EstadoTela tipo="carregando" />}
       {erro && (
         <EstadoTela

@@ -15,7 +15,6 @@
     tremor do erro. O PISO TÁTIL (máscara de domos) é feito em CSS.
 */
 
-// Esta parte é lógica
 // Springs descritas pela duração visual (visualDuration, em segundos) e pelo quique (bounce):
 // assim dá para garantir o limite de 0,5 s. Entre parênteses, a referência em rigidez/amortecimento.
 export const spring = {
@@ -26,7 +25,6 @@ export const spring = {
 export const saida = { type: "spring", visualDuration: 0.16, bounce: 0 }; // saídas: mais rápidas que as entradas
 export const cascata = { staggerChildren: 0.045, delayChildren: 0.03 };
 
-// Esta parte é lógica
 // Gestos da marca
 export const pulso = {
   scale: [1, 1.035, 1, 1.02, 1],

@@ -8,7 +8,6 @@ import { useDigitandoNoCelular } from "@/hooks/useDigitandoNoCelular";
 import { useGuardaDeSaida } from "@/hooks/useGuardaDeSaida";
 import { useCabeEmUmaLinha } from "@/hooks/useCabeEmUmaLinha";
 
-// Esta parte é lógica
 // Layout da lista no celular. A partir de 768 px (md:) vale sempre a
 // linha com ícone e texto lado a lado, que quebra linha se precisar.
 const LAYOUT_CELULAR = {
@@ -55,7 +54,6 @@ const ITENS = [
   { href: "/diario", texto: "Diário", icone: "Notebook" }, // ICONE-Notebook-AQUI
 ];
 
-// Esta parte é lógica
 // Início só fica ativo em "/". Os outros ficam ativos também nas subrotas
 // (ex.: "Diário" em /diario/novo e /diario/abc123/editar).
 function estaAtivo(caminho, href) {
@@ -65,7 +63,6 @@ function estaAtivo(caminho, href) {
 
 export default function BarraNavegacao() {
   const caminho = usePathname();
-  // Esta parte é lógica
   const escondidaPelaRolagem = useDirecaoRolagem();
   const digitando = useDigitandoNoCelular();
   const escondida = escondidaPelaRolagem || digitando;
@@ -73,7 +70,6 @@ export default function BarraNavegacao() {
   const refLista = useRef(null);
   const cabeEmUmaLinha = useCabeEmUmaLinha(refLista);
 
-  // Esta parte é lógica
   // Mede a altura real da barra e guarda em --altura-barra, para o espaço
   // extra no fim da página ter sempre o tamanho certo (1 linha, 2 × 2 ou
   // texto ampliado).
@@ -110,7 +106,6 @@ export default function BarraNavegacao() {
             LAYOUT_CELULAR[String(cabeEmUmaLinha)]
           }`}
         >
-          {/* Esta parte é lógica */}
           {ITENS.map((item) => (
             <ItemBarra
               key={item.href}

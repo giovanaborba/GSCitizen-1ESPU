@@ -36,13 +36,11 @@ const VISTA_DA_FRENTE = { y: -0.35, x: 0.12 };
 const INCLINACAO_MAXIMA = 0.9; // radianos
 const VOLTA = Math.PI * 2;
 
-// Esta parte é lógica
 const limitar = (valor) => Math.max(-INCLINACAO_MAXIMA, Math.min(INCLINACAO_MAXIMA, valor));
 // A volta completa mais perto de onde a pulseira está (para não dar voltas
 // a mais ao ir para uma parte)
 const voltaAtual = (y) => Math.round(y / VOLTA) * VOLTA;
 
-// Esta parte é lógica
 export function useGiroPulseira() {
   const { efeitosLigados, efeitosConhecidos } = useEfeitos();
   const [giroPedido, setGiroPedido] = useState(true);
@@ -54,19 +52,16 @@ export function useGiroPulseira() {
   const refArrasto = useRef(null);
   const refOuvintes = useRef(new Set());
 
-  // Esta parte é lógica
   // Avisa a cena que o destino (ou o giro automático) mudou.
   function avisar() {
     for (const aoMudar of refOuvintes.current) aoMudar();
   }
 
-  // Esta parte é lógica
   useLayoutEffect(() => {
     refGirando.current = girando;
     avisar();
   }, [girando]);
 
-  // Esta parte é lógica
   // Efeitos desligados: a pulseira fica parada na vista da frente.
   useEffect(() => {
     if (!efeitosConhecidos || efeitosLigados) return;
@@ -74,41 +69,34 @@ export function useGiroPulseira() {
     avisar();
   }, [efeitosConhecidos, efeitosLigados]);
 
-  // Esta parte é lógica
   function pararGiro() {
     refGirando.current = false;
     setGiroPedido(false);
   }
 
-  // Esta parte é lógica
   function alternarGiro() {
     setGiroPedido((valor) => !valor);
   }
 
-  // Esta parte é lógica
   function mudarAlvo(y, x) {
     refAlvo.current = { y, x: limitar(x) };
     avisar();
   }
 
-  // Esta parte é lógica
   function girar(graus) {
     pararGiro();
     mudarAlvo(refAlvo.current.y + (graus * Math.PI) / 180, refAlvo.current.x);
   }
 
-  // Esta parte é lógica
   function verFrente() {
     pararGiro();
     mudarAlvo(voltaAtual(refAlvo.current.y) + VISTA_DA_FRENTE.y, VISTA_DA_FRENTE.x);
   }
 
-  // Esta parte é lógica
   function verPorDentro() {
     girar(180);
   }
 
-  // Esta parte é lógica
   // Gira até a parte (explorar). As partes da face ficam um pouco de lado,
   // para o relevo aparecer.
   function irParaParte(nome) {
@@ -119,14 +107,12 @@ export function useGiroPulseira() {
     mudarAlvo(voltaAtual(refAlvo.current.y) + vista.angulo + ajuste, vista.inclinar ?? VISTA_DA_FRENTE.x);
   }
 
-  // Esta parte é lógica
   // Sinais (explorar): as luzes e o módulo ficam de frente.
   function verSinal() {
     pararGiro();
     mudarAlvo(voltaAtual(refAlvo.current.y) - 0.3, VISTA_DA_FRENTE.x);
   }
 
-  // Esta parte é lógica
   // Teclado no palco: setas giram e inclinam.
   function aoApertarTecla(evento) {
     const passos = { ArrowLeft: [-0.3, 0], ArrowRight: [0.3, 0], ArrowUp: [0, -0.15], ArrowDown: [0, 0.15] };
@@ -137,7 +123,6 @@ export function useGiroPulseira() {
     mudarAlvo(refAlvo.current.y + passo[0], refAlvo.current.x + passo[1]);
   }
 
-  // Esta parte é lógica
   // Arrasto com o dedo ou o mouse
   function aoApertar(evento) {
     if (evento.button !== undefined && evento.button !== 0) return;
@@ -147,7 +132,6 @@ export function useGiroPulseira() {
     setArrastando(true);
   }
 
-  // Esta parte é lógica
   function aoMover(evento) {
     const arrasto = refArrasto.current;
     if (!arrasto) return;
@@ -157,13 +141,11 @@ export function useGiroPulseira() {
     );
   }
 
-  // Esta parte é lógica
   function aoSoltar() {
     refArrasto.current = null;
     setArrastando(false);
   }
 
-  // Esta parte é lógica
   // O que a cena usa: o destino, se o giro automático está ligado e um
   // jeito de ser avisada quando eles mudam.
   const conexao = {

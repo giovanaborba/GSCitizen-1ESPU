@@ -18,7 +18,6 @@ import Botao from "@/components/ui/Botao";
     O foco volta para o botão, e a pessoa não se perde.
 */
 export default function EstadoTela({ tipo, aoTentarDeNovo, focarAoMontar = false }) {
-  // Esta parte é lógica
   if (tipo === "carregando") return <EstadoCarregando />;
   if (tipo === "vazio") return <EstadoVazio />;
   return <EstadoErro aoTentarDeNovo={aoTentarDeNovo} focarAoMontar={focarAoMontar} />;
@@ -29,7 +28,6 @@ const ESPERA_ANTES_DO_INDICADOR = 1000; // 1 s
 function EstadoCarregando() {
   const [visivel, setVisivel] = useState(false);
 
-  // Esta parte é lógica
   useEffect(() => {
     const espera = setTimeout(() => setVisivel(true), ESPERA_ANTES_DO_INDICADOR);
     return () => clearTimeout(espera);
@@ -39,7 +37,6 @@ function EstadoCarregando() {
     // A região de status existe desde o início; o texto entra depois de
     // 1 s, e é essa mudança que o leitor de tela anuncia.
     <div role="status" className="mt-8">
-      {/* Esta parte é lógica */}
       {visivel && (
         <p className="flex items-center gap-4">
           <span
@@ -71,7 +68,6 @@ function EstadoVazio() {
 function EstadoErro({ aoTentarDeNovo, focarAoMontar }) {
   const refBotao = useRef(null);
 
-  // Esta parte é lógica
   useEffect(() => {
     if (focarAoMontar) refBotao.current?.focus();
   }, [focarAoMontar]);

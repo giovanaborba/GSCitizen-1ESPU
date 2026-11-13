@@ -38,13 +38,11 @@ import { useEfeitos } from "@/hooks/useEfeitos";
 const LIMIAR_VISIVEL = 0.25;
 const TOLERANCIA_GEMEOS = 0.15; // s
 
-// Esta parte é lógica
 // Mostra ou esconde as legendas (faixas de texto) de um vídeo
 function mostrarLegendas(video, mostrar) {
   for (const faixa of video.textTracks) faixa.mode = mostrar ? "showing" : "disabled";
 }
 
-// Esta parte é lógica
 export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {}) {
   const { efeitosLigados } = useEfeitos();
   const refContainer = useRef(null);
@@ -56,7 +54,6 @@ export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {})
   const [somLigado, setSomLigado] = useState(false);
   const [falhou, setFalhou] = useState(false);
 
-  // Esta parte é lógica
   // Ajuste durante a renderização (padrão do React para "resetar estado
   // quando uma prop muda"): trocar os efeitos ou o arquivo desfaz o
   // pedido de "tocar uma vez"; trocar o arquivo também desfaz a falha.
@@ -69,7 +66,6 @@ export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {})
 
   const tocando = !falhou && visivel && ativo && (efeitosLigados ? !pausadoPelaPessoa : pedidoUmaVez);
 
-  // Esta parte é lógica
   // Uma função de ref por vídeo, criada uma vez só (o React 19 chama a
   // função devolvida quando o vídeo sai da página).
   const [registradores] = useState(() =>
@@ -93,7 +89,6 @@ export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {})
     }),
   );
 
-  // Esta parte é lógica
   // Só toca na tela
   useEffect(() => {
     const container = refContainer.current;
@@ -106,7 +101,6 @@ export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {})
     return () => observador.disconnect();
   }, []);
 
-  // Esta parte é lógica
   // Toca ou pausa todos juntos; os gêmeos partem do tempo do primeiro.
   useEffect(() => {
     const videos = refVideos.current.filter(Boolean);
@@ -126,7 +120,6 @@ export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {})
     }
   }, [tocando, efeitosLigados, somLigado, chave]);
 
-  // Esta parte é lógica
   // Efeitos desligados com o vídeo andando: volta ao quadro parado
   // (load() recarrega o vídeo e mostra o poster de novo).
   useEffect(() => {
@@ -138,7 +131,6 @@ export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {})
     refEfeitosAntes.current = efeitosLigados;
   }, [efeitosLigados]);
 
-  // Esta parte é lógica
   // Legendas: aparecem com o som ligado
   useEffect(() => {
     for (const video of refVideos.current) {
@@ -147,7 +139,6 @@ export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {})
     }
   }, [somLigado, chave]);
 
-  // Esta parte é lógica
   // Gêmeos: o segundo acompanha o tempo do primeiro
   useEffect(() => {
     const [primeiro, ...outros] = refVideos.current;
@@ -167,7 +158,6 @@ export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {})
     };
   }, [chave]);
 
-  // Esta parte é lógica
   function alternarPausa() {
     if (efeitosLigados) {
       setPausadoPelaPessoa(tocando);
@@ -176,12 +166,10 @@ export function useVideoPulse({ quantidade = 1, ativo = true, chave = "" } = {})
     }
   }
 
-  // Esta parte é lógica
   function alternarSom() {
     setSomLigado((ligado) => !ligado);
   }
 
-  // Esta parte é lógica
   function propsVideo(indice) {
     return {
       ref: registradores[indice],

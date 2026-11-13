@@ -15,7 +15,6 @@ import { useFaixaTexto } from "@/hooks/useFaixaTexto";
 const TEXTO = "Pulse · um guia no pulso · Pulse · um guia no pulso ·";
 
 export default function FaixaTexto() {
-  // Esta parte é lógica
   const refTrilho = useFaixaTexto();
 
   return (

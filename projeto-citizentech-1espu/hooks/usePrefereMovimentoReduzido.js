@@ -14,25 +14,21 @@ import { useSyncExternalStore } from "react";
 */
 const CONSULTA = "(prefers-reduced-motion: reduce)";
 
-// Esta parte é lógica
 function assinar(aoMudar) {
   const consulta = window.matchMedia(CONSULTA);
   consulta.addEventListener("change", aoMudar);
   return () => consulta.removeEventListener("change", aoMudar);
 }
 
-// Esta parte é lógica
 function lerNoNavegador() {
   return window.matchMedia(CONSULTA).matches;
 }
 
-// Esta parte é lógica
 // No servidor não existe "aparelho": assume que não reduz movimento.
 function lerNoServidor() {
   return false;
 }
 
-// Esta parte é lógica
 export function usePrefereMovimentoReduzido() {
   return useSyncExternalStore(assinar, lerNoNavegador, lerNoServidor);
 }

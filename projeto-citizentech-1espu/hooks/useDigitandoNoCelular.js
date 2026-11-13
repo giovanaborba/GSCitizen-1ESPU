@@ -9,17 +9,14 @@ import { useEffect, useState } from "react";
 const CONSULTA_CELULAR = "(max-width: 47.99rem)";
 const TIPOS_QUE_NAO_ABREM_TECLADO = ["radio", "checkbox", "button", "submit", "reset"];
 
-// Esta parte é lógica
 function ehCampoDeDigitacao(elemento) {
   if (elemento instanceof HTMLTextAreaElement) return true;
   return elemento instanceof HTMLInputElement && !TIPOS_QUE_NAO_ABREM_TECLADO.includes(elemento.type);
 }
 
-// Esta parte é lógica
 export function useDigitandoNoCelular() {
   const [digitando, setDigitando] = useState(false);
 
-  // Esta parte é lógica
   useEffect(() => {
     const consultaCelular = window.matchMedia(CONSULTA_CELULAR);
 

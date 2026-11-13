@@ -28,7 +28,6 @@ export default function GrupoOpcoes({ nome, legenda, opcoes, valor, aoMudar, err
       )}
 
       <div className="mt-2 grid gap-2">
-        {/* Esta parte é lógica */}
         {opcoes.map((opcao) => {
           const id = `campo-${nome}-${String(opcao.valor)}`;
           const marcada = valor === opcao.valor;

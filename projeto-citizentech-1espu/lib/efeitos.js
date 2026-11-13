@@ -30,7 +30,6 @@ export const DESCONHECIDO = "desconhecido";
 // Quem quer saber das mudanças (o useSyncExternalStore do provedor).
 const ouvintes = new Set();
 
-// Esta parte é lógica
 // Valor atual, lido do <html>. Sem o atributo (não deveria acontecer com
 // JavaScript), vale "desligados".
 export function lerEfeitos() {
@@ -38,24 +37,20 @@ export function lerEfeitos() {
   return valor === LIGADOS ? LIGADOS : DESLIGADOS;
 }
 
-// Esta parte é lógica
 export function lerEfeitosNoServidor() {
   return DESCONHECIDO;
 }
 
-// Esta parte é lógica
 // Para funções fora dos componentes (lidas no momento em que rodam).
 export function efeitosLigadosAgora() {
   return typeof document !== "undefined" && lerEfeitos() === LIGADOS;
 }
 
-// Esta parte é lógica
 export function assinarEfeitos(aoMudar) {
   ouvintes.add(aoMudar);
   return () => ouvintes.delete(aoMudar);
 }
 
-// Esta parte é lógica
 // A escolha salva pela pessoa, ou null se ela nunca mexeu no interruptor
 // (ou se o armazenamento falhar, como no modo privado de alguns
 // navegadores).
@@ -68,7 +63,6 @@ export function lerEscolhaSalva() {
   }
 }
 
-// Esta parte é lógica
 // Muda o estado na hora, para a página inteira. "salvar": true quando a
 // mudança veio do interruptor (a escolha da pessoa); false quando veio do
 // aparelho (assim o aparelho continua mandando até a pessoa escolher).

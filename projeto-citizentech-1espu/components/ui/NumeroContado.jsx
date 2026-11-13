@@ -16,7 +16,6 @@ import { formatarNumero, useContagem } from "@/hooks/useContagem";
   Props: valor, casas (decimais), antes, depois, textoReal, className.
 */
 export default function NumeroContado({ valor, casas = 0, antes = "", depois = "", textoReal, className = "" }) {
-  // Esta parte é lógica
   const refNumero = useContagem({ valor, casas, antes, depois });
 
   return (

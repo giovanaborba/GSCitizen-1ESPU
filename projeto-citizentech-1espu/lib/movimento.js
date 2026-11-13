@@ -19,7 +19,6 @@ import { useGSAP } from "@gsap/react";
   "tremeria". Com um relógio só (o do GSAP), os dois andam juntos.
 */
 
-// Esta parte é lógica
 // Registra os plugins uma única vez, e só no navegador (no servidor não
 // existe rolagem nem tela).
 let registrado = false;
@@ -30,7 +29,6 @@ export function registrarPluginsGsap() {
   registrado = true;
 }
 
-// Esta parte é lógica
 // Liga o Lenis ao relógio do GSAP e avisa o ScrollTrigger a cada passo
 // da rolagem. Devolve a função que desfaz tudo (usada quando o
 // componente sai da tela).

@@ -58,21 +58,18 @@ const ESTILO_BOTAO =
 const BOTAO_SOLTO = "border-borda bg-superficie text-texto";
 
 export default function ExplorarPulseira() {
-  // Esta parte é lógica
   const giro = useGiroPulseira();
   const { efeitosLigados } = useEfeitos();
   const [parteAtiva, setParteAtiva] = useState(null);
   const [sinalAtivo, setSinalAtivo] = useState(null);
   const [cenaPronta, setCenaPronta] = useState(false);
 
-  // Esta parte é lógica
   function escolherParte(id) {
     const marcar = parteAtiva !== id;
     setParteAtiva(marcar ? id : null);
     if (marcar) giro.irParaParte(id);
   }
 
-  // Esta parte é lógica
   function escolherSinal(id) {
     const marcar = sinalAtivo !== id;
     setSinalAtivo(marcar ? id : null);
@@ -96,7 +93,6 @@ export default function ExplorarPulseira() {
             aoFalhar={() => setCenaPronta(false)}
             className="size-full"
           />
-          {/* Esta parte é lógica */}
           {cenaPronta && (
             <span
               aria-hidden="true"
@@ -107,7 +103,6 @@ export default function ExplorarPulseira() {
           )}
         </div>
 
-        {/* Esta parte é lógica */}
         {cenaPronta && (
           <div role="group" aria-label="Girar a pulseira" className="flex flex-wrap gap-2">
             <button type="button" onClick={() => giro.girar(-45)} className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}>
@@ -128,7 +123,6 @@ export default function ExplorarPulseira() {
             <button type="button" onClick={giro.verFrente} className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}>
               Vista da frente
             </button>
-            {/* Esta parte é lógica */}
             {efeitosLigados && (
               <button
                 type="button"
@@ -136,7 +130,6 @@ export default function ExplorarPulseira() {
                 onClick={giro.alternarGiro}
                 className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}
               >
-                {/* Esta parte é lógica */}
                 {giro.girando ? (
                   // ICONE-Pause-AQUI
                   <EspacoIcone nome="Pause" />
@@ -155,7 +148,6 @@ export default function ExplorarPulseira() {
         <section aria-labelledby="titulo-partes-pulseira" className="grid gap-3 rounded-[1.25rem] border border-borda bg-superficie p-4">
           <h3 id="titulo-partes-pulseira">Partes da pulseira</h3>
           <ul className="flex flex-wrap gap-2">
-            {/* Esta parte é lógica */}
             {PARTES.map((parte) => (
               <li key={parte.id}>
                 <button
@@ -178,7 +170,6 @@ export default function ExplorarPulseira() {
         <section aria-labelledby="titulo-sinais-pulseira" className="grid gap-3 rounded-[1.25rem] border border-borda bg-superficie p-4">
           <h3 id="titulo-sinais-pulseira">Os sinais no pulso</h3>
           <ul className="flex flex-wrap gap-2">
-            {/* Esta parte é lógica */}
             {SINAIS.map((item) => (
               <li key={item.id}>
                 <button

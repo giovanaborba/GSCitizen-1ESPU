@@ -16,14 +16,12 @@ export default function Campo({ nome, rotulo, tipo = "date", valor, aoMudar, err
   const idDica = `dica-${nome}`;
   const idErro = `erro-${nome}`;
 
-  // Esta parte é lógica
   const descricao = [dica && idDica, erro && idErro].filter(Boolean).join(" ") || undefined;
 
   const classesControle = `mt-2 block w-full rounded-campo bg-superficie px-4 py-3 text-texto ${
     erro ? "border-2 border-erro" : "border border-borda"
   }`;
 
-  // Esta parte é lógica
   function aoDigitar(evento) {
     aoMudar(evento.target.value);
   }
@@ -44,7 +42,6 @@ export default function Campo({ nome, rotulo, tipo = "date", valor, aoMudar, err
         </ErroCampo>
       )}
 
-      {/* Esta parte é lógica */}
       {tipo === "textarea" ? (
         <textarea
           id={idCampo}

@@ -50,14 +50,12 @@ const CAMERA_POR_MODO = {
   parar: { posicao: [0, 0.2, 6.4], abertura: 30 },
 };
 
-// Esta parte é lógica
 // Lê a cor da tira no CSS (--cor-faixa-3d).
 export function lerCorDaFaixa() {
   const cor = getComputedStyle(document.documentElement).getPropertyValue("--cor-faixa-3d").trim();
   return cor || "#FC4C02";
 }
 
-// Esta parte é lógica
 // Cria o renderizador. Primeiro pede o WebGL2 ao navegador: se ele não
 // existir (aparelho antigo ou WebGL desligado), lança um erro nosso, sem
 // mensagem no console, e quem chama mostra a descrição em texto. (Se o
@@ -81,7 +79,6 @@ function criarRenderizador(canvas) {
   return renderizador;
 }
 
-// Esta parte é lógica
 // O navegador sabe compilar shaders em paralelo? (extensão
 // KHR_parallel_shader_compile). Sem ela, o compileAsync do Three.js só
 // escreveria um aviso no console, sem ganho: a compilação fica para o
@@ -90,7 +87,6 @@ function compilaEmParalelo(renderizador) {
   return renderizador.extensions.has("KHR_parallel_shader_compile");
 }
 
-// Esta parte é lógica
 // Ambiente de reflexos (RoomEnvironment): uma "sala clara" virtual que se
 // reflete no plástico e no metal. O gerador de reflexos (PMREMGenerator)
 // tem dois shaders próprios, pesados (desfoque e reflexo). Aqui eles são
@@ -133,7 +129,6 @@ async function criarAmbiente(renderizador) {
   return { gerador, sala, ambiente };
 }
 
-// Esta parte é lógica
 // Cria tudo e devolve (numa Promise) as peças, depois de compilar os
 // shaders sem travar a página. "modo": "abertura" | "explorar" | "sinal" |
 // "parar". Sem WebGL, a Promise é rejeitada (quem chama mostra o texto).
@@ -173,7 +168,6 @@ export async function criarCena(canvas, modo) {
     }
   }
 
-  // Esta parte é lógica
   function redimensionar(largura, altura) {
     if (!largura || !altura) return;
     renderizador.setSize(largura, altura, false);
@@ -181,7 +175,6 @@ export async function criarCena(canvas, modo) {
     camera.updateProjectionMatrix();
   }
 
-  // Esta parte é lógica
   // Posição de uma âncora na tela, em pixels da janela (como o
   // getBoundingClientRect), para ligar as linhas da abertura aos links.
   function projetar(nomeDaAncora) {
@@ -196,12 +189,10 @@ export async function criarCena(canvas, modo) {
     };
   }
 
-  // Esta parte é lógica
   function desenhar() {
     renderizador.render(cena, camera);
   }
 
-  // Esta parte é lógica
   // Libera tudo da memória da placa de vídeo (seção 19.1, item 9).
   function liberar() {
     const materiais = new Set();

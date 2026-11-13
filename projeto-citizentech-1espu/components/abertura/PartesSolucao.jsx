@@ -56,7 +56,6 @@ export default function PartesSolucao({ parteAtiva, aoMudarParte, registrarNo, a
         Partes da solução
       </h2>
       <ul className="grid gap-2.5 sm:grid-cols-2 abertura-larga:col-span-full abertura-larga:row-span-3 abertura-larga:grid-cols-subgrid abertura-larga:grid-rows-subgrid">
-        {/* Esta parte é lógica */}
         {PARTES_DA_SOLUCAO.map((item, indice) => {
           const ativa = parteAtiva === item.parte;
           const naEsquerda = indice < 3;

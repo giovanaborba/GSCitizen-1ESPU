@@ -13,7 +13,6 @@ import { useTextoConstroi } from "@/hooks/useTextoConstroi";
   Props: children (os parágrafos) e className.
 */
 export default function TextoConstroi({ children, className = "" }) {
-  // Esta parte é lógica
   const refBloco = useTextoConstroi();
 
   return (

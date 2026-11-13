@@ -28,14 +28,12 @@ import { useEfeitos } from "@/hooks/useEfeitos";
     "cqw", a largura do componente pai em vez da tela).
 */
 
-// Esta parte é lógica
 function tamanhoDaPalavra(texto) {
   const letras = Math.max(5, texto.length);
   return `min(21rem, ${(150 / letras).toFixed(1)}vw)`;
 }
 
 export default function PalavraFundo({ texto, animarTroca = false, className = "inset-0", tamanho }) {
-  // Esta parte é lógica
   const { efeitosLigados } = useEfeitos();
   const duracao = animarTroca && efeitosLigados ? 0.35 : 0;
 

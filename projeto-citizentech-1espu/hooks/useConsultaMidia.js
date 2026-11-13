@@ -16,7 +16,6 @@ import { useSyncExternalStore } from "react";
 // não refazer a assinatura a cada renderização.
 const assinaturas = new Map();
 
-// Esta parte é lógica
 function assinaturaDa(consulta) {
   if (!assinaturas.has(consulta)) {
     assinaturas.set(consulta, (aoMudar) => {
@@ -28,7 +27,6 @@ function assinaturaDa(consulta) {
   return assinaturas.get(consulta);
 }
 
-// Esta parte é lógica
 export function useConsultaMidia(consulta) {
   return useSyncExternalStore(
     assinaturaDa(consulta),

@@ -45,7 +45,6 @@ import { useVideoPulse } from "@/hooks/useVideoPulse";
 const SEM = caminhosDoVideo("animacao-antes-sem");
 const COM = caminhosDoVideo("animacao-antes-com");
 
-// Esta parte é lógica
 // Um lado da comparação: o vídeo ou, sem o arquivo, o marcador
 function LadoVideo({ caminhos, propsVideo, falhou, texto }) {
   if (falhou) return <EspacoImagem texto={texto} formato="livre" className="rounded-none border-0" />;
@@ -63,7 +62,6 @@ function LadoVideo({ caminhos, propsVideo, falhou, texto }) {
   );
 }
 
-// Esta parte é lógica
 function textoDaPosicao(posicao) {
   if (posicao <= 5) return "Só com a Pulse";
   if (posicao >= 95) return "Só sem a Pulse";
@@ -76,7 +74,6 @@ function textoDaPosicao(posicao) {
 const ESTILO_ETIQUETA = "rotulo-mono absolute top-3 rounded-full px-2.5 py-1.5 text-[#1A1A1D]";
 
 export default function AntesDepois() {
-  // Esta parte é lógica
   const [posicao, setPosicao] = useState(50);
   const { refContainer, propsVideo, tocando, falhou, alternarPausa } = useVideoPulse({ quantidade: 2 });
 
@@ -125,7 +122,6 @@ export default function AntesDepois() {
           </span>
         </div>
 
-        {/* Esta parte é lógica */}
         <input
           type="range"
           min="0"
@@ -139,7 +135,6 @@ export default function AntesDepois() {
         />
       </div>
 
-      {/* Esta parte é lógica */}
       {!falhou && <ControlesVideo tocando={tocando} aoAlternarPausa={alternarPausa} />}
 
       <div id="antes-depois-textos" className="grid grid-cols-1 gap-4 md:grid-cols-2">

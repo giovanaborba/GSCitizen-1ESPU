@@ -21,7 +21,6 @@ const PALAVRAS = ["Atravessar", "a", "rua", "não", "deveria", "depender", "de"]
 const DESTAQUE = "adivinhar.";
 
 export default function FraseAcende() {
-  // Esta parte é lógica
   const refFrase = useFraseAcende();
 
   return (
@@ -29,7 +28,6 @@ export default function FraseAcende() {
       <p className="frase-acende max-w-[20ch] text-[clamp(1.9rem,5.6vw,3.6rem)] leading-[1.18] font-bold tracking-[-0.01em]">
         <span className="sr-only">Atravessar a rua não deveria depender de adivinhar.</span>
         <span ref={refFrase} aria-hidden="true">
-          {/* Esta parte é lógica */}
           {PALAVRAS.map((palavra, i) => (
             <span key={i}>
               <span data-palavra="">{palavra}</span>{" "}

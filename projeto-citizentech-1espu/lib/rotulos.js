@@ -46,7 +46,6 @@ export const OPCOES = {
   ],
 };
 
-// Esta parte é lógica
 /**
  * Rótulo de um valor. Ex.: rotuloDe("meio", "metro") → "Metrô ou trem".
  * Valor desconhecido → texto vazio (a tela não quebra).
@@ -69,7 +68,6 @@ const ETIQUETAS = {
   },
 };
 
-// Esta parte é lógica
 /** As 3 etiquetas de um registro, na ordem da seção 7.1. Ignora valores desconhecidos. */
 export function etiquetasDoRegistro(registro) {
   return [
@@ -79,7 +77,6 @@ export function etiquetasDoRegistro(registro) {
   ].filter(Boolean);
 }
 
-// Esta parte é lógica
 /** Texto das observações no "Ver registro": o texto, ou "Nenhuma" (seção 7.4). */
 export function textoObservacoes(observacoes) {
   const texto = (observacoes ?? "").trim();
@@ -89,7 +86,6 @@ export function textoObservacoes(observacoes) {
 /* ------------------------------------------------------------------
    Indicadores do resumo (seção 7.1)
    ------------------------------------------------------------------ */
-// Esta parte é lógica
 /** "1 deslocamento registrado" / "2 deslocamentos registrados". */
 export function rotuloTotal(total) {
   return total === 1 ? "deslocamento registrado" : "deslocamentos registrados";

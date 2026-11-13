@@ -34,12 +34,10 @@ export function ProvedorGuardaDeSaida({ children }) {
   const bloqueado = useRef(false);
   const [destinoPendente, setDestinoPendente] = useState(null);
 
-  // Esta parte é lógica
   function definirBloqueio(valor) {
     bloqueado.current = valor;
   }
 
-  // Esta parte é lógica
   function aoNavegar(evento, destino) {
     if (!bloqueado.current) {
       // Saída livre: a transição de piso tátil cuida da navegação
@@ -50,7 +48,6 @@ export function ProvedorGuardaDeSaida({ children }) {
     setDestinoPendente(destino);
   }
 
-  // Esta parte é lógica
   function aoDescartar() {
     const destino = destinoPendente;
     bloqueado.current = false;
@@ -59,7 +56,6 @@ export function ProvedorGuardaDeSaida({ children }) {
     irPara(destino);
   }
 
-  // Esta parte é lógica
   function aoContinuar() {
     setDestinoPendente(null);
   }
@@ -80,7 +76,6 @@ export function ProvedorGuardaDeSaida({ children }) {
   );
 }
 
-// Esta parte é lógica
 export function useGuardaDeSaida() {
   const contexto = useContext(ContextoGuarda);
   if (!contexto) {

@@ -10,7 +10,6 @@ export const metadata = {
   title: "Registro",
 };
 
-// Esta parte é lógica
 // No Next 16, "params" é uma Promise: é preciso esperar (await) para ler o id.
 export default async function PaginaRegistro({ params }) {
   const { id } = await params;

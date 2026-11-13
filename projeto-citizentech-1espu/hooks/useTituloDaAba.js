@@ -15,7 +15,6 @@ import { useEffect } from "react";
 
   Com null, mantém o título que a página já tem.
 */
-// Esta parte é lógica
 export function useTituloDaAba(titulo) {
   useEffect(() => {
     if (!titulo) return;

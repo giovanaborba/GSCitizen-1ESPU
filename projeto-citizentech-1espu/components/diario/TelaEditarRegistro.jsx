@@ -26,23 +26,19 @@ export default function TelaEditarRegistro({ id }) {
   const { definirMensagem } = useMensagemDiario();
   const [tentativas, setTentativas] = useState(0);
 
-  // Esta parte é lógica
   useTituloDaAba(naoEncontrado ? "Registro não encontrado" : null);
 
-  // Esta parte é lógica
   function aoTentarDeNovo() {
     setTentativas((anterior) => anterior + 1);
     recarregar();
   }
 
-  // Esta parte é lógica
   async function aoSalvar(dados) {
     await atualizar(id, dados);
     definirMensagem({ tipo: "sucesso", texto: "Registro salvo." });
     router.push("/diario");
   }
 
-  // Esta parte é lógica
   if (naoEncontrado) {
     return (
       <div className="margem-lateral mx-auto max-w-texto py-8">
@@ -62,7 +58,6 @@ export default function TelaEditarRegistro({ id }) {
         resumo="Conte como foi um deslocamento que você já fez."
       />
 
-      {/* Esta parte é lógica */}
       {carregando && <EstadoTela tipo="carregando" />}
       {erro && (
         <EstadoTela

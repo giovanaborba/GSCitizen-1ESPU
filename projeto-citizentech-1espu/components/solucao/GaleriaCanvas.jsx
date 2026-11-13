@@ -98,7 +98,6 @@ function ConteudoFoto({ foto }) {
 }
 
 export default function GaleriaCanvas() {
-  // Esta parte é lógica
   const { modoCanvas, x, y, arrastando, refJanela, eventosJanela, aoTeclarControles, mover, centralizar, aoFocarFoto } =
     useGaleriaCanvas();
 
@@ -112,7 +111,6 @@ export default function GaleriaCanvas() {
         Onde a Pulse faz diferença: calçadas, travessias e transporte público.
       </p>
 
-      {/* Esta parte é lógica */}
       {modoCanvas ? (
         <div className="mt-8 grid gap-3">
           <p id="instrucao-galeria" className="text-auxiliar text-texto-2">
@@ -136,7 +134,6 @@ export default function GaleriaCanvas() {
               style={{ x, y }}
               className="absolute top-0 left-0 h-[1500px] w-[2400px]"
             >
-              {/* Esta parte é lógica */}
               {FOTOS.map((foto) => (
                 <li key={foto.legenda} style={{ left: foto.x, top: foto.y }} className="absolute w-[300px]">
                   {/* Recebe o foco pelo Tab: o plano a leva para o meio */}
@@ -183,7 +180,6 @@ export default function GaleriaCanvas() {
         </div>
       ) : (
         <ul className="mt-8 grid grid-cols-[repeat(auto-fill,minmax(min(100%,15rem),1fr))] gap-4">
-          {/* Esta parte é lógica */}
           {FOTOS.map((foto) => (
             <li key={foto.legenda}>
               <figure className="grid gap-2">

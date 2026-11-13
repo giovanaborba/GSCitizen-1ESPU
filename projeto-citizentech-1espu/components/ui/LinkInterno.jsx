@@ -18,7 +18,6 @@ import { useGuardaDeSaida } from "@/hooks/useGuardaDeSaida";
 export default function LinkInterno({ href, onNavigate, ...resto }) {
   const { aoNavegar } = useGuardaDeSaida();
 
-  // Esta parte é lógica
   function aoNavegarPeloLink(evento) {
     if (onNavigate) {
       onNavigate(evento);

@@ -25,12 +25,10 @@ import { guia, spring } from "@/lib/presetsMovimento";
 */
 const MARGEM_DE_CHEGADA = "0px 0px -12% 0px";
 
-// Esta parte é lógica
 export function useTextoConstroi() {
   const refBloco = useRef(null);
   const { efeitosLigados } = useEfeitos();
 
-  // Esta parte é lógica
   useEffect(() => {
     const bloco = refBloco.current;
     if (!bloco || !efeitosLigados) return;
@@ -41,7 +39,6 @@ export function useTextoConstroi() {
     bloco.style.opacity = String(initial.opacity);
     bloco.style.transform = `translateX(${initial.x}px)`;
 
-    // Esta parte é lógica
     function mostrarNaHora() {
       pararDeObservar();
       animacao?.stop();

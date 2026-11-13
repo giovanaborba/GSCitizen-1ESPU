@@ -26,12 +26,10 @@ import { spring } from "@/lib/presetsMovimento";
 const LIMITE = 8; // px
 const CONSULTA_PONTEIRO_FINO = "(pointer: fine)";
 
-// Esta parte é lógica
 function limitar(valor) {
   return Math.max(-LIMITE, Math.min(LIMITE, valor));
 }
 
-// Esta parte é lógica
 export function useMagnetico() {
   const { efeitosLigados } = useEfeitos();
   const ponteiroFino = useConsultaMidia(CONSULTA_PONTEIRO_FINO);
@@ -39,7 +37,6 @@ export function useMagnetico() {
   const x = useSpring(0, spring.rapida);
   const y = useSpring(0, spring.rapida);
 
-  // Esta parte é lógica
   // Desligou os efeitos (ou trocou o mouse pelo toque) com o conteúdo
   // deslocado: ele volta ao centro na hora, sem animação.
   useEffect(() => {
@@ -48,7 +45,6 @@ export function useMagnetico() {
     y.jump(0);
   }, [ligado, x, y]);
 
-  // Esta parte é lógica
   function aoMover(evento) {
     if (!ligado || evento.pointerType === "touch") return;
     const caixa = evento.currentTarget.getBoundingClientRect();
@@ -56,7 +52,6 @@ export function useMagnetico() {
     y.set(limitar((evento.clientY - caixa.top - caixa.height / 2) * 0.3));
   }
 
-  // Esta parte é lógica
   function aoSair() {
     x.set(0);
     y.set(0);

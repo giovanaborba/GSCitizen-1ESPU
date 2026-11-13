@@ -22,7 +22,6 @@ import { useEffect, useState } from "react";
   (ou null).
 */
 
-// Esta parte é lógica
 function medirSecaoAtual(ids) {
   const raiz = document.documentElement;
   const linha = parseFloat(getComputedStyle(raiz).scrollPaddingTop) || 0;
@@ -42,7 +41,6 @@ function medirSecaoAtual(ids) {
   return atual;
 }
 
-// Esta parte é lógica
 export function useSecaoAtual(itens) {
   const [atual, setAtual] = useState(null);
 

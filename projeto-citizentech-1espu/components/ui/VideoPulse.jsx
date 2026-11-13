@@ -39,7 +39,6 @@ import { useVideoPulse } from "@/hooks/useVideoPulse";
 const ESTILO_BOTAO =
   "inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-borda bg-superficie px-4 text-center font-bold text-texto hover:border-marca";
 
-// Esta parte é lógica
 export function caminhosDoVideo(nome) {
   return {
     video: `/videos/${nome}.mp4`,
@@ -56,7 +55,6 @@ export function caminhosDoVideo(nome) {
 export function ControlesVideo({ tocando, aoAlternarPausa, comSom = false, somLigado = false, aoAlternarSom, className = "" }) {
   return (
     <div className={`flex flex-wrap gap-2 ${className}`}>
-      {/* Esta parte é lógica */}
       <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={aoAlternarPausa} className={ESTILO_BOTAO}>
         {tocando ? (
           // ICONE-Pause-AQUI
@@ -94,7 +92,6 @@ export default function VideoPulse({
   classeCaixa = "",
   classeControles = "",
 }) {
-  // Esta parte é lógica
   const { refContainer, propsVideo, tocando, somLigado, falhou, alternarPausa, alternarSom } = useVideoPulse({
     ativo,
     chave: nome,
@@ -114,12 +111,10 @@ export default function VideoPulse({
       aria-describedby={fundo ? undefined : idDescricao}
       className="size-full object-cover"
     >
-      {/* Esta parte é lógica */}
       {comSom && <track kind="captions" srcLang="pt-BR" label="Português" src={caminhos.legendas} />}
     </video>
   );
 
-  // Esta parte é lógica
   if (fundo) {
     return (
       <div ref={refContainer} aria-hidden="true" className={className}>
@@ -131,14 +126,12 @@ export default function VideoPulse({
   return (
     <div ref={refContainer} className={`grid gap-3 ${className}`}>
       <div className={`relative aspect-video overflow-hidden rounded-cartao bg-[var(--cor-cortina)] ${classeCaixa}`}>
-        {/* Esta parte é lógica */}
         {falhou ? (
           <EspacoImagem texto={`Vídeo ${nome} (a definir)`} formato="livre" className="absolute inset-0" />
         ) : (
           elementoVideo
         )}
       </div>
-      {/* Esta parte é lógica */}
       {!falhou && (
         <ControlesVideo
           tocando={tocando}

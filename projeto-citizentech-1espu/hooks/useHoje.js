@@ -9,13 +9,11 @@ import { hojeISO } from "@/lib/datas";
   no navegador, a data real. Assim o max={hoje} do campo de data nunca
   fica com o dia errado.
 */
-// Esta parte é lógica
 function assinar() {
   // A data não "avisa" quando muda; nada para assinar.
   return () => {};
 }
 
-// Esta parte é lógica
 export function useHoje() {
   return useSyncExternalStore(assinar, hojeISO, () => "");
 }

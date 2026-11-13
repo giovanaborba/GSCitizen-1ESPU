@@ -65,7 +65,6 @@ function ConteudoOds({ ods }) {
       </span>
       <span>
         {ods.nome}
-        {/* Esta parte é lógica */}
         {ods.principal && (
           <>
             {" "}
@@ -80,7 +79,6 @@ function ConteudoOds({ ods }) {
 }
 
 export default function FaixaODS() {
-  // Esta parte é lógica
   const { pausada, alternarPausa, odsEmDestaque, eventosDoOds, refFaixa } = useFaixaODS();
   const destaque = ODS.find((ods) => ods.numero === odsEmDestaque);
 
@@ -100,7 +98,6 @@ export default function FaixaODS() {
           onClick={alternarPausa}
           className="faixa-ods-pausa inline-flex min-h-12 efeitos-desligados:hidden items-center gap-2 rounded-full border-2 border-rodape-borda px-5 font-bold text-rodape-texto hover:border-rodape-destaque"
         >
-          {/* Esta parte é lógica */}
           {pausada ? (
             // ICONE-Play-AQUI
             <EspacoIcone nome="Play" />
@@ -120,7 +117,6 @@ export default function FaixaODS() {
       >
         <div className="faixa-ods-trilho">
           <ul className="faixa-ods-lista">
-            {/* Esta parte é lógica */}
             {ODS.map((ods) => (
               <li key={ods.numero}>
                 <button
@@ -138,7 +134,6 @@ export default function FaixaODS() {
           </ul>
           {/* Cópia que fecha o laço da animação: não é lida e não recebe o Tab */}
           <ul className="faixa-ods-lista" aria-hidden="true">
-            {/* Esta parte é lógica */}
             {ODS.map((ods) => (
               <li key={ods.numero}>
                 <button
@@ -171,7 +166,6 @@ export default function FaixaODS() {
         aria-hidden="true"
         className="mt-4 grid min-h-[5.5rem] content-center gap-1 rounded-cartao border border-dashed border-rodape-borda px-5 py-4"
       >
-        {/* Esta parte é lógica */}
         {destaque ? (
           <>
             <strong className="text-h4 text-rodape-texto">{destaque.nomeNaFrase}</strong>

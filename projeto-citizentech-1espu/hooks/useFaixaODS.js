@@ -13,19 +13,16 @@ import { useRef, useState } from "react";
   Devolve o estado e as funções que tratam os eventos dos botões.
 */
 
-// Esta parte é lógica
 export function useFaixaODS() {
   const [pausada, setPausada] = useState(false);
   const [odsComMouse, setOdsComMouse] = useState(null);
   const [odsComFoco, setOdsComFoco] = useState(null);
   const refFaixa = useRef(null);
 
-  // Esta parte é lógica
   function alternarPausa() {
     setPausada((valor) => !valor);
   }
 
-  // Esta parte é lógica
   // Quando o foco sai de um botão para fora da faixa, ela volta ao começo
   // da rolagem interna. (Com o foco dentro, a faixa rola por dentro até o
   // botão focado; ao sair, a animação recomeça do ponto certo.)
@@ -37,7 +34,6 @@ export function useFaixaODS() {
     }
   }
 
-  // Esta parte é lógica
   // Eventos de cada botão de ODS (numero = "10", "9" ou "11")
   function eventosDoOds(numero) {
     return {

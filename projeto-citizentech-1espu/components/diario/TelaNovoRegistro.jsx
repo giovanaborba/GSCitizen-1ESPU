@@ -17,7 +17,6 @@ export default function TelaNovoRegistro() {
   const { criar } = useRegistros({ carregarAoIniciar: false });
   const { definirMensagem } = useMensagemDiario();
 
-  // Esta parte é lógica
   async function aoSalvar(dados) {
     await criar(dados);
     definirMensagem({ tipo: "sucesso", texto: "Registro salvo." });

@@ -17,11 +17,9 @@ import { useEfeitos } from "@/hooks/useEfeitos";
 */
 const CONSULTA_COM_MOUSE = "(hover: hover) and (pointer: fine)";
 
-// Esta parte é lógica
 export function useFiltroFoto(refFoto) {
   const { efeitosLigados } = useEfeitos();
 
-  // Esta parte é lógica
   useEffect(() => {
     const foto = refFoto.current;
     if (!foto || !efeitosLigados || window.matchMedia(CONSULTA_COM_MOUSE).matches) return;

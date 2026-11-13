@@ -38,7 +38,6 @@ const LINKS = [
 ];
 
 export default function Rodape() {
-  // Esta parte é lógica
   const naSolucao = usePathname() === "/solucao";
   const refRodape = useRodapeRevelado();
 
@@ -55,12 +54,10 @@ export default function Rodape() {
           Pulse
         </p>
 
-        {/* Esta parte é lógica */}
         {naSolucao && <FaixaODS />}
 
         <div className="grid gap-4 border-t border-rodape-borda/50 pt-6">
           <ul className="flex flex-wrap gap-x-6 gap-y-1">
-            {/* Esta parte é lógica */}
             {LINKS.map((link) => (
               <li key={link.href}>
                 <LinkInterno

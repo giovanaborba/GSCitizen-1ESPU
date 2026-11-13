@@ -31,10 +31,8 @@ export default function BotaoMagnetico({
   children,
   ...resto
 }) {
-  // Esta parte é lógica
   const { x, y, aoMover, aoSair } = useMagnetico();
 
-  // Esta parte é lógica
   const eventos = {
     onPointerMove: (evento) => {
       aoMover(evento);
@@ -53,7 +51,6 @@ export default function BotaoMagnetico({
     </motion.span>
   );
 
-  // Esta parte é lógica
   if (href) {
     return (
       <LinkInterno href={href} className={className} {...eventos} {...resto}>

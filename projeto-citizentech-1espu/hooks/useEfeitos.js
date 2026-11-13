@@ -26,7 +26,6 @@ import { createContext, useContext } from "react";
 // O ProvedorMovimento preenche este contexto.
 export const ContextoEfeitos = createContext(null);
 
-// Esta parte é lógica
 export function useEfeitos() {
   const contexto = useContext(ContextoEfeitos);
   if (!contexto) {

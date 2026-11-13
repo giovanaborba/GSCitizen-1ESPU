@@ -13,7 +13,6 @@ import { useProgressoLeitura } from "@/hooks/useProgressoLeitura";
   parada em 0 não diria nada.
 */
 export default function BarraProgresso() {
-  // Esta parte é lógica
   const refBarra = useProgressoLeitura();
 
   return (

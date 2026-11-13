@@ -35,7 +35,6 @@ export { foiCancelado } from "@/services/apiClient";
 
 const CAMINHO = "/registros";
 
-// Esta parte é lógica
 /**
  * Garante que o resto do site receba sempre o mesmo formato, mesmo que a
  * API mande campos a mais ou o id como número.
@@ -58,7 +57,6 @@ function paraRegistro(dados) {
   };
 }
 
-// Esta parte é lógica
 /**
  * Monta o corpo enviado à API: só os campos do formulário, sem id e sem
  * datas de controle (quem gera essas é a API).
@@ -75,7 +73,6 @@ function paraCorpo(dados) {
   };
 }
 
-// Esta parte é lógica
 /**
  * Busca todos os registros.
  * @returns {Promise<object[]>} lista de registros
@@ -103,7 +100,6 @@ export async function listar({ sinal } = {}) {
   return lista.map(paraRegistro);
 }
 
-// Esta parte é lógica
 /**
  * Busca um registro.
  * @param {string} id
@@ -128,7 +124,6 @@ export async function obter(id, { sinal } = {}) {
   return paraRegistro(resposta);
 }
 
-// Esta parte é lógica
 /**
  * Cria um registro. Também é usada pelo "Desfazer" depois de excluir
  * (recria o registro com os mesmos dados, seção 7.5).
@@ -159,7 +154,6 @@ export async function criar(dados, { sinal } = {}) {
   return paraRegistro(resposta);
 }
 
-// Esta parte é lógica
 /**
  * Altera um registro.
  * @param {string} id
@@ -190,7 +184,6 @@ export async function atualizar(id, dados, { sinal } = {}) {
   return paraRegistro(resposta);
 }
 
-// Esta parte é lógica
 /**
  * Exclui um registro.
  * @param {string} id

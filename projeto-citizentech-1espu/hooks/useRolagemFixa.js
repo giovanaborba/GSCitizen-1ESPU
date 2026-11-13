@@ -30,13 +30,11 @@ import { registrarPluginsGsap } from "@/lib/movimento";
 
 const CONSULTA_MODO_FIXO = "(min-height: 560px) and (min-width: 340px)";
 
-// Esta parte é lógica
 // Onde o palco gruda (abaixo do cabeçalho e da faixa do índice), em px.
 function topoDoPalco(palco) {
   return palco ? parseFloat(getComputedStyle(palco).top) || 0 : 0;
 }
 
-// Esta parte é lógica
 export function useRolagemFixa(quantidade) {
   const { efeitosLigados } = useEfeitos();
   const podeFixar = useConsultaMidia(CONSULTA_MODO_FIXO) && efeitosLigados;
@@ -45,7 +43,6 @@ export function useRolagemFixa(quantidade) {
   const refPalco = useRef(null);
   const lenis = useRolagemSuave();
 
-  // Esta parte é lógica
   // Liga o ScrollTrigger só no modo fixo. O useGSAP desfaz tudo sozinho
   // quando o modo desliga ou a pessoa sai da página.
   useGSAP(
@@ -65,7 +62,6 @@ export function useRolagemFixa(quantidade) {
     { dependencies: [podeFixar, quantidade] },
   );
 
-  // Esta parte é lógica
   // No modo fixo, o clique num sinal rola até o meio do trecho dele.
   // Fora do modo fixo, o link funciona normal (vai até o artigo).
   function irPara(indice, evento) {

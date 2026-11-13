@@ -12,7 +12,6 @@
 export default function TituloPagina({ titulo, resumo, rotulo }) {
   return (
     <div>
-      {/* Esta parte é lógica */}
       {rotulo && <p className="rotulo-mono mb-3 text-destaque">{rotulo}</p>}
       <h1 tabIndex={-1} className="max-w-[16ch]">
         {titulo}

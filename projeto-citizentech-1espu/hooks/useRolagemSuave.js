@@ -18,7 +18,6 @@ import { createContext, useContext } from "react";
 // O ProvedorMovimento preenche este contexto com a instância do Lenis.
 export const ContextoRolagemSuave = createContext(null);
 
-// Esta parte é lógica
 export function useRolagemSuave() {
   return useContext(ContextoRolagemSuave);
 }

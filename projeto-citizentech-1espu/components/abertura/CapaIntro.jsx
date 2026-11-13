@@ -30,7 +30,6 @@ import { useConsultaMidia } from "@/hooks/useConsultaMidia";
   Props: refCapa e saindo (do hook) e aoTocar (clique ou toque: sair).
 */
 export default function CapaIntro({ refCapa, saindo, aoTocar }) {
-  // Esta parte é lógica
   const retrato = useConsultaMidia("(orientation: portrait)");
 
   return (

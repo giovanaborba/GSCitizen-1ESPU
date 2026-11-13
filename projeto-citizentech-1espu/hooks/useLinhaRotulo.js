@@ -21,12 +21,10 @@ import { spring } from "@/lib/presetsMovimento";
 */
 const MARGEM_DE_CHEGADA = "0px 0px -15% 0px"; // a seção "chegou" quando passa de 85% da altura da tela
 
-// Esta parte é lógica
 export function useLinhaRotulo() {
   const refLinha = useRef(null);
   const { efeitosLigados } = useEfeitos();
 
-  // Esta parte é lógica
   useEffect(() => {
     const linha = refLinha.current;
     if (!linha || !efeitosLigados) return;

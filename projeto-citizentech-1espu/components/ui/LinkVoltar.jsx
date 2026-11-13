@@ -12,7 +12,6 @@ import { useGuardaDeSaida } from "@/hooks/useGuardaDeSaida";
 export default function LinkVoltar({ href, children }) {
   const { aoNavegar } = useGuardaDeSaida();
 
-  // Esta parte é lógica
   function aoNavegarParaDestino(evento) {
     aoNavegar(evento, href);
   }

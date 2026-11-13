@@ -23,7 +23,6 @@ import { efeitosLigadosAgora } from "@/lib/efeitos";
 const CONSULTA_TELA_LARGA = "(min-width: 62.5rem)"; // 1000 px
 const VELOCIDADE_DO_TRACEJADO = 18; // px por segundo
 
-// Esta parte é lógica
 // Curva suave da parte (a) até o nó do link (l): sai na horizontal e
 // chega na horizontal.
 export function caminhoDaLinha(ax, ay, lx, ly) {
@@ -32,7 +31,6 @@ export function caminhoDaLinha(ax, ay, lx, ly) {
   return `M${n(ax)},${n(ay)} C${n(meio)},${n(ay)} ${n(meio)},${n(ly)} ${n(lx)},${n(ly)}`;
 }
 
-// Esta parte é lógica
 // Escreve as linhas no SVG. "nos": os nós dos links, por nome.
 function desenharLinhas({ svg, palco, nos, parteAtiva, projetar }) {
   if (!svg || !palco || !window.matchMedia(CONSULTA_TELA_LARGA).matches) return;
@@ -63,7 +61,6 @@ function desenharLinhas({ svg, palco, nos, parteAtiva, projetar }) {
   }
 }
 
-// Esta parte é lógica
 export function useLinhasPartes(parteAtiva) {
   const refPalco = useRef(null);
   const refSvg = useRef(null);
@@ -71,12 +68,10 @@ export function useLinhasPartes(parteAtiva) {
   const refUltimaProjecao = useRef(null);
   const refParteAtiva = useRef(parteAtiva);
 
-  // Esta parte é lógica
   useLayoutEffect(() => {
     refParteAtiva.current = parteAtiva;
   });
 
-  // Esta parte é lógica
   // Guarda o elemento do "nó" de cada link (chamada pelo ref do <span>).
   function registrarNo(nome) {
     return (elemento) => {
@@ -85,7 +80,6 @@ export function useLinhasPartes(parteAtiva) {
     };
   }
 
-  // Esta parte é lógica
   // Chamada pela pulseira a cada quadro desenhado.
   function aoDesenhar(projetar) {
     refUltimaProjecao.current = projetar;
@@ -98,7 +92,6 @@ export function useLinhasPartes(parteAtiva) {
     });
   }
 
-  // Esta parte é lógica
   // Se o palco mudar de tamanho com a pulseira parada (pausa, efeitos
   // desligados, janela redimensionada), redesenha com a última posição.
   useEffect(() => {

@@ -44,7 +44,6 @@ const DURACAO_DA_SAIDA = 1; // s
 const DURACAO_DA_CONTAGEM = 1.4; // s (PADRAO_MOVIMENTO_PULSE, item 5c)
 const DURACAO_DO_SUMICO = 0.35; // s (seção 19.6)
 
-// Esta parte é lógica
 function precisaDaCapa() {
   try {
     return !window.sessionStorage.getItem(CHAVE);
@@ -53,7 +52,6 @@ function precisaDaCapa() {
   }
 }
 
-// Esta parte é lógica
 function marcarCapaVista() {
   try {
     window.sessionStorage.setItem(CHAVE, "1");
@@ -67,7 +65,6 @@ const naoAssina = () => () => {};
 // No servidor não há sessão: a página vem sem capa.
 const noServidor = () => false;
 
-// Esta parte é lógica
 export function useCapaIntro() {
   const precisa = useSyncExternalStore(naoAssina, precisaDaCapa, noServidor);
   const [fase, setFase] = useState("preloader");
@@ -82,26 +79,22 @@ export function useCapaIntro() {
   const saindo = capaNaTela && fase === "saindo";
   const preloaderNaTela = capaNaTela && fase === "preloader";
 
-  // Esta parte é lógica
   function terminar() {
     marcarCapaVista();
     setFase("fim");
   }
 
-  // Esta parte é lógica
   function sair() {
     if (!capaNaTela || (fase !== "ativa" && fase !== "preloader")) return;
     setFase("saindo");
   }
 
-  // Esta parte é lógica
   // Efeitos desligados (de verdade, não só "ainda não sei"): não há capa,
   // e ela conta como vista nesta sessão.
   useEffect(() => {
     if (efeitosConhecidos && !efeitosLigados && precisa) marcarCapaVista();
   }, [efeitosConhecidos, efeitosLigados, precisa]);
 
-  // Esta parte é lógica
   // Tira a camada de espera do <head> quando ela já não é necessária: a
   // capa está montada (ela mesma cobre a tela) ou não vai aparecer.
   useEffect(() => {
@@ -110,7 +103,6 @@ export function useCapaIntro() {
     }
   }, [capaNaTela]);
 
-  // Esta parte é lógica
   // Enquanto a capa está na tela, a rolagem suave fica parada (a roda do
   // mouse abre o site, em vez de rolar a página por baixo da capa).
   useEffect(() => {
@@ -119,7 +111,6 @@ export function useCapaIntro() {
     return () => lenis.start();
   }, [capaNaTela, lenis]);
 
-  // Esta parte é lógica
   // Preloader: o número conta de 0 a 100 (desacelerando no fim), depois
   // a camada some e revela a capa. Escreve direto no texto do número, sem
   // redesenhar o componente a cada quadro.
@@ -141,7 +132,6 @@ export function useCapaIntro() {
     return () => linhaDoTempo.kill();
   }, [preloaderNaTela]);
 
-  // Esta parte é lógica
   // Qualquer gesto, tecla ou foco abre o site (também durante o
   // preloader, que então some na hora).
   useEffect(() => {
@@ -160,7 +150,6 @@ export function useCapaIntro() {
     };
   }, [capaNaTela, fase]);
 
-  // Esta parte é lógica
   // Saída em piso tátil: os domos encolhem de 22 px para 0 em 1 s.
   useEffect(() => {
     const capa = refCapa.current;

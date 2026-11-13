@@ -38,7 +38,6 @@ export default function DialogoConfirmacao({
   const idTitulo = useId();
   const idTexto = useId();
 
-  // Esta parte é lógica
   useEffect(() => {
     const dialogo = refDialogo.current;
     if (!dialogo) return;
@@ -54,7 +53,6 @@ export default function DialogoConfirmacao({
     }
   }, [aberto]);
 
-  // Esta parte é lógica
   // Esc: o React controla a abertura, então impede o fechamento automático
   // e avisa quem usa o diálogo.
   function aoPedirParaFechar(evento) {
@@ -62,19 +60,16 @@ export default function DialogoConfirmacao({
     if (!processando) aoCancelar();
   }
 
-  // Esta parte é lógica
   // Garantia: se o navegador fechar o diálogo por conta própria, o estado
   // da tela acompanha.
   function aoFechar() {
     if (aberto) aoCancelar();
   }
 
-  // Esta parte é lógica
   function aoTocarConfirmar() {
     if (!processando) aoConfirmar();
   }
 
-  // Esta parte é lógica
   function aoTocarCancelar() {
     if (!processando) aoCancelar();
   }
@@ -97,7 +92,6 @@ export default function DialogoConfirmacao({
         {texto}
       </p>
 
-      {/* Esta parte é lógica */}
       {erro && (
         <ErroCampo papel="alert" className="mt-4">
           {erro}

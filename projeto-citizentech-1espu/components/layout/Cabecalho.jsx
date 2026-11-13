@@ -24,11 +24,9 @@ import { useDirecaoRolagem } from "@/hooks/useDirecaoRolagem";
   do formulário pelo logo também pergunta "Descartar as respostas?".
 */
 export default function Cabecalho() {
-  // Esta parte é lógica
   const escondido = useDirecaoRolagem();
   const refCabecalho = useRef(null);
 
-  // Esta parte é lógica
   // Mede a altura real do cabeçalho e guarda em --altura-cabecalho. Ela
   // é usada no desconto das âncoras (scroll-padding-top): se o rótulo
   // quebrar linha, o cabeçalho fica mais alto, e o título de destino

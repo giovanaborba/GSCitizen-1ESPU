@@ -25,7 +25,6 @@ const RAIO_MAXIMO = 22; // px: cobre a tela inteira
 const ATRASO_MAXIMO = 0.55;
 const DURACAO_DO_DOMO = 0.45;
 
-// Esta parte é lógica
 // Ajusta o tamanho do canvas à janela (em pixels reais da tela).
 function ajustarTamanho(canvas) {
   const densidade = Math.min(1.75, window.devicePixelRatio || 1);
@@ -40,7 +39,6 @@ function ajustarTamanho(canvas) {
   return { densidade, largura, altura };
 }
 
-// Esta parte é lógica
 // Desenha um quadro. "entrando": true = cobrindo a tela; false = revelando.
 export function desenharDomos(canvas, progresso, entrando, cor) {
   const contexto = canvas.getContext("2d");
@@ -75,7 +73,6 @@ export function desenharDomos(canvas, progresso, entrando, cor) {
   contexto.fill();
 }
 
-// Esta parte é lógica
 export function limparDomos(canvas) {
   canvas.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
 }

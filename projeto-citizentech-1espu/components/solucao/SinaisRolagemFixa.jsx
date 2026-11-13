@@ -89,13 +89,11 @@ const SINAIS = [
   Quadros parados: public/videos/animacao-sinal-(chave)-quadro-parado.jpg
   Legendas: public/videos/animacao-sinal-(chave)-legendas.vtt
 */
-// Esta parte é lógica
 function videoDoSinal(sinal) {
   return `animacao-sinal-${sinal.chave}`;
 }
 
 export default function SinaisRolagemFixa() {
-  // Esta parte é lógica
   const { podeFixar, ativo, refTrilho, refPalco, irPara } = useRolagemFixa(SINAIS.length);
   const sinalAtual = SINAIS[ativo];
 
@@ -133,7 +131,6 @@ export default function SinaisRolagemFixa() {
                     : "flex flex-wrap gap-2"
                 }
               >
-                {/* Esta parte é lógica */}
                 {SINAIS.map((sinal, indice) => {
                   const atual = podeFixar && indice === ativo;
                   return (
@@ -160,7 +157,6 @@ export default function SinaisRolagemFixa() {
               </ol>
             </nav>
 
-            {/* Esta parte é lógica */}
             {podeFixar && (
               <VideoPulse
                 nome={videoDoSinal(sinalAtual)}
@@ -175,7 +171,6 @@ export default function SinaisRolagemFixa() {
 
           {/* Os 4 sinais */}
           <div className={podeFixar ? "relative min-h-0" : "grid gap-12"}>
-            {/* Esta parte é lógica */}
             {SINAIS.map((sinal, indice) => {
               const atual = podeFixar && indice === ativo;
               return (
@@ -205,7 +200,6 @@ export default function SinaisRolagemFixa() {
                       {sinal.titulo}
                     </h3>
                     <dl id={`descricao-${sinal.id}`} className="grid gap-2">
-                      {/* Esta parte é lógica */}
                       {sinal.pares.map(([termo, descricao]) => (
                         <div key={termo} className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
                           <dt className="rotulo-mono text-destaque">{termo}</dt>
@@ -216,7 +210,6 @@ export default function SinaisRolagemFixa() {
                     {/* Lista comum: cada sinal com o seu vídeo (o marcador
                         e os caminhos estão no comentário acima de
                         videoDoSinal) */}
-                    {/* Esta parte é lógica */}
                     {!podeFixar && (
                       <VideoPulse
                         nome={videoDoSinal(sinal)}

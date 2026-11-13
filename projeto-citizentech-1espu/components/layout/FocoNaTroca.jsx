@@ -20,7 +20,6 @@ import { usePathname } from "next/navigation";
   a página até a âncora.
 */
 
-// Esta parte é lógica
 // Devolve o elemento que deve receber o foco e se ele veio de uma âncora.
 function destinoDoFoco() {
   const ancora = window.location.hash.slice(1);
@@ -34,7 +33,6 @@ export default function FocoNaTroca() {
   const caminho = usePathname();
   const caminhoAnterior = useRef(caminho);
 
-  // Esta parte é lógica
   useEffect(() => {
     // Mesmo caminho = primeiro carregamento (ou o React rodando o efeito
     // duas vezes no modo de desenvolvimento): não faz nada.

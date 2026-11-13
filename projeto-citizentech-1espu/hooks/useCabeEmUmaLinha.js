@@ -22,7 +22,6 @@ import { useEffect, useState } from "react";
 */
 const px = (valor) => parseFloat(valor) || 0;
 
-// Esta parte é lógica
 function larguraNecessaria(lista) {
   const estiloLista = getComputedStyle(lista);
   const links = [...lista.querySelectorAll("a")];
@@ -48,11 +47,9 @@ function larguraNecessaria(lista) {
   return total;
 }
 
-// Esta parte é lógica
 export function useCabeEmUmaLinha(refLista) {
   const [cabe, setCabe] = useState(null);
 
-  // Esta parte é lógica
   useEffect(() => {
     const lista = refLista.current;
     const espacoDisponivel = lista?.parentElement;

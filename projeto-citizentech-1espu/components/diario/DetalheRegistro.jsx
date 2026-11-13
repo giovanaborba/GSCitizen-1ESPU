@@ -15,7 +15,6 @@ export default function DetalheRegistro({ registro, aoPedirExclusao }) {
   return (
     <>
       <dl className="mt-8 space-y-6">
-        {/* Esta parte é lógica */}
         {CAMPOS.map((campo) => (
           <div key={campo}>
             <dt className="font-bold">{PERGUNTAS[campo]}</dt>

@@ -28,7 +28,6 @@ const ESPERA = 160; // ms depois de a rolagem parar
 const LIMITE = 0.3; // fração da altura da tela
 const CONSULTA = "(min-width: 64rem) and (min-height: 37.5rem)";
 
-// Esta parte é lógica
 function alturaDoTopo() {
   const estilo = getComputedStyle(document.documentElement);
   const cabecalho = parseFloat(estilo.getPropertyValue("--altura-cabecalho")) || 0;
@@ -36,19 +35,16 @@ function alturaDoTopo() {
   return cabecalho + indice;
 }
 
-// Esta parte é lógica
 export function useEncaixe() {
   const { efeitosLigados } = useEfeitos();
   const lenis = useRolagemSuave();
 
-  // Esta parte é lógica
   useEffect(() => {
     if (!efeitosLigados || !lenis) return;
     const consulta = window.matchMedia(CONSULTA);
     let ultimaEntrada = "nenhuma";
     let espera = 0;
 
-    // Esta parte é lógica
     function tentarEncaixe() {
       if (!consulta.matches || ultimaEntrada !== "roda") return;
       const ativo = document.activeElement;
@@ -67,7 +63,6 @@ export function useEncaixe() {
       }
     }
 
-    // Esta parte é lógica
     function aoRolar() {
       clearTimeout(espera);
       espera = setTimeout(tentarEncaixe, ESPERA);

@@ -63,7 +63,6 @@ const SETAS = {
   ArrowDown: [0, -1],
 };
 
-// Esta parte é lógica
 // Mantém o plano dentro da janela: de 0 até (janela − plano).
 function limitar(janela, valorX, valorY) {
   const minimoX = Math.min(0, janela.clientWidth - TAMANHO_PLANO.largura);
@@ -71,7 +70,6 @@ function limitar(janela, valorX, valorY) {
   return [Math.max(minimoX, Math.min(0, valorX)), Math.max(minimoY, Math.min(0, valorY))];
 }
 
-// Esta parte é lógica
 // Se o navegador rolou a janela (para mostrar uma foto com foco), a
 // rolagem vira deslocamento do plano, e a janela volta ao 0. Devolve true
 // se havia rolagem.
@@ -86,7 +84,6 @@ function absorverRolagemDaJanela(janela, x, y) {
   return true;
 }
 
-// Esta parte é lógica
 export function useGaleriaCanvas() {
   const { efeitosLigados } = useEfeitos();
   const telaGrande = useConsultaMidia(CONSULTA_CANVAS);
@@ -103,14 +100,12 @@ export function useGaleriaCanvas() {
   // Para onde a mola está levando o plano ([x, y]), ou null
   const refDestino = useRef(null);
 
-  // Esta parte é lógica
   function pararAnimacoes() {
     refAnimacoes.current.forEach((animacao) => animacao.stop());
     refAnimacoes.current = [];
     refDestino.current = null;
   }
 
-  // Esta parte é lógica
   // Leva o plano até (alvoX, alvoY), dentro dos limites, com a mola.
   // "velocidade" (px/s): a mola parte já em movimento (inércia).
   function moverPara(alvoX, alvoY, velocidade = [0, 0]) {
@@ -125,7 +120,6 @@ export function useGaleriaCanvas() {
     ];
   }
 
-  // Esta parte é lógica
   // Ao entrar no modo canvas: plano centralizado nas fotos, sem animação.
   // Se a janela mudar de tamanho, o plano continua dentro dela. Também
   // acompanha a rolagem da janela (ver o comentário do topo).
@@ -166,7 +160,6 @@ export function useGaleriaCanvas() {
     };
   }, [modoCanvas, x, y]);
 
-  // Esta parte é lógica
   function aoApertar(evento) {
     if (evento.button !== 0) return;
     pararAnimacoes();
@@ -182,7 +175,6 @@ export function useGaleriaCanvas() {
     setArrastando(true);
   }
 
-  // Esta parte é lógica
   function aoMover(evento) {
     const arrasto = refArrasto.current;
     if (!arrasto || arrasto.ponteiro !== evento.pointerId) return;
@@ -200,7 +192,6 @@ export function useGaleriaCanvas() {
     }
   }
 
-  // Esta parte é lógica
   // Ao soltar: inércia leve. A velocidade é a dos últimos 100 ms do
   // arrasto; se o ponteiro já estava parado antes de soltar, não há
   // inércia.
@@ -222,7 +213,6 @@ export function useGaleriaCanvas() {
     );
   }
 
-  // Esta parte é lógica
   function aoTeclar(evento) {
     if (evento.key === "Tab") {
       tabularEntreFotos(evento);
@@ -234,7 +224,6 @@ export function useGaleriaCanvas() {
     moverPara(x.get() + direcao[0] * PASSO_TECLA, y.get() + direcao[1] * PASSO_TECLA);
   }
 
-  // Esta parte é lógica
   // Tab (ou Shift+Tab) de uma foto para a vizinha, ou da janela para a
   // primeira foto: foco sem rolar a página; o onFocus da foto chama
   // aoFocarFoto, que leva o plano até ela.
@@ -248,7 +237,6 @@ export function useGaleriaCanvas() {
     fotos[destino].focus({ preventScroll: true });
   }
 
-  // Esta parte é lógica
   // Shift+Tab no primeiro botão de "Mover a galeria" volta para a última
   // foto, também sem rolar a página.
   function aoTeclarControles(evento) {
@@ -261,20 +249,17 @@ export function useGaleriaCanvas() {
     fotos[fotos.length - 1].focus({ preventScroll: true });
   }
 
-  // Esta parte é lógica
   // Botões: dx e dy dizem para onde se quer olhar (−1 = esquerda/cima).
   function mover(dx, dy) {
     moverPara(x.get() - dx * PASSO_BOTAO.x, y.get() - dy * PASSO_BOTAO.y);
   }
 
-  // Esta parte é lógica
   function centralizar() {
     const janela = refJanela.current;
     if (!janela) return;
     moverPara(janela.clientWidth / 2 - CENTRO_FOTOS.x, janela.clientHeight / 2 - CENTRO_FOTOS.y);
   }
 
-  // Esta parte é lógica
   // Foco numa foto (teclado ou leitor de tela): o plano a leva para o
   // meio da janela. Um clique para arrastar também pode focar a foto, mas
   // aí o plano segue o arrasto, e não o foco.

@@ -18,13 +18,11 @@ import { useEfeitos } from "@/hooks/useEfeitos";
 
   Devolve a ref que vai na barra.
 */
-// Esta parte é lógica
 export function useProgressoLeitura() {
   const refBarra = useRef(null);
   const { efeitosLigados } = useEfeitos();
   const caminho = usePathname();
 
-  // Esta parte é lógica
   useEffect(() => {
     const barra = refBarra.current;
     if (!barra || !efeitosLigados) return;

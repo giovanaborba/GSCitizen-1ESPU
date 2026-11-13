@@ -25,7 +25,6 @@ import { useConsultaMidia } from "@/hooks/useConsultaMidia";
 */
 const CONSULTA_FIXA = "(min-width: 64rem) and (min-height: 37.5rem)";
 
-// Esta parte é lógica
 export function useComoFuncionaFundo() {
   const { efeitosLigados } = useEfeitos();
   const telaFixa = useConsultaMidia(CONSULTA_FIXA);
@@ -35,7 +34,6 @@ export function useComoFuncionaFundo() {
   // Índice do item com o mouse em cima (null = nenhum)
   const refItemMouse = useRef(null);
 
-  // Esta parte é lógica
   // Rolagem: o item que cruza a faixa do meio da tela fica ativo.
   useEffect(() => {
     const lista = refLista.current;
@@ -54,7 +52,6 @@ export function useComoFuncionaFundo() {
     return () => observador.disconnect();
   }, [modoFixo]);
 
-  // Esta parte é lógica
   function propsDoItem(indice) {
     return {
       onPointerEnter: (evento) => {

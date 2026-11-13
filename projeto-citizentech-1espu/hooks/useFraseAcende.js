@@ -19,12 +19,10 @@ import { useEfeitos } from "@/hooks/useEfeitos";
 
   Devolve a ref que vai no contêiner das palavras.
 */
-// Esta parte é lógica
 export function useFraseAcende() {
   const refFrase = useRef(null);
   const { efeitosLigados } = useEfeitos();
 
-  // Esta parte é lógica
   useEffect(() => {
     const frase = refFrase.current;
     if (!frase || !efeitosLigados) return;

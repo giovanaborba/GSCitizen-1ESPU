@@ -53,7 +53,6 @@ export default function Secao({
   className = "",
   children,
 }) {
-  // Esta parte é lógica
   const classesSecao = banda ? "relative isolate mt-20 py-18" : "mt-20";
   const classesGrade = duasColunas ? "lg:grid lg:grid-cols-2 lg:gap-x-12" : "";
   const classesRotulo = duasColunas ? "lg:col-start-1 lg:row-start-1" : "";
@@ -69,7 +68,6 @@ export default function Secao({
       data-encaixe={encaixe ? "" : undefined}
       className={`${classesSecao} ${classesGrade} ${className}`}
     >
-      {/* Esta parte é lógica */}
       {banda && (
         <>
           <span

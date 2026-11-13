@@ -22,7 +22,6 @@ import { useEfeitos } from "@/hooks/useEfeitos";
 const ROTAS_COM_BARRAS_QUE_SOMEM = ["/", "/solucao"];
 const CONSULTA_CELULAR = "(max-width: 47.99rem)"; // abaixo de 768 px
 
-// Esta parte é lógica
 export function useDirecaoRolagem() {
   const caminho = usePathname();
   const { efeitosLigados } = useEfeitos();
@@ -32,7 +31,6 @@ export function useDirecaoRolagem() {
   // a rota nova é diferente, então as barras voltam sozinhas.
   const [rotaEscondida, setRotaEscondida] = useState(null);
 
-  // Esta parte é lógica
   useEffect(() => {
     if (!ativo || !efeitosLigados) return;
 
@@ -48,7 +46,6 @@ export function useDirecaoRolagem() {
     const esconder = () => setRotaEscondida(caminho);
     const mostrar = () => setRotaEscondida(null);
 
-    // Esta parte é lógica
     function aoRolar() {
       const posicao = window.scrollY;
 
@@ -87,7 +84,6 @@ export function useDirecaoRolagem() {
       ultimaPosicao = posicao;
     }
 
-    // Esta parte é lógica
     function aoReceberFoco(evento) {
       if (evento.target instanceof Element && evento.target.closest("[data-barra-rolagem]")) {
         mostrar();

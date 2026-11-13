@@ -151,7 +151,6 @@ export default function PaginaSolucao() {
         {/* Os 3 passos: o número grande é decorativo (aria-hidden); a
             lista numerada <ol> já diz a ordem ao leitor de tela. */}
         <ol id="passos-pulseira" className="grid gap-4 md:grid-cols-3">
-          {/* Esta parte é lógica */}
           {PASSOS.map((passo) => (
             <Cartao as="li" key={passo.numero} className="grid content-start gap-2">
               <span aria-hidden="true" className="font-titulo text-5xl leading-none text-destaque">
@@ -214,7 +213,6 @@ export default function PaginaSolucao() {
         {/* Grade de 8 cartões que viram (19.8): 1 coluna no celular, 2 a
             partir de 40rem e 4 a partir de 64rem, sem rolagem lateral */}
         <ul className="grid grid-cols-1 gap-3 min-[40rem]:grid-cols-2 lg:grid-cols-4">
-          {/* Esta parte é lógica */}
           {TECNOLOGIAS.map((tecnologia) => (
             <CartaoTecnologia
               key={tecnologia.nome}
