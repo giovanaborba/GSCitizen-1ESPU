@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Cartao from "@/components/ui/Cartao";
 import EspacoIcone from "@/components/ui/EspacoIcone";
+import EspacoImagem from "@/components/ui/EspacoImagem";
+import { ControlesVideo, caminhosDoVideo } from "@/components/ui/VideoPulse";
+import { useVideoPulse } from "@/hooks/useVideoPulse";
 
 /*
   AntesDepois — comparação "Sem a Pulse" × "Com a Pulse" (seções 19.7 e
@@ -32,10 +34,34 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
     de só "50";
   - as animações são aria-hidden: os textos dizem o mesmo.
 
-  Vídeos: nesta subfase (9.7), cada lado mostra o quadro parado que já
-  está em public/videos/. Na 9.8, entram os dois vídeos gêmeos (VideoPulse),
-  mudos, que tocam e pausam juntos, com o mesmo currentTime.
+  Vídeos gêmeos (9.8): os dois são mudos e tocam e pausam juntos, com o
+  mesmo tempo (useVideoPulse com quantidade 2). Um só botão "Pausar" /
+  "Reproduzir", logo abaixo da comparação, vale para os dois (WCAG
+  2.2.2): eles andam mais de 5 s. Os vídeos ficam aria-hidden (19.7).
+  Efeitos desligados: os dois mostram o quadro parado, e "Reproduzir"
+  toca os dois uma vez. Sem os arquivos, cada lado mostra o marcador.
 */
+
+const SEM = caminhosDoVideo("animacao-antes-sem");
+const COM = caminhosDoVideo("animacao-antes-com");
+
+// Esta parte é lógica
+// Um lado da comparação: o vídeo ou, sem o arquivo, o marcador
+function LadoVideo({ caminhos, propsVideo, falhou, texto }) {
+  if (falhou) return <EspacoImagem texto={texto} formato="livre" className="rounded-none border-0" />;
+  return (
+    <video
+      {...propsVideo}
+      src={caminhos.video}
+      data-src={caminhos.video}
+      poster={caminhos.quadroParado}
+      muted
+      playsInline
+      preload="metadata"
+      className="size-full object-cover"
+    />
+  );
+}
 
 // Esta parte é lógica
 function textoDaPosicao(posicao) {
@@ -52,6 +78,7 @@ const ESTILO_ETIQUETA = "rotulo-mono absolute top-3 rounded-full px-2.5 py-1.5 t
 export default function AntesDepois() {
   // Esta parte é lógica
   const [posicao, setPosicao] = useState(50);
+  const { refContainer, propsVideo, tocando, falhou, alternarPausa } = useVideoPulse({ quantidade: 2 });
 
   return (
     <>
@@ -61,6 +88,7 @@ export default function AntesDepois() {
       </p>
 
       <div
+        ref={refContainer}
         style={{ "--posicao": `${posicao}%` }}
         className="relative aspect-[4/5] w-full max-w-[56rem] touch-pan-y overflow-hidden rounded-[1.5rem] border-2 border-borda bg-[var(--cor-cortina)] min-[32.5rem]:aspect-[16/10] has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-3 has-[input:focus-visible]:outline-marca"
       >
@@ -69,13 +97,7 @@ export default function AntesDepois() {
             Vídeo: public/videos/animacao-antes-sem.mp4 (sem som, gêmeo do "com")
             Quadro parado: public/videos/animacao-antes-sem-quadro-parado.jpg */}
         <div aria-hidden="true" className="absolute inset-0">
-          <Image
-            src="/videos/animacao-antes-sem-quadro-parado.jpg"
-            alt=""
-            fill
-            sizes="(min-width: 56rem) 56rem, 100vw"
-            className="object-cover"
-          />
+          <LadoVideo caminhos={SEM} propsVideo={propsVideo(0)} falhou={falhou} texto="Vídeo animacao-antes-sem (a definir)" />
           <span className={`${ESTILO_ETIQUETA} left-3 bg-[#FFFFFF]`}>Sem a Pulse</span>
         </div>
 
@@ -84,13 +106,7 @@ export default function AntesDepois() {
             Vídeo: public/videos/animacao-antes-com.mp4 (sem som, gêmeo do "sem")
             Quadro parado: public/videos/animacao-antes-com-quadro-parado.jpg */}
         <div aria-hidden="true" className="absolute inset-0 [clip-path:inset(0_0_0_var(--posicao))]">
-          <Image
-            src="/videos/animacao-antes-com-quadro-parado.jpg"
-            alt=""
-            fill
-            sizes="(min-width: 56rem) 56rem, 100vw"
-            className="object-cover"
-          />
+          <LadoVideo caminhos={COM} propsVideo={propsVideo(1)} falhou={falhou} texto="Vídeo animacao-antes-com (a definir)" />
           <span className={`${ESTILO_ETIQUETA} right-3 bg-[#FC4C02]`}>Com a Pulse</span>
         </div>
 
@@ -122,6 +138,9 @@ export default function AntesDepois() {
           className="absolute inset-0 m-0 size-full cursor-ew-resize opacity-0"
         />
       </div>
+
+      {/* Esta parte é lógica */}
+      {!falhou && <ControlesVideo tocando={tocando} aoAlternarPausa={alternarPausa} />}
 
       <div id="antes-depois-textos" className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Cartao compacto className="grid content-start gap-1.5">

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import RotuloSecao from "@/components/layout/RotuloSecao";
+import VideoPulse from "@/components/ui/VideoPulse";
 import { useComoFuncionaFundo } from "@/hooks/useComoFuncionaFundo";
 import { spring } from "@/lib/presetsMovimento";
 
@@ -15,8 +16,11 @@ import { spring } from "@/lib/presetsMovimento";
      efeitos ligados):
      - um fundo do tamanho da tela fica preso (position: sticky) atrás da
        seção, e os 4 itens rolam por cima dele, como cartões;
-     - o fundo mostra a animação do item ativo e troca com o mouse, o
-       foco ou a rolagem (useComoFuncionaFundo), em 0,4 s (spring.suave);
+     - o fundo mostra a animação do item ativo (vídeo de fundo, sem som,
+       em loop) e troca com o mouse, o foco ou a rolagem
+       (useComoFuncionaFundo), em 0,4 s (spring.suave). Só o vídeo do item
+       ativo toca; os outros ficam parados e escondidos. Quem pausa o
+       fundo é o botão "Efeitos" do cabeçalho (como a faixa de texto);
      - o item ativo ganha o contorno laranja;
      - o texto fica sempre sobre o cartão sólido (o "véu" da 19.13), então
        o fundo nunca baixa o contraste.
@@ -35,10 +39,8 @@ import { spring } from "@/lib/presetsMovimento";
   - Âncoras dos links da abertura (18.8): os H3 "Semáforos em tempo
     real", "Dois modos" e "Transporte público" têm id e tabIndex={-1}.
 
-  Vídeos: nesta subfase (9.7), o fundo e as miniaturas usam os quadros
-  parados que já estão em public/videos/. Na 9.8, o fundo passa a ser o
-  vídeo (VideoPulse), mudo, em loop, tocando só o do item ativo e só na
-  tela; as miniaturas continuam sendo os quadros parados.
+  Vídeos (9.8): o fundo é o VideoPulse "fundo" (mudo, em loop, só o do
+  item ativo e só na tela); as miniaturas são os quadros parados.
 */
 
 /*
@@ -173,7 +175,7 @@ export default function ComoFuncionaFundo() {
             className="absolute inset-0"
           >
             {/* O marcador VIDEO-…-AQUI e os caminhos estão na lista ITENS */}
-            <Image src={quadroParado(item.video)} alt="" fill sizes="100vw" className="object-cover" />
+            <VideoPulse nome={item.video} fundo ativo={modoFixo && ativo === indice} className="size-full" />
           </motion.div>
         ))}
       </div>

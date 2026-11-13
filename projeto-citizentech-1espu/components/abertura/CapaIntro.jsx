@@ -1,4 +1,8 @@
+"use client";
+
 import EspacoIcone from "@/components/ui/EspacoIcone";
+import VideoPulse from "@/components/ui/VideoPulse";
+import { useConsultaMidia } from "@/hooks/useConsultaMidia";
 
 /*
   CapaIntro — capa da primeira visita da sessão (seções 18.6 e 18.14).
@@ -12,10 +16,23 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
     texto #FFFFFF sobre #1A1A1D (17,4:1); laranja #FC4C02 sobre #1A1A1D
     (5,1:1); texto grafite #242428 sobre o laranja (4,55:1).
   - A frase fica sobre uma faixa sólida (seção 18.6).
+  - Fundo (19.13): o vídeo da capa, sem som, em loop contínuo, no lugar
+    das imagens. Com a tela "em pé" (retrato), o vertical; deitada, o
+    horizontal. A escolha é feita só no navegador (a capa nunca vem do
+    servidor). Sem o arquivo, fica o fundo escuro. Com os efeitos
+    desligados, não há capa (useCapaIntro).
+  - Contraste sobre o vídeo (decisão da equipe na 9.8): um véu grafite
+    #1A1A1D a 60% cobre o vídeo, e "PULSE" fica com 7,8:1 ou mais (pior
+    ponto em 8 momentos do loop, de 375 a 1440 px). O rótulo laranja
+    nunca passaria de 4,5:1 sobre o vídeo, então fica numa faixa sólida
+    #1A1A1D, como a frase (5,1:1).
 
   Props: refCapa e saindo (do hook) e aoTocar (clique ou toque: sair).
 */
 export default function CapaIntro({ refCapa, saindo, aoTocar }) {
+  // Esta parte é lógica
+  const retrato = useConsultaMidia("(orientation: portrait)");
+
   return (
     // O clique só pede a saída; a mesma ação existe pelo teclado (qualquer
     // tecla) e pelo foco, então nada depende só do mouse (seção 18.2).
@@ -26,30 +43,19 @@ export default function CapaIntro({ refCapa, saindo, aoTocar }) {
       onClick={aoTocar}
       className="capa-intro"
     >
-      {/*
-        ==================================================================
-        IMAGEM-capa versão computador (horizontal)-AQUI
-        IMAGEM-capa versão celular (vertical)-AQUI
-        alt sugerido (seção 18.13): "Capa da Pulse."
-        ==================================================================
-        A equipe coloca as duas imagens em public/ e troca o <div> vazio
-        logo abaixo por este <picture> (seção 18.12: imagem vertical no
-        celular, horizontal a partir de 768 px):
-
-          <picture>
-            <source media="(min-width: 48rem)" srcSet="/capa-horizontal.jpg" />
-            <img
-              src="/capa-vertical.jpg"
-              alt="Capa da Pulse."
-              className="absolute inset-0 size-full object-cover"
-            />
-          </picture>
-
-        Os nomes dos arquivos são exemplos. Depois de colocar a imagem,
-        confira se o rótulo, a palavra "PULSE" e a dica continuam com
-        contraste de 7:1 (a frase já fica numa faixa sólida).
-      */}
-      <div className="absolute inset-0" />
+      {/* VIDEO-animacao-capa-AQUI e VIDEO-animacao-capa-vertical-AQUI
+          (substituem as imagens da capa, 19.14)
+          Vídeos: public/videos/animacao-capa.mp4 (1280 × 720) e
+                  public/videos/animacao-capa-vertical.mp4 (720 × 1280), sem som
+          Quadros parados: public/videos/animacao-capa-quadro-parado.jpg e
+                           public/videos/animacao-capa-vertical-quadro-parado.jpg */}
+      <VideoPulse
+        nome={retrato ? "animacao-capa-vertical" : "animacao-capa"}
+        fundo
+        className="absolute inset-0"
+      />
+      {/* Véu sobre o vídeo, para o texto da capa ter contraste */}
+      <div className="absolute inset-0 bg-[rgba(26,26,29,0.6)]" />
 
       {/* O logo "pulsa" uma vez (até 1 s). É código, não imagem (18.13). */}
       <div className="capa-logo absolute inset-0 grid place-items-center efeitos-desligados:hidden">
@@ -69,7 +75,7 @@ export default function CapaIntro({ refCapa, saindo, aoTocar }) {
       </div>
 
       <div className="capa-conteudo absolute inset-0 grid content-center justify-items-center gap-4 overflow-hidden px-[max(1rem,env(safe-area-inset-left))] py-6 text-center">
-        <span className="rotulo-mono text-[#FC4C02]">GS 2026.2 · CitizenTech</span>
+        <span className="rotulo-mono rounded-[0.625rem] bg-[#1A1A1D] px-3 py-1.5 text-[#FC4C02]">GS 2026.2 · CitizenTech</span>
         <span className="font-titulo text-[clamp(5.5rem,24vw,17rem)] leading-[0.85] tracking-[0.01em] uppercase">
           Pulse
         </span>

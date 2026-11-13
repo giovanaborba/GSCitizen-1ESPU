@@ -29,18 +29,19 @@ import { spring } from "@/lib/presetsMovimento";
     velocidade do arrasto e para onde o plano chegaria em 0,25 s. O
     arrasto segue o ponteiro, sem mola.
   - "Esquerda" mostra o que está à esquerda: o plano anda para a direita.
-  - Foco numa foto fora da vista, sem a página pular: quando uma foto
-    recebe o foco, o navegador rola, ANTES do evento de foco, o que for
-    preciso para mostrá-la onde ela estava:
-    - a página, se a foto estava acima ou à esquerda da janela. O hook
-      guarda a última rolagem conhecida da página (o evento "scroll" só
-      chega no quadro seguinte) e a devolve no foco, antes de a tela ser
-      pintada;
-    - a janela, se a foto estava abaixo ou à direita. A janela é um
-      contêiner de rolagem escondido (overflow: hidden, sem barra e sem
-      roda do mouse): essa rolagem vira deslocamento do plano, e a janela
-      volta ao 0.
-    Depois, a mola leva a foto ao meio da janela.
+  - Foco numa foto fora da vista, sem a página pular. Quando uma foto
+    recebe o foco, o navegador rola o que for preciso para mostrá-la onde
+    ela estava (a página, se ela estava acima da janela). Por isso:
+    1. Tab e Shift+Tab entre as fotos são tratados aqui: a próxima foto
+       recebe o foco com preventScroll (nada rola) e a mola a leva ao
+       meio. O Shift+Tab no botão "Esquerda" volta para a última foto do
+       mesmo jeito. O Tab na última foto e o Shift+Tab na primeira seguem
+       o caminho normal (botão "Esquerda" e a própria janela).
+    2. Foco que chega de outro jeito (leitor de tela): o navegador pode
+       rolar a página para mostrar a foto, e depois a mola a leva ao meio
+       da janela. A janela é um contêiner de rolagem escondido (overflow:
+       hidden, sem barra e sem roda do mouse): se o navegador a rolar, a
+       rolagem vira deslocamento do plano, e a janela volta ao 0.
 
   Devolve: modoCanvas, x, y, arrastando, refJanela, os eventos da janela,
   mover(dx, dy) e centralizar() para os botões e aoFocarFoto para as
@@ -101,8 +102,6 @@ export function useGaleriaCanvas() {
   const refArrasto = useRef(null);
   // Para onde a mola está levando o plano ([x, y]), ou null
   const refDestino = useRef(null);
-  // Última rolagem da página vista pelo evento "scroll"
-  const refRolagemPagina = useRef(0);
 
   // Esta parte é lógica
   function pararAnimacoes() {
@@ -129,13 +128,12 @@ export function useGaleriaCanvas() {
   // Esta parte é lógica
   // Ao entrar no modo canvas: plano centralizado nas fotos, sem animação.
   // Se a janela mudar de tamanho, o plano continua dentro dela. Também
-  // acompanha a rolagem da janela e a da página (ver o comentário do topo).
+  // acompanha a rolagem da janela (ver o comentário do topo).
   useEffect(() => {
     const janela = refJanela.current;
     if (!janela || !modoCanvas) return;
     const animacoes = refAnimacoes;
     const destino = refDestino;
-    const rolagemPagina = refRolagemPagina;
 
     function aoRolarJanela() {
       if (!absorverRolagemDaJanela(janela, x, y) || !destino.current) return;
@@ -143,12 +141,7 @@ export function useGaleriaCanvas() {
       const [destinoX, destinoY] = destino.current;
       animacoes.current = [animate(x, destinoX, spring.suave), animate(y, destinoY, spring.suave)];
     }
-    function aoRolarPagina() {
-      rolagemPagina.current = window.scrollY;
-    }
     janela.addEventListener("scroll", aoRolarJanela);
-    window.addEventListener("scroll", aoRolarPagina, { passive: true });
-    aoRolarPagina();
 
     const [inicioX, inicioY] = limitar(
       janela,
@@ -168,7 +161,6 @@ export function useGaleriaCanvas() {
     return () => {
       observador.disconnect();
       janela.removeEventListener("scroll", aoRolarJanela);
-      window.removeEventListener("scroll", aoRolarPagina);
       animacoes.current.forEach((animacao) => animacao.stop());
       animacoes.current = [];
     };
@@ -232,10 +224,41 @@ export function useGaleriaCanvas() {
 
   // Esta parte é lógica
   function aoTeclar(evento) {
+    if (evento.key === "Tab") {
+      tabularEntreFotos(evento);
+      return;
+    }
     const direcao = SETAS[evento.key];
     if (!direcao) return;
     evento.preventDefault();
     moverPara(x.get() + direcao[0] * PASSO_TECLA, y.get() + direcao[1] * PASSO_TECLA);
+  }
+
+  // Esta parte é lógica
+  // Tab (ou Shift+Tab) de uma foto para a vizinha, ou da janela para a
+  // primeira foto: foco sem rolar a página; o onFocus da foto chama
+  // aoFocarFoto, que leva o plano até ela.
+  function tabularEntreFotos(evento) {
+    const fotos = [...evento.currentTarget.querySelectorAll("figure")];
+    const atual = fotos.indexOf(document.activeElement); // −1 = a janela
+    const destino = atual + (evento.shiftKey ? -1 : 1);
+    if (atual === -1 && evento.shiftKey) return; // sai da galeria para trás
+    if (destino < 0 || destino >= fotos.length) return; // caminho normal
+    evento.preventDefault();
+    fotos[destino].focus({ preventScroll: true });
+  }
+
+  // Esta parte é lógica
+  // Shift+Tab no primeiro botão de "Mover a galeria" volta para a última
+  // foto, também sem rolar a página.
+  function aoTeclarControles(evento) {
+    const janela = refJanela.current;
+    const primeiroBotao = evento.currentTarget.querySelector("button");
+    if (evento.key !== "Tab" || !evento.shiftKey || !janela || document.activeElement !== primeiroBotao) return;
+    const fotos = janela.querySelectorAll("figure");
+    if (!fotos.length) return;
+    evento.preventDefault();
+    fotos[fotos.length - 1].focus({ preventScroll: true });
   }
 
   // Esta parte é lógica
@@ -259,11 +282,8 @@ export function useGaleriaCanvas() {
     const janela = refJanela.current;
     const item = evento.currentTarget.closest("li");
     if (!janela || !item || refArrasto.current) return;
-    // Desfaz a rolagem que o navegador fez para mostrar a foto onde ela
-    // estava (a página volta; a rolagem da janela vira posição do plano)
-    if (window.scrollY !== refRolagemPagina.current) {
-      window.scrollTo({ top: refRolagemPagina.current, behavior: "instant" });
-    }
+    // Se o navegador rolou a janela para mostrar a foto, essa rolagem vira
+    // posição do plano
     absorverRolagemDaJanela(janela, x, y);
     moverPara(
       janela.clientWidth / 2 - (item.offsetLeft + item.offsetWidth / 2),
@@ -284,6 +304,7 @@ export function useGaleriaCanvas() {
       onPointerCancel: aoSoltar,
       onKeyDown: aoTeclar,
     },
+    aoTeclarControles,
     mover,
     centralizar,
     aoFocarFoto,

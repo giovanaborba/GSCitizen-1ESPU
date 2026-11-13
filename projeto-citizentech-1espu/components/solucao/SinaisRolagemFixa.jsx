@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import Pulseira3D from "@/components/pulseira/Pulseira3D";
 import EspacoImagem from "@/components/ui/EspacoImagem";
-import EspacoIcone from "@/components/ui/EspacoIcone";
+import VideoPulse from "@/components/ui/VideoPulse";
 import { useRolagemFixa } from "@/hooks/useRolagemFixa";
 import RotuloSecao from "@/components/layout/RotuloSecao";
 
@@ -12,8 +10,8 @@ import RotuloSecao from "@/components/layout/RotuloSecao";
 
   Ordem no HTML (é a do leitor de tela, seção 18.15): rótulo, H2 e texto
   → navegação "Sinais" (4 links; o atual com aria-current="step") →
-  pulseira pequena (decorativa) e "Pausar animação" → os 4 sinais, cada
-  um num <article> com a foto, o H3 e os pares "Modo tátil:"…
+  vídeo do sinal atual (só no modo fixo) → os 4 sinais, cada um num
+  <article> com a foto, o H3 e os pares "Modo tátil:"…
 
   Modo fixo (computador e celular, com os efeitos ligados, janela com
   pelo menos 560 × 340 px — ver useRolagemFixa):
@@ -21,11 +19,16 @@ import RotuloSecao from "@/components/layout/RotuloSecao";
     rolagem; a foto troca em "piso tátil" e o texto esmaece e sobe;
   - os sinais que não estão ativos ficam transparentes, mas o leitor de
     tela continua lendo os 4, em ordem. Eles não têm nada focável;
-  - a pulseira pequena (Pulseira3D modo="sinal") fica junto do índice,
-    nunca em cima da foto: 76 px no celular, ao lado do botão de pausa;
-    132 px no computador, embaixo do índice, com o nome do movimento.
-  Fora do modo fixo: os 4 sinais em lista comum, cada um com a sua foto;
-  a pulseira pequena e o botão de pausa não aparecem.
+  - Fase 9 (19.13, decisão da equipe): o vídeo do sinal atual (com som)
+    substitui a pulseira 3D pequena junto do índice, nunca em cima da
+    foto. No computador, ocupa a coluna do índice (15rem, 16:9), com
+    "Pausar" e "Ativar som" embaixo; no celular, fica pequeno (8rem) ao
+    lado dos dois botões empilhados (decisão da equipe na 9.8). Quando o
+    sinal muda, o vídeo troca de arquivo; a pausa e o som escolhidos
+    continuam. Isso tira uma cena 3D da página.
+  Fora do modo fixo: os 4 sinais em lista comum, cada um com a sua foto e,
+  depois do texto, o seu vídeo (decisão da equipe na 9.8).
+  Cada vídeo tem o nome do H3 do sinal e a descrição dos pares (dl).
 
   Textos dos sinais: os da seção 6.2.
 */
@@ -79,28 +82,22 @@ const SINAIS = [
   },
 ];
 
+/*
+  VIDEO-animacao-sinal-continuar-AQUI, VIDEO-animacao-sinal-parar-AQUI,
+  VIDEO-animacao-sinal-virar-AQUI e VIDEO-animacao-sinal-aguardar-AQUI
+  Vídeos: public/videos/animacao-sinal-(chave).mp4 (com som)
+  Quadros parados: public/videos/animacao-sinal-(chave)-quadro-parado.jpg
+  Legendas: public/videos/animacao-sinal-(chave)-legendas.vtt
+*/
+// Esta parte é lógica
+function videoDoSinal(sinal) {
+  return `animacao-sinal-${sinal.chave}`;
+}
+
 export default function SinaisRolagemFixa() {
   // Esta parte é lógica
   const { podeFixar, ativo, refTrilho, refPalco, irPara } = useRolagemFixa(SINAIS.length);
-  const [pausado, setPausado] = useState(false);
-  const [movimento, setMovimento] = useState("");
-  const [pulseiraFalhou, setPulseiraFalhou] = useState(false);
-  const comPulseira = podeFixar && !pulseiraFalhou;
-
-  // Esta parte é lógica
-  function alternarPausa() {
-    setPausado((valor) => !valor);
-  }
-
-  // Esta parte é lógica
-  function aoTrocarSinal(sinal) {
-    setMovimento(sinal.movimento);
-  }
-
-  // Esta parte é lógica
-  function aoFalharPulseira() {
-    setPulseiraFalhou(true);
-  }
+  const sinalAtual = SINAIS[ativo];
 
   return (
     <section className={`mt-20 ${podeFixar ? "sinais-fixo" : ""}`}>
@@ -126,15 +123,9 @@ export default function SinaisRolagemFixa() {
               : "grid gap-6"
           }
         >
-          {/* Índice "Sinais" + pulseira pequena + pausar */}
-          <div
-            className={
-              podeFixar
-                ? "grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 min-[62.5rem]:grid-cols-1 min-[62.5rem]:content-center min-[62.5rem]:gap-5"
-                : ""
-            }
-          >
-            <nav aria-label="Sinais" className={podeFixar ? "col-span-full min-[62.5rem]:col-auto" : ""}>
+          {/* Índice "Sinais" + vídeo do sinal atual */}
+          <div className={podeFixar ? "grid min-w-0 gap-3 min-[62.5rem]:content-center min-[62.5rem]:gap-5" : ""}>
+            <nav aria-label="Sinais">
               <ol
                 className={
                   podeFixar
@@ -170,42 +161,15 @@ export default function SinaisRolagemFixa() {
             </nav>
 
             {/* Esta parte é lógica */}
-            {comPulseira && (
-              <>
-                <div
-                  aria-hidden="true"
-                  className="relative size-[76px] rounded-[0.875rem] border border-borda bg-superficie min-[62.5rem]:size-[132px]"
-                >
-                  <Pulseira3D
-                    modo="sinal"
-                    sinal={SINAIS[ativo].chave}
-                    pausado={pausado}
-                    aoTrocarSinal={aoTrocarSinal}
-                    aoFalhar={aoFalharPulseira}
-                    className="size-full"
-                  />
-                  {/* Nome do movimento, só no computador (decorativo) */}
-                  <span className="rotulo-mono absolute inset-x-0 bottom-1.5 hidden text-center text-[0.62rem] tracking-[0.06em] text-texto-2 min-[62.5rem]:block">
-                    {movimento}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  aria-pressed={pausado}
-                  onClick={alternarPausa}
-                  className="inline-flex min-h-12 items-center gap-2 justify-self-start rounded-full border-2 border-borda bg-superficie px-4 font-bold text-texto hover:border-marca"
-                >
-                  {/* Esta parte é lógica */}
-                  {pausado ? (
-                    // ICONE-Play-AQUI
-                    <EspacoIcone nome="Play" />
-                  ) : (
-                    // ICONE-Pause-AQUI
-                    <EspacoIcone nome="Pause" />
-                  )}
-                  <span>{pausado ? "Retomar animação" : "Pausar animação"}</span>
-                </button>
-              </>
+            {podeFixar && (
+              <VideoPulse
+                nome={videoDoSinal(sinalAtual)}
+                comSom
+                idTitulo={`titulo-${sinalAtual.id}`}
+                idDescricao={`descricao-${sinalAtual.id}`}
+                className="grid-cols-[8rem_minmax(0,1fr)] items-center min-[62.5rem]:grid-cols-1"
+                classeControles="flex-col items-start min-[62.5rem]:flex-row"
+              />
             )}
           </div>
 
@@ -234,10 +198,13 @@ export default function SinaisRolagemFixa() {
                     <EspacoImagem texto={sinal.imagem} formato={podeFixar ? "livre" : "paisagem"} />
                   </div>
                   <div className="texto-sinal grid gap-3">
-                    <h3 className="font-titulo text-[clamp(2.2rem,10vw,3.5rem)] leading-none font-normal text-marca uppercase">
+                    <h3
+                      id={`titulo-${sinal.id}`}
+                      className="font-titulo text-[clamp(2.2rem,10vw,3.5rem)] leading-none font-normal text-marca uppercase"
+                    >
                       {sinal.titulo}
                     </h3>
-                    <dl className="grid gap-2">
+                    <dl id={`descricao-${sinal.id}`} className="grid gap-2">
                       {/* Esta parte é lógica */}
                       {sinal.pares.map(([termo, descricao]) => (
                         <div key={termo} className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
@@ -246,6 +213,19 @@ export default function SinaisRolagemFixa() {
                         </div>
                       ))}
                     </dl>
+                    {/* Lista comum: cada sinal com o seu vídeo (o marcador
+                        e os caminhos estão no comentário acima de
+                        videoDoSinal) */}
+                    {/* Esta parte é lógica */}
+                    {!podeFixar && (
+                      <VideoPulse
+                        nome={videoDoSinal(sinal)}
+                        comSom
+                        idTitulo={`titulo-${sinal.id}`}
+                        idDescricao={`descricao-${sinal.id}`}
+                        className="mt-2"
+                      />
+                    )}
                   </div>
                 </article>
               );

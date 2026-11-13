@@ -3,7 +3,7 @@ import PaginaComIndice from "@/components/layout/PaginaComIndice";
 import Secao from "@/components/layout/Secao";
 import ExplorarPulseira from "@/components/pulseira/ExplorarPulseira";
 import Cartao from "@/components/ui/Cartao";
-import EspacoImagem from "@/components/ui/EspacoImagem";
+import VideoPulse from "@/components/ui/VideoPulse";
 import Botao from "@/components/ui/Botao";
 import AntesDepois from "@/components/solucao/AntesDepois";
 import CartaoIntegrante from "@/components/solucao/CartaoIntegrante";
@@ -46,6 +46,10 @@ export const metadata = {
   - Galeria em canvas no computador (19.9);
   - Equipe num varal (19.10);
   - botão laranja principal magnético (19.6), pelo próprio Botao.
+  Fase 9 (subfase 9.8): vídeos com som em "A pulseira" (antes dos 3
+  passos, no lugar da ilustração conceitual) e em "Apenas dois botões";
+  os outros vídeos ficam em "Os sinais", "Como funciona" e "Antes e
+  depois".
 */
 const SECOES = [
   { id: "a-pulseira", texto: "A pulseira" },
@@ -129,15 +133,24 @@ export default function PaginaSolucao() {
           conectada a um celular.
         </p>
 
-        <div className="max-w-texto">
-          {/* IMAGEM-ilustração conceitual da pulseira-AQUI
-              alt sugerido (seção 13.2): "Ilustração da pulseira Pulse no pulso de uma pessoa." */}
-          <EspacoImagem texto="Ilustração conceitual da pulseira (a definir)" />
-        </div>
+        {/* VIDEO-animacao-a-pulseira-AQUI (substitui a ilustração
+            conceitual, 19.14). A equipe pode trocar pela versão com a voz
+            "Trianon-Masp", com o mesmo nome de arquivo.
+            Vídeo: public/videos/animacao-a-pulseira.mp4 (com som)
+            Quadro parado: public/videos/animacao-a-pulseira-quadro-parado.jpg
+            Legendas: public/videos/animacao-a-pulseira-legendas.vtt
+            Descrição: os 3 passos logo abaixo (WCAG 1.2.1). */}
+        <VideoPulse
+          nome="animacao-a-pulseira"
+          comSom
+          idTitulo="a-pulseira"
+          idDescricao="passos-pulseira"
+          className="max-w-[48rem]"
+        />
 
         {/* Os 3 passos: o número grande é decorativo (aria-hidden); a
             lista numerada <ol> já diz a ordem ao leitor de tela. */}
-        <ol className="grid gap-4 md:grid-cols-3">
+        <ol id="passos-pulseira" className="grid gap-4 md:grid-cols-3">
           {/* Esta parte é lógica */}
           {PASSOS.map((passo) => (
             <Cartao as="li" key={passo.numero} className="grid content-start gap-2">
@@ -155,9 +168,9 @@ export default function PaginaSolucao() {
             pulso". Ordem da 19.16: vídeo (subfase 9.8) → passos → pulseira. */}
         <ExplorarPulseira />
 
-        <div className="max-w-texto">
-          <h3>Apenas dois botões</h3>
-          <ul className="mt-2 list-disc space-y-2 pl-6">
+        <div className="grid max-w-texto gap-4">
+          <h3 id="apenas-dois-botoes">Apenas dois botões</h3>
+          <ul id="lista-dois-botoes" className="list-disc space-y-2 pl-6">
             <li>
               <strong>Trocar o modo:</strong> alterna entre o modo sonoro e
               tátil e o modo exclusivamente tátil.
@@ -167,6 +180,17 @@ export default function PaginaSolucao() {
               voz.
             </li>
           </ul>
+          {/* VIDEO-animacao-dois-botoes-AQUI
+              Vídeo: public/videos/animacao-dois-botoes.mp4 (com som)
+              Quadro parado: public/videos/animacao-dois-botoes-quadro-parado.jpg
+              Legendas: public/videos/animacao-dois-botoes-legendas.vtt
+              Descrição: a lista dos dois botões, logo acima. */}
+          <VideoPulse
+            nome="animacao-dois-botoes"
+            comSom
+            idTitulo="apenas-dois-botoes"
+            idDescricao="lista-dois-botoes"
+          />
         </div>
       </Secao>
 

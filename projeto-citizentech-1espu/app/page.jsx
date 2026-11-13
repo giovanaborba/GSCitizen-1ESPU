@@ -7,6 +7,7 @@ import RotuloSecao from "@/components/layout/RotuloSecao";
 import Secao from "@/components/layout/Secao";
 import Cartao from "@/components/ui/Cartao";
 import EspacoImagem from "@/components/ui/EspacoImagem";
+import VideoPulse from "@/components/ui/VideoPulse";
 import FotoFiltro from "@/components/ui/FotoFiltro";
 import NumeroContado from "@/components/ui/NumeroContado";
 import TextoConstroi from "@/components/ui/TextoConstroi";
@@ -48,6 +49,10 @@ export const metadata = {
     marcadores novos (19.14).
   - "Um trajeto com a Pulse" (19.7) entra no "Nesta página" (é uma seção
     com H2, como as outras).
+  - Subfase 9.8: o vídeo de "O problema" (com som) entra no lado que rola,
+    no lugar da ilustração de uma travessia (decisão da equipe: o
+    marcador IMAGEM-ilustração de uma travessia-AQUI saiu). O texto da
+    seção é a descrição dele (aria-describedby).
 */
 const SECOES = [
   { id: "tema-citizentech", texto: "Tema CitizenTech" },
@@ -104,7 +109,7 @@ export default function PaginaInicio() {
                 Atravessar sem saber quando
               </h2>
               <TextoConstroi className="max-w-texto">
-                <p>
+                <p id="texto-o-problema">
                   Sem enxergar as cores do semáforo, a pessoa depende da audição para
                   atravessar. Muitos semáforos não têm sinal sonoro, e o risco de
                   atropelamento é diário.
@@ -162,11 +167,16 @@ export default function PaginaInicio() {
                 </Cartao>
               </ul>
 
-              {/* IMAGEM-ilustração de uma travessia-AQUI
-                  alt sugerido (seção 13.2): "Pessoa cega com bengala esperando para atravessar a rua na faixa de pedestres."
-                  Seção 19.14: continua se a equipe quiser uma imagem parada
-                  além do vídeo de "O problema" (subfase 9.8); se não, sai. */}
-              <EspacoImagem texto="Ilustração de uma travessia (a definir)" />
+              {/* VIDEO-animacao-o-problema-AQUI
+                  Vídeo: public/videos/animacao-o-problema.mp4 (com som)
+                  Quadro parado: public/videos/animacao-o-problema-quadro-parado.jpg
+                  Legendas: public/videos/animacao-o-problema-legendas.vtt */}
+              <VideoPulse
+                nome="animacao-o-problema"
+                comSom
+                idTitulo="o-problema"
+                idDescricao="texto-o-problema"
+              />
 
               <Cartao>
                 <h3>O que a Pulse quer reduzir</h3>

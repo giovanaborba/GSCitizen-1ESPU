@@ -99,7 +99,7 @@ function ConteudoFoto({ foto }) {
 
 export default function GaleriaCanvas() {
   // Esta parte é lógica
-  const { modoCanvas, x, y, arrastando, refJanela, eventosJanela, mover, centralizar, aoFocarFoto } =
+  const { modoCanvas, x, y, arrastando, refJanela, eventosJanela, aoTeclarControles, mover, centralizar, aoFocarFoto } =
     useGaleriaCanvas();
 
   return (
@@ -153,7 +153,7 @@ export default function GaleriaCanvas() {
           </div>
 
           {/* Alternativas ao arrasto (WCAG 2.5.7) */}
-          <div role="group" aria-label="Mover a galeria" className="flex flex-wrap gap-2">
+          <div role="group" aria-label="Mover a galeria" onKeyDown={aoTeclarControles} className="flex flex-wrap gap-2">
             <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => mover(-1, 0)} className={ESTILO_BOTAO}>
               {/* ICONE-ArrowLeft-AQUI */}
               <EspacoIcone nome="ArrowLeft" />
