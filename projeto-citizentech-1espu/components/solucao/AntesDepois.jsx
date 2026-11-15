@@ -87,7 +87,7 @@ export default function AntesDepois() {
       <div
         ref={refContainer}
         style={{ "--posicao": `${posicao}%` }}
-        className="relative aspect-[4/5] w-full max-w-[56rem] touch-pan-y overflow-hidden rounded-[1.5rem] border-2 border-borda bg-[var(--cor-cortina)] min-[32.5rem]:aspect-[16/10] has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-3 has-[input:focus-visible]:outline-marca"
+        className="relative aspect-video w-full max-w-[56rem] touch-pan-y overflow-hidden rounded-[1.5rem] border-2 border-borda bg-[var(--cor-cortina)] has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-3 has-[input:focus-visible]:outline-marca"
       >
         {/* Sem a Pulse (embaixo, inteiro)
             VIDEO-animacao-antes-sem-AQUI

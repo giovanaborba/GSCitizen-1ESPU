@@ -61,7 +61,7 @@ const CLASSES_BOTAO_ODS =
 function ConteudoOds({ ods }) {
   return (
     <>
-      <span aria-hidden="true" className="font-titulo text-[2.4rem] leading-none font-normal text-rodape-destaque">
+      <span aria-hidden="true" className="shrink-0 font-titulo text-[2.4rem] leading-none font-normal whitespace-nowrap text-rodape-destaque">
         {ods.numero}
       </span>
       <span>

@@ -14,7 +14,7 @@ import RotuloSecao from "@/components/layout/RotuloSecao";
   <article> com a foto, o H3 e os pares "Modo tátil:"…
 
   Modo fixo (computador e celular, com os efeitos ligados, janela com
-  pelo menos 560 × 340 px — ver useRolagemFixa):
+  pelo menos 700 × 340 px — ver useRolagemFixa):
   - o palco fica parado enquanto a pessoa rola, e o sinal muda com a
     rolagem; a foto troca em "piso tátil" e o texto esmaece e sobe;
   - os sinais que não estão ativos ficam transparentes, mas o leitor de
@@ -202,7 +202,7 @@ export default function SinaisRolagemFixa() {
                       <img
                         src={sinal.src}
                         alt={sinal.alt}
-                        className={`size-full rounded-cartao object-cover ${podeFixar ? "" : "aspect-video"}`}
+                        className={`size-full rounded-cartao object-cover ${podeFixar ? "" : "aspect-[4/3]"}`}
                       />
                     ) : (
                       <EspacoImagem texto={sinal.imagem} formato={podeFixar ? "livre" : "paisagem"} />

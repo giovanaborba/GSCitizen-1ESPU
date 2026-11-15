@@ -18,7 +18,7 @@ import { registrarPluginsGsap } from "@/lib/movimento";
     palco é o CSS (sem "pin" do GSAP).
 
   O modo fixo só liga com os efeitos ligados (seção 19.2) e com a janela
-  de pelo menos 560 px de altura e 340 px de largura (seção 18.8). Fora disso (e sem
+  de pelo menos 700 px de altura e 340 px de largura (seção 18.8). Fora disso (e sem
   JavaScript), os 4 sinais aparecem em lista comum.
 
   Devolve:
@@ -28,7 +28,7 @@ import { registrarPluginsGsap } from "@/lib/movimento";
   - irPara(indice, evento): clique num link do índice "Sinais".
 */
 
-const CONSULTA_MODO_FIXO = "(min-height: 560px) and (min-width: 340px)";
+const CONSULTA_MODO_FIXO = "(min-height: 700px) and (min-width: 340px)";
 
 // Onde o palco gruda (abaixo do cabeçalho e da faixa do índice), em px.
 function topoDoPalco(palco) {
