@@ -90,21 +90,21 @@ const PASSOS = [
 */
 const TECNOLOGIAS = [
   // IMAGEM-peça (GPS)-AQUI — alt: "Foto da peça: GPS."
-  { rotulo: "Localização", nome: "GPS", descricao: "Localização e navegação." },
+  { rotulo: "Localização", nome: "GPS", src: "/imagens/peca-gps.webp", alt: "Foto da peça: GPS.", descricao: "Localização e navegação." },
   // IMAGEM-peça (Reconhecimento de voz)-AQUI — alt: "Foto da peça: Reconhecimento de voz."
-  { rotulo: "Destino", nome: "Reconhecimento de voz", descricao: "Identifica o destino." },
+  { rotulo: "Destino", nome: "Reconhecimento de voz", src: "/imagens/peca-reconhecimento-voz.webp", alt: "Foto da peça: Reconhecimento de voz.", descricao: "Identifica o destino." },
   // IMAGEM-peça (ESP32 ou equivalente)-AQUI — alt: "Foto da peça: ESP32 ou equivalente."
-  { rotulo: "Cérebro", nome: "ESP32 ou equivalente", descricao: "Microcontrolador que comanda a pulseira." },
+  { rotulo: "Cérebro", nome: "ESP32 ou equivalente", src: "/imagens/peca-esp32.webp", alt: "Foto da peça: ESP32 ou equivalente.", descricao: "Microcontrolador que comanda a pulseira." },
   // IMAGEM-peça (Motores de vibração)-AQUI — alt: "Foto da peça: Motores de vibração."
-  { rotulo: "Tato", nome: "Motores de vibração", descricao: "Sinais táteis e direcionais." },
+  { rotulo: "Tato", nome: "Motores de vibração", src: "/imagens/peca-motores-vibracao.webp", alt: "Foto da peça: Motores de vibração.", descricao: "Sinais táteis e direcionais." },
   // IMAGEM-peça (Atuadores de pressão)-AQUI — alt: "Foto da peça: Atuadores de pressão."
-  { rotulo: "Tato", nome: "Atuadores de pressão", descricao: "Comando de continuar." },
+  { rotulo: "Tato", nome: "Atuadores de pressão", src: "/imagens/peca-atuadores-pressao.webp", alt: "Foto da peça: Atuadores de pressão.", descricao: "Comando de continuar." },
   // IMAGEM-peça (Alto-falante)-AQUI — alt: "Foto da peça: Alto-falante."
-  { rotulo: "Som", nome: "Alto-falante", descricao: "Sinais sonoros." },
+  { rotulo: "Som", nome: "Alto-falante", src: "/imagens/peca-alto-falante.webp", alt: "Foto da peça: Alto-falante.", descricao: "Sinais sonoros." },
   // IMAGEM-peça (APIs de mapas, semáforos e transporte)-AQUI — alt: "Foto da peça: APIs de mapas, semáforos e transporte."
-  { rotulo: "Dados", nome: "APIs de mapas, semáforos e transporte", descricao: "Informações em tempo real." },
+  { rotulo: "Dados", nome: "APIs de mapas, semáforos e transporte", src: "/imagens/peca-apis.webp", alt: "Foto da peça: APIs de mapas, semáforos e transporte.", descricao: "Informações em tempo real." },
   // IMAGEM-peça (Módulo de conectividade)-AQUI — alt: "Foto da peça: Módulo de conectividade."
-  { rotulo: "Conexão", nome: "Módulo de conectividade", descricao: "Acesso aos serviços e dados." },
+  { rotulo: "Conexão", nome: "Módulo de conectividade", src: "/imagens/peca-conectividade.webp", alt: "Foto da peça: Módulo de conectividade.", descricao: "Acesso aos serviços e dados." },
 ];
 
 /*
@@ -219,6 +219,8 @@ export default function PaginaSolucao() {
               rotulo={tecnologia.rotulo}
               nome={tecnologia.nome}
               descricao={tecnologia.descricao}
+              src={tecnologia.src}
+              alt={tecnologia.alt}
             />
           ))}
         </ul>
@@ -274,15 +276,15 @@ export default function PaginaSolucao() {
         {/* O varal: os trechos de fio de cada item se emendam (19.10) */}
         <ul className="flex flex-wrap justify-center gap-x-4 gap-y-10 px-3 py-4 sm:gap-x-5">
           {/* IMAGEM-foto de Giovana-AQUI — alt: "Foto de Giovana" */}
-          <CartaoIntegrante nome="Giovana" inclinacao={-3} velocidade={0.06} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Giovana" src="/imagens/equipe-giovana.webp" alt="Foto de Giovana" inclinacao={-3} velocidade={0.06} className={LARGURA_POLAROIDE} />
           {/* IMAGEM-foto de Giovane-AQUI — alt: "Foto de Giovane" */}
-          <CartaoIntegrante nome="Giovane" inclinacao={2} velocidade={-0.06} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Giovane" src="/imagens/equipe-giovane.webp" alt="Foto de Giovane" inclinacao={2} velocidade={-0.06} className={LARGURA_POLAROIDE} />
           {/* IMAGEM-foto de Mie-AQUI — alt: "Foto de Mie" */}
-          <CartaoIntegrante nome="Mie" inclinacao={-1.5} velocidade={0.06} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Mie" src="/imagens/equipe-mie.webp" alt="Foto de Mie" inclinacao={-1.5} velocidade={0.06} className={LARGURA_POLAROIDE} />
           {/* IMAGEM-foto de Pedro-AQUI — alt: "Foto de Pedro" */}
-          <CartaoIntegrante nome="Pedro" inclinacao={3} velocidade={-0.06} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Pedro" src="/imagens/equipe-pedro.webp" alt="Foto de Pedro" inclinacao={3} velocidade={-0.06} className={LARGURA_POLAROIDE} />
           {/* IMAGEM-foto de Thiago-AQUI — alt: "Foto de Thiago" */}
-          <CartaoIntegrante nome="Thiago" inclinacao={-2} velocidade={0.06} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Thiago" src="/imagens/equipe-thiago.webp" alt="Foto de Thiago" inclinacao={-2} velocidade={0.06} className={LARGURA_POLAROIDE} />
         </ul>
       </Secao>
     </PaginaComIndice>

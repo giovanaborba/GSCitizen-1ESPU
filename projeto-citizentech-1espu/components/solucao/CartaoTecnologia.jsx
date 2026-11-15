@@ -33,14 +33,14 @@ import { spring } from "@/lib/presetsMovimento";
   A foto da peça aparece colorida, como no protótipo: ela só aparece
   quando a pessoa pede para ver.
 
-  Props: rotulo, nome, descricao.
+  Props: rotulo, nome, descricao, src e alt (a foto; sem src, fica o espaço).
 */
 
 // Faces: mesma célula da grade, viradas para lados opostos
 const ESTILO_FACE =
   "[grid-area:1/1] rounded-t-cartao border border-b-0 backface-hidden";
 
-export default function CartaoTecnologia({ rotulo, nome, descricao }) {
+export default function CartaoTecnologia({ rotulo, nome, descricao, src, alt }) {
   const [virado, setVirado] = useState(false);
   const { efeitosLigados } = useEfeitos();
 
@@ -66,7 +66,11 @@ export default function CartaoTecnologia({ rotulo, nome, descricao }) {
         >
           {/* O marcador IMAGEM-peça (nome)-AQUI e o alt ficam na lista
               TECNOLOGIAS da página Solução (alt: "Foto da peça: (nome).") */}
-          <EspacoImagem texto={`Foto da peça: ${nome} (a definir)`} formato="livre" className="rounded-none border-0" />
+          {src ? (
+            <img src={src} alt={alt} className="size-full object-cover" />
+          ) : (
+            <EspacoImagem texto={`Foto da peça: ${nome} (a definir)`} formato="livre" className="rounded-none border-0" />
+          )}
         </div>
       </motion.div>
 

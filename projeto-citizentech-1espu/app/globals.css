@@ -702,68 +702,12 @@ html.lenis {
     color: var(--cor-destaque);
   }
 
-  /* Filtro nas fotos e parallax (seção 19.6), componente FotoFiltro.
-     Só com os efeitos ligados e só quando há uma imagem de verdade
-     (:has(img)): o marcador não muda. A imagem fica em tons de cinza com
-     um pontilhado de domos por cima; com o mouse (na foto ou no cartão),
-     o foco ou data-colorida (celular), ganha cor e zoom de 1,05.
-     Animam só filter, transform e opacity (exceção aprovada no padrão de
-     movimento para o filter). */
+  /* Moldura das fotos (componente FotoFiltro): só recorta os cantos.
+     Sem filtro, sem parallax e sem zoom: a foto aparece normal. */
   .foto-filtro {
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-cartao);
-  }
-
-  .foto-filtro-camada {
-    --escala: 1;
-    transform: translateY(var(--paralaxe, 0px)) scale(var(--escala));
-  }
-
-  /* Parallax: a imagem fica 12% maior que a moldura, para andar sem
-     mostrar vão (useParallax) */
-  .foto-filtro[data-paralaxe] .foto-filtro-camada {
-    --escala: 1.12;
-  }
-
-  html[data-efeitos="ligados"] .foto-filtro:has(img) .foto-filtro-camada {
-    filter: grayscale(1) contrast(1.1);
-    transition:
-      filter 0.35s ease,
-      transform 0.35s ease;
-  }
-
-  html[data-efeitos="ligados"] .foto-filtro:has(img)::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background: radial-gradient(circle, rgba(26, 26, 29, 0.5) 0 3px, transparent 3.5px) 0 0 / 10px 10px;
-    transition: opacity 0.35s ease;
-  }
-
-  html[data-efeitos="ligados"] :is(.foto-filtro:hover, .foto-filtro:focus-within, .foto-filtro[data-colorida], :hover > .foto-filtro, :focus-within > .foto-filtro):has(img) .foto-filtro-camada {
-    filter: none;
-    --escala: 1.05;
-  }
-
-  html[data-efeitos="ligados"] :is(.foto-filtro[data-paralaxe]:hover, .foto-filtro[data-paralaxe]:focus-within, .foto-filtro[data-paralaxe][data-colorida], :hover > .foto-filtro[data-paralaxe], :focus-within > .foto-filtro[data-paralaxe]) .foto-filtro-camada {
-    --escala: 1.176; /* 1,12 × 1,05 */
-  }
-
-  html[data-efeitos="ligados"] :is(.foto-filtro:hover, .foto-filtro:focus-within, .foto-filtro[data-colorida], :hover > .foto-filtro, :focus-within > .foto-filtro)::after {
-    opacity: 0;
-  }
-
-  @media (prefers-contrast: more) {
-    html[data-efeitos="ligados"] .foto-filtro:has(img) .foto-filtro-camada {
-      filter: none;
-    }
-
-    html[data-efeitos="ligados"] .foto-filtro:has(img)::after {
-      display: none;
-    }
   }
 
   /* Equipe num varal (seção 19.10), componente CartaoIntegrante.
@@ -1204,15 +1148,6 @@ html.lenis {
   .divisor-piso,
   .grao {
     display: none;
-  }
-
-  /* Fotos coloridas, sem o pontilhado (19.6) */
-  .foto-filtro-camada {
-    filter: none !important;
-  }
-
-  .foto-filtro::after {
-    display: none !important;
   }
 
   /* As cores de borda são trocadas automaticamente pelo Windows pela cor

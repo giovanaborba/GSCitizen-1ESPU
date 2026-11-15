@@ -5,7 +5,7 @@
 > - As regras completas estão em `docs/ESPECIFICACAO_PULSE.md`. A seção 17 dela reúne todas as decisões desta lista.
 > - O registro do uso de IA é mantido pela equipe em `AI.md`.
 >
-> Última atualização: 13/11/2026 (Fase 9 concluída).
+> Última atualização: 14/11/2026 (Fase 9 concluída; ícones colocados pelo Claude Code).
 
 ---
 
@@ -1607,6 +1607,32 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 
 **Sugestão de commit:** `Revisa a Fase 9 e corrige o contraste dos botões sobre fundos de status`
 
+### Depois da Fase 9 — ícones colocados pelo Claude Code
+
+**Decisão da equipe (14/11/2026):** os ícones deixam de ser manuais. O Claude Code coloca os ícones, e a seção 13.1 da especificação foi atualizada.
+
+**O que mudou para quem usa:** todos os ícones aparecem ao lado do texto (Phosphor, peso Bold, 24 px), em todo o site. Para o leitor de tela, nada muda: os ícones continuam ocultos (`aria-hidden="true"`). Textos, cores e layout continuam iguais. Os espaços entre ícone e texto (`gap`) já existiam.
+
+**Como foi feito:**
+- Pacote `@phosphor-icons/react` instalado com versão fixa (`2.1.10`), depois da confirmação da equipe.
+- `components/ui/EspacoIcone.jsx` passou a desenhar o ícone pelo prop `nome` (`size={24}`, `weight="bold"`, `aria-hidden="true"`), importando de `@phosphor-icons/react/ssr` (funciona em Server e Client Components). Ele usa um mapa explícito com os 26 ícones do site, e o build só leva esses.
+- Nenhum outro arquivo precisou de troca: todos os marcadores já chegavam ao `EspacoIcone`, de forma direta ou indireta. É o caso do `Botao` e do `BotaoMagnetico` (prop `icone`), da `ItemBarra` (lista da `BarraNavegacao`), da `MensagemStatus` (tabela `ESTILOS` e a ação "Desfazer" da `TelaDiario`) e do `IconeAlternado` (os filhos).
+- `IconeAlternado`: o código não mudou, só o comentário. O ícone de verdade não tem `data-icone`, então o invólucro aparece e gira na troca Pausar ↔ Retomar.
+- Nome que não estiver no mapa: volta o espaço vazio antigo, que não ocupa lugar.
+- Os comentários `ICONE-…-AQUI` continuam no código, como referência.
+
+**Ícones colocados (26):** `Pulse`, `House`, `Watch`, `Play`, `Notebook`, `Pause`, `ArrowCounterClockwise`, `ArrowClockwise`, `ArrowsClockwise`, `ArrowLeft`, `ArrowRight`, `ArrowUp`, `ArrowDown`, `ArrowsOutCardinal`, `CaretLeft`, `CaretRight`, `Eye`, `SpeakerHigh`, `SpeakerSlash`, `Plus`, `PencilSimple`, `Trash`, `X`, `Warning`, `WarningCircle` e `Image`. Todos existem no Phosphor 2.1.10. O `CheckCircle` não entra: o "certo" das mensagens de sucesso continua sendo o `CertoDesenhado` (9.9).
+
+**Conferido:** `eslint` sem avisos e `npm run build` sem erros. No HTML gerado, nenhum espaço vazio ficou (`data-icone`); todos viraram `<svg>` de 24 px com `aria-hidden`.
+
+**Teste manual:** abrir as 6 rotas e conferir os ícones ao lado dos textos; na barra, o texto continua centralizado; em "Pausar"/"Retomar", o ícone gira na troca (com os efeitos ligados); no NVDA, os botões continuam sendo lidos só pelo texto.
+
+**Sugestão de commit:** `Adiciona os ícones Phosphor no EspacoIcone`
+
+### Depois da Fase 9 — caminhos das imagens
+
+**Decisão da equipe (14/11/2026):** a equipe só coloca os arquivos das imagens em `public/imagens/`. O Claude Code liga os caminhos no código: troca cada `EspacoImagem` pela imagem, com o `alt` sugerido. Isso só acontece **depois que todas as imagens estiverem na pasta**, com os nomes certos, e a equipe avisar. A seção 13.2 da especificação foi atualizada. Nenhum código mudou ainda.
+
 ---
 
 ## Como os testes automáticos foram feitos
@@ -1648,8 +1674,8 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 
 | Pendência | Quem resolve |
 | --- | --- |
-| Colocar os ícones e as imagens nos marcadores (lista completa logo abaixo). As 3 fontes já entram por `next/font/google` (9.2) | Equipe |
-| Gerar as imagens com os prompts do documento "Prompts das imagens da Pulse" e colocá-las (Fase 9) | Equipe |
+| Gerar as imagens com os prompts do documento "Prompts das imagens da Pulse" e pôr **todos** os arquivos em `public/imagens/` (lista completa logo abaixo); avisar quando terminar. As 3 fontes já entram por `next/font/google` (9.2), e os ícones já foram colocados pelo Claude Code depois da Fase 9 | Equipe |
+| Ligar os caminhos das imagens no código (trocar cada `EspacoImagem` pela imagem, com o `alt` sugerido), depois do aviso da equipe | Claude Code |
 | ~~Colocar os vídeos, os quadros parados e as legendas em `public/videos/`~~ Já estão lá (9.8). Opcional: trocar `animacao-a-pulseira.mp4` pela versão com a voz "Trianon-Masp", com o mesmo nome | Equipe |
 | Conectar a API externa: a equipe escolheu o **MockAPI** (9.9). Criar o projeto e o recurso `registros`, pôr a URL no `.env.local` e na hospedagem (passo a passo na 9.9) | Equipe |
 | Fazer o simulador (`SIMULADOR-AQUI`) e decidir sobre a vibração do celular | Integrante do simulador + equipe |
@@ -1665,8 +1691,8 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 ### Lista dos marcadores manuais (estado final da Fase 9)
 
 **Como colocar:**
-- **Ícone:** troque `<EspacoIcone nome="X" />` pelo ícone do Phosphor (peso Bold, 24 px, com `aria-hidden="true"`), no mesmo lugar. O comentário `ICONE-X-AQUI` fica logo acima. Onde o ícone está dentro de `<IconeAlternado>`, ele continua dentro dele, porque é o que faz a rotação.
-- **Imagem:** coloque o arquivo em `public/` (por exemplo, `public/imagens/`) e troque o `EspacoImagem` por `<Image>` (next/image) ou `<img>`, com o `alt` sugerido no comentário. Onde houver `FotoFiltro`, a imagem entra **dentro** dele: o filtro e o parallax só funcionam com uma `<img>`.
+- **Ícone:** nada a fazer. O `EspacoIcone` já desenha o ícone (colocado pelo Claude Code depois da Fase 9). A tabela de ícones abaixo fica como referência de onde cada um aparece.
+- **Imagem:** a equipe só põe o arquivo em `public/imagens/`. Quando todas estiverem lá, a equipe avisa, e o Claude Code troca cada `EspacoImagem` pela imagem, com o `alt` sugerido no comentário. Onde houver `FotoFiltro`, a imagem entra **dentro** dele: o filtro e o parallax só funcionam com uma `<img>`.
 - **Vídeos:** já estão em `public/videos/`; não há nada a fazer.
 
 **Ícones (Phosphor, peso Bold):**

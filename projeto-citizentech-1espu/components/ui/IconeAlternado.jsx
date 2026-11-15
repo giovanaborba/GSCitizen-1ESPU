@@ -16,9 +16,11 @@ import { saida, spring } from "@/lib/presetsMovimento";
   Com os efeitos desligados, o MotionConfig do ProvedorMovimento tira a
   rotação, e fica só a troca de opacidade (19.11).
 
-  Enquanto o ícone ainda é o espaço vazio (EspacoIcone), o invólucro
-  também não ocupa lugar (decisão 4 da 9.0): o texto do botão continua
-  centralizado. Quando a equipe colocar o ícone, ele aparece.
+  Os ícones Phosphor já entram pelo EspacoIcone (decisão da equipe,
+  seção 13.1), então o invólucro aparece e gira. Se um nome não estiver
+  na lista do EspacoIcone, ele volta o espaço vazio (com data-icone), e
+  o invólucro também não ocupa lugar (decisão 4 da 9.0): o texto do
+  botão continua centralizado.
 
   Uso (os marcadores ICONE-…-AQUI ficam em quem usa):
     <IconeAlternado chave={tocando ? "pausar" : "reproduzir"}>

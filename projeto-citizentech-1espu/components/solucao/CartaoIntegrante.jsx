@@ -35,10 +35,10 @@ import { spring } from "@/lib/presetsMovimento";
   IMAGEM-foto de (nome)-AQUI está na página Solução, ao lado de cada
   integrante. Quando a foto entrar, o alt é "Foto de (nome)" (seção 13.2).
 
-  Props: nome, inclinacao, velocidade (parallax, ±0,06) e className
+  Props: nome, src e alt (a foto; sem src, fica o espaço), inclinacao, velocidade (parallax, ±0,06) e className
   (largura do item, definida pela lista na página Solução).
 */
-export default function CartaoIntegrante({ nome, inclinacao = 0, velocidade = 0, className = "" }) {
+export default function CartaoIntegrante({ nome, src, alt, inclinacao = 0, velocidade = 0, className = "" }) {
   const { efeitosLigados } = useEfeitos();
 
   return (
@@ -51,11 +51,15 @@ export default function CartaoIntegrante({ nome, inclinacao = 0, velocidade = 0,
         className="polaroide relative grid origin-top gap-2 rounded-[4px] bg-[#FFFFFF] p-2 pb-3 text-[#242428] shadow-[0_8px_18px_rgba(26,26,29,0.2)] forced-colors:border"
       >
         <FotoFiltro velocidade={velocidade} className="aspect-square rounded-[2px]">
-          {/* Espaço da foto (cores fixas, como o polaroide) */}
-          <div className="grid size-full place-items-center border-2 border-dashed border-[#6E6E78] bg-[#FAFAFA]">
-            {/* ICONE-Image-AQUI */}
-            <EspacoIcone nome="Image" />
-          </div>
+          {src ? (
+            <img src={src} alt={alt} className="size-full object-cover" />
+          ) : (
+            /* Espaço da foto (cores fixas, como o polaroide) */
+            <div className="grid size-full place-items-center border-2 border-dashed border-[#6E6E78] bg-[#FAFAFA]">
+              {/* ICONE-Image-AQUI */}
+              <EspacoIcone nome="Image" />
+            </div>
+          )}
         </FotoFiltro>
         <h3 className="text-center font-titulo text-[1.15rem] leading-[1.1] font-normal tracking-[0.02em] uppercase">
           <span className="polaroide-nome px-1">{nome}</span>

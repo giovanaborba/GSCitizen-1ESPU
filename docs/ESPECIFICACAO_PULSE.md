@@ -63,11 +63,11 @@
 - Boas práticas de desenvolvimento e **versionamento** (Git). **Os commits são feitos manualmente pela equipe**, com uma mensagem simples sugerida ao fim de cada fase.
 - Briefing da GS: **nada de dados pessoais reais**. Usar dados simulados ou públicos e citar a fonte.
 - O registro do uso de IA no **`prompts.md`** (exigência da GS) é feito manualmente pela equipe.
-- **Não usar imagens geradas por IA.** **(Fase 8)** A regra vale para o Claude Code, que nunca gera nem coloca imagens. A equipe pode colocar imagens geradas por IA (seção 18.13).
+- **Não usar imagens geradas por IA.** **(Fase 8)** A regra vale para o Claude Code, que nunca gera imagens. A equipe pode usar imagens geradas por IA (seção 18.13). **(Depois da Fase 9)** O Claude Code só liga no código os arquivos que a equipe puser em `public/imagens/` (seção 13.2).
 
 **Feito manualmente pela equipe (não refazer no código):** criação do projeto Next.js com App Router, instalação do Tailwind CSS e do ESLint, instalação da fonte Atkinson Hyperlegible Next, estrutura de pastas (seção 14) e o arquivo `prompts.md`. O desenvolvimento continua a partir do projeto já existente no VSCode, sem reinstalar pacotes nem mudar configurações.
 
-**(Fase 8)** Na Fase 8, o Claude Code instala os pacotes da seção 18.1 (`lenis`, `gsap`, `@gsap/react`, `motion`, `three`), sempre depois de mostrar o comando e receber a confirmação da equipe. **Fontes, ícones e imagens continuam manuais**, com marcadores.
+**(Fase 8)** Na Fase 8, o Claude Code instala os pacotes da seção 18.1 (`lenis`, `gsap`, `@gsap/react`, `motion`, `three`), sempre depois de mostrar o comando e receber a confirmação da equipe. **Fontes continuam manuais**, com marcadores. Os ícones são colocados pelo Claude Code (seção 13.1). Nas imagens, a equipe põe os arquivos em `public/imagens/`, e o Claude Code liga os caminhos no código (seção 13.2).
 
 ---
 
@@ -619,7 +619,7 @@ Aplica-se **só a Início e Solução, só abaixo de 768 px**:
 | 10 | `DialogoConfirmacao` | Excluir, Descartar respostas | `<dialog>` modal, `aria-labelledby`/`aria-describedby`, foco inicial na opção segura, foco volta ao fechar |
 | 11 | `ResumoIndicadores` | Topo do Diário | `<ul>` de 4 itens; números com `tabular-nums` |
 | 12 | `EstadoTela` (carregando, vazio, erro) | Diário, Ver registro | Carregando com `role="status"`; erro com `role="alert"` e botão "Tentar de novo" |
-| 13 | `EspacoImagem` | Início, Solução, Simulador | Espaço reservado tracejado com o marcador `IMAGEM-...-AQUI`; quando a imagem entrar, `alt` sempre preenchido (seção 13.2) |
+| 13 | `EspacoImagem` | Início, Solução, Simulador | Espaço reservado tracejado com o marcador `IMAGEM-...-AQUI`; quando o Claude Code ligar a imagem, ele sai, e o `alt` é sempre preenchido (seção 13.2) |
 | 14 | `CartaoIntegrante` | Solução (Equipe) | Foto com `alt="Foto de (nome)"` + nome em `<h3>`; item de uma `<ul>` |
 
 Componentes extras de layout permitidos (ex.: `Rodape`, `CartaoRegistro`, `ListaRegistros`, `FormularioRegistro`).
@@ -628,7 +628,7 @@ Componentes extras de layout permitidos (ex.: `Rodape`, `CartaoRegistro`, `Lista
 
 | Componente extra | Para que serve |
 | --- | --- |
-| `EspacoIcone` | Espaço de 24 × 24 px com `aria-hidden`, onde cada ícone entra (marcador `ICONE-…-AQUI`) |
+| `EspacoIcone` | Desenha o ícone Phosphor pelo nome (24 px, peso Bold, `aria-hidden`); o marcador `ICONE-…-AQUI` fica em comentário ao lado de cada uso (seção 13.1) |
 | `ErroCampo` | Mensagem de erro com ícone e texto (campo, botão Salvar, diálogo) |
 | `LinkVoltar` | "Voltar ao Diário" / "Voltar ao registro", passando pela guarda de saída |
 | `TituloPagina` | `<h1 tabIndex={-1}>` + resumo, em todas as páginas |
@@ -717,8 +717,12 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 ### 13.1 Ícones
 
 - Biblioteca **Phosphor Icons**, peso **Bold** (licença MIT). Tamanho mínimo 24 px. Sempre com texto visível ao lado; `aria-hidden="true"`.
-- **Os ícones são colocados manualmente pela equipe.** No código, no lugar de cada ícone, deixar um espaço de 24 × 24 px oculto para o leitor de tela (`aria-hidden="true"`) com o marcador **`ICONE-(nome)-AQUI`**, por exemplo `ICONE-House-AQUI`. O texto visível ao lado do ícone já existe, então o site funciona sem o ícone.
-- Nomes de referência (conferir os nomes exatos na versão que for instalada):
+- **Os ícones são colocados pelo Claude Code** (decisão da equipe em 14/11/2026, depois da Fase 9), com o pacote `@phosphor-icons/react` (versão fixa `2.1.10`, instalado depois de mostrar o comando e receber a confirmação da equipe).
+  - O componente `EspacoIcone` desenha o ícone pelo prop `nome`, com `size={24}`, `weight="bold"` e `aria-hidden="true"`. Ele importa de `@phosphor-icons/react/ssr`, que funciona em Server e Client Components.
+  - Só os ícones listados em `EspacoIcone` entram no site (mapa explícito, sem importar a biblioteca inteira). Para usar um ícone novo, importe-o e acrescente-o ao mapa.
+  - Nome fora do mapa: o `EspacoIcone` volta o espaço vazio antigo, que não ocupa lugar (19.5). O texto continua centralizado e o site funciona.
+  - Os marcadores **`ICONE-(nome)-AQUI`** continuam no código, em comentário, ao lado de cada uso, como referência.
+- Nomes de referência (conferidos na versão `2.1.10`: todos existem):
 
 | Uso | Ícone Phosphor |
 | --- | --- |
@@ -739,9 +743,16 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 | Aviso | `Warning` |
 | Espaço de imagem | `Image` |
 
+- **(Fases 8 e 9)** Além desses, o site usa `Pause`, `CaretLeft`, `CaretRight`, `ArrowDown`, `ArrowUp`, `ArrowRight`, `ArrowsClockwise`, `ArrowsOutCardinal`, `Eye`, `SpeakerHigh` e `SpeakerSlash` (18.13 e 19.14). Ao todo são 26 ícones; a lista completa está no mapa `ICONES` de `components/ui/EspacoIcone.jsx`.
+
 ### 13.2 Imagens
 
-- **Pendentes e colocadas manualmente pela equipe.** Usar o componente `EspacoImagem` onde as imagens entrariam, com o marcador **`IMAGEM-(descrição da imagem)-AQUI`**, por exemplo `IMAGEM-ilustração conceitual da pulseira-AQUI` e `IMAGEM-ilustração de uma travessia-AQUI`.
+- **Quem faz o quê** (decisão da equipe em 14/11/2026, depois da Fase 9):
+  - **A equipe** só coloca os arquivos das imagens na pasta `public/imagens/`.
+  - **O Claude Code** liga os caminhos no código: troca cada `EspacoImagem` pela imagem (`/imagens/…`), com o `alt` sugerido no comentário do marcador. Onde houver `FotoFiltro`, a imagem entra **dentro** dele (o filtro e o parallax só funcionam com uma `<img>`).
+  - **Quando:** só depois que **todas** as imagens estiverem na pasta, com os nomes certos, e a equipe avisar. Até lá, os espaços `EspacoImagem` continuam.
+  - O Claude Code continua sem gerar imagens (18.13).
+- Enquanto a imagem não entra, o componente `EspacoImagem` ocupa o lugar dela, com o marcador **`IMAGEM-(descrição da imagem)-AQUI`**, por exemplo `IMAGEM-pessoa cega usando o celular-AQUI`. Os marcadores ficam em comentário, como referência, também depois que a imagem entrar.
 - **Todo `alt` é preenchido.** Não há imagens decorativas no site: se uma imagem não comunica nada, ela não entra.
 - Regras do texto alternativo (`alt`), para soar como o leitor de tela nativo do celular:
   - **simples, claro e direto**, em uma frase curta;
@@ -841,7 +852,7 @@ projeto-citizentech-1espu/
 | Item | Marcador | Onde |
 | --- | --- | --- |
 | Fonte | `FONTE-Atkinson Hyperlegible Next-AQUI` | `app/layout.jsx` ou CSS global (seção 8.2) |
-| Ícone | `ICONE-(nome)-AQUI`, ex.: `ICONE-House-AQUI` | Cada lugar com ícone, num espaço de 24 px oculto para o leitor de tela (seção 13.1) |
+| Ícone | `ICONE-(nome)-AQUI`, ex.: `ICONE-House-AQUI` | Comentário ao lado de cada ícone, só como referência: o ícone já é desenhado pelo `EspacoIcone` (seção 13.1) |
 | Imagem | `IMAGEM-(descrição)-AQUI`, ex.: `IMAGEM-foto de Giovana-AQUI` | Dentro de cada `EspacoImagem`, incluindo as 5 fotos da equipe, sempre com o `alt` sugerido ao lado (seção 13.2) |
 | Vídeo e áudio | `VIDEO-(descrição)-AQUI`, `AUDIO-(descrição)-AQUI` | Onde houver (seção 13.2) |
 | API externa | `API-EXTERNA-AQUI` | Em cada função de `registrosService.js` e na URL base (seção 7.6) |
@@ -916,10 +927,11 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 **Pendências (não inventar; perguntar à equipe):**
 - API externa do Diário: espaço preparado com `API-EXTERNA-AQUI` (seção 7.6).
 - Simulador: outro integrante; espaço preparado com `SIMULADOR-AQUI` (seção 6.3).
-- Imagens (ilustrações): colocadas manualmente; espaços com `IMAGEM-...-AQUI` e `alt` sugerido (seção 13.2).
+- Imagens (ilustrações): a equipe põe os arquivos em `public/imagens/`, e o Claude Code liga os caminhos depois que todas estiverem lá. Até lá, espaços com `IMAGEM-...-AQUI` e `alt` sugerido (seção 13.2).
 - API: a equipe vai **aguardar a API** para testar o CRUD. Sem mock.
-- Fotos da equipe (Giovana, Giovane, Mie, Pedro e Thiago): colocadas manualmente nos marcadores `IMAGEM-foto de (nome)-AQUI`.
-- Fontes e ícones: colocados manualmente pela equipe nos marcadores (seções 8.2, 13.1 e 18.1). **(Fase 8)** São 3 fontes: Anton, Atkinson Hyperlegible Next e JetBrains Mono (`app/layout.jsx`). **(Fase 9)** As fontes passam a entrar por `next/font/google` (19.4); os ícones continuam manuais.
+- Fotos da equipe (Giovana, Giovane, Mie, Pedro e Thiago): a equipe põe os arquivos em `public/imagens/`, e o Claude Code liga os caminhos nos marcadores `IMAGEM-foto de (nome)-AQUI` (seção 13.2).
+- Fontes: colocadas manualmente pela equipe nos marcadores (seções 8.2 e 18.1). **(Fase 8)** São 3 fontes: Anton, Atkinson Hyperlegible Next e JetBrains Mono (`app/layout.jsx`). **(Fase 9)** As fontes passam a entrar por `next/font/google` (19.4).
+- Ícones: colocados pelo Claude Code com o pacote `@phosphor-icons/react`, pelo componente `EspacoIcone` (seção 13.1).
 - **(Fase 9)** Vídeos: a equipe coloca os arquivos em `public/videos/` (19.13) e, quando tiver, a versão de "A pulseira" com a voz "Trianon-Masp".
 - **(Fase 9)** Imagens: os prompts para gerar as difíceis de achar estão no documento "Prompts das imagens da Pulse"; marcadores novos na 19.14.
 - **(Fase 9, decisão da equipe, 12/11/2026)** Os vídeos de "Os sinais" substituem a pulseira 3D pequena (19.13); a pulseira no modo `explorar` entra em "A pulseira" (19.12); em "Como funciona", as miniaturas são os quadros parados dos vídeos (19.13).
@@ -948,7 +960,7 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 
 ## 17. Registro de alterações do desenvolvimento
 
-Decisões tomadas durante as Fases 0 a 9. **Equipe** = escolhida pela equipe quando perguntada. **Implementação** = proposta durante a implementação, para cobrir uma lacuna ou um limite técnico; vale até a equipe decidir diferente.
+Decisões tomadas durante as Fases 0 a 9 (e depois dela). **Equipe** = escolhida pela equipe quando perguntada. **Implementação** = proposta durante a implementação, para cobrir uma lacuna ou um limite técnico; vale até a equipe decidir diferente.
 
 | Fase | Decisão | Origem | Seção |
 | --- | --- | --- | --- |
@@ -1017,7 +1029,7 @@ Decisões tomadas durante as Fases 0 a 9. **Equipe** = escolhida pela equipe qua
 | 9 | Granulado atrás do conteúdo (só no fundo da página e das bandas), branco no tema claro e preto no escuro: assim ele nunca baixa o contraste | Equipe | 19.1, 19.3, 19.6 |
 | 9 | Vídeos com os caminhos reais de `public/videos/` (os arquivos já estavam lá); o marcador `VIDEO-…-AQUI` fica em comentário | Equipe | 19.13 |
 | 9 | O padrão de movimento vence a seção 19 em 3 pontos: preloader de 1,4 s; cartão de Tecnologias com `spring.suave` (0,42 s); "texto que se constrói" com o gesto GUIA, sem a máscara de domos | Equipe | 19.6, 19.8 |
-| 9 | O espaço vazio do ícone não ocupa lugar até o ícone entrar (texto dos botões e da barra centralizado) | Equipe | 13.1, 19.5 |
+| 9 | O espaço vazio do ícone não ocupa lugar (texto dos botões e da barra centralizado). Depois da Fase 9, ele só aparece para um nome fora da lista do `EspacoIcone` | Equipe | 13.1, 19.5 |
 | 9 | Palavra de fundo em grafite suave (`rgba(36,36,40,.06)` no claro; `rgba(255,255,255,.05)` no escuro); botões dos ODS no rodapé em `#1A1A1D` (claro) e `#242428` (escuro) | Equipe | 19.3 |
 | 9 | Granulado do tema escuro a 25% (opção B; a 19.3 dizia 8%, que ficava invisível) | Equipe | 19.3, 19.6 |
 | 9 | "Girar sozinha" com texto fixo e `aria-pressed`; só o ícone troca | Equipe | 19.12 |
@@ -1054,6 +1066,8 @@ Decisões tomadas durante as Fases 0 a 9. **Equipe** = escolhida pela equipe qua
 | 9 | PULSO também no registro salvo e no alterado; o "certo" é desenho por código e substitui `ICONE-CheckCircle-AQUI` nas mensagens de sucesso; o tremor vale para todos os campos com erro | Implementação | 19.11 |
 | 9 | Variante `secundario-sobre-cor` (fundo sólido) nos botões sobre os fundos de status: o laranja sobre eles ficava em 4,2–4,3:1 | Implementação | 19.3 |
 | 9 | Galeria: 4 avisos da configuração `strict` do `jsx-a11y` aceitos como exceção (janela com `tabIndex`, fotos focáveis e teclado na janela e nos botões), porque a 19.9 pede esse comportamento | Implementação | 15, 19.9 |
+| Depois da 9 | Os ícones são colocados pelo Claude Code com o pacote `@phosphor-icons/react` (2.1.10), pelo `EspacoIcone`; os marcadores `ICONE-…-AQUI` ficam em comentário, como referência | Equipe | 13.1 |
+| Depois da 9 | Imagens: a equipe só põe os arquivos em `public/imagens/`; o Claude Code liga os caminhos no código, depois que todas estiverem lá e a equipe avisar | Equipe | 13.2 |
 
 
 ---
@@ -1081,7 +1095,7 @@ Na Fase 8, **o Claude Code instala os pacotes**, depois de mostrar o comando à 
 
 - **Fontes: instaladas manualmente pela equipe**, como antes. No lugar onde cada uma será carregada (`app/layout.jsx` ou CSS global), deixar os marcadores **`FONTE-Anton-AQUI`** (peso 400), **`FONTE-Atkinson Hyperlegible Next-AQUI`** (400 e 700, já existe) e **`FONTE-JetBrains Mono-AQUI`** (500 e 700), com o passo a passo em comentário. Usar as variáveis `--fonte-titulo`, `--fonte-base` e `--fonte-mono` com as fontes de reserva da seção 18.4, para o site funcionar antes das fontes entrarem.
 - **21st.dev, Aceternity UI e React Bits:** não instalar agora. Só se a equipe pedir um bloco específico, sempre convertido para JavaScript e conferido quanto à acessibilidade. As dependências possíveis (`clsx`, `tailwind-merge`) só entram nesse caso.
-- **Fontes, ícones e imagens continuam manuais**, com os marcadores `FONTE-…-AQUI`, `ICONE-…-AQUI` e `IMAGEM-…-AQUI`.
+- **Fontes continuam manuais**, com os marcadores `FONTE-…-AQUI`. Os ícones são colocados pelo Claude Code (seção 13.1). Nas imagens (`IMAGEM-…-AQUI`), a equipe põe os arquivos em `public/imagens/`, e o Claude Code liga os caminhos (seção 13.2).
 
 ### 18.2 Piso de acessibilidade da nova identidade
 
@@ -1329,7 +1343,7 @@ O rodapé é escuro nos dois temas (18.3) e existe em todas as páginas. **Os OD
 
 > **(Fase 9)** Atualizada pela seção 19.14: a capa usa vídeos, a ilustração da pulseira sai e entram as fotos de "Quem vive o problema" e das peças de Tecnologias.
 
-Seguem as regras da seção 13.2. **As imagens são colocadas pela equipe**, que pode usar fotos próprias, bancos gratuitos ou imagens geradas por IA; o Claude Code nunca gera nem coloca imagens. A regra antiga "não usar imagens geradas por IA" passa a valer só para o Claude Code.
+Seguem as regras da seção 13.2. **As imagens são escolhidas pela equipe**, que pode usar fotos próprias, bancos gratuitos ou imagens geradas por IA; o Claude Code nunca gera imagens. A regra antiga "não usar imagens geradas por IA" passa a valer só para o Claude Code. **(Depois da Fase 9)** A equipe põe os arquivos em `public/imagens/`, e o Claude Code liga os caminhos no código, depois que todas estiverem lá (13.2).
 
 | Marcador | Onde | `alt` sugerido | Legenda visível |
 | --- | --- | --- | --- |
@@ -1547,7 +1561,7 @@ const mono = JetBrains_Mono({ weight: ["500", "700"], subsets: ["latin", "latin-
 ```
 
 - `--fonte-titulo`, `--fonte-base` e `--fonte-mono` apontam para essas variáveis, com as reservas da 18.4. Se o nome exato de uma família for outro na versão instalada, conferir na lista do `next/font/google` e avisar.
-- Os marcadores `FONTE-…-AQUI` saem, junto com o passo a passo antigo. Os ícones e as imagens continuam manuais.
+- Os marcadores `FONTE-…-AQUI` saem, junto com o passo a passo antigo. Os ícones são colocados pelo Claude Code (seção 13.1). Nas imagens, a equipe põe os arquivos em `public/imagens/`, e o Claude Code liga os caminhos (seção 13.2).
 - **Conferir a 320 px**, já com a Anton de verdade, os títulos longos ("Deslocamentos") e os números dos cartões. Essa pendência era da Fase 8.
 
 ### 19.5 Linguagem visual e polimento (complementa a 18.5)
@@ -1563,7 +1577,7 @@ Ajustes da análise com os 4 pilares do design (contraste, repetição, alinhame
 | Títulos novos | Tema: rótulo "CitizenTech", H2 **"Tecnologia que nasce de uma necessidade real"**. O problema: rótulo "O problema", H2 **"Atravessar sem saber quando"**. Aprovados por enquanto. Os ids e os itens do "Nesta página" continuam ("Tema CitizenTech", "O problema") |
 | Duas colunas | Tema, no computador (≥ 64rem): rótulo e H2 à esquerda e texto à direita. A ordem no HTML não muda |
 | Palavra de fundo | Na frente da textura (`z-index`), nunca atrás dela |
-| Barra de navegação | Texto centralizado em cada item. Os espaços vazios dos ícones (`EspacoIcone` sem ícone ainda) não ocupam lugar visível até o ícone entrar. Os itens não selecionados perdem a borda de 1 px (a pílula da barra já mostra a área). O item ativo continua com fundo `--cor-acao` e `aria-current="page"` |
+| Barra de navegação | Texto centralizado em cada item, com o ícone ao lado (seção 13.1). Se faltar um ícone, o espaço vazio dele não ocupa lugar visível. Os itens não selecionados perdem a borda de 1 px (a pílula da barra já mostra a área). O item ativo continua com fundo `--cor-acao` e `aria-current="page"` |
 | Botões | Texto centralizado vertical e horizontalmente |
 | Diário de deslocamentos | Conferir os espaçamentos entre o título, o aviso, o resumo e a lista (múltiplos de 8 px) |
 
@@ -1730,7 +1744,7 @@ Os vídeos foram feitos pelo Claude fora do código do site, no padrão PADRAO_A
 
 ### 19.14 Imagens (atualiza a 18.13)
 
-As imagens continuam colocadas pela equipe. Os prompts para gerar as que são difíceis de achar de graça estão no documento "Prompts das imagens da Pulse". As fotos não mostram a pulseira e usam a bengala toda branca (Lei 14.951/2024).
+As imagens continuam escolhidas pela equipe, que põe os arquivos em `public/imagens/`; o Claude Code liga os caminhos depois que todas estiverem lá (13.2). Os prompts para gerar as que são difíceis de achar de graça estão no documento "Prompts das imagens da Pulse". As fotos não mostram a pulseira e usam a bengala toda branca (Lei 14.951/2024).
 
 | Marcador | Situação na Fase 9 |
 | --- | --- |

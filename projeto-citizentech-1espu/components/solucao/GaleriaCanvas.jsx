@@ -35,6 +35,8 @@ const FOTOS = [
     // IMAGEM-galeria faixa de pedestres-AQUI
     // alt sugerido: "Faixa de pedestres numa avenida movimentada."
     reserva: "Foto: faixa de pedestres (a definir)",
+    src: "/imagens/galeria-faixa-pedestres.webp",
+    alt: "Faixa de pedestres numa avenida movimentada.",
     legenda: "Travessias sem sinal sonoro",
     x: 140,
     y: 120,
@@ -43,6 +45,8 @@ const FOTOS = [
     // IMAGEM-galeria calçada com obstáculo-AQUI
     // alt sugerido: "Calçada com piso tátil interrompido por um poste."
     reserva: "Foto: calçada com obstáculo (a definir)",
+    src: "/imagens/galeria-calcada-obstaculo.webp",
+    alt: "Calçada com piso tátil interrompido por um poste.",
     legenda: "Calçadas com obstáculos",
     x: 620,
     y: 330,
@@ -51,6 +55,8 @@ const FOTOS = [
     // IMAGEM-galeria semáforo de pedestres-AQUI
     // alt sugerido: "Semáforo de pedestres com botão de acionamento."
     reserva: "Foto: semáforo de pedestres (a definir)",
+    src: "/imagens/galeria-semaforo-pedestres.webp",
+    alt: "Semáforo de pedestres com botão de acionamento.",
     legenda: "Semáforos de pedestres",
     x: 1080,
     y: 90,
@@ -59,6 +65,8 @@ const FOTOS = [
     // IMAGEM-galeria ponto de ônibus-AQUI
     // alt sugerido: "Pessoa esperando o ônibus no ponto."
     reserva: "Foto: ponto de ônibus (a definir)",
+    src: "/imagens/galeria-ponto-onibus.webp",
+    alt: "Pessoa esperando o ônibus no ponto.",
     legenda: "Embarque no transporte",
     x: 1540,
     y: 380,
@@ -67,6 +75,8 @@ const FOTOS = [
     // IMAGEM-galeria plataforma do metrô-AQUI
     // alt sugerido: "Plataforma do metrô com piso tátil na borda."
     reserva: "Foto: plataforma do metrô (a definir)",
+    src: "/imagens/galeria-plataforma-metro.webp",
+    alt: "Plataforma do metrô com piso tátil na borda.",
     legenda: "Plataformas de metrô e trem",
     x: 360,
     y: 800,
@@ -75,6 +85,8 @@ const FOTOS = [
     // IMAGEM-galeria esquina com rampa-AQUI
     // alt sugerido: "Esquina com rampa de acesso e piso tátil."
     reserva: "Foto: esquina com rampa (a definir)",
+    src: "/imagens/galeria-esquina-rampa.webp",
+    alt: "Esquina com rampa de acesso e piso tátil.",
     legenda: "Esquinas e rampas",
     x: 1220,
     y: 860,
@@ -90,7 +102,11 @@ function ConteudoFoto({ foto }) {
   return (
     <>
       <FotoFiltro className="aspect-[4/3]">
-        <EspacoImagem texto={foto.reserva} formato="livre" />
+        {foto.src ? (
+          <img src={foto.src} alt={foto.alt} className="size-full object-cover" />
+        ) : (
+          <EspacoImagem texto={foto.reserva} formato="livre" />
+        )}
       </FotoFiltro>
       <figcaption className="mx-1 text-auxiliar text-texto-2">{foto.legenda}</figcaption>
     </>

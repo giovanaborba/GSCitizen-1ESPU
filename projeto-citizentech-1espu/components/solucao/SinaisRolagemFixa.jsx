@@ -46,6 +46,8 @@ const SINAIS = [
     // IMAGEM-sinal continuar-AQUI
     // alt sugerido (seção 18.13): "Pessoa cega com bengala atravessando a faixa de pedestres."
     imagem: "Foto do sinal continuar (a definir)",
+    src: "/imagens/sinal-continuar.webp",
+    alt: "Pessoa cega com bengala atravessando a faixa de pedestres.",
   },
   {
     chave: "parar",
@@ -59,6 +61,8 @@ const SINAIS = [
     // IMAGEM-sinal parar-AQUI
     // alt sugerido (seção 18.13): "Pessoa parada no meio-fio diante do semáforo fechado."
     imagem: "Foto do sinal parar (a definir)",
+    src: "/imagens/sinal-parar.webp",
+    alt: "Pessoa parada no meio-fio diante do semáforo fechado.",
   },
   {
     chave: "virar",
@@ -69,6 +73,8 @@ const SINAIS = [
     // IMAGEM-sinal virar-AQUI
     // alt sugerido (seção 18.13): "Esquina de calçada com piso tátil indicando a curva."
     imagem: "Foto do sinal virar (a definir)",
+    src: "/imagens/sinal-virar.webp",
+    alt: "Esquina de calçada com piso tátil indicando a curva.",
   },
   {
     chave: "aguardar",
@@ -79,6 +85,8 @@ const SINAIS = [
     // IMAGEM-sinal aguardar-AQUI
     // alt sugerido (seção 18.13): "Pessoa esperando no ponto de ônibus."
     imagem: "Foto do sinal aguardar (a definir)",
+    src: "/imagens/sinal-aguardar.webp",
+    alt: "Pessoa esperando no ponto de ônibus.",
   },
 ];
 
@@ -190,7 +198,15 @@ export default function SinaisRolagemFixa() {
                       (no computador, o texto fica centralizado ao lado) */}
                   <div className={`foto-sinal min-h-0 ${podeFixar ? "min-[62.5rem]:self-stretch" : ""}`}>
                     {/* O marcador e o alt de cada foto estão na lista SINAIS, acima */}
-                    <EspacoImagem texto={sinal.imagem} formato={podeFixar ? "livre" : "paisagem"} />
+                    {sinal.src ? (
+                      <img
+                        src={sinal.src}
+                        alt={sinal.alt}
+                        className={`size-full rounded-cartao object-cover ${podeFixar ? "" : "aspect-video"}`}
+                      />
+                    ) : (
+                      <EspacoImagem texto={sinal.imagem} formato={podeFixar ? "livre" : "paisagem"} />
+                    )}
                   </div>
                   <div className="texto-sinal grid gap-3">
                     <h3

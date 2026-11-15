@@ -6,7 +6,6 @@ import PaginaComIndice from "@/components/layout/PaginaComIndice";
 import RotuloSecao from "@/components/layout/RotuloSecao";
 import Secao from "@/components/layout/Secao";
 import Cartao from "@/components/ui/Cartao";
-import EspacoImagem from "@/components/ui/EspacoImagem";
 import VideoPulse from "@/components/ui/VideoPulse";
 import FotoFiltro from "@/components/ui/FotoFiltro";
 import NumeroContado from "@/components/ui/NumeroContado";
@@ -205,7 +204,11 @@ export default function PaginaInicio() {
               <FotoFiltro velocidade={0.06} className="aspect-[4/3]">
                 {/* IMAGEM-pessoa cega usando o celular-AQUI
                     alt sugerido (seção 19.14): "Pessoa cega usando o celular com leitor de tela." */}
-                <EspacoImagem texto="Foto de uma pessoa cega usando o celular (a definir)" formato="livre" />
+                <img
+                  src="/imagens/pessoa-cega-celular.webp"
+                  alt="Pessoa cega usando o celular com leitor de tela."
+                  className="size-full object-cover"
+                />
               </FotoFiltro>
               <h3>Pessoa cega</h3>
               <p className="text-texto-2">
@@ -217,7 +220,11 @@ export default function PaginaInicio() {
               <FotoFiltro velocidade={-0.06} className="aspect-[4/3]">
                 {/* IMAGEM-pessoa com baixa visão ampliando a tela-AQUI
                     alt sugerido (seção 19.14): "Pessoa com baixa visão ampliando a tela do celular." */}
-                <EspacoImagem texto="Foto de uma pessoa com baixa visão ampliando a tela (a definir)" formato="livre" />
+                <img
+                  src="/imagens/pessoa-baixa-visao-ampliando.webp"
+                  alt="Pessoa com baixa visão ampliando a tela do celular."
+                  className="size-full object-cover"
+                />
               </FotoFiltro>
               <h3>Pessoa com baixa visão</h3>
               <p className="text-texto-2">
