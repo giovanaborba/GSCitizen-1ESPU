@@ -6,6 +6,7 @@ import ErroCampo from "@/components/ui/ErroCampo";
 import GrupoOpcoes from "@/components/ui/GrupoOpcoes";
 import { useFormularioRegistro } from "@/hooks/useFormularioRegistro";
 import { useGuardaDeSaida } from "@/hooks/useGuardaDeSaida";
+import { useEsperaLonga } from "@/hooks/useEsperaLonga";
 import { useHoje } from "@/hooks/useHoje";
 import { OPCOES, PERGUNTAS } from "@/lib/rotulos";
 
@@ -19,6 +20,11 @@ import { OPCOES, PERGUNTAS } from "@/lib/rotulos";
   Fase 9 (19.11): a cada envio com erro, os campos com erro tremem
   (componente Tremor), junto da mensagem em texto de cada um.
 
+  Espera longa (seção 11.1): depois de 10 s em "Salvando…", a região de
+  status anuncia "Está demorando mais que o normal. Aguarde mais um
+  pouco.". Não há botão de parar: o servidor pode gravar mesmo se a
+  espera for interrompida.
+
   Props:
   - valoresIniciais  vazios (novo) ou os do registro (editar)
   - aoSalvar(dados)  salva e navega; lança erro se falhar
@@ -31,6 +37,7 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
     useFormularioRegistro({ valoresIniciais, aoSalvar });
   const { aoNavegar } = useGuardaDeSaida();
   const hoje = useHoje();
+  const demorando = useEsperaLonga(enviando);
 
   function aoCancelar(evento) {
     aoNavegar(evento, destinoCancelar);
@@ -83,9 +90,9 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
           </ErroCampo>
         )}
 
-        {/* Anuncia "Salvando" sem mover o foco */}
+        {/* Anuncia "Salvando" (e, depois de 10 s, o aviso) sem mover o foco */}
         <p role="status" className="sr-only">
-          {enviando ? "Salvando" : ""}
+          {enviando ? (demorando ? "Está demorando mais que o normal. Aguarde mais um pouco." : "Salvando") : ""}
         </p>
 
         <div className="flex flex-wrap gap-4">

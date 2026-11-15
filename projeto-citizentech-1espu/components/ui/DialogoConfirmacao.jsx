@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef } from "react";
 import Botao from "@/components/ui/Botao";
 import ErroCampo from "@/components/ui/ErroCampo";
+import { useEsperaLonga } from "@/hooks/useEsperaLonga";
 
 /*
   DialogoConfirmacao — seção 10, item 10.
@@ -16,6 +17,9 @@ import ErroCampo from "@/components/ui/ErroCampo";
   - foco inicial na opção SEGURA (o botão de cancelar);
   - foco de volta no botão que abriu o diálogo, ao fechar;
   - "processando" (ex.: "Excluindo…"), anunciado ao leitor de tela.
+    Depois de 10 s (seção 11.1), o anúncio passa a ser "Está demorando
+    mais que o normal. Aguarde mais um pouco.". Não há botão de parar: o
+    servidor pode excluir mesmo se a espera for interrompida.
 
   Props: aberto, titulo, texto, textoConfirmar, textoCancelar,
          aoConfirmar, aoCancelar, processando, textoProcessando, erro
@@ -37,6 +41,7 @@ export default function DialogoConfirmacao({
   const refOrigem = useRef(null);
   const idTitulo = useId();
   const idTexto = useId();
+  const demorando = useEsperaLonga(processando);
 
   useEffect(() => {
     const dialogo = refDialogo.current;
@@ -98,9 +103,13 @@ export default function DialogoConfirmacao({
         </ErroCampo>
       )}
 
-      {/* Anuncia "Excluindo" sem mover o foco */}
+      {/* Anuncia "Excluindo" (e, depois de 10 s, o aviso) sem mover o foco */}
       <p role="status" className="sr-only">
-        {processando && textoProcessando ? textoProcessando.replace("…", "") : ""}
+        {processando && textoProcessando
+          ? demorando
+            ? "Está demorando mais que o normal. Aguarde mais um pouco."
+            : textoProcessando.replace("…", "")
+          : ""}
       </p>
 
       <div className="mt-6 flex flex-wrap gap-4">

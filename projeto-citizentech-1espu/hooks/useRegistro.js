@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { foiCancelado, obter } from "@/services/registrosService";
 
 /*
@@ -11,6 +11,8 @@ import { foiCancelado, obter } from "@/services/registrosService";
   - erro           erro de domínio ({ codigo: "conexao" }) ou null
   - naoEncontrado  true quando a API diz que o registro não existe
   - recarregar     busca de novo (botão "Tentar de novo")
+  - parar          interrompe a busca ("Parar de carregar", seção 11.1);
+                   o erro vira { codigo: "interrompido" }
 */
 export function useRegistro(id) {
   const [estado, setEstado] = useState({
@@ -20,9 +22,12 @@ export function useRegistro(id) {
     naoEncontrado: false,
   });
   const [tentativa, setTentativa] = useState(0);
+  // A busca em andamento, para o "Parar de carregar"
+  const refControle = useRef(null);
 
   useEffect(() => {
     const controle = new AbortController();
+    refControle.current = controle;
 
     obter(id, { sinal: controle.signal })
       .then((registro) => {
@@ -46,5 +51,12 @@ export function useRegistro(id) {
     setTentativa((anterior) => anterior + 1);
   }
 
-  return { ...estado, recarregar };
+  // A busca cancelada não chega ao .catch (foiCancelado), então o erro
+  // "interrompido" é definido aqui.
+  function parar() {
+    refControle.current?.abort();
+    setEstado({ registro: null, carregando: false, erro: { codigo: "interrompido" }, naoEncontrado: false });
+  }
+
+  return { ...estado, recarregar, parar };
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   atualizar as atualizarNoServico,
   criar as criarNoServico,
@@ -21,6 +21,8 @@ import { ordenarDoMaisRecente } from "@/lib/datas";
   - carregando  true enquanto a lista está sendo buscada
   - erro        o erro de domínio ({ codigo: "conexao" }) ou null
   - recarregar  busca a lista de novo (botão "Tentar de novo")
+  - parar       interrompe a busca ("Parar de carregar", seção 11.1);
+                o erro vira { codigo: "interrompido" }
   - criar, atualizar, excluir, restaurar  (restaurar = "Desfazer")
 */
 export function useRegistros({ carregarAoIniciar = true } = {}) {
@@ -29,12 +31,15 @@ export function useRegistros({ carregarAoIniciar = true } = {}) {
   const [erro, setErro] = useState(null);
   // Cada novo número faz o useEffect buscar a lista outra vez
   const [tentativa, setTentativa] = useState(0);
+  // A busca em andamento, para o "Parar de carregar"
+  const refControle = useRef(null);
 
   useEffect(() => {
     if (!carregarAoIniciar) return;
 
     // Se a pessoa sair da tela antes da resposta, a busca é cancelada
     const controle = new AbortController();
+    refControle.current = controle;
 
     listar({ sinal: controle.signal })
       .then((lista) => {
@@ -55,6 +60,14 @@ export function useRegistros({ carregarAoIniciar = true } = {}) {
     setCarregando(true);
     setErro(null);
     setTentativa((anterior) => anterior + 1);
+  }
+
+  // A busca cancelada não chega ao .catch (foiCancelado), então o erro
+  // "interrompido" é definido aqui.
+  function parar() {
+    refControle.current?.abort();
+    setErro({ codigo: "interrompido" });
+    setCarregando(false);
   }
 
   async function criar(dados) {
@@ -82,5 +95,5 @@ export function useRegistros({ carregarAoIniciar = true } = {}) {
     return criar(registroExcluido);
   }
 
-  return { registros, carregando, erro, recarregar, criar, atualizar, excluir, restaurar };
+  return { registros, carregando, erro, recarregar, parar, criar, atualizar, excluir, restaurar };
 }

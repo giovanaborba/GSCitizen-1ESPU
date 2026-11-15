@@ -21,7 +21,7 @@ import { valoresDoRegistro } from "@/lib/validacao";
 */
 export default function TelaEditarRegistro({ id }) {
   const router = useRouter();
-  const { registro, carregando, erro, naoEncontrado, recarregar } = useRegistro(id);
+  const { registro, carregando, erro, naoEncontrado, recarregar, parar } = useRegistro(id);
   const { atualizar } = useRegistros({ carregarAoIniciar: false });
   const { definirMensagem } = useMensagemDiario();
   const [tentativas, setTentativas] = useState(0);
@@ -59,13 +59,15 @@ export default function TelaEditarRegistro({ id }) {
         resumo="Conte como foi um deslocamento que você já fez."
       />
 
-      {carregando && <EstadoTela tipo="carregando" />}
+      {carregando && <EstadoTela tipo="carregando" aoParar={parar} />}
       {erro && (
         <EstadoTela
           key={tentativas}
           tipo="erro"
           aoTentarDeNovo={aoTentarDeNovo}
-          focarAoMontar={tentativas > 0}
+          // Depois do "Parar de carregar", o foco vai para "Tentar de novo"
+          focarAoMontar={tentativas > 0 || erro?.codigo === "interrompido"}
+          interrompido={erro?.codigo === "interrompido"}
         />
       )}
       {registro && (

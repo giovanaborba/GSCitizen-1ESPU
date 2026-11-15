@@ -22,7 +22,7 @@ import { formatarData } from "@/lib/datas";
 */
 export default function TelaRegistro({ id }) {
   const router = useRouter();
-  const { registro, carregando, erro, naoEncontrado, recarregar } = useRegistro(id);
+  const { registro, carregando, erro, naoEncontrado, recarregar, parar } = useRegistro(id);
   const { excluir } = useRegistros({ carregarAoIniciar: false });
   const { definirMensagem } = useMensagemDiario();
   const [dialogoAberto, setDialogoAberto] = useState(false);
@@ -82,13 +82,15 @@ export default function TelaRegistro({ id }) {
       {/* Enquanto carrega, o título é só "Registro"; com os dados, ganha a data */}
       <TituloPagina titulo={registro ? `Registro de ${data}` : "Registro"} />
 
-      {carregando && <EstadoTela tipo="carregando" />}
+      {carregando && <EstadoTela tipo="carregando" aoParar={parar} />}
       {erro && (
         <EstadoTela
           key={tentativas}
           tipo="erro"
           aoTentarDeNovo={aoTentarDeNovo}
-          focarAoMontar={tentativas > 0}
+          // Depois do "Parar de carregar", o foco vai para "Tentar de novo"
+          focarAoMontar={tentativas > 0 || erro?.codigo === "interrompido"}
+          interrompido={erro?.codigo === "interrompido"}
         />
       )}
       {registro && (

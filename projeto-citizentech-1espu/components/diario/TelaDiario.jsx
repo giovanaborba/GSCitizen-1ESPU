@@ -28,7 +28,7 @@ import { useResumoIndicadores } from "@/hooks/useResumoIndicadores";
   Sem a API, a lista mostra o erro de conexão.
 */
 export default function TelaDiario() {
-  const { registros, carregando, erro, recarregar, restaurar } = useRegistros();
+  const { registros, carregando, erro, recarregar, parar, restaurar } = useRegistros();
   const indicadores = useResumoIndicadores(registros);
   const { mensagem, definirMensagem, limparMensagem } = useMensagemDiario();
   const [restaurando, setRestaurando] = useState(false);
@@ -108,13 +108,15 @@ export default function TelaDiario() {
         </div>
       )}
 
-      {situacao === "carregando" && <EstadoTela tipo="carregando" />}
+      {situacao === "carregando" && <EstadoTela tipo="carregando" aoParar={parar} />}
       {situacao === "erro" && (
         <EstadoTela
           key={tentativas}
           tipo="erro"
           aoTentarDeNovo={aoTentarDeNovo}
-          focarAoMontar={tentativas > 0}
+          // Depois do "Parar de carregar", o foco vai para "Tentar de novo"
+          focarAoMontar={tentativas > 0 || erro?.codigo === "interrompido"}
+          interrompido={erro?.codigo === "interrompido"}
         />
       )}
       {situacao === "vazio" && <EstadoTela tipo="vazio" />}
