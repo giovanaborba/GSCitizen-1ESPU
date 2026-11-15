@@ -101,8 +101,8 @@ const TECNOLOGIAS = [
   { rotulo: "Tato", nome: "Atuadores de pressão", src: "/imagens/peca-atuadores-pressao.webp", alt: "Foto da peça: Atuadores de pressão.", descricao: "Comando de continuar." },
   // IMAGEM-peça (Alto-falante)-AQUI — alt: "Foto da peça: Alto-falante."
   { rotulo: "Som", nome: "Alto-falante", src: "/imagens/peca-alto-falante.webp", alt: "Foto da peça: Alto-falante.", descricao: "Sinais sonoros." },
-  // IMAGEM-peça (APIs de mapas, semáforos e transporte)-AQUI — alt: "Foto da peça: APIs de mapas, semáforos e transporte."
-  { rotulo: "Dados", nome: "APIs de mapas, semáforos e transporte", src: "/imagens/peca-apis.webp", alt: "Foto da peça: APIs de mapas, semáforos e transporte.", descricao: "Informações em tempo real." },
+  // IMAGEM-peça (APIs de mapas, semáforos e transporte)-AQUI — alt: "Ilustração de um chip com a palavra API, ligado a circuitos."
+  { rotulo: "Dados", nome: "APIs de mapas, semáforos e transporte", src: "/imagens/peca-apis.webp", alt: "Ilustração de um chip com a palavra API, ligado a circuitos.", descricao: "Informações em tempo real." },
   // IMAGEM-peça (Módulo de conectividade)-AQUI — alt: "Foto da peça: Módulo de conectividade."
   { rotulo: "Conexão", nome: "Módulo de conectividade", src: "/imagens/peca-conectividade.webp", alt: "Foto da peça: Módulo de conectividade.", descricao: "Acesso aos serviços e dados." },
 ];

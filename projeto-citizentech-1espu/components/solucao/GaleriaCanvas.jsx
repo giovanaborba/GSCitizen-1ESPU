@@ -43,20 +43,20 @@ const FOTOS = [
   },
   {
     // IMAGEM-galeria calçada com obstáculo-AQUI
-    // alt sugerido: "Calçada com piso tátil interrompido por um poste."
+    // alt sugerido: "Calçada com placas de concreto quebradas e desniveladas."
     reserva: "Foto: calçada com obstáculo (a definir)",
     src: "/imagens/galeria-calcada-obstaculo.webp",
-    alt: "Calçada com piso tátil interrompido por um poste.",
+    alt: "Calçada com placas de concreto quebradas e desniveladas.",
     legenda: "Calçadas com obstáculos",
     x: 620,
     y: 330,
   },
   {
     // IMAGEM-galeria semáforo de pedestres-AQUI
-    // alt sugerido: "Semáforo de pedestres com botão de acionamento."
+    // alt sugerido: "Semáforo de pedestres com o boneco vermelho aceso."
     reserva: "Foto: semáforo de pedestres (a definir)",
     src: "/imagens/galeria-semaforo-pedestres.webp",
-    alt: "Semáforo de pedestres com botão de acionamento.",
+    alt: "Semáforo de pedestres com o boneco vermelho aceso.",
     legenda: "Semáforos de pedestres",
     x: 1080,
     y: 90,
@@ -83,10 +83,10 @@ const FOTOS = [
   },
   {
     // IMAGEM-galeria esquina com rampa-AQUI
-    // alt sugerido: "Esquina com rampa de acesso e piso tátil."
+    // alt sugerido: "Esquina em ladeira, com calçada estreita e sem rampa de acesso."
     reserva: "Foto: esquina com rampa (a definir)",
     src: "/imagens/galeria-esquina-rampa.webp",
-    alt: "Esquina com rampa de acesso e piso tátil.",
+    alt: "Esquina em ladeira, com calçada estreita e sem rampa de acesso.",
     legenda: "Esquinas e rampas",
     x: 1220,
     y: 860,
