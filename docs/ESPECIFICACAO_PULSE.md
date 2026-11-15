@@ -653,16 +653,22 @@ Notas de implementação:
 
 - Abaixo de 1 s: nenhum indicador.
 - Entre 1 e 10 s: indicador de carregamento + texto.
-- Acima de 10 s: progresso e opção de cancelar. **(Pendente)** O cancelamento já existe por dentro (`AbortSignal`), mas faltam os textos do aviso e do botão (seção 16).
+- Acima de 10 s: aviso e, quando é seguro, opção de parar. **(Depois da Fase 9, decisão da equipe em 15/11/2026, opção B)**
+  - **Carregando** (lista, Ver registro e Editar registro): a região `role="status"` do carregando ganha "Está demorando mais que o normal. Você pode esperar ou parar.". Abaixo dela, fora da região, aparece o botão secundário "Parar de carregar". Ao tocar, a busca é interrompida pelo `AbortSignal` e entra o estado de erro com o título "Carregamento interrompido." e o botão "Tentar de novo", que recebe o foco (o botão de parar some).
+  - **Salvando… e Excluindo…:** a região de status que já anuncia "Salvando" ou "Excluindo" passa a anunciar "Está demorando mais que o normal. Aguarde mais um pouco.". Não há botão de parar: o servidor pode gravar ou excluir mesmo se a espera for interrompida.
+  - A contagem dos 10 s começa quando a espera começa e recomeça a cada nova espera. Com os efeitos desligados, o indicador não gira.
 
 ### 11.2 Estados do Diário
 
 | Momento | O que aparece | O que o leitor de tela anuncia |
 | --- | --- | --- |
 | Carregando a lista (> 1 s) | "Carregando os registros…" + indicador simples (não gira com movimento reduzido) | "Carregando os registros" |
+| Carregando há mais de 10 s | Também "Está demorando mais que o normal. Você pode esperar ou parar." + botão secundário "Parar de carregar" | "Está demorando mais que o normal. Você pode esperar ou parar." |
+| Carregamento interrompido | "Carregamento interrompido." · botão "Tentar de novo", com o foco | "Carregamento interrompido." (alerta) |
 | Lista vazia | **H2 Nenhum deslocamento registrado ainda** · "Registre o primeiro para começar a medir o impacto da Pulse." · botão "Novo registro" | O texto |
 | Erro ao carregar | "Não foi possível carregar os registros." · "Verifique a conexão e tente de novo." · botão "Tentar de novo" | O texto do erro (alerta) |
 | Salvando | Botão "Salvando…", travado | "Salvando" |
+| Salvando ou excluindo há mais de 10 s | Botão "Salvando…" ou "Excluindo…", travado; sem botão de parar | "Está demorando mais que o normal. Aguarde mais um pouco." |
 | Salvo | Volta à lista com "Registro salvo." + "Fechar" | "Registro salvo" |
 | Erro de preenchimento | Mensagem em cada campo com problema; foco no primeiro | Nome do campo, "inválido" e o erro |
 | Erro ao salvar | Mensagem junto ao botão; dados mantidos | O texto do erro |
@@ -940,7 +946,7 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 - **(Fase 8)** Imagens novas: capa (2 versões), 4 sinais e 6 fotos da galeria (seção 18.13), colocadas pela equipe. Ao colocar a imagem da capa, conferir o contraste de 7:1 do rótulo, de "PULSE" e da dica sobre ela.
 - **(Fase 8)** Quando a Anton entrar, conferir a 320 px os títulos longos ("Deslocamentos") e os números dos cartões (hoje medidos com a Impact, a fonte de reserva).
 - **(Fase 8)** Frase da capa provisória: "Um guia no pulso para atravessar a cidade."
-- **(Fase 5)** Espera acima de 10 s (seção 11.1): faltam o texto do aviso e o do botão de cancelar.
+- ~~**(Fase 5)** Espera acima de 10 s (seção 11.1): faltam o texto do aviso e o do botão de cancelar.~~ **(Depois da Fase 9)** Resolvida: textos e comportamento na 11.1 e na 11.2.
 - **(Fase 3)** Vibração no simulador: a seção 6.3 cita a Vibration API no Android, e a seção 3, item 14, proíbe vibração do celular. A equipe precisa decidir antes de o simulador usar essa API.
 - ~~**(Fase 6)** No computador, na Início e na Solução, o logo do cabeçalho (coluna de 40rem) não fica alinhado com a grade de 59rem.~~ **(Fase 8)** Resolvida: cabeçalho, rodapé, Início, Solução, Simulador e 404 usam a mesma área de 76rem.
 - **(Fase 7)** Com zoom de 400% e pouca altura, o cabeçalho fixo (64 px) ocupa cerca de 1/4 da tela. A seção 9.1 manda que ele fique fixo; avaliar.
@@ -1068,6 +1074,14 @@ Decisões tomadas durante as Fases 0 a 9 (e depois dela). **Equipe** = escolhida
 | 9 | Galeria: 4 avisos da configuração `strict` do `jsx-a11y` aceitos como exceção (janela com `tabIndex`, fotos focáveis e teclado na janela e nos botões), porque a 19.9 pede esse comportamento | Implementação | 15, 19.9 |
 | Depois da 9 | Os ícones são colocados pelo Claude Code com o pacote `@phosphor-icons/react` (2.1.10), pelo `EspacoIcone`; os marcadores `ICONE-…-AQUI` ficam em comentário, como referência | Equipe | 13.1 |
 | Depois da 9 | Imagens: a equipe só põe os arquivos em `public/imagens/`; o Claude Code liga os caminhos no código, depois que todas estiverem lá e a equipe avisar | Equipe | 13.2 |
+| Depois da 9 | Imagens ligadas no código: cada `EspacoImagem` virou `<img>` com o `alt` sugerido (o espaço só volta quando falta o `src`) | Implementação | 13.2, 18.13, 19.14 |
+| Depois da 9 | Os sinais: o modo fixo pede janela com pelo menos 700 px de altura (antes, 560 px); abaixo disso, lista comum | Implementação | 18.8 |
+| Depois da 9 | Os sinais na lista comum: fotos em 4:3 (antes, 16:9), para aparecerem inteiras | Implementação | 18.8 |
+| Depois da 9 | "Antes e depois": moldura em 16:9 em todos os tamanhos, igual aos vídeos | Implementação | 19.13 |
+| Depois da 9 | ODS: o número não encolhe nem quebra de linha ao lado do nome | Implementação | 6.2 |
+| Depois da 9 | `alt` de 4 imagens ajustados ao que a foto mostra: calçada com obstáculo, esquina com rampa, semáforo de pedestres e a peça das APIs | Equipe | 18.13, 19.14 |
+| Depois da 9 | Espera acima de 10 s (opção B): no carregando, aviso na região de status e botão "Parar de carregar", que leva a "Carregamento interrompido." com o foco em "Tentar de novo"; no "Salvando…" e no "Excluindo…", só o aviso "Aguarde mais um pouco.", sem botão de parar | Equipe | 11.1, 11.2 |
+| Depois da 9 | Espera longa: um hook `useEsperaLonga` (10 s) serve às três esperas; o "Carregamento interrompido." não tem a segunda linha do erro de conexão; "Parar de carregar" sem ícone; o aviso de "Salvando…" e "Excluindo…" é só para o leitor de tela, porque a região de status deles é `sr-only` | Implementação | 11.1, 14 |
 
 
 ---
@@ -1354,11 +1368,11 @@ Seguem as regras da seção 13.2. **As imagens são escolhidas pela equipe**, qu
 | `IMAGEM-sinal virar-AQUI` | Os sinais | "Esquina de calçada com piso tátil indicando a curva." | — |
 | `IMAGEM-sinal aguardar-AQUI` | Os sinais | "Pessoa esperando no ponto de ônibus." | — |
 | `IMAGEM-galeria faixa de pedestres-AQUI` | Galeria | "Faixa de pedestres numa avenida movimentada." | Travessias sem sinal sonoro |
-| `IMAGEM-galeria calçada com obstáculo-AQUI` | Galeria | "Calçada com piso tátil interrompido por um poste." | Calçadas com obstáculos |
-| `IMAGEM-galeria semáforo de pedestres-AQUI` | Galeria | "Semáforo de pedestres com botão de acionamento." | Semáforos de pedestres |
+| `IMAGEM-galeria calçada com obstáculo-AQUI` | Galeria | "Calçada com placas de concreto quebradas e desniveladas." | Calçadas com obstáculos |
+| `IMAGEM-galeria semáforo de pedestres-AQUI` | Galeria | "Semáforo de pedestres com o boneco vermelho aceso." | Semáforos de pedestres |
 | `IMAGEM-galeria ponto de ônibus-AQUI` | Galeria | "Pessoa esperando o ônibus no ponto." | Embarque no transporte |
 | `IMAGEM-galeria plataforma do metrô-AQUI` | Galeria | "Plataforma do metrô com piso tátil na borda." | Plataformas de metrô e trem |
-| `IMAGEM-galeria esquina com rampa-AQUI` | Galeria | "Esquina com rampa de acesso e piso tátil." | Esquinas e rampas |
+| `IMAGEM-galeria esquina com rampa-AQUI` | Galeria | "Esquina em ladeira, com calçada estreita e sem rampa de acesso." | Esquinas e rampas |
 
 Continuam: `IMAGEM-ilustração de uma travessia-AQUI` (Início), `IMAGEM-ilustração conceitual da pulseira-AQUI` (Solução, "A pulseira") e `IMAGEM-foto de (nome)-AQUI` (Equipe).
 
@@ -1750,12 +1764,12 @@ As imagens continuam escolhidas pela equipe, que põe os arquivos em `public/ima
 | --- | --- |
 | `IMAGEM-capa versão computador (horizontal)-AQUI` e `…celular (vertical)-AQUI` | Saem: a capa usa os vídeos (19.13) |
 | `IMAGEM-ilustração conceitual da pulseira-AQUI` | Sai: "A pulseira" usa o vídeo e a pulseira 3D no modo `explorar` |
-| `IMAGEM-sinal …-AQUI` (4) e `IMAGEM-galeria …-AQUI` (6) | Continuam, com os `alt` da 18.13 |
+| `IMAGEM-sinal …-AQUI` (4) e `IMAGEM-galeria …-AQUI` (6) | Continuam, com os `alt` da 18.13 **(Depois da Fase 9: 3 da galeria ajustados à foto, em 15/11/2026)** |
 | `IMAGEM-foto de (nome)-AQUI` (5) | Continuam (polaroides) |
 | `IMAGEM-ilustração de uma travessia-AQUI` | Continua no Início, se a equipe quiser uma imagem parada além do vídeo de "O problema"; se não, sai. **(Fase 9, decisão da equipe na 9.8: saiu; o vídeo ocupa o lugar.)** |
 | **Novo:** `IMAGEM-pessoa cega usando o celular-AQUI` | "Quem vive o problema", cartão "Pessoa cega". `alt`: "Pessoa cega usando o celular com leitor de tela." |
 | **Novo:** `IMAGEM-pessoa com baixa visão ampliando a tela-AQUI` | "Quem vive o problema", cartão "Pessoa com baixa visão". `alt`: "Pessoa com baixa visão ampliando a tela do celular." |
-| **Novo:** `IMAGEM-peça (nome)-AQUI` (8) | Verso dos cartões de Tecnologias. `alt`: "Foto da peça: (nome da tecnologia)." |
+| **Novo:** `IMAGEM-peça (nome)-AQUI` (8) | Verso dos cartões de Tecnologias. `alt`: "Foto da peça: (nome da tecnologia)." **(Depois da Fase 9)** Exceção: a peça das APIs é uma ilustração, com o `alt` "Ilustração de um chip com a palavra API, ligado a circuitos." |
 
 **Ícones novos** (`ICONE-…-AQUI`, Phosphor Bold): `ArrowsClockwise` (virar o cartão), `SpeakerHigh` e `SpeakerSlash` (som), `ArrowsOutCardinal` (centralizar a galeria), `ArrowUp` e `ArrowDown` (mover a galeria), `ArrowCounterClockwise` e `ArrowClockwise` (girar a pulseira), `Eye` (ver por dentro).
 

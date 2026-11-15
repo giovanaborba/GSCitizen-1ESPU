@@ -1633,6 +1633,89 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 
 **Decisão da equipe (14/11/2026):** a equipe só coloca os arquivos das imagens em `public/imagens/`. O Claude Code liga os caminhos no código: troca cada `EspacoImagem` pela imagem, com o `alt` sugerido. Isso só acontece **depois que todas as imagens estiverem na pasta**, com os nomes certos, e a equipe avisar. A seção 13.2 da especificação foi atualizada. Nenhum código mudou ainda.
 
+### Depois da Fase 9
+
+#### 1. Imagens ligadas no código (commit `8f1e389`, 14/11/2026)
+
+**Origem:** a equipe pôs todos os arquivos em `public/imagens/` (seção "caminhos das imagens", acima).
+
+**O que mudou:** cada `EspacoImagem` virou uma `<img>` com o `src` do arquivo e o `alt` sugerido no comentário do marcador. Os comentários `IMAGEM-…-AQUI` continuam no código, como referência.
+- **Início** (`app/page.jsx`): as 2 fotos de "Quem vive o problema", dentro do `FotoFiltro`.
+- **Os sinais** (`SinaisRolagemFixa.jsx`): as 4 fotos, pelos campos `src` e `alt` de cada sinal.
+- **Galeria** (`GaleriaCanvas.jsx`): as 6 fotos, pelos campos `src` e `alt` da lista `FOTOS`.
+- **Tecnologias** (`app/solucao/page.jsx` e `CartaoTecnologia.jsx`): as 8 peças, pelos campos `src` e `alt` da lista `TECNOLOGIAS`, passados ao cartão.
+- **Equipe** (`app/solucao/page.jsx` e `CartaoIntegrante.jsx`): as 5 fotos dos polaroides, pelos props `src` e `alt`.
+- Nos componentes, o espaço antigo só volta quando falta o `src`.
+- No mesmo commit, o `FotoFiltro` passou a só recortar a imagem: sem filtro em tons de cinza, sem pontilhado, sem zoom e sem parallax (decisão da equipe, anotada no comentário do componente).
+
+#### 2. Correções do teste no iPhone (commit `68a7531`, 14/11/2026)
+
+**Origem:** teste num iPhone com janela de 357 × 667 px. Textos e cores não mudaram.
+
+**O que mudou:**
+1. **Sinais** (`hooks/useRolagemFixa.js` e `components/solucao/SinaisRolagemFixa.jsx`):
+   - o modo fixo agora pede janela com pelo menos **700 px** de altura (antes, 560 px): `CONSULTA_MODO_FIXO = "(min-height: 700px) and (min-width: 340px)"`. Num celular como o testado (667 px de altura), os 4 sinais aparecem em lista comum. Os comentários dos dois arquivos foram atualizados com o novo valor;
+   - no modo lista, a `<img>` do sinal troca `aspect-video` por `aspect-[4/3]`, para a foto aparecer inteira.
+2. **Antes e depois** (`components/solucao/AntesDepois.jsx`): a moldura usa `aspect-video` em todos os tamanhos (antes, `aspect-[4/5]` e `aspect-[16/10]` a partir de 32,5rem), igual aos vídeos (1280 × 720).
+3. **ODS** (`components/solucao/FaixaODS.jsx`): o `<span>` do número, em `ConteudoOds`, ganhou `shrink-0 whitespace-nowrap`, para o número não ser espremido nem quebrar em duas linhas ao lado do nome.
+
+**Conferido:** `npm run lint` sem erros (6 avisos `no-img-element`, que já existiam desde a ligação das imagens) e `npm run build` sem erros.
+
+**Pendente:** a seção 18.8 da especificação (`docs/ESPECIFICACAO_PULSE.md`, linha do "Modo fixo") ainda diz 560 px.
+
+**Teste manual:** no iPhone, abrir `/solucao` e conferir: os Sinais em lista, com as fotos inteiras; a moldura do Antes e depois sem faixas nem cortes nos vídeos; os números dos ODS inteiros, numa linha só. Num computador (janela com 700 px de altura ou mais), o modo fixo dos Sinais continua funcionando.
+
+#### 3. `alt` de 4 imagens ajustados (15/11/2026)
+
+**Decisão da equipe (15/11/2026):** o `alt` deve descrever o que cada foto mostra de verdade. Mudaram o `alt` no código e o "alt sugerido" do comentário do marcador; nada mais mudou.
+
+| Imagem | Onde | `alt` antigo | `alt` novo |
+| --- | --- | --- | --- |
+| `galeria-calcada-obstaculo` | `GaleriaCanvas.jsx`, lista `FOTOS` | "Calçada com piso tátil interrompido por um poste." | "Calçada com placas de concreto quebradas e desniveladas." |
+| `galeria-esquina-rampa` | `GaleriaCanvas.jsx`, lista `FOTOS` | "Esquina com rampa de acesso e piso tátil." | "Esquina em ladeira, com calçada estreita e sem rampa de acesso." |
+| `galeria-semaforo-pedestres` | `GaleriaCanvas.jsx`, lista `FOTOS` | "Semáforo de pedestres com botão de acionamento." | "Semáforo de pedestres com o boneco vermelho aceso." |
+| `peca-apis` | `app/solucao/page.jsx`, lista `TECNOLOGIAS` | "Foto da peça: APIs de mapas, semáforos e transporte." | "Ilustração de um chip com a palavra API, ligado a circuitos." |
+
+A especificação foi atualizada nas tabelas da 18.13 e da 19.14 e na seção 17.
+
+**Conferido:** `npm run lint` sem erros (os mesmos 6 avisos `no-img-element` de antes) e `npm run build` sem erros (só um aviso do Turbopack: não achou os valores da fonte de reserva da Atkinson Hyperlegible Next).
+
+**Teste manual:** com o NVDA, na Galeria da Solução, ouvir os 3 `alt` novos; em Tecnologias, virar o cartão das APIs e ouvir o `alt` da ilustração.
+
+**Sugestão de commit:** `Ajusta o alt de 4 imagens ao que cada foto mostra`
+
+#### 4. Espera acima de 10 s (15/11/2026)
+
+**Decisão da equipe (15/11/2026, opção B):** resolve a pendência da seção 11.1. No carregamento, a pessoa pode parar. Ao salvar e ao excluir, ela só é avisada, porque o servidor pode gravar mesmo se a espera for interrompida. A especificação foi atualizada na 11.1, na 11.2, na 16 (pendência riscada) e na 17.
+
+**O que mudou para quem usa:**
+1. **Carregando** (lista, Ver registro e Editar registro): depois de 10 s, abaixo de "Carregando os registros…", aparece "Está demorando mais que o normal. Você pode esperar ou parar." e, embaixo, o botão secundário "Parar de carregar". Ao tocar, entra o erro "Carregamento interrompido." com o botão "Tentar de novo", que recebe o foco. O botão de parar some.
+2. **Salvando… e Excluindo…:** depois de 10 s, o leitor de tela anuncia "Está demorando mais que o normal. Aguarde mais um pouco.". O botão continua travado e com o foco. Não há botão de parar.
+3. Com os efeitos desligados, o indicador continua parado (a regra geral de `data-efeitos` já zera as animações).
+
+**Como foi feito:**
+- `hooks/useEsperaLonga.js` (novo): devolve `true` quando uma espera passa de 10 s (`LIMITE_ESPERA_LONGA`). Volta a `false` quando a espera acaba, e a contagem recomeça na próxima.
+- `hooks/useRegistros.js` e `hooks/useRegistro.js`: guardam o `AbortController` da busca num `ref` e ganham `parar()`. Ele cancela a busca e define o erro `{ codigo: "interrompido" }`. A busca cancelada continua sendo ignorada no `.catch` (`foiCancelado`).
+- `components/ui/EstadoTela.jsx`:
+  - o "carregando" ganha o prop `aoParar`. O aviso entra na mesma região `role="status"` (é essa mudança que o leitor de tela anuncia), e o botão fica fora dela;
+  - o "erro" ganha o prop `interrompido`, que troca o título para "Carregamento interrompido.". A segunda linha ("Verifique a conexão…") não aparece, porque a conexão não falhou.
+- `TelaDiario`, `TelaRegistro` e `TelaEditarRegistro`: passam `aoParar={parar}` e, quando o erro é `interrompido`, `interrompido` e `focarAoMontar`. O foco vai direto para "Tentar de novo", e o botão de parar some no mesmo momento.
+- `FormularioRegistro` e `DialogoConfirmacao`: a região `role="status"` (`sr-only`) troca "Salvando"/"Excluindo" pelo aviso depois de 10 s.
+- Componentes e tom de voz de sempre: `Botao` (variante `secundario`, sem ícone), `EstadoTela` e as regiões de status que já existiam. Nenhuma cor nova.
+
+**Conferido:**
+- `npm run lint` sem erros (os mesmos 6 avisos `no-img-element`) e `npm run build` sem erros.
+- 28 testes temporários, fora do projeto: Chrome sem janela, com uma API falsa que demorava 13 s para responder. Eles conferiram, nas 3 telas, que não há aviso aos 3 s; que aos 11,5 s aparecem o aviso e o botão fora da região de status; que "Parar de carregar" (pelo teclado) leva a "Carregamento interrompido." com o foco em "Tentar de novo"; que o botão some; e que "Tentar de novo" volta a carregar, sem o aviso. Também conferiram: o indicador parado com os efeitos desligados; "Salvando" e "Excluindo" anunciados aos 2 s e o aviso aos 11,5 s, sem botão de parar e com o foco no botão. Todos passaram. Nada disso entrou no projeto.
+
+**Teste manual:**
+1. Com a API configurada, abrir `/diario` e o DevTools (F12). Na aba **Network**, em **No throttling**, escolher **Add…** e criar um perfil com **Latency** de `15000` ms (o "Slow 4G" pronto não passa de 10 s numa resposta pequena).
+2. Recarregar a página. Aos 10 s, aparecem o aviso e "Parar de carregar". Tocar nele (ou Tab + Enter) e conferir "Carregamento interrompido." e o foco em "Tentar de novo". Repetir em "Ver registro" e em "Editar registro".
+3. Em "Editar registro", deixar a página carregar sem o perfil lento, ligar o perfil e tocar em "Salvar registro". Com o NVDA, ouvir "Salvando" e, aos 10 s, o aviso. Fazer o mesmo com "Excluir registro" no diálogo.
+4. Desligar os efeitos (botão "Efeitos" do cabeçalho) e conferir que o indicador fica parado.
+5. Voltar para **No throttling** no fim.
+
+**Sugestão de commit:** `Adiciona o aviso e o "Parar de carregar" para esperas acima de 10 s`
+
 ---
 
 ## Como os testes automáticos foram feitos
@@ -1680,7 +1763,7 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 | Conectar a API externa: a equipe escolheu o **MockAPI** (9.9). Criar o projeto e o recurso `registros`, pôr a URL no `.env.local` e na hospedagem (passo a passo na 9.9) | Equipe |
 | Fazer o simulador (`SIMULADOR-AQUI`) e decidir sobre a vibração do celular | Integrante do simulador + equipe |
 | ~~Textos da página 404 em português~~ Feita na subfase 8.7 (`app/not-found.jsx`) | — |
-| Textos para esperas acima de 10 s (aviso + cancelar) | Equipe (passar os textos) |
+| ~~Textos para esperas acima de 10 s (aviso + cancelar)~~ Feita depois da Fase 9 (opção B, 15/11/2026) | — |
 | ~~Alinhamento do logo com a grade no computador~~ Resolvido na Fase 8 (área de 76rem em tudo). Cabeçalho fixo com zoom de 400% | Equipe avalia |
 | Testes manuais das Fases 7, 8 e 9 (passo a passo da Fase 9 na subfase 9.10) | Equipe |
 | ~~Depois de colocar a imagem da capa: conferir o contraste~~ Na Fase 9, a capa usa vídeo, com a frase sobre a faixa sólida | — |
