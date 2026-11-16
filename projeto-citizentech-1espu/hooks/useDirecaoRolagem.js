@@ -2,25 +2,10 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useEfeitos } from "@/hooks/useEfeitos";
 
-/*
-  useDirecaoRolagem — custom hook da seção 9.3.
-  Devolve true quando o cabeçalho e a barra devem sair da tela.
-
-  Regras:
-  - Só em Início e Solução, e só abaixo de 768 px.
-  - Rolou para baixo mais que ~64 px (altura do cabeçalho) → esconde.
-  - Rolou para cima mais que ~64 px → mostra.
-  - Mostra também: no topo, perto do fim da página e quando qualquer
-    elemento do cabeçalho ou da barra recebe foco.
-  - Com os efeitos desligados (interruptor "Efeitos", seção 19.2):
-    sempre visível.
-
-  Quem usa o hook esconde SÓ visualmente (transform), nunca com
-  display: none, para o leitor de tela continuar alcançando as barras.
-  Os elementos que contam como "barras" têm o atributo data-barra-rolagem.
-*/
+// Regra (9.3): só em Início e Solução, abaixo de 768 px. Quem usa esconde só com
+// transform, nunca display: none, para o leitor de tela alcançar as barras.
 const ROTAS_COM_BARRAS_QUE_SOMEM = ["/", "/solucao"];
-const CONSULTA_CELULAR = "(max-width: 47.99rem)"; // abaixo de 768 px
+const CONSULTA_CELULAR = "(max-width: 47.99rem)";
 
 export function useDirecaoRolagem() {
   const caminho = usePathname();
@@ -40,8 +25,8 @@ export function useDirecaoRolagem() {
     const distanciaMinima = 4 * tamanhoTexto;
 
     let ultimaPosicao = window.scrollY;
-    let pontoDeVirada = window.scrollY; // onde a direção mudou pela última vez
-    let direcao = null; // "baixo" ou "cima"
+    let pontoDeVirada = window.scrollY;
+    let direcao = null;
 
     const esconder = () => setRotaEscondida(caminho);
     const mostrar = () => setRotaEscondida(null);

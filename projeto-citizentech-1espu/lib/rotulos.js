@@ -1,12 +1,5 @@
-/*
-  rotulos — textos de exibição dos campos do Diário (seções 7.1, 7.2, 7.3
-  e 7.4). Fica tudo num lugar só, para o formulário, a lista e a página
-  do registro falarem sempre igual.
-*/
+// Todos os textos num lugar só, para o formulário, a lista e o registro falarem igual.
 
-/* ------------------------------------------------------------------
-   Perguntas (rótulo visível do formulário e <dt> do "Ver registro")
-   ------------------------------------------------------------------ */
 export const PERGUNTAS = {
   data: "Data do deslocamento",
   meio: "Meio de transporte",
@@ -17,9 +10,7 @@ export const PERGUNTAS = {
   observacoes: "Observações",
 };
 
-/* ------------------------------------------------------------------
-   Opções de cada campo, NA ORDEM em que aparecem no formulário
-   ------------------------------------------------------------------ */
+// A ordem de cada lista é a ordem do formulário.
 export const OPCOES = {
   meio: [
     { valor: "pe", rotulo: "A pé" },
@@ -46,18 +37,12 @@ export const OPCOES = {
   ],
 };
 
-/**
- * Rótulo de um valor. Ex.: rotuloDe("meio", "metro") → "Metrô ou trem".
- * Valor desconhecido → texto vazio (a tela não quebra).
- */
+// Valor desconhecido devolve texto vazio, para a tela não quebrar.
 export function rotuloDe(campo, valor) {
   const opcao = OPCOES[campo]?.find((item) => item.valor === valor);
   return opcao ? opcao.rotulo : "";
 }
 
-/* ------------------------------------------------------------------
-   Etiquetas do cartão de registro na lista (seção 7.1)
-   ------------------------------------------------------------------ */
 const ETIQUETAS = {
   chegouSemSePerder: { true: "Sem se perder", false: "Se perdeu" },
   precisouDeAjuda: { false: "Sem ajuda", true: "Precisou de ajuda" },
@@ -68,7 +53,6 @@ const ETIQUETAS = {
   },
 };
 
-/** As 3 etiquetas de um registro, na ordem da seção 7.1. Ignora valores desconhecidos. */
 export function etiquetasDoRegistro(registro) {
   return [
     ETIQUETAS.chegouSemSePerder[String(registro.chegouSemSePerder)],
@@ -77,16 +61,11 @@ export function etiquetasDoRegistro(registro) {
   ].filter(Boolean);
 }
 
-/** Texto das observações no "Ver registro": o texto, ou "Nenhuma" (seção 7.4). */
 export function textoObservacoes(observacoes) {
   const texto = (observacoes ?? "").trim();
   return texto || "Nenhuma";
 }
 
-/* ------------------------------------------------------------------
-   Indicadores do resumo (seção 7.1)
-   ------------------------------------------------------------------ */
-/** "1 deslocamento registrado" / "2 deslocamentos registrados". */
 export function rotuloTotal(total) {
   return total === 1 ? "deslocamento registrado" : "deslocamentos registrados";
 }

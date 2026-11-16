@@ -5,31 +5,8 @@ import LinkInterno from "@/components/ui/LinkInterno";
 import FaixaODS from "@/components/solucao/FaixaODS";
 import { useRodapeRevelado } from "@/hooks/useRodapeRevelado";
 
-/*
-  Rodape — seção 18.10 (substitui o rodapé da seção 5).
-  Escuro nos dois temas, em todas as páginas:
-  - links Início, Solução, Simulador e Diário (48 px de altura), que
-    passam pela guarda de saída e pela transição (LinkInterno);
-  - a linha de créditos.
-  Fase 9 (seção 19.6):
-  - "PULSE" gigante em laranja no alto do rodapé, decorativo
-    (aria-hidden; o leitor de tela não o lê, 19.16). Contraste do laranja
-    sobre o rodapé: 4,55:1 no claro e 5,4:1 no escuro;
-  - rodapé revelado: com os efeitos ligados, o conteúdo da página sobe e
-    revela o rodapé preso embaixo (useRodapeRevelado). Sem o efeito, o
-    rodapé é normal.
-  Só na página Solução, acima dos links, vem a faixa contínua dos ODS
-  (decisão da equipe).
-
-  O espaço extra do fim da página (--espaco-fim, do tamanho da barra
-  flutuante + 16 px + área de segurança) fica aqui dentro, para o fundo
-  escuro ir até o fim da tela e o último link nunca ficar escondido
-  atrás da barra (WCAG 2.4.11).
-
-  É um componente de cliente só para saber em qual página está
-  (usePathname). Ele continua vindo pronto do servidor: sem JavaScript, o
-  rodapé e a faixa aparecem do mesmo jeito.
-*/
+// O espaço do fim da página fica aqui dentro, para o último link nunca ficar atrás
+// da barra flutuante (WCAG 2.4.11).
 const LINKS = [
   { href: "/", texto: "Início" },
   { href: "/solucao", texto: "Solução" },

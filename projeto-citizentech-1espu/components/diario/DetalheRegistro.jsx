@@ -1,14 +1,7 @@
 import Botao from "@/components/ui/Botao";
 import { PERGUNTAS, rotuloDe, textoObservacoes } from "@/lib/rotulos";
 
-/*
-  DetalheRegistro — conteúdo da tela "Ver registro" (seção 7.4).
-  Lista de definições (<dl>): a pergunta (<dt>) vem antes da resposta
-  (<dd>), e o leitor de tela lê as duas como um par.
-
-  Componente de apresentação: recebe o registro e a função do botão
-  "Excluir registro" (quem abre o diálogo é a tela).
-*/
+// <dl>: o leitor de tela lê a pergunta e a resposta como um par.
 const CAMPOS = ["meio", "chegouSemSePerder", "precisouDeAjuda", "travessias", "orientacoes"];
 
 export default function DetalheRegistro({ registro, aoPedirExclusao }) {
@@ -30,11 +23,9 @@ export default function DetalheRegistro({ registro, aoPedirExclusao }) {
       </dl>
 
       <div className="mt-10 flex flex-wrap gap-4">
-        {/* ICONE-PencilSimple-AQUI */}
         <Botao href={`/diario/${registro.id}/editar`} icone="PencilSimple">
           Editar registro
         </Botao>
-        {/* ICONE-Trash-AQUI */}
         <Botao variante="perigo" icone="Trash" onClick={aoPedirExclusao}>
           Excluir registro
         </Botao>

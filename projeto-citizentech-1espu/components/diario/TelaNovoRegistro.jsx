@@ -8,10 +8,6 @@ import { useMensagemDiario } from "@/hooks/useMensagemDiario";
 import { useRegistros } from "@/hooks/useRegistros";
 import { valoresIniciais } from "@/lib/validacao";
 
-/*
-  TelaNovoRegistro — a tela /diario/novo (seção 7.3).
-  Ao salvar: volta para /diario com a mensagem "Registro salvo.".
-*/
 export default function TelaNovoRegistro() {
   const router = useRouter();
   const { criar } = useRegistros({ carregarAoIniciar: false });
@@ -19,7 +15,6 @@ export default function TelaNovoRegistro() {
 
   async function aoSalvar(dados) {
     const novo = await criar(dados);
-    // idDestaque: na lista, o registro novo chega com o gesto PULSO (19.11)
     definirMensagem({ tipo: "sucesso", texto: "Registro salvo.", idDestaque: novo.id });
     router.push("/diario");
   }

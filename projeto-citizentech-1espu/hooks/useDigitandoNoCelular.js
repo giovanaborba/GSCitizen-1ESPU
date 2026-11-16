@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 
-/*
-  useDigitandoNoCelular — true enquanto um campo de digitação (data ou
-  observações) está em uso no celular (abaixo de 768 px). A barra
-  flutuante usa isso para sair da frente do teclado (seção 7.3) e voltar
-  quando o campo é deixado.
-*/
+// Regra: a barra flutuante sai da frente do teclado do celular (7.3).
 const CONSULTA_CELULAR = "(max-width: 47.99rem)";
 const TIPOS_QUE_NAO_ABREM_TECLADO = ["radio", "checkbox", "button", "submit", "reset"];
 

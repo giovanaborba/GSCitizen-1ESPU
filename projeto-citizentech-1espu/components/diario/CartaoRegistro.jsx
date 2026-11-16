@@ -8,30 +8,14 @@ import { etiquetasDoRegistro, rotuloDe } from "@/lib/rotulos";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { pulso } from "@/lib/presetsMovimento";
 
-/*
-  CartaoRegistro — um registro na lista do Diário (seção 7.1).
-  - <h3> "DD/MM/AAAA · Meio de transporte"
-  - etiquetas: só texto, sem depender de cor
-  - link "Ver registro" com um trecho oculto ("de DD/MM/AAAA"): para o
-    leitor de tela, cada link tem um nome único ("Ver registro de
-    05/11/2026"), e não uma lista de "Ver registro" iguais.
-
-  Fase 9 (seção 19.11): "destaque" = o registro que acabou de ser salvo
-  ou restaurado ("Desfazer"). Quando ele aparece, o cartão faz o gesto
-  PULSO (batida dupla curta, 0,42 s, uma vez só), como a vibração no
-  pulso. O anúncio ("Registro salvo." ou "Registro restaurado.") é da
-  mensagem de status e não espera o gesto. Com os efeitos desligados, não
-  há batida.
-
-  O <li> fica na ListaRegistros; aqui é o cartão dentro dele.
-*/
+// Regra: cada "Ver registro" tem um trecho oculto com a data, para o leitor de tela
+// ouvir nomes únicos, e não uma lista de links iguais.
 export default function CartaoRegistro({ registro, destaque = false }) {
   const data = formatarData(registro.data);
   const etiquetas = etiquetasDoRegistro(registro);
   const { efeitosLigados } = useEfeitos();
   const [refCartao, animar] = useAnimate();
 
-  // PULSO quando o cartão em destaque aparece
   useEffect(() => {
     if (!destaque || !efeitosLigados) return;
     const animacao = animar(refCartao.current, { scale: pulso.scale }, pulso.transition);

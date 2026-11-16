@@ -4,28 +4,8 @@ import { createContext, useContext, useRef, useState } from "react";
 import DialogoConfirmacao from "@/components/ui/DialogoConfirmacao";
 import { useNavegacaoComTransicao } from "@/hooks/useTransicaoPagina";
 
-/*
-  useGuardaDeSaida — aviso "Descartar as respostas?" (seção 7.3).
-
-  O App Router do Next não bloqueia a navegação sozinho. Então:
-  1. O formulário avisa quando tem respostas não salvas:
-       definirBloqueio(true)
-  2. Os links que saem do formulário (barra, "Voltar", "Cancelar", logo
-     "Pulse") passam o evento de navegação para aoNavegar(evento, destino).
-     O <Link> do Next 16 tem a prop onNavigate, com evento.preventDefault().
-  3. Se estiver bloqueado, a navegação é cancelada e o diálogo abre:
-     - "Descartar respostas" → libera e vai para o destino;
-     - "Continuar preenchendo" (foco inicial) → fecha e fica na página.
-
-  Limite: o botão Voltar DO NAVEGADOR não pode ser bloqueado de forma
-  confiável. Fechar a aba e recarregar são cobertos pelo aviso padrão do
-  navegador (beforeunload), no useFormularioRegistro.
-
-  Fase 8: a guarda é a porta de entrada de TODO link interno (componente
-  LinkInterno, barra, logo, "Voltar", "Cancelar"). Ela decide primeiro.
-  Se a saída estiver livre, passa a navegação para a transição de piso
-  tátil (useTransicaoPagina), que decide se a cortina anima ou não.
-*/
+// O App Router não bloqueia a navegação; por isso os links internos passam por aoNavegar.
+// Armadilha: o Voltar do navegador não pode ser bloqueado de forma confiável.
 const ContextoGuarda = createContext(null);
 
 export function ProvedorGuardaDeSaida({ children }) {
@@ -40,7 +20,6 @@ export function ProvedorGuardaDeSaida({ children }) {
 
   function aoNavegar(evento, destino) {
     if (!bloqueado.current) {
-      // Saída livre: a transição de piso tátil cuida da navegação
       navegar(evento, destino);
       return;
     }
@@ -52,7 +31,7 @@ export function ProvedorGuardaDeSaida({ children }) {
     const destino = destinoPendente;
     bloqueado.current = false;
     setDestinoPendente(null);
-    // Dentro do Diário a troca é instantânea; ao sair dele, a cortina anima
+    // Regra: dentro do Diário a troca é instantânea; ao sair dele, a cortina anima.
     irPara(destino);
   }
 

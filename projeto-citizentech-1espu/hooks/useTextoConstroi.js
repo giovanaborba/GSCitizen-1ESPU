@@ -3,26 +3,8 @@ import { animate, inView } from "motion";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { guia, spring } from "@/lib/presetsMovimento";
 
-/*
-  useTextoConstroi — o bloco de texto que "se constrói" quando entra na
-  tela (seções 19.6 e 19.15).
-
-  Decisão 3 da equipe (subfase 9.0): o padrão de movimento vence a 19.6, e
-  o texto entra com o gesto GUIA (deslocamento curto, de 14 px, da direita
-  para a esquerda, com a opacidade de 0 a 1 e a mola padrão), e não pela
-  máscara de domos (os domos ficam só na capa, na cortina e na troca de
-  foto).
-
-  Regras (19.1 e 19.6):
-  - o texto está no HTML desde o início e já nasce visível (no servidor e
-    sem JavaScript). Ele só é escondido, para depois entrar, se estiver
-    abaixo da tela quando a página carrega;
-  - com o foco dentro do bloco, ele aparece na hora (nada invisível
-    recebe foco);
-  - só na primeira vez; com os efeitos desligados, não se move.
-
-  Devolve a ref que vai no bloco.
-*/
+// Regra: entra com o gesto GUIA, e não com domos (decisão 3 da 9.0). Com o foco
+// dentro, aparece na hora: nada invisível recebe foco.
 const MARGEM_DE_CHEGADA = "0px 0px -12% 0px";
 
 export function useTextoConstroi() {

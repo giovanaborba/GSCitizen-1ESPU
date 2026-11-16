@@ -3,20 +3,7 @@
 import RotuloSecao from "@/components/layout/RotuloSecao";
 import { useTrajeto } from "@/hooks/useTrajeto";
 
-/*
-  TrajetoPulse — "Um trajeto com a Pulse" (seções 19.7 e 19.15), no
-  Início, depois de "Quem vive o problema". Textos do protótipo.
-
-  - Rótulo "No caminho" e H2 "Um trajeto com a Pulse".
-  - O mapa (SVG) é decorativo (aria-hidden): as quadras, as ruas, a rota
-    em laranja, as 5 paradas numeradas e o ponto que anda.
-  - A lista <ol> das 5 paradas é o conteúdo de verdade: o leitor de tela
-    lê "lista, 5 itens".
-  - A rota se desenha com a rolagem, e a parada atual acende
-    (useTrajeto). Sem JavaScript ou com os efeitos desligados, a rota já
-    aparece inteira.
-  - Depois vem o botão "Conheça a solução" (a ação final da página).
-*/
+// O mapa é decorativo (aria-hidden); a lista <ol> das paradas é o conteúdo de verdade.
 
 // Rota no mapa (viewBox 600 × 400): 770 unidades de comprimento
 const CAMINHO = "M60 350 H200 V245 H370 V100 H540 V60";

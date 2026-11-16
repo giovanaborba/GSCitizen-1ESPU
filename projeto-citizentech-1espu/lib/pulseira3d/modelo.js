@@ -1,43 +1,9 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 
-/*
-  modelo — a pulseira Pulse em 3D, como MÓDULO ÚNICO (seção 19.12). A
-  geometria, os materiais e os sinais seguem a função criarPulseira() do
-  protótipo docs/prototipos/pulse-pulseira-3d.html. O site e as animações
-  em vídeo usam o mesmo modelo.
+// Regra: módulo único da pulseira (19.12). O site e as animações em vídeo usam
+// o mesmo modelo, que segue criarPulseira() do protótipo.
 
-  Partes (19.12):
-  - tira esportiva laranja (--cor-faixa-3d): faixa extrudada ao longo de
-    uma elipse fechada, com frisos, fivela embaixo do pulso, furos de
-    ajuste e passador;
-  - módulo achatado e arredondado: corpo #CC4200 e face grafite;
-  - botão do destino: grande, saltado, côncavo, com dois anéis em relevo e
-    colar laranja;
-  - botão de modo: pequeno, em pílula, saltado, com um ponto em relevo e
-    colar laranja;
-  - célula Braille: 6 pinos retráteis no centro do módulo (escrevem
-    P-U-L-S-E);
-  - alto-falante e microfone: furos na face e nas laterais;
-  - zonas de vibração: por dentro da tira, nos dois lados do pulso;
-  - atuador de pressão: por dentro, embaixo do módulo;
-  - contatos de carga: dois pinos de metal na ponta de baixo do módulo;
-  - luzes de sinal: 5 pontos de cada lado da face, com brilho radial.
-
-  Sinais (19.12): a vibração é a informação principal; as luzes
-  complementam (baixa visão e quem acompanha a pessoa).
-  - Virar à esquerda / à direita: a zona do lado vibra; o lado acende.
-  - Parar: as duas zonas vibram; os dois lados acesos.
-  - Aguardar: três vibrações curtas em 1 s, a cada 1,6 s; três piscadas
-    em 1 s (no máximo 3 por segundo, WCAG 2.3.1).
-  - Continuar: o atuador aperta e solta devagar; uma luz sobe pelas
-    laterais.
-
-  Este arquivo não sabe de React nem da cena (câmera, luz): só cria o
-  grupo da pulseira e diz como ela fica em cada quadro.
-*/
-
-// Cores do protótipo (19.3 e 19.12)
 const COR = {
   modulo: 0xcc4200,
   face: 0x242428,
@@ -48,19 +14,14 @@ const COR = {
   luzAcesa: 0xff8a50,
 };
 
-// Medidas da tira (unidades da cena)
-const RAIO_Y = 1.1; // altura do laço
-const RAIO_Z = 0.86; // profundidade do laço
-const LARGURA = 0.5; // largura da tira (ao longo do braço)
+const RAIO_Y = 1.1;
+const RAIO_Z = 0.86;
+const LARGURA = 0.5;
 const ESPESSURA = 0.09;
 
-// Pontos de cada letra de "PULSE" em Braille (pontos 1 a 6)
 const LETRAS_BRAILLE = { p: [1, 2, 3, 4], u: [1, 3, 6], l: [1, 2, 3], s: [2, 3, 4], e: [1, 5] };
 export const PULSE_EM_BRAILLE = ["p", "u", "l", "s", "e"];
 
-// Vista de cada parte: para onde a pulseira gira (ângulo em torno do eixo
-// vertical, em radianos) e quanto ela inclina para mostrar a parte. As 8
-// primeiras são as "Partes da pulseira" do modo explorar (19.12).
 export const VISTA_DAS_PARTES = {
   destino: { angulo: 0 },
   modo: { angulo: 0 },
@@ -74,20 +35,16 @@ export const VISTA_DAS_PARTES = {
   zonaDireita: { angulo: 1.25 },
 };
 
-// Ponto da tira num ângulo (0 = frente, em cima do pulso) e a direção
-// "para fora" da tira naquele ponto.
 function naTira(angulo) {
   const ponto = new THREE.Vector3(0, RAIO_Y * Math.sin(angulo), RAIO_Z * Math.cos(angulo));
   const normal = new THREE.Vector3(0, ponto.y / (RAIO_Y * RAIO_Y), ponto.z / (RAIO_Z * RAIO_Z)).normalize();
   return { ponto, normal };
 }
 
-// Vira um objeto para "olhar" na direção da normal.
 function orientar(objeto, normal) {
   objeto.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
 }
 
-// Textura do brilho das luzes: um degradê circular, branco no meio.
 function criarTexturaDoBrilho() {
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 64;
@@ -103,12 +60,10 @@ function criarTexturaDoBrilho() {
   return textura;
 }
 
-// Cria a pulseira. "corDaTira": a cor de --cor-faixa-3d.
 export function criarPulseira(corDaTira = "#FC4C02") {
   const grupo = new THREE.Group();
   const partes = {};
 
-  // --- Tira: seção retangular arredondada percorrendo o contorno do pulso
   const pontos = [];
   for (let i = 0; i < 160; i++) pontos.push(naTira((i / 160) * Math.PI * 2).ponto);
   const caminho = new THREE.CatmullRomCurve3(pontos, true);
@@ -134,7 +89,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
   });
   grupo.add(new THREE.Mesh(new THREE.ExtrudeGeometry(forma, { steps: 320, bevelEnabled: false, extrudePath: caminho }), materialTira));
 
-  // Frisos finos na parte de cima da tira (textura de silicone)
   const materialFriso = new THREE.MeshStandardMaterial({ color: 0xd94200, roughness: 0.7 });
   const geometriaFriso = new THREE.BoxGeometry(LARGURA * 0.78, 0.012, 0.01);
   for (const lado of [-1, 1]) {
@@ -147,7 +101,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     }
   }
 
-  // --- Furos de ajuste e fecho (embaixo do pulso)
   const materialEscuro = new THREE.MeshBasicMaterial({ color: COR.poco });
   const geometriaFuro = new THREE.CircleGeometry(0.03, 20);
   for (let k = 0; k < 6; k++) {
@@ -180,7 +133,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
   grupo.add(passador);
   partes.fecho = { objetos: [moldura, lingueta], ...VISTA_DAS_PARTES.fecho };
 
-  // --- Módulo: corpo laranja escuro e face grafite
   const zModulo = RAIO_Z + 0.05;
   const corpo = new THREE.Mesh(
     new RoundedBoxGeometry(0.66, 1.14, 0.24, 6, 0.09),
@@ -194,9 +146,8 @@ export function criarPulseira(corDaTira = "#FC4C02") {
   );
   face.position.set(0, 0, zModulo + 0.11);
   grupo.add(face);
-  const superficie = zModulo + 0.13; // superfície da face
+  const superficie = zModulo + 0.13;
 
-  // Microfone: três furos em cima
   const geometriaMicrofone = new THREE.CircleGeometry(0.014, 16);
   for (const x of [-0.05, 0, 0.05]) {
     const furo = new THREE.Mesh(geometriaMicrofone, materialEscuro);
@@ -204,8 +155,7 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     grupo.add(furo);
   }
 
-  // Botão do destino: grande, saltado, com colar laranja (contraste), topo
-  // côncavo e dois anéis em relevo (tato)
+  // Colar laranja para o contraste; topo côncavo e anéis em relevo para o tato.
   const materialClaro = new THREE.MeshStandardMaterial({ color: 0xf4f4f5, roughness: 0.35, emissive: COR.laranja, emissiveIntensity: 0 });
   const materialRelevo = new THREE.MeshStandardMaterial({ color: 0x9a9aa4, roughness: 0.45 });
   const botaoDestino = new THREE.Group();
@@ -231,7 +181,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
   grupo.add(botaoDestino);
   partes.destino = { objetos: [disco, aro], ...VISTA_DAS_PARTES.destino };
 
-  // Célula Braille: poço escuro com 6 pinos retráteis (2 colunas × 3 linhas)
   const poco = new THREE.Mesh(
     new RoundedBoxGeometry(0.17, 0.25, 0.02, 3, 0.008),
     new THREE.MeshStandardMaterial({ color: COR.poco, roughness: 0.6, emissive: COR.laranja, emissiveIntensity: 0 }),
@@ -252,8 +201,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
   }
   partes.braille = { objetos: [poco], ...VISTA_DAS_PARTES.braille };
 
-  // Botão de modo: pequeno, em pílula saltada, com colar laranja e um
-  // ponto em relevo no centro
   const botaoModo = new THREE.Group();
   const colar = new THREE.Mesh(
     new RoundedBoxGeometry(0.3, 0.15, 0.03, 4, 0.012),
@@ -272,7 +219,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
   grupo.add(botaoModo);
   partes.modo = { objetos: [pilula, colar], ...VISTA_DAS_PARTES.modo };
 
-  // Alto-falante: frestas nas duas laterais do módulo
   const geometriaFresta = new THREE.BoxGeometry(0.01, 0.07, 0.016);
   for (const lado of [-1, 1]) {
     for (let k = 0; k < 4; k++) {
@@ -282,7 +228,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     }
   }
 
-  // Luzes de sinal: 5 pontos em cada lateral da face, com brilho radial
   const luzes = { esquerda: [], direita: [] };
   const geometriaLuz = new RoundedBoxGeometry(0.042, 0.095, 0.022, 2, 0.014);
   const geometriaBrilho = new THREE.PlaneGeometry(0.2, 0.24);
@@ -314,7 +259,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
   }
   partes.luzes = { objetos: [...luzes.esquerda, ...luzes.direita], ...VISTA_DAS_PARTES.luzes, ehLuz: true };
 
-  // Contatos de carga: dois pinos de metal na ponta de baixo do módulo
   const contatos = [];
   for (const x of [-0.07, 0.07]) {
     const contato = new THREE.Mesh(
@@ -327,7 +271,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
   }
   partes.carga = { objetos: contatos, ...VISTA_DAS_PARTES.carga };
 
-  // --- Por dentro: zonas de vibração (lados do pulso) e atuador de pressão
   const zonas = {};
   for (const [nome, angulo] of [["direita", 1.25], ["esquerda", -1.25]]) {
     const { ponto: p, normal } = naTira(angulo);
@@ -355,14 +298,9 @@ export function criarPulseira(corDaTira = "#FC4C02") {
   grupo.add(atuador);
   partes.pressao = { objetos: [atuador], ...VISTA_DAS_PARTES.pressao };
 
-  // Partes que só a abertura usa (os 6 links da 18.6, 19.12): cada zona de
-  // vibração sozinha. O fecho ("parte de baixo da tira") já existe.
   partes.zonaEsquerda = { objetos: [zonas.esquerda], ...VISTA_DAS_PARTES.zonaEsquerda };
   partes.zonaDireita = { objetos: [zonas.direita], ...VISTA_DAS_PARTES.zonaDireita };
 
-  // Pontos onde as linhas da abertura se ligam (nomes dos links da 18.6).
-  // O motor esquerdo e o direito viraram as zonas de vibração, e a parte
-  // de baixo da tira virou o fecho (19.12).
   const ancoras = {
     destino: botaoDestino,
     esquerdo: zonas.esquerda,
@@ -371,7 +309,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     direito: zonas.direita,
     pressao: atuador,
   };
-  // Parte que acende quando o link da abertura é focado
   const parteDoLink = {
     destino: "destino",
     esquerdo: "zonaEsquerda",
@@ -383,7 +320,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
 
   const destacaveis = [...new Set(Object.values(partes).flatMap((parte) => parte.objetos))];
 
-  // Mostra uma letra de "PULSE" em Braille (os pinos sobem ou descem).
   function escreverBraille(letra) {
     const pontosDaLetra = LETRAS_BRAILLE[letra] ?? [];
     pinos.forEach((pino, i) => {
@@ -399,20 +335,12 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     }
   }
 
-  // Um quadro da pulseira.
-  // - t: tempo em segundos; dt: tempo desde o quadro anterior
-  // - sinal: "esquerda" | "direita" | "parar" | "aguardar" | "continuar" | null
-  // - parte: nome da parte que acende (ou null)
-  // - semMovimento: efeitos desligados ou pausado: o sinal aparece aceso e
-  //   parado (sem tremor, sem piscar), e os pinos vão direto ao lugar.
   function atualizar({ t, dt, sinal = null, parte = null, semMovimento = false }) {
-    // Pinos do Braille
     for (const pino of pinos) {
       const alvoZ = superficie - 0.02 + pino.userData.alvo * 0.034;
       pino.position.z = semMovimento ? alvoZ : pino.position.z + (alvoZ - pino.position.z) * Math.min(1, dt * 10);
     }
 
-    // Tudo volta ao repouso
     for (const objeto of destacaveis) {
       if (objeto.material.emissiveIntensity !== undefined && !partes.luzes.objetos.includes(objeto)) {
         objeto.material.emissiveIntensity = objeto.userData.brilhoBase ?? 0;
@@ -423,14 +351,13 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     acenderLuzes(luzes.esquerda, 0);
     acenderLuzes(luzes.direita, 0);
 
-    // Sinais: vibração (principal) e luzes (complemento)
+    // Regra: a vibração é a informação principal; as luzes complementam (19.12).
     const vibrar = (zona, forca) => {
       zona.material.emissiveIntensity = 0.4 + 0.6 * forca;
       if (!semMovimento) zona.position.addScaledVector(zona.userData.normal, Math.sin(t * 70) * 0.006 * forca);
     };
-    // Aguardar: três pulsos curtos no primeiro segundo de cada ciclo de
-    // 1,6 s (0–0,17 s, 0,34–0,51 s e 0,68–0,85 s). Nunca mais de 3 por
-    // segundo, em nenhuma janela de 1 s.
+    // Regra: três pulsos no primeiro segundo de cada ciclo de 1,6 s; nunca mais de 3
+    // piscadas por segundo (WCAG 2.3.1).
     const cicloAguardar = t % 1.6;
     const pulsoAguardar = semMovimento ? 1 : cicloAguardar < 1 && cicloAguardar % 0.34 < 0.17 ? 1 : 0;
     const forteVirar = semMovimento ? 1 : 0.75 + 0.25 * Math.sin(t * 9);
@@ -452,11 +379,9 @@ export function criarPulseira(corDaTira = "#FC4C02") {
       acenderLuzes(luzes.esquerda, pulsoAguardar);
       acenderLuzes(luzes.direita, pulsoAguardar);
     } else if (sinal === "continuar") {
-      // O atuador aperta e solta devagar
       const aperto = semMovimento ? 1 : 0.5 + 0.5 * Math.sin(t * 2.4);
       atuador.material.emissiveIntensity = 0.4 + 0.6 * aperto;
       atuador.position.addScaledVector(naFrente.normal, -0.012 * aperto);
-      // Uma luz que sobe pelas laterais ("siga em frente")
       for (const lado of ["esquerda", "direita"]) {
         luzes[lado].forEach((luz, k) => {
           const fase = semMovimento ? 1 : Math.max(0, 1 - Math.abs(((t * 1.6) % 1.4) - k * 0.22) / 0.22);
@@ -465,7 +390,6 @@ export function criarPulseira(corDaTira = "#FC4C02") {
       }
     }
 
-    // Parte escolhida: acende em laranja, pulsando devagar (por cima do sinal)
     if (parte && partes[parte] && !partes[parte].ehLuz) {
       const brilho = semMovimento ? 0.75 : 0.55 + 0.35 * Math.sin(t * 4);
       for (const objeto of partes[parte].objetos) {
@@ -476,8 +400,7 @@ export function criarPulseira(corDaTira = "#FC4C02") {
     }
   }
 
-  // Libera da memória o que só este modelo criou (as geometrias e os
-  // materiais saem junto com a cena, em cena.js).
+  // Geometrias e materiais saem junto com a cena (cena.js); aqui, só o que é deste modelo.
   function liberar() {
     texturaBrilho.dispose();
   }

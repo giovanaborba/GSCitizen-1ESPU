@@ -1,28 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useEfeitos } from "@/hooks/useEfeitos";
 
-/*
-  useTrajeto — desenha a rota e acende a parada atual conforme a rolagem
-  (seções 19.7 e 19.15), em "Um trajeto com a Pulse".
-
-  - A rota é um caminho SVG. "stroke-dashoffset" esconde o fim do traço:
-    diminuindo o valor, o traço "se desenha" do começo ao fim. O ponto
-    laranja anda junto, e cada parada acende quando a rota chega nela.
-    Na lista, a parada atual ganha destaque.
-  - Modo fixo (como no protótipo): no computador (a partir de 64rem e 600
-    px de altura), com os efeitos ligados e se o palco couber inteiro na
-    tela, o mapa e a lista ficam presos enquanto um "trilho" mais alto
-    rola por trás, e a rota anda com ele. Fora disso, a rota anda enquanto
-    o palco passa pela tela.
-  - Escreve direto no SVG e nos atributos da lista (data-chegou,
-    data-atual), uma vez por quadro no máximo.
-  - Sem JavaScript ou com os efeitos desligados: a rota aparece inteira,
-    com o ponto no destino, e a lista sem destaque (o contêiner não tem
-    data-trajeto-ligado).
-
-  Recebe as frações das paradas ao longo da rota. Devolve as refs da
-  seção, do trilho, do palco, do caminho, do ponto e da lista.
-*/
+// Sem data-trajeto-ligado (sem JavaScript ou sem efeitos), a rota aparece inteira,
+// com o ponto no destino.
 const CONSULTA_FIXA = "(min-width: 64rem) and (min-height: 37.5rem)";
 
 function alturaDoTopo() {
@@ -54,7 +34,6 @@ export function useTrajeto(fracoes) {
     const consulta = window.matchMedia(CONSULTA_FIXA);
     let quadro = 0;
 
-    // Modo fixo só se o palco couber inteiro abaixo do cabeçalho.
     function decidirModo() {
       secao.removeAttribute("data-trajeto-fixo");
       const cabe = palco.scrollHeight <= window.innerHeight - alturaDoTopo();
@@ -114,7 +93,6 @@ export function useTrajeto(fracoes) {
       window.removeEventListener("scroll", pedirAtualizacao);
       window.removeEventListener("resize", aoMudarTamanho);
       consulta.removeEventListener("change", aoMudarTamanho);
-      // Volta ao quadro parado: rota inteira, ponto no destino, sem destaque
       secao.removeAttribute("data-trajeto-ligado");
       secao.removeAttribute("data-trajeto-fixo");
       caminho.style.strokeDasharray = "";

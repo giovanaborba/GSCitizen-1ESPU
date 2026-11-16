@@ -1,26 +1,7 @@
 import { useEffect, useState } from "react";
 
-/*
-  useSecaoAtual — em qual seção da página a pessoa está (decisão 1 da
-  equipe na Fase 8: a pílula da seção atual fica laranja no "Nesta
-  página").
-
-  Regra: a seção atual é a última cujo título (<h2 id>) já passou da
-  linha de leitura, logo abaixo do cabeçalho e da faixa do índice (o
-  mesmo desconto das âncoras, scroll-padding-top). No fim da página, vale
-  a última seção. Antes da primeira, nenhuma.
-
-  Seções fixas (Fase 9, ex.: "Um trajeto com a Pulse"): o título fica
-  preso no meio da tela e nunca chega à linha. Nelas, a seção marcada com
-  data-secao-fixa conta a partir do começo dela.
-
-  Recalcula ao rolar e ao mudar o tamanho da tela, no máximo uma vez por
-  quadro. Não anima nada: só troca a cor, então vale também com "reduzir
-  movimento".
-
-  Recebe a lista de itens { id, texto } e devolve o id da seção atual
-  (ou null).
-*/
+// Seções fixas (data-secao-fixa): o título fica preso no meio da tela e nunca
+// chega à linha de leitura, então elas contam a partir do começo.
 
 function medirSecaoAtual(ids) {
   const raiz = document.documentElement;

@@ -5,22 +5,8 @@ import LinkInterno from "@/components/ui/LinkInterno";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 import { useMagnetico } from "@/hooks/useMagnetico";
 
-/*
-  BotaoMagnetico — a variante "principal" (laranja) do Botao, com o
-  conteúdo magnético (seções 19.6 e 19.15).
-
-  Quem usa continua escrevendo <Botao> (ou <Botao variante="principal">):
-  o Botao chama este componente sozinho quando a variante é a principal.
-  Assim, TODOS os botões laranja principais do site são magnéticos, e só
-  eles (19.6: "Só os botões laranja principais").
-
-  - Recebe do Botao as classes já prontas (className), o href (vira link)
-    ou o type (vira <button>), o ícone e o texto.
-  - O ícone e o texto ficam juntos num <span> que se move (useMagnetico).
-    O botão em si, e a área de clique, não se movem.
-  - Os eventos de quem usa (onPointerMove e onPointerLeave) continuam
-    funcionando.
-*/
+// Regra: só os botões laranja principais são magnéticos (19.6); o Botao chama este
+// componente sozinho.
 export default function BotaoMagnetico({
   href,
   icone,

@@ -3,43 +3,11 @@ import { gsap } from "gsap";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useRolagemSuave } from "@/hooks/useRolagemSuave";
 
-/*
-  useCapaIntro — capa da primeira visita da sessão (seções 18.6 e 18.14).
-
-  Quando aparece:
-  - só na primeira visita de cada sessão: guardamos a chave
-    "pulse-capa-vista" no sessionStorage (ele se apaga quando a aba
-    fecha). Se o armazenamento falhar (modo privado de alguns
-    navegadores), a capa aparece;
-  - só no navegador, depois da hidratação (o momento em que o React
-    "assume" a página que veio pronta do servidor). Sem JavaScript, a
-    capa não existe;
-  - só com os efeitos ligados (seção 19.1). Com os efeitos desligados, a
-    capa não aparece e já conta como vista: se a pessoa ligar os efeitos
-    no meio da visita, a capa não "pula" na frente da página.
-
-  Como sai: com um clique ou toque na capa, a roda do mouse, o dedo
-  arrastando, qualquer tecla ou qualquer foco (o primeiro Tab, no "Pular
-  para o conteúdo", já abre o site). A saída é em "piso tátil": a capa
-  vira uma peneira de domos que encolhem em 1 s.
-
-  Preloader (seção 19.6): antes da capa, uma contagem de 0 a 100 em
-  1,4 s (o padrão de movimento vence os 1,2 s da 19.6; decisão 3 da 9.0),
-  que some em 0,35 s e revela a capa, já montada por baixo. Qualquer
-  gesto, tecla ou foco durante a contagem pula direto para a saída da
-  capa: assim o foco nunca fica escondido atrás do preloader.
-
-  Fases: "preloader" → "ativa" → "saindo" → "fim". Devolve:
-  - capaNaTela: a capa está na tela (com ou sem o preloader por cima);
-  - preloaderNaTela: a contagem está na tela;
-  - saindo: a animação de saída está acontecendo;
-  - refCapa: vai no elemento da capa (o GSAP anima a máscara dele);
-  - refPreloader e refContador: vão no preloader e no número dele;
-  - sair(): pede a saída (usado no clique).
-*/
+// Regra: só na primeira visita da sessão e com os efeitos ligados (18.6, 18.14).
+// Qualquer gesto, tecla ou foco abre o site, para o foco nunca ficar escondido.
 
 const CHAVE = "pulse-capa-vista";
-const RAIO_INICIAL = 22; // px: os domos cobrem a tela inteira
+const RAIO_INICIAL = 22; // px
 const DURACAO_DA_SAIDA = 1; // s
 const DURACAO_DA_CONTAGEM = 1.4; // s (PADRAO_MOVIMENTO_PULSE, item 5c)
 const DURACAO_DO_SUMICO = 0.35; // s (seção 19.6)
@@ -62,7 +30,6 @@ function marcarCapaVista() {
 
 // O sessionStorage não avisa mudanças; quem muda a chave é este hook.
 const naoAssina = () => () => {};
-// No servidor não há sessão: a página vem sem capa.
 const noServidor = () => false;
 
 export function useCapaIntro() {
@@ -89,14 +56,12 @@ export function useCapaIntro() {
     setFase("saindo");
   }
 
-  // Efeitos desligados (de verdade, não só "ainda não sei"): não há capa,
-  // e ela conta como vista nesta sessão.
+  // Efeitos desligados de verdade: a capa conta como vista, para não "pular" na
+  // frente se a pessoa ligar os efeitos depois.
   useEffect(() => {
     if (efeitosConhecidos && !efeitosLigados && precisa) marcarCapaVista();
   }, [efeitosConhecidos, efeitosLigados, precisa]);
 
-  // Tira a camada de espera do <head> quando ela já não é necessária: a
-  // capa está montada (ela mesma cobre a tela) ou não vai aparecer.
   useEffect(() => {
     if (capaNaTela || !precisaDaCapa()) {
       document.documentElement.removeAttribute("data-capa-pendente");
@@ -111,9 +76,7 @@ export function useCapaIntro() {
     return () => lenis.start();
   }, [capaNaTela, lenis]);
 
-  // Preloader: o número conta de 0 a 100 (desacelerando no fim), depois
-  // a camada some e revela a capa. Escreve direto no texto do número, sem
-  // redesenhar o componente a cada quadro.
+  // Escreve direto no texto do número, sem redesenhar o componente a cada quadro.
   useEffect(() => {
     const preloader = refPreloader.current;
     const contador = refContador.current;
@@ -132,8 +95,6 @@ export function useCapaIntro() {
     return () => linhaDoTempo.kill();
   }, [preloaderNaTela]);
 
-  // Qualquer gesto, tecla ou foco abre o site (também durante o
-  // preloader, que então some na hora).
   useEffect(() => {
     if (!capaNaTela || (fase !== "ativa" && fase !== "preloader")) return;
     const pedirSaida = () => setFase("saindo");
@@ -150,7 +111,6 @@ export function useCapaIntro() {
     };
   }, [capaNaTela, fase]);
 
-  // Saída em piso tátil: os domos encolhem de 22 px para 0 em 1 s.
   useEffect(() => {
     const capa = refCapa.current;
     if (!saindo || !capa) return;

@@ -1,31 +1,15 @@
-/*
-  presetsMovimento — molas e gestos da Pulse (PADRAO_MOVIMENTO_PULSE,
-  item 3; seção 19.15 da especificação).
+// Regra: toda animação de interface com o Motion usa estes valores (PADRAO_MOVIMENTO_PULSE, item 3).
 
-  Todas as animações de interface feitas com o Motion usam estes valores,
-  em vez de números soltos em cada componente. Assim o site inteiro "se
-  move do mesmo jeito".
-
-  - Mola (spring): uma animação que se comporta como uma mola de verdade:
-    acelera, chega ao alvo e assenta, às vezes com um quique pequeno.
-    Aqui cada mola é descrita pela duração visual (visualDuration, em
-    segundos: quanto tempo ela PARECE durar) e pelo quique (bounce: 0 =
-    sem quique). Isso garante o limite de 0,5 s do padrão.
-  - Gestos da marca: PULSO (confirmar), GUIA (navegar e entrar) e o
-    tremor do erro. O PISO TÁTIL (máscara de domos) é feito em CSS.
-*/
-
-// Springs descritas pela duração visual (visualDuration, em segundos) e pelo quique (bounce):
-// assim dá para garantir o limite de 0,5 s. Entre parênteses, a referência em rigidez/amortecimento.
+// Regra: molas pela duração visual, para garantir o limite de 0,5 s.
+// rapida: toque e ícones; padrao: quase tudo; suave: diálogos, painéis e cartões que viram.
 export const spring = {
-  rapida: { type: "spring", visualDuration: 0.18, bounce: 0.15 }, // toque, interruptor, ícones (≈ stiffness 500, damping 30, mass 0.6)
-  padrao: { type: "spring", visualDuration: 0.3, bounce: 0.12 }, // maior parte da interface (≈ 350 / 28 / 0.8)
-  suave: { type: "spring", visualDuration: 0.42, bounce: 0.06 }, // diálogos, painéis, cartões que viram (≈ 220 / 26 / 1)
+  rapida: { type: "spring", visualDuration: 0.18, bounce: 0.15 },
+  padrao: { type: "spring", visualDuration: 0.3, bounce: 0.12 },
+  suave: { type: "spring", visualDuration: 0.42, bounce: 0.06 },
 };
-export const saida = { type: "spring", visualDuration: 0.16, bounce: 0 }; // saídas: mais rápidas que as entradas
+export const saida = { type: "spring", visualDuration: 0.16, bounce: 0 }; // Regra: saídas mais rápidas que as entradas.
 export const cascata = { staggerChildren: 0.045, delayChildren: 0.03 };
 
-// Gestos da marca
 export const pulso = {
   scale: [1, 1.035, 1, 1.02, 1],
   transition: { duration: 0.42, times: [0, 0.2, 0.45, 0.7, 1], ease: "easeOut" },
@@ -37,6 +21,5 @@ export const guia = (direcao = 1) => ({
 });
 export const tremor = { x: [0, -4, 4, -3, 3, 0], transition: { duration: 0.3 } };
 
-// Observação (padrão, item 3): "pulso" e "tremor" têm vários quadros-chave,
-// e o Motion não usa spring nesses casos. Por isso eles têm duração fixa e
-// curta. É a única exceção à regra "spring sempre" na interface.
+// Armadilha: com vários quadros-chave o Motion não usa spring; por isso pulso e
+// tremor têm duração fixa e curta (única exceção ao "spring sempre").

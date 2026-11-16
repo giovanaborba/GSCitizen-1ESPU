@@ -3,24 +3,9 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
-/*
-  FocoNaTroca — seção 4.1.
-  Quando a pessoa vai para outra página, o foco é levado para o <h1> da
-  página nova. Assim o leitor de tela começa a ler do título, e quem usa
-  teclado continua dali, sem voltar ao topo do cabeçalho.
+// Regra: foco no <h1> da página nova (4.1), menos no primeiro carregamento, para o
+// "Pular para o conteúdo" ser o primeiro focável. Com âncora, foca o título dela.
 
-  No primeiro carregamento NÃO move o foco, para o "Pular para o conteúdo"
-  continuar sendo o primeiro elemento focável.
-  Não desenha nada na tela (devolve null).
-
-  Fase 8: se o endereço novo tiver uma âncora (ex.: /solucao#os-sinais,
-  pelos links da abertura do Início), o foco vai para o título daquela
-  âncora, e não para o <h1>. Sem isso, focar o <h1> rolaria a página de
-  volta ao topo. O preventScroll deixa a rolagem com o Next, que já leva
-  a página até a âncora.
-*/
-
-// Devolve o elemento que deve receber o foco e se ele veio de uma âncora.
 function destinoDoFoco() {
   const ancora = window.location.hash.slice(1);
   if (ancora) {

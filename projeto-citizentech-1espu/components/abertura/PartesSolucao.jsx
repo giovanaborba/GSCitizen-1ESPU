@@ -4,26 +4,8 @@ import { motion } from "motion/react";
 import LinkInterno from "@/components/ui/LinkInterno";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 
-/*
-  PartesSolucao — os 6 links da abertura para a página Solução
-  (seções 18.6 e 18.14).
-
-  - <nav> com <h2> visualmente oculto ("Partes da solução") e UMA lista
-    de 6 links, na ordem da tabela da 18.6. O leitor de tela anuncia
-    "Partes da solução, lista, 6 links", e a ordem é a mesma em todos os
-    tamanhos de tela.
-  - Celular: cartões um embaixo do outro (2 colunas a partir de 640 px).
-  - Computador (≥ 1000 px): 3 links de cada lado da pulseira (os 3
-    primeiros à esquerda, alinhados à direita). A lista usa "subgrid":
-    ela ocupa a grade da abertura inteira e cada link vai para a coluna
-    da esquerda ou da direita, sem mudar a ordem no HTML.
-  - Cada link tem um "nó" laranja (decorativo), onde chega a linha que
-    vem da parte da pulseira. Ao passar o mouse ou focar, o link ganha
-    borda e sobe 2 px (só com movimento permitido), e a parte acende.
-
-  Props: parteAtiva, aoMudarParte(nome | null), registrarNo(nome) (do
-  useLinhasPartes) e animacao (props do Motion para a revelação).
-*/
+// Regra: UMA lista de 6 links, na ordem da 18.6. O subgrid põe cada link de um lado
+// da pulseira sem mudar a ordem no HTML.
 
 export const PARTES_DA_SOLUCAO = [
   { parte: "destino", texto: "Como funciona", href: "/solucao#como-funciona", descricao: "Aperte o botão e diga o destino." },
@@ -91,7 +73,6 @@ export default function PartesSolucao({ parteAtiva, aoMudarParte, registrarNo, a
                   }`}
                 >
                   {item.texto}
-                  {/* ICONE-ArrowRight-AQUI */}
                   <EspacoIcone nome="ArrowRight" />
                 </span>
                 <span

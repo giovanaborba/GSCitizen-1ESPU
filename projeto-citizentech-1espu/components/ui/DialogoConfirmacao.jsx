@@ -5,25 +5,8 @@ import Botao from "@/components/ui/Botao";
 import ErroCampo from "@/components/ui/ErroCampo";
 import { useEsperaLonga } from "@/hooks/useEsperaLonga";
 
-/*
-  DialogoConfirmacao — seção 10, item 10.
-  Usado em "Excluir o registro…?" e em "Descartar as respostas?".
-
-  Usa o <dialog> nativo do HTML com showModal(), que já faz:
-  - o conteúdo atrás ficar inacessível (nem clique, nem Tab, nem leitor
-    de tela) enquanto o diálogo está aberto;
-  - a tecla Esc pedir para fechar (evento "cancel").
-  Este componente completa com:
-  - foco inicial na opção SEGURA (o botão de cancelar);
-  - foco de volta no botão que abriu o diálogo, ao fechar;
-  - "processando" (ex.: "Excluindo…"), anunciado ao leitor de tela.
-    Depois de 10 s (seção 11.1), o anúncio passa a ser "Está demorando
-    mais que o normal. Aguarde mais um pouco.". Não há botão de parar: o
-    servidor pode excluir mesmo se a espera for interrompida.
-
-  Props: aberto, titulo, texto, textoConfirmar, textoCancelar,
-         aoConfirmar, aoCancelar, processando, textoProcessando, erro
-*/
+// Regra: foco inicial na opção segura e de volta ao botão que abriu. Sem "Parar" no
+// "Excluindo…": o servidor pode excluir mesmo se a espera for interrompida.
 export default function DialogoConfirmacao({
   aberto,
   titulo,
@@ -88,8 +71,6 @@ export default function DialogoConfirmacao({
       onClose={aoFechar}
       className="m-auto max-h-[calc(100%-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-barra border border-borda bg-superficie p-6 text-texto shadow-barra"
     >
-      {/* Título em Anton, como todo H2 (seção 18.4), mas no menor tamanho
-          do H2: o diálogo é estreito e não tem efeitos (Diário calmo). */}
       <h2 id={idTitulo} className="text-h2-compacto">
         {titulo}
       </h2>
@@ -103,7 +84,6 @@ export default function DialogoConfirmacao({
         </ErroCampo>
       )}
 
-      {/* Anuncia "Excluindo" (e, depois de 10 s, o aviso) sem mover o foco */}
       <p role="status" className="sr-only">
         {processando && textoProcessando
           ? demorando

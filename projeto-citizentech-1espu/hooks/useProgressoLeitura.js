@@ -2,22 +2,7 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useEfeitos } from "@/hooks/useEfeitos";
 
-/*
-  useProgressoLeitura — a fração lida da página (seções 19.6 e 19.15).
-
-  Fração lida = quanto já rolou ÷ quanto dá para rolar (0 no topo, 1 no
-  fim). O hook não guarda isso no estado do React (o que redesenharia o
-  componente a cada passo da rolagem): ele escreve direto no estilo da
-  barra, com transform: scaleX(fração), uma vez por quadro da tela no
-  máximo (requestAnimationFrame).
-
-  - Só com os efeitos ligados. Desligados, a barra nem aparece (classe
-    efeitos-desligados:hidden no componente), e nada é calculado.
-  - Recalcula ao rolar, ao mudar o tamanho da janela ou da página (ex.:
-    o Diário que carrega a lista) e ao trocar de página.
-
-  Devolve a ref que vai na barra.
-*/
+// Escreve direto no estilo da barra, uma vez por quadro, sem redesenhar o componente.
 export function useProgressoLeitura() {
   const refBarra = useRef(null);
   const { efeitosLigados } = useEfeitos();

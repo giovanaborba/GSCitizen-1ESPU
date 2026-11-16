@@ -1,14 +1,8 @@
 import { useSyncExternalStore } from "react";
 import { hojeISO } from "@/lib/datas";
 
-/*
-  useHoje — a data de hoje ("AAAA-MM-DD") no fuso do APARELHO.
-
-  Por que um hook: as páginas são geradas no servidor, e o servidor pode
-  estar em outro fuso ou em outro dia. No servidor o valor é "" (vazio);
-  no navegador, a data real. Assim o max={hoje} do campo de data nunca
-  fica com o dia errado.
-*/
+// O servidor pode estar em outro fuso ou dia: lá o valor é "", e no navegador a
+// data real. Assim o max={hoje} nunca fica com o dia errado.
 function assinar() {
   // A data não "avisa" quando muda; nada para assinar.
   return () => {};

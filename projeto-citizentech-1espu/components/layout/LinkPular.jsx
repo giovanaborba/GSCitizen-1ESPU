@@ -1,8 +1,3 @@
-/*
-  LinkPular — seção 10, item 1.
-  Primeiro elemento focável da página. Fica invisível até receber foco
-  pelo teclado e leva direto ao <main id="conteudo">, pulando o cabeçalho.
-*/
 export default function LinkPular() {
   return (
     <a

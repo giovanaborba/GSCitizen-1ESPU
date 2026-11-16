@@ -5,33 +5,8 @@ import VideoPulse from "@/components/ui/VideoPulse";
 import { useRolagemFixa } from "@/hooks/useRolagemFixa";
 import RotuloSecao from "@/components/layout/RotuloSecao";
 
-/*
-  SinaisRolagemFixa — seção "Os sinais" da Solução (seções 18.8 e 18.14).
-
-  Ordem no HTML (é a do leitor de tela, seção 18.15): rótulo, H2 e texto
-  → navegação "Sinais" (4 links; o atual com aria-current="step") →
-  vídeo do sinal atual (só no modo fixo) → os 4 sinais, cada um num
-  <article> com a foto, o H3 e os pares "Modo tátil:"…
-
-  Modo fixo (computador e celular, com os efeitos ligados, janela com
-  pelo menos 700 × 340 px — ver useRolagemFixa):
-  - o palco fica parado enquanto a pessoa rola, e o sinal muda com a
-    rolagem; a foto troca em "piso tátil" e o texto esmaece e sobe;
-  - os sinais que não estão ativos ficam transparentes, mas o leitor de
-    tela continua lendo os 4, em ordem. Eles não têm nada focável;
-  - Fase 9 (19.13, decisão da equipe): o vídeo do sinal atual (com som)
-    substitui a pulseira 3D pequena junto do índice, nunca em cima da
-    foto. No computador, ocupa a coluna do índice (15rem, 16:9), com
-    "Pausar" e "Ativar som" embaixo; no celular, fica pequeno (8rem) ao
-    lado dos dois botões empilhados (decisão da equipe na 9.8). Quando o
-    sinal muda, o vídeo troca de arquivo; a pausa e o som escolhidos
-    continuam. Isso tira uma cena 3D da página.
-  Fora do modo fixo: os 4 sinais em lista comum, cada um com a sua foto e,
-  depois do texto, o seu vídeo (decisão da equipe na 9.8).
-  Cada vídeo tem o nome do H3 do sinal e a descrição dos pares (dl).
-
-  Textos dos sinais: os da seção 6.2.
-*/
+// Regra: no modo fixo, os sinais inativos ficam transparentes, mas o leitor de tela
+// lê os 4, em ordem. O vídeo nunca fica sobre a foto (decisão da 9.8).
 
 const SINAIS = [
   {
@@ -43,8 +18,6 @@ const SINAIS = [
       ["Modo tátil:", "pressão contínua no pulso até você andar."],
       ["Modo sonoro:", "som grave e curto."],
     ],
-    // IMAGEM-sinal continuar-AQUI
-    // alt sugerido (seção 18.13): "Pessoa cega com bengala atravessando a faixa de pedestres."
     imagem: "Foto do sinal continuar (a definir)",
     src: "/imagens/sinal-continuar.webp",
     alt: "Pessoa cega com bengala atravessando a faixa de pedestres.",
@@ -58,8 +31,6 @@ const SINAIS = [
       ["Modo tátil:", "vibração contínua até você parar."],
       ["Modo sonoro:", "som agudo e contínuo."],
     ],
-    // IMAGEM-sinal parar-AQUI
-    // alt sugerido (seção 18.13): "Pessoa parada no meio-fio diante do semáforo fechado."
     imagem: "Foto do sinal parar (a definir)",
     src: "/imagens/sinal-parar.webp",
     alt: "Pessoa parada no meio-fio diante do semáforo fechado.",
@@ -70,8 +41,6 @@ const SINAIS = [
     link: "Virar",
     titulo: "Virar à esquerda ou à direita",
     pares: [["Nos dois modos:", "vibração no lado correspondente."]],
-    // IMAGEM-sinal virar-AQUI
-    // alt sugerido (seção 18.13): "Esquina de calçada com piso tátil indicando a curva."
     imagem: "Foto do sinal virar (a definir)",
     src: "/imagens/sinal-virar.webp",
     alt: "Esquina de calçada com piso tátil indicando a curva.",
@@ -82,21 +51,12 @@ const SINAIS = [
     link: "Aguardar",
     titulo: "Aguardar",
     pares: [["Nos dois modos:", "três vibrações curtas, repetidas em intervalos."]],
-    // IMAGEM-sinal aguardar-AQUI
-    // alt sugerido (seção 18.13): "Pessoa esperando no ponto de ônibus."
     imagem: "Foto do sinal aguardar (a definir)",
     src: "/imagens/sinal-aguardar.webp",
     alt: "Pessoa esperando no ponto de ônibus.",
   },
 ];
 
-/*
-  VIDEO-animacao-sinal-continuar-AQUI, VIDEO-animacao-sinal-parar-AQUI,
-  VIDEO-animacao-sinal-virar-AQUI e VIDEO-animacao-sinal-aguardar-AQUI
-  Vídeos: public/videos/animacao-sinal-(chave).mp4 (com som)
-  Quadros parados: public/videos/animacao-sinal-(chave)-quadro-parado.jpg
-  Legendas: public/videos/animacao-sinal-(chave)-legendas.vtt
-*/
 function videoDoSinal(sinal) {
   return `animacao-sinal-${sinal.chave}`;
 }
@@ -115,7 +75,6 @@ export default function SinaisRolagemFixa() {
         Cada comando tem um sinal próprio. Role a página para passar de um sinal para o outro.
       </p>
 
-      {/* Trilho: no modo fixo, é alto, e o palco fica parado dentro dele */}
       <div
         ref={refTrilho}
         className="mt-8"
@@ -129,7 +88,6 @@ export default function SinaisRolagemFixa() {
               : "grid gap-6"
           }
         >
-          {/* Índice "Sinais" + vídeo do sinal atual */}
           <div className={podeFixar ? "grid min-w-0 gap-3 min-[62.5rem]:content-center min-[62.5rem]:gap-5" : ""}>
             <nav aria-label="Sinais">
               <ol
@@ -156,7 +114,6 @@ export default function SinaisRolagemFixa() {
                         }`}
                       >
                         {sinal.link}
-                        {/* Ponto laranja do sinal atual (decorativo) */}
                         {atual && <span aria-hidden="true" className="size-2 rounded-full bg-acao" />}
                       </a>
                     </li>
@@ -177,7 +134,6 @@ export default function SinaisRolagemFixa() {
             )}
           </div>
 
-          {/* Os 4 sinais */}
           <div className={podeFixar ? "relative min-h-0" : "grid gap-12"}>
             {SINAIS.map((sinal, indice) => {
               const atual = podeFixar && indice === ativo;
@@ -194,10 +150,7 @@ export default function SinaisRolagemFixa() {
                       : "grid gap-4 scroll-mt-4 min-[62.5rem]:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] min-[62.5rem]:items-center min-[62.5rem]:gap-8"
                   }
                 >
-                  {/* No modo fixo, a foto ocupa a altura toda do palco
-                      (no computador, o texto fica centralizado ao lado) */}
                   <div className={`foto-sinal min-h-0 ${podeFixar ? "min-[62.5rem]:self-stretch" : ""}`}>
-                    {/* O marcador e o alt de cada foto estão na lista SINAIS, acima */}
                     {sinal.src ? (
                       <img
                         src={sinal.src}
@@ -223,9 +176,6 @@ export default function SinaisRolagemFixa() {
                         </div>
                       ))}
                     </dl>
-                    {/* Lista comum: cada sinal com o seu vídeo (o marcador
-                        e os caminhos estão no comentário acima de
-                        videoDoSinal) */}
                     {!podeFixar && (
                       <VideoPulse
                         nome={videoDoSinal(sinal)}

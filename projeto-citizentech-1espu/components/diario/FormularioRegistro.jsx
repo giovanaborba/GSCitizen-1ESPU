@@ -10,26 +10,8 @@ import { useEsperaLonga } from "@/hooks/useEsperaLonga";
 import { useHoje } from "@/hooks/useHoje";
 import { OPCOES, PERGUNTAS } from "@/lib/rotulos";
 
-/*
-  FormularioRegistro — formulário de "Novo registro" e "Editar registro"
-  (seção 7.3). Uma coluna, campos na ordem da especificação.
-
-  A lógica (valores, validação, foco, salvar) fica no hook
-  useFormularioRegistro. Este componente só monta a tela.
-
-  Fase 9 (19.11): a cada envio com erro, os campos com erro tremem
-  (componente Tremor), junto da mensagem em texto de cada um.
-
-  Espera longa (seção 11.1): depois de 10 s em "Salvando…", a região de
-  status anuncia "Está demorando mais que o normal. Aguarde mais um
-  pouco.". Não há botão de parar: o servidor pode gravar mesmo se a
-  espera for interrompida.
-
-  Props:
-  - valoresIniciais  vazios (novo) ou os do registro (editar)
-  - aoSalvar(dados)  salva e navega; lança erro se falhar
-  - destinoCancelar  para onde "Cancelar" leva
-*/
+// Regra: sem "Parar" no "Salvando…": o servidor pode gravar mesmo se a espera for
+// interrompida (11.1).
 const GRUPOS = ["meio", "chegouSemSePerder", "precisouDeAjuda", "travessias", "orientacoes"];
 
 export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoCancelar }) {
@@ -90,7 +72,6 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
           </ErroCampo>
         )}
 
-        {/* Anuncia "Salvando" (e, depois de 10 s, o aviso) sem mover o foco */}
         <p role="status" className="sr-only">
           {enviando ? (demorando ? "Está demorando mais que o normal. Aguarde mais um pouco." : "Salvando") : ""}
         </p>

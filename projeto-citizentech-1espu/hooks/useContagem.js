@@ -2,28 +2,10 @@ import { useEffect, useRef } from "react";
 import { animate, inView } from "motion";
 import { useEfeitos } from "@/hooks/useEfeitos";
 
-/*
-  useContagem — o número que conta de 0 até o valor (seções 19.6 e 19.15),
-  nos cartões de dados de "O problema".
-
-  - Conta em 1,2 s (19.6), desacelerando no fim, quando o cartão entra na
-    tela. Só na primeira vez.
-  - O número que conta é decorativo (aria-hidden, no componente). O leitor
-    de tela lê um texto escondido com o valor real ("Cerca de 90%",
-    "7,9 milhões"), que nunca muda.
-  - O valor final já vem do servidor: sem JavaScript, com os efeitos
-    desligados ou com o cartão já à vista ao carregar, aparece o número
-    final, parado.
-  - Escreve direto no texto do elemento (sem redesenhar o React a cada
-    quadro).
-
-  Recebe { valor, casas, antes, depois } (o texto ao redor do número) e
-  devolve a ref que vai no número. formatarNumero (exportada) escreve o
-  número com vírgula decimal e o texto ao redor.
-*/
+// Regra: o número que conta é decorativo; o leitor de tela lê o valor real, que
+// nunca muda. Sem JavaScript ou sem efeitos, aparece o valor final.
 const DURACAO = 1.2; // segundos (19.6)
 
-// 7.9 → "7,9"; com o texto ao redor: "Cerca de " + "90" + "%"
 export function formatarNumero(numero, casas, antes = "", depois = "") {
   return `${antes}${numero.toFixed(casas).replace(".", ",")}${depois}`;
 }
@@ -46,7 +28,7 @@ export function useContagem({ valor, casas = 0, antes = "", depois = "" }) {
       () => {
         animacao = animate(0, valor, {
           duration: DURACAO,
-          ease: [0.33, 1, 0.68, 1], // desacelera no fim
+          ease: [0.33, 1, 0.68, 1],
           onUpdate: (atual) => {
             numero.textContent = formatar(atual);
           },

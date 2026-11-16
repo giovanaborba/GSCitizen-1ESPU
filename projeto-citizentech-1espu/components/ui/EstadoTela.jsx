@@ -4,30 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Botao from "@/components/ui/Botao";
 import { useEsperaLonga } from "@/hooks/useEsperaLonga";
 
-/*
-  EstadoTela — seção 10, item 12, e seção 11.2.
-  tipo:
-  - "carregando": "Carregando os registros…" + indicador simples, com
-    role="status". Só aparece se demorar mais de 1 s (seção 11.1: abaixo de
-    1 s, nenhum indicador). O indicador não gira com os efeitos desligados.
-    Depois de 10 s (seção 11.1), a mesma região de status ganha "Está
-    demorando mais que o normal. Você pode esperar ou parar.", e abaixo
-    dela, fora da região, aparece o botão "Parar de carregar".
-  - "vazio": H2 "Nenhum deslocamento registrado ainda" + "Novo registro".
-  - "erro": role="alert" + "Tentar de novo".
-
-  Props do "carregando":
-  - aoParar: função do "Parar de carregar" (interrompe a busca com o
-    AbortSignal). Sem ela, o botão não aparece.
-
-  Props do "erro":
-  - aoTentarDeNovo: função do botão
-  - focarAoMontar: true depois de um "Tentar de novo" que falhou de novo
-    ou depois do "Parar de carregar". O foco vai para o botão, e a pessoa
-    não se perde (o botão de parar sumiu).
-  - interrompido: true depois do "Parar de carregar". O título passa a
-    ser "Carregamento interrompido.".
-*/
 export default function EstadoTela({ tipo, aoTentarDeNovo, aoParar, focarAoMontar = false, interrompido = false }) {
   if (tipo === "carregando") return <EstadoCarregando aoParar={aoParar} />;
   if (tipo === "vazio") return <EstadoVazio />;
@@ -36,7 +12,7 @@ export default function EstadoTela({ tipo, aoTentarDeNovo, aoParar, focarAoMonta
   );
 }
 
-const ESPERA_ANTES_DO_INDICADOR = 1000; // 1 s
+const ESPERA_ANTES_DO_INDICADOR = 1000; // Regra: abaixo de 1 s, nenhum indicador (11.1).
 
 function EstadoCarregando({ aoParar }) {
   const [visivel, setVisivel] = useState(false);
@@ -50,9 +26,8 @@ function EstadoCarregando({ aoParar }) {
 
   return (
     <div className="mt-8">
-      {/* A região de status existe desde o início; o texto entra depois de
-          1 s (e o aviso, depois de 10 s), e é essa mudança que o leitor de
-          tela anuncia. */}
+      {/* A região de status existe desde o início: o leitor de tela só anuncia o texto que
+          entra depois. */}
       <div role="status">
         {visivel && (
           <p className="flex items-center gap-4">
@@ -83,7 +58,6 @@ function EstadoVazio() {
       <h2>Nenhum deslocamento registrado ainda</h2>
       <p className="mt-4">Registre o primeiro para começar a medir o impacto da Pulse.</p>
       <p className="mt-6">
-        {/* ICONE-Plus-AQUI */}
         <Botao href="/diario/novo" icone="Plus">
           Novo registro
         </Botao>
@@ -112,7 +86,6 @@ function EstadoErro({ aoTentarDeNovo, focarAoMontar, interrompido }) {
         )}
       </div>
       <p className="mt-4">
-        {/* ICONE-ArrowClockwise-AQUI */}
         <Botao ref={refBotao} variante="secundario-sobre-cor" icone="ArrowClockwise" onClick={aoTentarDeNovo}>
           Tentar de novo
         </Botao>

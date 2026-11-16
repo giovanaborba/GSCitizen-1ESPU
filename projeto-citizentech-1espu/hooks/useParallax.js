@@ -1,28 +1,11 @@
 import { useEffect, useRef } from "react";
 import { useEfeitos } from "@/hooks/useEfeitos";
 
-/*
-  useParallax — a imagem anda numa velocidade um pouco diferente da página
-  ao rolar (seção 19.6, "Parallax"), dando profundidade.
-
-  - "velocidade": quanto a imagem se desloca por pixel de distância entre
-    o centro da moldura e o centro da tela (±0,06, como no protótipo).
-  - A MOLDURA não se move (o texto ao redor nunca é coberto, e "o texto
-    nunca se move"): só a imagem anda dentro dela. A imagem fica 12% maior
-    que a moldura (CSS, [data-paralaxe]), e o deslocamento é limitado à
-    folga que isso cria (6% da altura de cada lado) e a 60 px, para nunca
-    aparecer um vão.
-  - Só liga quando há uma imagem de verdade (<img>); o marcador fica
-    parado.
-  - Só anima "transform" (pela variável --paralaxe), uma vez por quadro
-    no máximo, e só com a moldura perto da tela.
-  - Com os efeitos desligados, nada se move.
-
-  Devolve a ref que vai na moldura.
-*/
+// Regra: só a imagem anda; a moldura e o texto não se movem. A imagem é 12% maior,
+// e o deslocamento fica dentro dessa folga, para nunca aparecer um vão.
 const LIMITE = 60; // px
 const FOLGA = 0.06; // fração da altura (a imagem tem 112%)
-const MARGEM = 200; // px além da tela em que ainda calcula
+const MARGEM = 200; // px
 
 export function useParallax(velocidade) {
   const refMoldura = useRef(null);

@@ -8,36 +8,17 @@ import {
 } from "@/services/registrosService";
 import { ordenarDoMaisRecente } from "@/lib/datas";
 
-/*
-  useRegistros — custom hook do CRUD do Diário (seção 14).
-  Guarda o estado (lista, carregando, erro) e chama o serviço. As telas
-  recebem os dados e as funções prontas, sem saber que existe uma API.
-
-  Opção: { carregarAoIniciar: false } não busca a lista (ex.: na tela
-  "Novo registro", que só precisa de criar).
-
-  Devolve:
-  - registros   lista do mais recente para o mais antigo
-  - carregando  true enquanto a lista está sendo buscada
-  - erro        o erro de domínio ({ codigo: "conexao" }) ou null
-  - recarregar  busca a lista de novo (botão "Tentar de novo")
-  - parar       interrompe a busca ("Parar de carregar", seção 11.1);
-                o erro vira { codigo: "interrompido" }
-  - criar, atualizar, excluir, restaurar  (restaurar = "Desfazer")
-*/
 export function useRegistros({ carregarAoIniciar = true } = {}) {
   const [registros, setRegistros] = useState([]);
   const [carregando, setCarregando] = useState(carregarAoIniciar);
   const [erro, setErro] = useState(null);
-  // Cada novo número faz o useEffect buscar a lista outra vez
+  // Cada novo número faz o useEffect buscar a lista outra vez.
   const [tentativa, setTentativa] = useState(0);
-  // A busca em andamento, para o "Parar de carregar"
   const refControle = useRef(null);
 
   useEffect(() => {
     if (!carregarAoIniciar) return;
 
-    // Se a pessoa sair da tela antes da resposta, a busca é cancelada
     const controle = new AbortController();
     refControle.current = controle;
 
@@ -62,7 +43,7 @@ export function useRegistros({ carregarAoIniciar = true } = {}) {
     setTentativa((anterior) => anterior + 1);
   }
 
-  // A busca cancelada não chega ao .catch (foiCancelado), então o erro
+  // A busca cancelada não chega ao .catch (foiCancelado); por isso o erro
   // "interrompido" é definido aqui.
   function parar() {
     refControle.current?.abort();
@@ -89,8 +70,7 @@ export function useRegistros({ carregarAoIniciar = true } = {}) {
     setRegistros((lista) => lista.filter((registro) => registro.id !== id));
   }
 
-  // "Desfazer" (seção 7.5): recria o registro com os mesmos dados (POST).
-  // O serviço ignora o id antigo, e a API gera um novo.
+  // "Desfazer" recria o registro com um POST; a API gera um id novo (7.5).
   async function restaurar(registroExcluido) {
     return criar(registroExcluido);
   }

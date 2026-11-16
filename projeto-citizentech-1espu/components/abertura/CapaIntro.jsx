@@ -4,31 +4,8 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
 import VideoPulse from "@/components/ui/VideoPulse";
 import { useConsultaMidia } from "@/hooks/useConsultaMidia";
 
-/*
-  CapaIntro — capa da primeira visita da sessão (seções 18.6 e 18.14).
-  Quem decide se ela aparece e quando sai é o hook useCapaIntro (usado
-  pela AberturaPulseira, que mostra este componente).
-
-  - A capa inteira tem aria-hidden="true" e nenhum elemento focável: o
-    leitor de tela e o teclado vão direto para o site. O primeiro Tab
-    (no "Pular para o conteúdo") já tira a capa da frente.
-  - Cores fixas, porque a capa é escura nos dois temas (seção 19.3):
-    texto #FFFFFF sobre #1A1A1D (17,4:1); laranja #FC4C02 sobre #1A1A1D
-    (5,1:1); texto grafite #242428 sobre o laranja (4,55:1).
-  - A frase fica sobre uma faixa sólida (seção 18.6).
-  - Fundo (19.13): o vídeo da capa, sem som, em loop contínuo, no lugar
-    das imagens. Com a tela "em pé" (retrato), o vertical; deitada, o
-    horizontal. A escolha é feita só no navegador (a capa nunca vem do
-    servidor). Sem o arquivo, fica o fundo escuro. Com os efeitos
-    desligados, não há capa (useCapaIntro).
-  - Contraste sobre o vídeo (decisão da equipe na 9.8): um véu grafite
-    #1A1A1D a 60% cobre o vídeo, e "PULSE" fica com 7,8:1 ou mais (pior
-    ponto em 8 momentos do loop, de 375 a 1440 px). O rótulo laranja
-    nunca passaria de 4,5:1 sobre o vídeo, então fica numa faixa sólida
-    #1A1A1D, como a frase (5,1:1).
-
-  Props: refCapa e saindo (do hook) e aoTocar (clique ou toque: sair).
-*/
+// Cores fixas: a capa é escura nos dois temas (19.3). O véu a 60% garante 7,8:1 ou
+// mais para "PULSE" sobre o vídeo (decisão da 9.8).
 export default function CapaIntro({ refCapa, saindo, aoTocar }) {
   const retrato = useConsultaMidia("(orientation: portrait)");
 
@@ -42,21 +19,14 @@ export default function CapaIntro({ refCapa, saindo, aoTocar }) {
       onClick={aoTocar}
       className="capa-intro"
     >
-      {/* VIDEO-animacao-capa-AQUI e VIDEO-animacao-capa-vertical-AQUI
-          (substituem as imagens da capa, 19.14)
-          Vídeos: public/videos/animacao-capa.mp4 (1280 × 720) e
-                  public/videos/animacao-capa-vertical.mp4 (720 × 1280), sem som
-          Quadros parados: public/videos/animacao-capa-quadro-parado.jpg e
-                           public/videos/animacao-capa-vertical-quadro-parado.jpg */}
       <VideoPulse
         nome={retrato ? "animacao-capa-vertical" : "animacao-capa"}
         fundo
         className="absolute inset-0"
       />
-      {/* Véu sobre o vídeo, para o texto da capa ter contraste */}
       <div className="absolute inset-0 bg-[rgba(26,26,29,0.6)]" />
 
-      {/* O logo "pulsa" uma vez (até 1 s). É código, não imagem (18.13). */}
+      {/* Regra: o logo é código, não imagem (18.13). */}
       <div className="capa-logo absolute inset-0 grid place-items-center efeitos-desligados:hidden">
         <svg
           viewBox="0 0 100 100"
@@ -82,7 +52,6 @@ export default function CapaIntro({ refCapa, saindo, aoTocar }) {
           Um guia no pulso para atravessar a cidade.
         </span>
         <span className="mt-4 inline-flex min-h-12 items-center gap-2.5 rounded-full bg-[#FC4C02] px-6 font-bold text-[#242428]">
-          {/* ICONE-ArrowDown-AQUI */}
           <EspacoIcone nome="ArrowDown" />
           Toque, role ou aperte uma tecla
         </span>

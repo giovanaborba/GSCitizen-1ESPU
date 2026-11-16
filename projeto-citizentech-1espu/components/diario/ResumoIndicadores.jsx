@@ -1,16 +1,6 @@
 import Cartao from "@/components/ui/Cartao";
 
-/*
-  ResumoIndicadores — seção 10, item 11, e seção 7.1.
-  H2 "Resumo" + explicação + lista de 4 cartões (número grande + rótulo).
-  Números com tabular-nums: todos os algarismos têm a mesma largura e
-  ficam alinhados. Fase 8: os números grandes em Anton, na cor de
-  destaque (seção 18.4). O Diário recebe só cores e fontes, sem efeitos.
-
-  "indicadores": lista de { chave, numero, rotulo } (useResumoIndicadores).
-  No celular, 2 × 2. As palavras longas ("deslocamentos") podem ser
-  hifenizadas para caber a 320 px sem rolagem lateral.
-*/
+// As palavras longas podem ser hifenizadas, para caber a 320 px sem rolagem lateral.
 export default function ResumoIndicadores({ indicadores }) {
   return (
     <section className="mt-12">

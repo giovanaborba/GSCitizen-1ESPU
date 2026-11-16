@@ -1,37 +1,18 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { efeitosLigadosAgora } from "@/lib/efeitos";
 
-/*
-  useLinhasPartes — as linhas tracejadas que ligam os links "Partes da
-  solução" às partes da pulseira 3D, no computador (seção 18.6).
+// As linhas são escritas direto no SVG, sem estado do React, porque mudam até 60
+// vezes por segundo.
 
-  - A pulseira chama aoDesenhar(projetar) a cada quadro. "projetar(nome)"
-    diz onde aquela parte (motor, botão...) está na tela agora.
-  - Para cada link, a linha vai da parte da pulseira até o "nó" laranja
-    do link, numa curva suave. As linhas são SVG decorativo (aria-hidden)
-    e só aparecem a partir de 1000 px.
-  - O tracejado anda devagar. Com os efeitos desligados, fica parado.
-  - Ao passar o mouse ou focar um link, a linha dele engrossa (classe
-    "ativa"), e a pulseira acende a parte (parteAtiva).
-
-  Por desempenho, as linhas são escritas direto no SVG (sem passar pelo
-  estado do React), porque mudam até 60 vezes por segundo.
-
-  Devolve refPalco, refSvg, registrarNo(nome) e aoDesenhar(projetar).
-*/
-
-const CONSULTA_TELA_LARGA = "(min-width: 62.5rem)"; // 1000 px
+const CONSULTA_TELA_LARGA = "(min-width: 62.5rem)";
 const VELOCIDADE_DO_TRACEJADO = 18; // px por segundo
 
-// Curva suave da parte (a) até o nó do link (l): sai na horizontal e
-// chega na horizontal.
 export function caminhoDaLinha(ax, ay, lx, ly) {
   const meio = (ax + lx) / 2;
   const n = (valor) => valor.toFixed(1);
   return `M${n(ax)},${n(ay)} C${n(meio)},${n(ay)} ${n(meio)},${n(ly)} ${n(lx)},${n(ly)}`;
 }
 
-// Escreve as linhas no SVG. "nos": os nós dos links, por nome.
 function desenharLinhas({ svg, palco, nos, parteAtiva, projetar }) {
   if (!svg || !palco || !window.matchMedia(CONSULTA_TELA_LARGA).matches) return;
 
@@ -72,7 +53,6 @@ export function useLinhasPartes(parteAtiva) {
     refParteAtiva.current = parteAtiva;
   });
 
-  // Guarda o elemento do "nó" de cada link (chamada pelo ref do <span>).
   function registrarNo(nome) {
     return (elemento) => {
       if (elemento) refNos.current[nome] = elemento;
@@ -80,7 +60,6 @@ export function useLinhasPartes(parteAtiva) {
     };
   }
 
-  // Chamada pela pulseira a cada quadro desenhado.
   function aoDesenhar(projetar) {
     refUltimaProjecao.current = projetar;
     desenharLinhas({

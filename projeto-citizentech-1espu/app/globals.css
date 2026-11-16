@@ -1,198 +1,115 @@
 @import "tailwindcss";
-/* CSS próprio do Lenis (rolagem suave, seção 18.1). Ele só vale quando o
-   Lenis está ativo, porque todas as regras dependem da classe .lenis,
-   que o Lenis coloca no <html>. */
+/* Só vale com o Lenis ativo: todas as regras dependem da classe .lenis no <html>. */
 @import "lenis/dist/lenis.css";
 
-/*
-  =====================================================================
-  PULSE — ESTILOS GLOBAIS (especificação, seções 8 e 18)
-  =====================================================================
-  Como está organizado:
-  1. Tokens (variáveis CSS) do tema claro, em :root.
-  2. Tokens do tema escuro, que só trocam os valores quando o aparelho
-     está em modo escuro (prefers-color-scheme). Não há botão de tema.
-  3. @theme inline: liga os tokens ao Tailwind, para usar classes como
-     bg-fundo, bg-superficie, text-texto, border-borda, bg-acao.
-  4. Estilos de base (corpo, títulos, links, foco).
-  5. Utilitários próprios (margem lateral, textura de piso tátil,
-     rótulo mono, palavra de fundo).
-  6. Alto contraste do Windows (forced-colors).
-  7. Efeitos desligados (interruptor "Efeitos", seção 19.2).
+/* Regra (19.3): o laranja escuro sobre o grafite (3,2:1) nunca vira texto, e os dois
+   laranjas (1,03:1) nunca diferenciam estados. */
 
-  Movimento (Fase 9): a única regra é o atributo data-efeitos da tag
-  <html> ("ligados" ou "desligados"), gravado pelo script do <head> e
-  mudado pelo botão "Efeitos". Nenhuma regra deste arquivo consulta o
-  "reduzir movimento" do aparelho: ele é só o valor inicial do botão.
-  Sem JavaScript, o atributo não existe e tudo fica parado.
-
-  Fontes (seção 19.4): carregadas em app/layout.jsx com next/font/google,
-  que cria as variáveis --fonte-anton, --fonte-atkinson e --fonte-jetbrains
-  na tag <html>. Aqui, --fonte-titulo, --fonte-base e --fonte-mono apontam
-  para elas, com as fontes de reserva da 18.4 logo depois.
-
-  Cores da Fase 9 (seção 19.3): paleta laranja e grafite. Todos os
-  contrastes foram recalculados, também com o granulado por baixo do
-  texto (registro de desenvolvimento, subfase 9.2). Regras:
-  - laranja escuro #CC4200 é o texto laranja do tema claro; no escuro, o
-    texto laranja é o #FC4C02;
-  - o botão principal é laranja #FC4C02 com texto grafite #242428
-    (4,55:1). Branco sobre laranja (3,4:1) só em texto grande;
-  - o laranja escuro sobre o grafite (3,2:1) nunca vira texto;
-  - os dois laranjas (1,03:1) nunca diferenciam estados.
-*/
-
-/* ---------------------------------------------------------------------
-   1. TEMA CLARO (padrão)
-   --------------------------------------------------------------------- */
 :root {
-  /* Permite que controles nativos (data, rolagem, radio) sigam o tema */
   color-scheme: light dark;
 
-  /* Cores — seção 19.3, tema claro. Contraste sobre o fundo branco / a
-     faixa #FAFAFA (o granulado claro por baixo não baixa nenhum par). */
-  --cor-fundo: #ffffff; /* fundo da página */
-  --cor-faixa: #fafafa; /* seções alternadas ("bandas", seção 19.5) */
-  --cor-superficie: #ffffff; /* cartões, campos, cabeçalho, barra, diálogo */
-  --cor-texto: #242428; /* grafite: 15,5:1 / 14,8:1 */
-  --cor-texto-2: #4e4e57; /* 8,2:1 / 7,9:1 */
-  --cor-marca: #cc4200; /* laranja escuro: títulos, links, foco, botão secundário — 4,8:1 / 4,6:1 */
-  --cor-destaque: #cc4200; /* rótulos mono e números grandes: 4,8:1 / 4,6:1 */
-  --cor-acao: #fc4c02; /* laranja: botão principal e item ativo da barra (só fundo no claro) */
-  --cor-sobre-acao: #242428; /* texto sobre o laranja: 4,55:1 */
-  --cor-borda: #6e6e78; /* 5,0:1 / 4,8:1 */
-  --cor-apagada: #6e6e78; /* palavras ainda apagadas da frase que acende (19.7) */
-  /* Fundo leve no hover de botões secundários, itens da barra e pílulas
-     do "Nesta página": a marca a 12% (como no protótipo). O texto em cima
-     dele é sempre o grafite --cor-texto (13,0:1 no claro; 13,6:1 no
-     escuro). O texto laranja ficaria em 4,1:1, abaixo do mínimo; por isso
-     o botão secundário troca o texto para --cor-texto no hover. */
+  --cor-fundo: #ffffff;
+  --cor-faixa: #fafafa;
+  --cor-superficie: #ffffff;
+  --cor-texto: #242428;
+  --cor-texto-2: #4e4e57;
+  --cor-marca: #cc4200;
+  --cor-destaque: #cc4200;
+  --cor-acao: #fc4c02;
+  --cor-sobre-acao: #242428;
+  --cor-borda: #6e6e78;
+  --cor-apagada: #6e6e78;
+  /* O texto laranja sobre --cor-hover ficaria em 4,1:1: por isso o secundário troca
+     o texto para --cor-texto no hover. */
   --cor-hover: color-mix(in srgb, var(--cor-marca) 12%, transparent);
-  /* Status (19.3). O aviso e os fundos claros continuam os da seção 8.1. */
-  --cor-erro: #b3261e; /* 6,5:1 */
-  --cor-erro-fundo: #fdecec; /* erro sobre ele: 5,7:1 */
-  --cor-sucesso: #1f6b3a; /* 6,5:1 */
-  --cor-sucesso-fundo: #e7f6ec; /* sucesso sobre ele: 5,8:1 */
+  --cor-erro: #b3261e;
+  --cor-erro-fundo: #fdecec;
+  --cor-sucesso: #1f6b3a;
+  --cor-sucesso-fundo: #e7f6ec;
   --cor-aviso: #5a3e00;
-  --cor-aviso-fundo: #fff4cc; /* 9,0:1 */
-  /* Texto do botão de perigo preenchido (fundo = --cor-erro): 6,5:1 */
+  --cor-aviso-fundo: #fff4cc;
   --cor-perigo-texto: #ffffff;
 
-  /* Decoração e 3D — sem texto em cima, exceto o granulado (seção 19.3) */
-  --cor-ponto: rgba(36, 36, 40, 0.07); /* domos da textura de piso tátil */
-  --cor-ponto-brilho: rgba(255, 255, 255, 0.9); /* brilho de cada domo */
-  --cor-ponto-sombra: rgba(36, 36, 40, 0.1); /* sombra de cada domo (relevo, 19.5) */
-  /* Palavras gigantes de fundo: grafite bem suave, da mesma família dos
-     domos (decisão da equipe na 9.2) */
+  --cor-ponto: rgba(36, 36, 40, 0.07);
+  --cor-ponto-brilho: rgba(255, 255, 255, 0.9);
+  --cor-ponto-sombra: rgba(36, 36, 40, 0.1);
   --cor-palavra-fundo: rgba(36, 36, 40, 0.06);
-  --grao-opacidade: 0.06; /* granulado (19.6) */
-  /* Ruído do granulado: branco no tema claro (decisão 1 da 9.0) */
+  --grao-opacidade: 0.06;
   --grao-imagem: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --cor-faixa-3d: #fc4c02; /* tira da pulseira 3D */
-  --cor-cortina: #242428; /* transição entre páginas e preloader */
+  --cor-faixa-3d: #fc4c02;
+  --cor-cortina: #242428;
 
-  /* Rodapé: escuro nos dois temas (seção 19.3) */
   --cor-rodape-fundo: #242428;
-  /* Botões da faixa dos ODS: o tom vizinho da paleta (decisão da equipe
-     na 9.2). Texto 17,4:1; destaque 5,1:1. */
   --cor-rodape-cartao: #1a1a1d;
-  --cor-rodape-texto: #ffffff; /* 15,5:1 */
-  --cor-rodape-texto-2: #c9c9cf; /* 9,4:1 */
-  --cor-rodape-destaque: #fc4c02; /* números, rótulos e foco: 4,55:1 */
-  --cor-rodape-borda: #9a9aa4; /* 5,5:1 */
+  --cor-rodape-texto: #ffffff;
+  --cor-rodape-texto-2: #c9c9cf;
+  --cor-rodape-destaque: #fc4c02;
+  --cor-rodape-borda: #9a9aa4;
 
-  /* Tipografia — seções 18.4 e 19.4. As variáveis --fonte-anton,
-     --fonte-atkinson e --fonte-jetbrains vêm do next/font (app/layout.jsx).
-     As fontes de reserva só aparecem se o arquivo da fonte falhar.
-     - título: Anton (H1, H2, nomes dos sinais, números grandes)
-     - base: Atkinson Hyperlegible Next (todo o texto corrido)
-     - mono: JetBrains Mono (rótulos curtos) */
   --fonte-titulo: var(--fonte-anton, Impact), Impact, "Arial Narrow", sans-serif;
   --fonte-base: var(--fonte-atkinson, Verdana), Verdana, system-ui, sans-serif;
   --fonte-mono: var(--fonte-jetbrains, ui-monospace), ui-monospace, "Courier New", monospace;
 
-  /* Sombras — seção 8.3, tema claro (em grafite, um nível só) */
   --sombra-cartao: 0 1px 2px rgba(26, 26, 29, 0.08), 0 4px 12px rgba(26, 26, 29, 0.06);
   --sombra-barra: 0 8px 24px rgba(26, 26, 29, 0.14);
 
-  /* Medidas de layout (em rem, para acompanhar o tamanho do texto) */
-  --altura-cabecalho: 4rem; /* 64 px */
-  /* Altura da barra flutuante. Valor de reserva: item de 56 px + padding
-     6 px × 2 + borda 1 px × 2 = 70 px ≈ 4.5rem. Depois que a página
-     carrega, a BarraNavegacao mede a altura real e atualiza esta variável
-     (a barra fica mais alta em 2 × 2 ou com texto ampliado). */
+  /* Em rem, para acompanhar o tamanho do texto */
+  --altura-cabecalho: 4rem;
+  /* Reserva (item de 56 px + padding + borda ≈ 4.5rem); a BarraNavegacao mede a
+     altura real depois que a página carrega. */
   --altura-barra: 4.5rem;
-  --distancia-barra: 1rem; /* 16 px acima da borda inferior */
-  /* Espaço extra no fim de cada página: barra + 16 px + área de segurança
-     (seção 5), para o último item e o foco nunca ficarem escondidos. */
+  --distancia-barra: 1rem;
+  /* Regra (seção 5): barra + 16 px + área de segurança, para o último item e o foco
+     nunca ficarem escondidos. */
   --espaco-fim: calc(
     var(--altura-barra) + var(--distancia-barra) + 1rem + env(safe-area-inset-bottom)
   );
   --duracao-transicao: 200ms;
 }
 
-/* Tela muito estreita (320 px): a barra fica em 2 × 2 (decisão da Fase 2).
-   Reserva: 2 × 56 px + 6 px entre linhas + padding + borda ≈ 8.5rem. */
+/* Tela de 320 px: a barra fica em 2 × 2 (decisão da Fase 2); reserva ≈ 8.5rem. */
 @media (max-width: 22.5rem) {
   :root {
     --altura-barra: 8.5rem;
   }
 }
 
-/* Pouca altura (zoom alto ou celular deitado): a barra deixa de flutuar e
-   vai para o fim da página (seção 9.2), então não precisa de espaço extra. */
+/* Pouca altura: a barra deixa de flutuar e vai para o fim da página (9.2), então
+   não precisa de espaço extra. */
 @media (max-height: 30rem) {
   :root {
     --espaco-fim: 2rem;
   }
 }
 
-/* ---------------------------------------------------------------------
-   2. TEMA ESCURO (segue só a configuração do aparelho)
-   --------------------------------------------------------------------- */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Cores — seção 19.3, tema escuro. Contraste sobre o fundo #1A1A1D /
-       a faixa #242428 (o granulado escuro por baixo só aumenta o
-       contraste). Os links continuam SEMPRE sublinhados. */
     --cor-fundo: #1a1a1d;
     --cor-faixa: #242428;
-    --cor-superficie: #242428; /* cartões, campos, cabeçalho, barra, diálogo, mensagens */
-    --cor-texto: #ffffff; /* 17,4:1 / 15,5:1 */
-    --cor-texto-2: #c9c9cf; /* 10,5:1 / 9,4:1 */
-    --cor-marca: #fc4c02; /* laranja: títulos, links e foco — 5,1:1 / 4,55:1 */
-    --cor-destaque: #fc4c02; /* rótulos mono e números — 5,1:1 / 4,55:1 */
-    /* --cor-acao e --cor-sobre-acao: iguais ao tema claro */
-    --cor-borda: #9a9aa4; /* 6,2:1 / 5,5:1 */
+    --cor-superficie: #242428;
+    --cor-texto: #ffffff;
+    --cor-texto-2: #c9c9cf;
+    --cor-marca: #fc4c02;
+    --cor-destaque: #fc4c02;
+    --cor-borda: #9a9aa4;
     --cor-apagada: #9a9aa4;
-    /* --cor-hover segue a marca sozinho. */
-    --cor-erro: #ff8a80; /* 7,6:1 / 6,8:1 */
-    --cor-sucesso: #7fd69b; /* 9,9:1 / 8,8:1 */
-    --cor-aviso: #ffe7a3; /* igual à 8.1: 12,7:1 na superfície */
-    /* No escuro, mensagens de status usam o fundo da superfície */
+    --cor-erro: #ff8a80;
+    --cor-sucesso: #7fd69b;
+    --cor-aviso: #ffe7a3;
     --cor-erro-fundo: #242428;
     --cor-sucesso-fundo: #242428;
     --cor-aviso-fundo: #242428;
-    /* Botão de perigo preenchido: fundo #FF8A80, texto grafite (6,8:1) */
     --cor-perigo-texto: #242428;
 
-    /* Decoração e 3D */
     --cor-ponto: rgba(255, 255, 255, 0.05);
     --cor-ponto-brilho: rgba(255, 255, 255, 0.08);
     --cor-ponto-sombra: rgba(0, 0, 0, 0.35);
     --cor-palavra-fundo: rgba(255, 255, 255, 0.05);
-    /* Opção B da equipe (subfase 9.4): grão preto a 25% no escuro (a 19.3
-       dizia 0,08, que deixava o grão invisível). Como ele fica atrás do
-       conteúdo e só escurece o fundo, o contraste só sobe: marca 5,4:1 no
-       fundo e 5,05:1 na faixa. */
+    /* Grão preto a 25% (opção B, 9.4): a 0,08 da 19.3 ficava invisível. Atrás do
+       conteúdo, ele só escurece o fundo, e o contraste sobe. */
     --grao-opacidade: 0.25;
-    /* Ruído preto no tema escuro (decisão 1 da 9.0) */
     --grao-imagem: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.4 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    /* --cor-faixa-3d e --cor-cortina: iguais ao tema claro */
 
-    /* Rodapé: mais escuro que a página, para se separar dela.
-       Texto 18,4:1; destaque 5,4:1. Os botões dos ODS ficam no #242428
-       (texto 15,5:1; destaque 4,55:1). */
     --cor-rodape-fundo: #141416;
     --cor-rodape-cartao: #242428;
 
@@ -201,12 +118,8 @@
   }
 }
 
-/* ---------------------------------------------------------------------
-   3. LIGAÇÃO COM O TAILWIND v4
-   "inline" faz cada classe usar a variável diretamente
-   (ex.: bg-fundo → background-color: var(--cor-fundo)). Quando o tema
-   muda, a variável muda, e a classe acompanha sem precisar de "dark:".
-   --------------------------------------------------------------------- */
+/* "inline": cada classe usa a variável direto; quando o tema muda, a classe
+   acompanha sem "dark:". */
 @theme inline {
   /* Remove a paleta padrão do Tailwind (zinc, yellow...) para ninguém
      usar sem querer uma cor sem contraste conferido. */
@@ -231,7 +144,6 @@
   --color-aviso: var(--cor-aviso);
   --color-aviso-fundo: var(--cor-aviso-fundo);
   --color-perigo-texto: var(--cor-perigo-texto);
-  /* Rodapé (escuro nos dois temas) */
   --color-rodape-fundo: var(--cor-rodape-fundo);
   --color-rodape-cartao: var(--cor-rodape-cartao);
   --color-rodape-texto: var(--cor-rodape-texto);
@@ -240,30 +152,20 @@
   --color-rodape-borda: var(--cor-rodape-borda);
 
   --font-sans: var(--fonte-base);
-  /* Classes font-titulo e font-mono (seção 18.4) */
   --font-titulo: var(--fonte-titulo);
   --font-mono: var(--fonte-mono);
 
-  /* Tamanhos de texto — seção 18.4 (classes text-h1, text-corpo...).
-     H1 e H2 em Anton, com altura de linha 1.
-     Decisão da equipe (Fase 8, opção C): o termo do meio (vw) é mais
-     inclinado que o da especificação, para o título já chegar ao tamanho
-     máximo em telas de 640 px. Por quê: com zoom de 200%, uma tela de
-     1280 px "vira" 640 px. Com 8vw, o H1 crescia só 1,14× e falhava a
-     WCAG 1.4.4 (texto ampliável até 200%). Com 14vw, ele dobra. O mínimo
-     e o máximo continuam os da 18.4. */
+  /* Decisão da equipe (Fase 8, opção C): 14vw em vez de 8vw, para o título dobrar com
+     zoom de 200% (WCAG 1.4.4); com 8vw ele crescia só 1,14×. */
   --text-h1: clamp(2.6rem, 14vw, 5.6rem);
   --text-h1--line-height: 1;
   /* H1 da abertura do Início: mesma regra (3,6rem ÷ 640 px ≈ 9vw) */
   --text-h1-abertura: clamp(2.1rem, 9vw, 3.6rem);
   --text-h1-abertura--line-height: 1;
-  /* H2 menor que o H1 (seção 19.5), com o mesmo critério da opção C:
-     2rem → 3,2rem, chegando ao máximo perto de 570 px (3,2rem ÷ 9vw),
-     então ele também dobra com zoom de 200%. O H2 menor faz
-     "Deslocamentos" caber a 320 px. */
+  /* H2: mesmo critério, chegando ao máximo perto de 570 px; dobra com zoom de 200% e
+     faz "Deslocamentos" caber a 320 px. */
   --text-h2: clamp(2rem, 9vw, 3.2rem);
   --text-h2--line-height: 1;
-  /* H2 em espaço estreito (título do diálogo): o menor tamanho do H2 */
   --text-h2-compacto: 2rem;
   --text-h2-compacto--line-height: 1;
   --text-h3: 1.25rem;
@@ -272,88 +174,59 @@
   --text-h4--line-height: 1.4;
   --text-corpo: 1.125rem;
   --text-corpo--line-height: 1.55;
-  --text-auxiliar: 1rem; /* nunca menor que isso */
+  --text-auxiliar: 1rem; /* Regra: texto nunca menor que 16 px */
   --text-auxiliar--line-height: 1.5;
   --text-numero: 1.875rem; /* números do resumo, usar com tabular-nums */
   --text-numero--line-height: 1.2;
-  --text-logo: 1.375rem; /* "Pulse" no cabeçalho: 22 px (seção 9.1) */
+  --text-logo: 1.375rem;
   --text-logo--line-height: 1.2;
 
-  /* Cantos — seção 18.5 (botões e barra em pílula usam rounded-full) */
-  --radius-cartao: 1.125rem; /* 18 px: cartões, fotos, mensagens */
-  --radius-campo: 0.75rem; /* 12 px: campos, opções, etiquetas (seção 8.3) */
-  --radius-barra: 1rem; /* 16 px: diálogo (a barra vira pílula na 8.3) */
-  --radius-polaroide: 0.375rem; /* 6 px */
+  --radius-cartao: 1.125rem;
+  --radius-campo: 0.75rem;
+  --radius-barra: 1rem;
+  --radius-polaroide: 0.375rem;
 
-  /* Sombras — seção 8.3 */
   --shadow-cartao: var(--sombra-cartao);
   --shadow-barra: var(--sombra-barra);
 
-  /* Larguras máximas — seções 5 e 12 */
-  --container-texto: 40rem; /* coluna de texto (max-w-texto) */
-  --container-pagina: 76rem; /* área da página na Fase 8 (max-w-pagina): cabeçalho, rodapé, aberturas */
-  /* No computador, Início e Solução usam uma grade de 59rem (texto 40rem +
-     espaço 3rem + "Nesta página" 16rem) — ver PaginaComIndice. A Equipe
-     ocupa a grade inteira, dentro do limite de ~64rem da seção 12. */
+  --container-texto: 40rem;
+  --container-pagina: 76rem;
 
-  /* Pontos de quebra: md = 48rem (768 px) e lg = 64rem (1024 px) já são
-     os padrões do Tailwind v4. Espaçamento: a unidade padrão é 0.25rem
-     (4 px), então p-2 = 8 px, p-4 = 16 px, gap-6 = 24 px. Usar sempre
-     múltiplos de 2 (8 px) e o 1 (4 px) só em ajustes internos. */
+  /* Regra: espaçamentos em múltiplos de 8 px (p-2 = 8 px); o 1 (4 px) só em ajustes
+     internos. */
 }
 
-/* Variante "pouca-altura:" para usar nas classes (ex.: pouca-altura:static) */
 @custom-variant pouca-altura (@media (max-height: 30rem));
 
-/* Fase 8 — variantes das telas em que um efeito pode ligar:
-   - faixa-fixa: o "Nesta página" gruda embaixo do cabeçalho
-     (computador, ≥ 1024 px de largura e ≥ 700 px de altura; decisão 1);
-   - abertura-larga: os 6 links da abertura ficam 3 de cada lado da
-     pulseira, com as linhas (≥ 1000 px, seção 18.6). */
 @custom-variant faixa-fixa (@media (min-width: 64rem) and (min-height: 43.75rem));
-/* Fase 9 — seções fixas (19.6): só no computador, a partir de 64rem de
-   largura e 600 px de altura. Com zoom alto, a largura "vira" menos de
-   64rem e a seção volta a ser uma lista comum. Uso junto com
-   efeitos-ligados: (com os efeitos desligados, nada fica fixo). */
+/* Com zoom alto, a largura "vira" menos de 64rem e a seção volta a ser uma lista
+   comum. Usar junto com efeitos-ligados:. */
 @custom-variant secao-fixa (@media (min-width: 64rem) and (min-height: 37.5rem));
 @custom-variant abertura-larga (@media (min-width: 62.5rem));
 
-/* Fase 9 — variantes do interruptor "Efeitos" (seção 19.2), no lugar de
-   motion-safe: e motion-reduce: do Tailwind (que seguiam só o aparelho):
-   - efeitos-ligados: vale só com data-efeitos="ligados" no <html>;
-   - efeitos-desligados: vale com "desligados" e também sem o atributo
-     (sem JavaScript), para nada se mover nesse caso.
-   Exemplo: class="efeitos-ligados:hover:-translate-y-0.5" */
+/* efeitos-desligados: vale também sem o atributo (sem JavaScript), para nada se
+   mover nesse caso. */
 @custom-variant efeitos-ligados (&:where([data-efeitos="ligados"], [data-efeitos="ligados"] *));
 @custom-variant efeitos-desligados (&:where(:root:not([data-efeitos="ligados"]), :root:not([data-efeitos="ligados"]) *));
 
-/* ---------------------------------------------------------------------
-   4. BASE
-   --------------------------------------------------------------------- */
 @layer base {
   html {
-    /* Ao pular para uma âncora, o título não fica escondido atrás do
-       cabeçalho fixo nem da barra flutuante (WCAG 2.4.11). Fase 8: desconta
-       também a faixa fixa do "Nesta página" (--altura-indice, medida pelo
-       IndiceNestaPagina; vale 0 quando a faixa não gruda). */
+    /* Regra: ao pular para uma âncora, o título não fica atrás do cabeçalho, do índice
+       fixo nem da barra (WCAG 2.4.11). */
     scroll-padding-top: calc(var(--altura-cabecalho) + var(--altura-indice, 0px) + 1rem);
     scroll-padding-bottom: var(--espaco-fim);
   }
 
   body {
-    /* O espaço extra do fim da página (--espaco-fim, do tamanho da barra
-       flutuante) fica DENTRO do rodapé (Fase 8), para o fundo escuro dele
-       ir até o fim da tela. */
+    /* O --espaco-fim fica dentro do rodapé, para o fundo escuro ir até o fim da tela. */
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
     font-family: var(--fonte-base);
-    font-size: 1.125rem; /* texto corrido: 18 px */
-    line-height: 1.55; /* seção 18.4 */
+    font-size: 1.125rem;
+    line-height: 1.55;
     font-weight: 400;
-    /* Com texto muito ampliado, uma palavra longa ("Desenvolvimento")
-       pode não caber sozinha na linha. Só nesse caso ela é quebrada, em
-       vez de criar rolagem lateral (WCAG 1.4.4 e 1.4.10). Em tamanho
-       normal, nada muda. */
+    /* Só com texto muito ampliado uma palavra longa é quebrada, em vez de criar rolagem
+       lateral (WCAG 1.4.4 e 1.4.10). */
     overflow-wrap: anywhere;
   }
 
@@ -365,11 +238,8 @@
     text-wrap: balance;
   }
 
-  /* H1 e H2 em Anton (seção 18.4). As maiúsculas vêm SÓ do CSS: no
-     código o texto fica normal ("Os sinais"), para o leitor de tela ler
-     a palavra, e não soletrar "O-S S-I-N-A-I-S". A Anton só tem o peso
-     400, então o negrito é desligado (senão o navegador "engorda" a
-     letra artificialmente). */
+  /* Maiúsculas só pelo CSS: o leitor de tela lê a palavra, em vez de soletrar. A
+     Anton só tem o peso 400, então o negrito é desligado. */
   h1,
   h2 {
     font-family: var(--fonte-titulo);
@@ -377,17 +247,8 @@
     text-transform: uppercase;
     letter-spacing: 0.01em;
     color: var(--cor-marca);
-    /* Títulos sem quebrar no meio da palavra (seção 19.5): sem hífen
-       automático e sem a quebra "em qualquer lugar" do corpo. A linha
-       quebra entre palavras.
-       Por que "break-word" e não "normal" (como escrito na 19.5): a 19.5
-       também pede que a palavra possa quebrar "só se não couber". Com
-       "normal", ela nunca quebra: com o texto ampliado a 200% a 320 px,
-       "Deslocamentos" e outros títulos passavam da tela (rolagem lateral
-       de 239 px no Diário, WCAG 1.4.10). "break-word" quebra a palavra
-       SÓ quando ela não cabe sozinha na linha; diferente do "anywhere"
-       do corpo, ele não deixa a palavra encolher para caber ao lado de
-       outra, que era o que cortava os títulos no meio. */
+    /* "break-word", e não "normal" (19.5): com "normal", a 200% e 320 px os títulos
+       passavam da tela (WCAG 1.4.10); diferente de "anywhere", não corta no meio. */
     hyphens: manual;
     overflow-wrap: break-word;
   }
@@ -412,9 +273,7 @@
     line-height: 1.4;
   }
 
-  /* Links sempre sublinhados (obrigatório no escuro, adotado no claro
-     por consistência — seção 8.1). Cor: a da marca (laranja escuro no
-     claro, laranja no escuro — seção 19.3). */
+  /* Regra: links sempre sublinhados (8.1). */
   a {
     color: var(--cor-marca);
     text-decoration-line: underline;
@@ -426,18 +285,15 @@
     text-decoration-thickness: 0.125rem;
   }
 
-  /* Contorno de foco: 3 px, afastado 2 px, só para quem navega por
-     teclado (:focus-visible). Cor da marca (seção 19.3): 4,8:1 no branco
-     e 5,1:1 no fundo escuro (o mínimo para o foco é 3:1). */
+  /* Regra: contorno de 3 px, só para o teclado (:focus-visible); 4,8:1 e 5,1:1, acima
+     do mínimo de 3:1. */
   :focus-visible {
     outline: 3px solid var(--cor-marca);
     outline-offset: 2px;
   }
 
-  /* O campo de data tem partes internas que recebem o foco uma de cada
-     vez (dia, mês, ano e, no Chrome, o ícone de calendário). No ícone, o
-     campo deixa de ser :focus e ficaria sem contorno. :focus-within vale
-     para todas as partes, então o campo inteiro mantém o contorno. */
+  /* No ícone de calendário, o campo deixa de ser :focus; o :focus-within mantém o
+     contorno em todas as partes. */
   input[type="date"]:focus-within {
     outline: 3px solid var(--cor-marca);
     outline-offset: 2px;
@@ -449,15 +305,12 @@
     outline: none;
   }
 
-  /* O <main> recebe foco pelo "Pular para o conteúdo" só para o leitor de
-     tela e o Tab continuarem dali. Não é um elemento clicável, então não
+  /* O <main> recebe foco só pelo "Pular para o conteúdo"; não é clicável, então não
      ganha contorno. */
   #conteudo:focus {
     outline: none;
   }
 
-  /* Botões e campos herdam a fonte do site (o padrão do navegador
-     usaria outra fonte). */
   button,
   input,
   textarea,
@@ -472,44 +325,29 @@
   }
 }
 
-/* Rolagem suave do navegador só com os efeitos ligados (seção 19.2) */
+/* Regra: rolagem suave do navegador só com os efeitos ligados (19.2) */
 html[data-efeitos="ligados"] {
   scroll-behavior: smooth;
 }
 
-/* Quando o Lenis está ativo (classe .lenis no <html>), a suavidade é
-   dele. Se o navegador também suavizasse, cada passo do Lenis viraria
-   uma rolagem suave por cima da outra, e a página "patinaria".
-   O scroll-behavior acima continua valendo se o Lenis não carregar. */
+/* Com o Lenis ativo, a suavidade é dele: se o navegador também suavizasse, a página
+   "patinaria". */
 html.lenis {
   scroll-behavior: auto;
 }
 
-/* ---------------------------------------------------------------------
-   5. UTILITÁRIOS PRÓPRIOS
-   --------------------------------------------------------------------- */
-
-/* Margem lateral: 16 px ou a área de segurança do aparelho (o que for
-   maior). Uso: class="margem-lateral" */
 @utility margem-lateral {
   padding-left: max(1rem, env(safe-area-inset-left));
   padding-right: max(1rem, env(safe-area-inset-right));
 }
 
-/* Transição curta só de cor de fundo (seção 8.3). Uso: class="transicao-fundo" */
 @utility transicao-fundo {
   transition-property: background-color, color;
   transition-duration: var(--duracao-transicao);
 }
 
-/* Textura de piso tátil com relevo (seções 18.5 e 19.5): uma grade de
-   domos de 30 px, como o piso de alerta das calçadas. São três
-   radial-gradient, do de cima para o de baixo: o brilho pequeno no alto
-   do domo (--cor-ponto-brilho), o domo (--cor-ponto) e uma sombra um
-   pouco deslocada para baixo e para a direita (--cor-ponto-sombra). A
-   luz "vem de cima", e o domo parece saltado.
-   Só vai no fundo de aberturas e cabeças de página, nunca atrás de texto
-   longo. No Diário, não é usada. Uso: class="textura-piso" */
+/* Regra: só no fundo de aberturas e cabeças de página, nunca atrás de texto longo;
+   no Diário, não é usada. */
 @utility textura-piso {
   background-color: var(--cor-fundo);
   background-image:
@@ -519,12 +357,8 @@ html.lenis {
   background-size: 30px 30px;
 }
 
-/* Rótulo mono acima dos títulos (eyebrow), seção 18.4: "TEMA",
-   "O PROBLEMA", "LINGUAGEM DA PULSE". É a única exceção à regra dos
-   16 px, por isso o texto é curto e nunca carrega sozinho uma
-   informação (o título logo abaixo diz o mesmo ou mais). As maiúsculas
-   vêm só do CSS. A cor é escolhida por quem usa (ex.: text-destaque),
-   para servir também no rodapé. Uso: class="rotulo-mono text-destaque" */
+/* Única exceção à regra dos 16 px: por isso o texto é curto e nunca carrega sozinho
+   uma informação (18.4). */
 @utility rotulo-mono {
   font-family: var(--fonte-mono);
   font-size: 0.8rem;
@@ -534,10 +368,6 @@ html.lenis {
   text-transform: uppercase;
 }
 
-/* Palavra gigante de fundo (seção 18.5), usada pelo componente
-   PalavraFundo. É só decoração: fica atrás do objeto principal, com cor
-   bem fraca, não recebe clique nem seleção e é escondida do leitor de
-   tela (aria-hidden no componente). */
 @utility palavra-fundo {
   font-family: var(--fonte-titulo);
   font-weight: 400;
@@ -549,25 +379,13 @@ html.lenis {
   user-select: none;
 }
 
-/* ---------------------------------------------------------------------
-   5b. COMPONENTES COM CSS PRÓPRIO (Fase 8)
-   --------------------------------------------------------------------- */
-
-/* --d: raio dos domos nas máscaras de "piso tátil" (cortina, capa e
-   fotos de "Os sinais"). Registrada como medida (<length>) para o
-   navegador conseguir fazer a transição dela em CSS. */
+/* --d registrada como <length>, para o navegador conseguir fazer a transição dela. */
 @property --d {
   syntax: "<length>";
   inherits: false;
   initial-value: 0px;
 }
 @layer components {
-  /* Cortina da transição entre páginas (seções 18.9 e 19.6), usada pelo
-     TransicaoPagina. É um <canvas> em tela cheia onde os domos de
-     --cor-cortina entram numa varredura diagonal, como pixels (o desenho
-     fica em lib/cortinaDomos.js). Não recebe clique (pointer-events:
-     none) e fica escondida do leitor de tela (aria-hidden no
-     componente). Só aparece com data-ativa. */
   .cortina-piso {
     position: fixed;
     inset: 0;
@@ -582,17 +400,8 @@ html.lenis {
     display: block;
   }
 
-  /* Granulado (seções 19.1 e 19.6; decisão 1 da equipe na 9.0): ruído
-     feito com um filtro SVG (feTurbulence), numa camada que não recebe
-     clique. Fica ATRÁS do conteúdo: só no fundo da página (.grao-pagina,
-     fixo, dentro do <main>) e no fundo das bandas (Secao). Cartões,
-     botões e campos o cobrem. A cor do grão segue o tema (--grao-imagem):
-     branco no claro e preto no escuro, para o contraste do texto nunca
-     cair (registro, subfases 9.2 e 9.4).
-     A camada de dentro (::before) é 12% maior que a de fora e troca de
-     posição em 6 passos por segundo (só transform, sem repintar). Com os
-     efeitos desligados, fica parada (regra do fim deste arquivo); no
-     alto contraste do Windows, some. */
+  /* Regra: o grão fica atrás do conteúdo, para o contraste do texto nunca cair (9.2 e
+     9.4). A camada interna é 12% maior e só anima transform, sem repintar. */
   .grao {
     overflow: hidden;
     pointer-events: none;
@@ -633,11 +442,6 @@ html.lenis {
     }
   }
 
-  /* Preloader (seção 19.6): antes da capa, na primeira visita, só com os
-     efeitos ligados. Fundo #1A1A1D, contagem de 0 a 100 em Anton laranja
-     (5,1:1) e "Pulse · carregando" em mono (#C9C9CF, 10,5:1). Fica por
-     cima da capa (que já está montada por baixo). Decorativo
-     (aria-hidden no componente). */
   .preloader {
     position: fixed;
     inset: 0;
@@ -648,13 +452,6 @@ html.lenis {
     color: #ffffff;
   }
 
-  /* Faixa de texto (seção 19.6): "Pulse · um guia no pulso" em Anton,
-     andando sem parar entre a abertura e o Tema. Fundo laranja da marca,
-     letras na cor do fundo da página (4,8:1 no claro; 5,1:1 no escuro).
-     Duas cópias do texto lado a lado: quando a primeira sai inteira, o
-     trilho volta para o começo sem aparecer o "pulo". Decorativa
-     (aria-hidden no componente). Sem JavaScript ou com os efeitos
-     desligados, fica parada. */
   .faixa-texto {
     overflow: hidden;
     padding-block: 0.625rem;
@@ -676,11 +473,6 @@ html.lenis {
     padding-right: 1.2em;
   }
 
-  /* Frase que acende (seção 19.7). Sem a marca data-frase-ligada (sem
-     JavaScript ou com os efeitos desligados), a frase aparece toda acesa,
-     com "adivinhar." em --cor-destaque. Com a marca, as palavras ainda
-     não alcançadas ficam em --cor-apagada (texto grande: 5,0:1 no claro e
-     6,2:1 no escuro). A troca de cor acompanha a rolagem. */
   .frase-acende {
     color: var(--cor-texto);
   }
@@ -702,20 +494,13 @@ html.lenis {
     color: var(--cor-destaque);
   }
 
-  /* Moldura das fotos (componente FotoFiltro): só recorta os cantos.
-     Sem filtro, sem parallax e sem zoom: a foto aparece normal. */
   .foto-filtro {
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-cartao);
   }
 
-  /* Equipe num varal (seção 19.10), componente CartaoIntegrante.
-     Tudo aqui é decoração (pseudo-elementos não são lidos).
-     - Fio: cada item desenha o seu trecho, um pouco mais largo que ele
-       (10 px de cada lado), para os trechos vizinhos se emendarem. Só a
-       borda de baixo aparece, com cantos em elipse: uma leve curva para
-       baixo, mais funda no meio, onde fica o prendedor. */
+  /* Cada trecho do fio é 10 px mais largo de cada lado, para os vizinhos se emendarem. */
   .varal-trecho::before {
     content: "";
     position: absolute;
@@ -728,7 +513,6 @@ html.lenis {
     pointer-events: none;
   }
 
-  /* Prendedor laranja no alto do polaroide (por cima do fio) */
   .polaroide::before {
     content: "";
     position: absolute;
@@ -742,10 +526,7 @@ html.lenis {
     box-shadow: inset 0 0 0 2px rgba(26, 26, 29, 0.25);
   }
 
-  /* Traço laranja no nome, que se desenha da esquerda para a direita
-     (background-size: exceção aprovada no padrão de movimento). Grafite
-     sobre o laranja: 4,55:1. Aparece com o mouse em cima ou, no celular,
-     quando a foto ganha cor ao entrar na tela (data-colorida). */
+  /* background-size: exceção aprovada no padrão de movimento. */
   .polaroide-nome {
     background: linear-gradient(var(--cor-acao), var(--cor-acao)) 0 100% / 0 40% no-repeat;
   }
@@ -764,8 +545,6 @@ html.lenis {
     background-size: 100% 40%;
   }
 
-  /* Um trajeto com a Pulse (seção 19.7), componente TrajetoPulse. Mapa
-     decorativo (aria-hidden) e lista das paradas. */
   .trajeto-mapa .quadra {
     fill: color-mix(in srgb, var(--cor-borda) 16%, transparent);
   }
@@ -848,8 +627,6 @@ html.lenis {
     color: var(--cor-texto-2);
   }
 
-  /* Com a rota andando (data-trajeto-ligado): a parada atual em destaque
-     e as já alcançadas com o número em laranja */
   [data-trajeto-ligado] .trajeto-paradas > li[data-atual] {
     border: 2px solid var(--cor-acao);
     box-shadow: var(--sombra-barra);
@@ -861,8 +638,6 @@ html.lenis {
     color: var(--cor-sobre-acao);
   }
 
-  /* Modo fixo (useTrajeto): o palco fica preso abaixo do cabeçalho e do
-     "Nesta página" enquanto o trilho, mais alto, rola por trás */
   [data-trajeto-fixo] .trajeto-trilho {
     height: 340svh;
   }
@@ -874,14 +649,8 @@ html.lenis {
     align-content: center;
   }
 
-  /* Rodapé revelado (seção 19.6): com os efeitos ligados e o rodapé mais
-     baixo que 80% da tela, o hook useRodapeRevelado marca o <html> com
-     data-rodape-revela. O <main> vira uma "folha" opaca por cima, e o
-     rodapé fica preso embaixo (sticky): ao chegar ao fim, a folha sobe e
-     revela o rodapé por baixo. Sem a marca, o rodapé é normal.
-     O <main> ganha uma camada própria (z-index: 1); por isso a capa e o
-     preloader são desenhados direto no <body> (portal), para continuarem
-     por cima do cabeçalho. */
+  /* O <main> ganha camada própria (z-index: 1): por isso a capa e o preloader vão
+     direto no <body> (portal), para ficarem por cima do cabeçalho. */
   html[data-rodape-revela] #conteudo {
     position: relative;
     z-index: 1;
@@ -897,28 +666,18 @@ html.lenis {
     margin-top: 0;
   }
 
-  /* Textura de piso tátil que some nas bordas (decisão da equipe, opção
-     B): os domos aparecem só no meio da área (atrás da pulseira) e se
-     apagam em direção às bordas, onde fica o texto. Assim nenhum texto
-     fica sobre os domos (seção 18.2, item 1). Uso: junto com
-     .textura-piso, numa camada decorativa (aria-hidden). */
+  /* Regra: nenhum texto fica sobre os domos (18.2, item 1; opção B da equipe). */
   .textura-centro {
     -webkit-mask-image: radial-gradient(closest-side, #000 45%, transparent 100%);
     mask-image: radial-gradient(closest-side, #000 45%, transparent 100%);
   }
 
-  /* Textura das cabeças de página (opção B): uma faixa à direita, que se
-     apaga em direção ao texto. Só no computador (no celular, o texto
-     ocupa a largura toda e não sobra área sem texto). */
+  /* Só no computador: no celular, o texto ocupa a largura toda e não sobra área sem texto. */
   .textura-lado {
     -webkit-mask-image: linear-gradient(to left, #000 15%, transparent 75%);
     mask-image: linear-gradient(to left, #000 15%, transparent 75%);
   }
 
-  /* Divisor de piso tátil direcional (seção 19.5), no topo das seções
-     "banda": barras de 6 px de altura, como o piso direcional das
-     calçadas (o que indica o caminho a seguir), em cinza bem suave e
-     sumindo nas pontas. Decorativo (aria-hidden no componente Secao). */
   .divisor-piso {
     height: 6px;
     pointer-events: none;
@@ -931,13 +690,7 @@ html.lenis {
     mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
   }
 
-  /* "Os sinais" em rolagem fixa (seção 18.8). Só valem com a classe
-     .sinais-fixo, que o componente põe quando o modo fixo pode ligar
-     (nunca com os efeitos desligados).
-     - Foto: troca em "piso tátil", uma peneira de domos de 26 px cujo
-       raio (--d) cresce de 0 a 20 px em 0,7 s. O --d é registrado com
-       @property (abaixo) para o navegador conseguir animá-lo.
-     - Texto: esmaece e sobe 12 px. */
+  /* Só com .sinais-fixo, que nunca existe com os efeitos desligados. */
   .sinais-fixo .foto-sinal {
     --d: 0px;
     -webkit-mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
@@ -965,8 +718,7 @@ html.lenis {
     transition-delay: 0.15s;
   }
 
-  /* Capa de introdução (seção 18.6). Fundo e texto fixos (a capa é
-     escura nos dois temas): #FFFFFF sobre #1A1A1D = 17,4:1. */
+  /* Cores fixas: a capa é escura nos dois temas. */
   .capa-intro {
     --d: 22px;
     position: fixed;
@@ -977,8 +729,6 @@ html.lenis {
     color: #ffffff;
   }
 
-  /* Saída em piso tátil: a capa vira uma "peneira" de domos que encolhem
-     até sumir (raio de 22 px para 0, em células de 30 px). */
   .capa-intro[data-saindo] {
     -webkit-mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
     mask-image: radial-gradient(circle, #000 var(--d), transparent calc(var(--d) + 0.5px));
@@ -986,10 +736,6 @@ html.lenis {
     mask-size: 30px 30px;
   }
 
-  /* O logo "pulsa" uma vez (até 1 s) e some; depois o conteúdo aparece.
-     Com os efeitos desligados não há capa (19.1); mesmo assim, o logo
-     tem a classe efeitos-desligados:hidden no componente, e as animações
-     são desligadas no fim deste arquivo. */
   .capa-logo {
     animation: capa-logo-some 0.3s ease 0.7s both;
   }
@@ -1027,11 +773,7 @@ html.lenis {
     }
   }
 
-  /* Camada de espera da capa (decisão 6 da equipe): o script no <head>
-     marca o <html> com data-capa-pendente na primeira visita da sessão,
-     e esta camada sólida cobre a página até a capa montar (ou por no
-     máximo 2 s). É um pseudo-elemento: não tem texto, não recebe foco e
-     o leitor de tela não o encontra. Sem JavaScript, nada disso existe. */
+  /* Regra: cobre a página até a capa montar, por no máximo 2 s (decisão 6 da equipe). */
   html[data-capa-pendente] body::after {
     content: "";
     position: fixed;
@@ -1040,15 +782,12 @@ html.lenis {
     background-color: #1a1a1d;
   }
 
-  /* Rodapé: foco laranja sobre o fundo escuro (4,55:1 no claro; 5,4:1 no escuro). */
   .rodape :focus-visible {
     outline-color: var(--cor-rodape-destaque);
   }
 
-  /* Faixa contínua dos ODS (seção 18.10). Duas cópias iguais da lista,
-     lado a lado; a fileira anda para a esquerda até a metade (-50%) e
-     recomeça. Como a segunda cópia está exatamente onde a primeira
-     começou, o recomeço não aparece: parece uma faixa sem fim. */
+  /* Duas cópias: a fileira anda até -50% e recomeça; a segunda cópia está onde a
+     primeira começou, e o recomeço não aparece. */
   .faixa-ods {
     overflow: hidden;
     padding-block: 0.25rem;
@@ -1066,9 +805,8 @@ html.lenis {
     animation-play-state: paused;
   }
 
-  /* Com o foco dentro, a faixa para E volta ao começo: assim o botão
-     focado nunca fica fora da área visível (seção 18.2, item 5). O
-     navegador ainda rola a faixa por dentro até o botão focado. */
+  /* Com o foco dentro, a faixa para e volta ao começo, para o botão focado nunca
+     ficar fora da área visível (18.2, item 5). */
   .faixa-ods:focus-within .faixa-ods-trilho {
     animation: none;
   }
@@ -1078,7 +816,7 @@ html.lenis {
     align-items: center;
     gap: 1.5rem;
     margin: 0;
-    padding: 0 1.5rem 0 0; /* o mesmo espaço entre as cópias e entre os itens */
+    padding: 0 1.5rem 0 0;
     list-style: none;
   }
 
@@ -1092,9 +830,6 @@ html.lenis {
     }
   }
 
-  /* Com os efeitos desligados (e sem JavaScript): nada anda. Os 3 botões
-     ficam parados, um embaixo do outro, sem a cópia e sem o botão de
-     pausa (18.10 e 19.2). */
   :root:not([data-efeitos="ligados"]) .faixa-ods-trilho {
     display: block;
     width: auto;
@@ -1108,22 +843,15 @@ html.lenis {
     padding: 0;
   }
 
-  /* (O botão de pausa some pela classe efeitos-desligados:hidden, no
-     próprio componente.) */
+  /* O botão de pausa some pela classe efeitos-desligados:hidden, no componente. */
   :root:not([data-efeitos="ligados"]) .faixa-ods-lista[aria-hidden="true"] {
     display: none;
   }
 }
 
-/* ---------------------------------------------------------------------
-   6. ALTO CONTRASTE DO WINDOWS (forced-colors)
-   Nesse modo o Windows troca todas as cores e remove as sombras. Por
-   isso as áreas são separadas por BORDAS (os componentes sempre têm
-   borda, mesmo que transparente: no alto contraste ela fica visível).
-   --------------------------------------------------------------------- */
+/* Alto contraste do Windows: as cores são trocadas e as sombras somem; por isso
+   os componentes sempre têm borda, mesmo transparente. */
 @media (forced-colors: active) {
-  /* Item ativo da barra, seção atual do "Nesta página" e sinal atual
-     continuam identificáveis */
   [aria-current="page"],
   [aria-current="true"],
   [aria-current="step"] {
@@ -1137,9 +865,8 @@ html.lenis {
     outline-color: Highlight;
   }
 
-  /* Decorações da Fase 8: no alto contraste, a textura viraria ruído e a
-     palavra de fundo viraria um texto gigante na cor do texto, por cima
-     de tudo. As duas saem; o conteúdo continua igual. */
+  /* No alto contraste, a textura viraria ruído e a palavra de fundo, texto gigante
+     por cima de tudo: as duas saem. */
   .textura-piso {
     background-image: none;
   }
@@ -1154,14 +881,8 @@ html.lenis {
      do texto do sistema; não é preciso regra extra para elas. */
 }
 
-/* ---------------------------------------------------------------------
-   7. EFEITOS DESLIGADOS (interruptor "Efeitos", seção 19.2)
-   Sem animações nem transições de CSS, e sem rolagem suave. Vale também
-   sem JavaScript (sem o atributo). As barras que somem ao rolar ficam
-   sempre visíveis (isso é tratado no hook useDirecaoRolagem). As
-   animações feitas com o Motion seguem o MotionConfig do
-   ProvedorMovimento (só troca de opacidade).
-   --------------------------------------------------------------------- */
+/* Efeitos desligados: vale também sem JavaScript (sem o atributo). O Motion segue
+   o MotionConfig do ProvedorMovimento. */
 :root:not([data-efeitos="ligados"]),
 :root:not([data-efeitos="ligados"]) *,
 :root:not([data-efeitos="ligados"]) *::before,

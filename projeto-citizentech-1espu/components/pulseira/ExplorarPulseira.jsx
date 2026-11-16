@@ -7,28 +7,7 @@ import IconeAlternado from "@/components/ui/IconeAlternado";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useGiroPulseira } from "@/hooks/useGiroPulseira";
 
-/*
-  ExplorarPulseira — a pulseira 3D no modo "explorar" (seções 19.12,
-  19.15 e 19.16), em "A pulseira", na Solução. Textos do protótipo
-  docs/prototipos/pulse-pulseira-3d.html.
-
-  Ordem no HTML (é a do leitor de tela): palco "Pulseira Pulse em 3D" →
-  grupo "Girar a pulseira" → "Partes da pulseira" (8 botões) → "Os sinais
-  no pulso" (5 botões).
-
-  - Palco: arrastar gira; com o foco nele, as setas giram e inclinam.
-  - "Girar a pulseira": "Girar para a esquerda", "Girar para a direita",
-    "Ver por dentro" (meia volta), "Vista da frente" e "Girar sozinha"
-    (aria-pressed; texto fixo, decisão da equipe na 9.5: só o ícone troca).
-  - Partes e sinais: botões com aria-pressed (um de cada vez; tocar de
-    novo desmarca). A pulseira gira até a parte e a acende; a explicação
-    aparece numa área aria-live="polite", que nunca sai da tela.
-  - Com os efeitos desligados: sem giro automático (o botão "Girar
-    sozinha" some, porque nada se move sozinho); os outros botões giram a
-    pulseira sem animação, e o sinal escolhido aparece aceso e parado.
-  - Sem WebGL ou sem JavaScript: a descrição em texto no lugar do palco.
-    Os botões das partes e dos sinais continuam e explicam cada um.
-*/
+// Regra: "Girar sozinha" tem texto fixo e aria-pressed; só o ícone troca (decisão da 9.5).
 
 const PARTES = [
   { id: "destino", nome: "Botão do destino", texto: "Aperte e diga para onde quer ir. É o maior, côncavo e com dois anéis em relevo, para ser achado pelo tato. O aro laranja ajuda quem tem baixa visão." },
@@ -52,8 +31,6 @@ const SINAIS = [
 const EXPLICACAO_PARTE = { nome: "Escolha uma parte", texto: "A pulseira gira até ela e a parte acende." };
 const EXPLICACAO_SINAL = { nome: "Escolha um sinal", texto: "Veja onde a pulseira vibra ou aperta." };
 
-// Botões da Fase 9 (protótipo): pílula, 48 px, contorno de 2 px; marcado
-// = laranja com texto grafite (4,55:1)
 const ESTILO_BOTAO =
   "inline-flex min-h-12 items-center gap-2 rounded-full border-2 px-4 text-center font-bold hover:border-marca aria-pressed:border-acao aria-pressed:bg-acao aria-pressed:text-sobre-acao";
 const BOTAO_SOLTO = "border-borda bg-superficie text-texto";
@@ -83,7 +60,6 @@ export default function ExplorarPulseira() {
   return (
     <div className="grid gap-6 min-[62.5rem]:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] min-[62.5rem]:items-start">
       <div className="grid gap-3">
-        {/* Palco: textura de piso tátil com relevo atrás da pulseira */}
         <div className="textura-piso relative aspect-square max-h-[78svh] w-full overflow-hidden rounded-[1.75rem]">
           <Pulseira3D
             modo="explorar"
@@ -107,17 +83,14 @@ export default function ExplorarPulseira() {
         {cenaPronta && (
           <div role="group" aria-label="Girar a pulseira" className="flex flex-wrap gap-2">
             <button type="button" onClick={() => giro.girar(-45)} className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}>
-              {/* ICONE-ArrowCounterClockwise-AQUI */}
               <EspacoIcone nome="ArrowCounterClockwise" />
               Girar para a esquerda
             </button>
             <button type="button" onClick={() => giro.girar(45)} className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}>
-              {/* ICONE-ArrowClockwise-AQUI */}
               <EspacoIcone nome="ArrowClockwise" />
               Girar para a direita
             </button>
             <button type="button" onClick={giro.verPorDentro} className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}>
-              {/* ICONE-Eye-AQUI */}
               <EspacoIcone nome="Eye" />
               Ver por dentro
             </button>
@@ -133,10 +106,8 @@ export default function ExplorarPulseira() {
               >
                 <IconeAlternado chave={giro.girando ? "pausar" : "girar"}>
                   {giro.girando ? (
-                    // ICONE-Pause-AQUI
                     <EspacoIcone nome="Pause" />
                   ) : (
-                    // ICONE-Play-AQUI
                     <EspacoIcone nome="Play" />
                   )}
                 </IconeAlternado>

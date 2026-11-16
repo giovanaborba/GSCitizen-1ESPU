@@ -4,26 +4,8 @@ import EspacoIcone from "@/components/ui/EspacoIcone";
 import IconeAlternado from "@/components/ui/IconeAlternado";
 import { useFaixaODS } from "@/hooks/useFaixaODS";
 
-/*
-  FaixaODS — os 3 Objetivos de Desenvolvimento Sustentável numa faixa que
-  anda sem parar (seção 18.10). Aparece só no rodapé da página Solução.
-
-  Para o leitor de tela e o teclado:
-  - Ordem no Tab: "Pausar" → os 3 botões de ODS → links do rodapé.
-  - Cada botão é lido com o nome do ODS e, pelo aria-describedby, com a
-    frase completa (os textos da antiga seção de ODS da 6.2).
-  - A cópia da lista, que fecha o laço da animação, tem aria-hidden e
-    botões com tabIndex={-1}: não é lida e não recebe o Tab.
-  - A área da frase, embaixo da faixa, é só visual (aria-hidden), porque
-    a frase já chega pelo aria-describedby. Ela tem altura fixa e não
-    cobre nada (WCAG 1.4.13).
-
-  Movimento:
-  - A faixa para com o mouse em cima, com o foco dentro e com o botão
-    "Pausar"/"Retomar" (WCAG 2.2.2).
-  - Com os efeitos desligados (seção 19.2): nada anda; os 3 botões ficam um embaixo do
-    outro, sem a cópia e sem o botão de pausa (CSS em globals.css).
-*/
+// Regra: a cópia que fecha o laço é aria-hidden e com tabIndex={-1}; a frase chega
+// pelo aria-describedby, e a área dela não cobre nada (WCAG 1.4.13).
 const ODS = [
   {
     numero: "10",
@@ -57,7 +39,6 @@ const idDaFrase = (numero) => `ods-frase-${numero}`;
 const CLASSES_BOTAO_ODS =
   "inline-flex min-h-16 max-w-[min(36rem,calc(100vw-2rem))] items-center gap-3 rounded-full border bg-rodape-cartao py-2 pr-5 pl-4 text-left font-bold text-rodape-texto transicao-fundo";
 
-// Conteúdo visível de um botão de ODS (o mesmo na lista e na cópia)
 function ConteudoOds({ ods }) {
   return (
     <>
@@ -101,10 +82,8 @@ export default function FaixaODS() {
         >
           <IconeAlternado chave={pausada ? "retomar" : "pausar"}>
             {pausada ? (
-              // ICONE-Play-AQUI
               <EspacoIcone nome="Play" />
             ) : (
-              // ICONE-Pause-AQUI
               <EspacoIcone nome="Pause" />
             )}
           </IconeAlternado>
@@ -135,7 +114,6 @@ export default function FaixaODS() {
               </li>
             ))}
           </ul>
-          {/* Cópia que fecha o laço da animação: não é lida e não recebe o Tab */}
           <ul className="faixa-ods-lista" aria-hidden="true">
             {ODS.map((ods) => (
               <li key={ods.numero}>
@@ -156,15 +134,12 @@ export default function FaixaODS() {
         </div>
       </div>
 
-      {/* Frases completas, para o leitor de tela (aria-describedby). Ficam
-          ocultas na tela, porque a área abaixo já as mostra. */}
       {ODS.map((ods) => (
         <p key={ods.numero} id={idDaFrase(ods.numero)} hidden>
           {ods.frase}
         </p>
       ))}
 
-      {/* Área fixa da frase: só visual (aria-hidden) */}
       <div
         aria-hidden="true"
         className="mt-4 grid min-h-[5.5rem] content-center gap-1 rounded-cartao border border-dashed border-rodape-borda px-5 py-4"

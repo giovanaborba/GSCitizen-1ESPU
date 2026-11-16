@@ -14,12 +14,6 @@ import { useRegistros } from "@/hooks/useRegistros";
 import { useTituloDaAba } from "@/hooks/useTituloDaAba";
 import { formatarData } from "@/lib/datas";
 
-/*
-  TelaRegistro — a tela /diario/[id] (seções 7.4 e 7.5).
-  Mostra o registro, leva para "Editar" e cuida da exclusão:
-  diálogo → "Excluindo…" → volta para /diario com "Registro excluído." e
-  "Desfazer" (o registro excluído vai junto na mensagem).
-*/
 export default function TelaRegistro({ id }) {
   const router = useRouter();
   const { registro, carregando, erro, naoEncontrado, recarregar, parar } = useRegistro(id);
@@ -32,8 +26,7 @@ export default function TelaRegistro({ id }) {
 
   const data = registro ? formatarData(registro.data) : "";
 
-  // Título da aba: "Registro de DD/MM/AAAA — Pulse" quando o registro chega;
-  // "Registro não encontrado" quando ele não existe (decisão da equipe).
+  // Regra: "Registro não encontrado" no título quando ele não existe (decisão da equipe).
   useTituloDaAba(
     registro ? `Registro de ${data} — Pulse` : naoEncontrado ? "Registro não encontrado" : null,
   );
@@ -79,7 +72,6 @@ export default function TelaRegistro({ id }) {
         <LinkVoltar href="/diario">Voltar ao Diário</LinkVoltar>
       </p>
 
-      {/* Enquanto carrega, o título é só "Registro"; com os dados, ganha a data */}
       <TituloPagina titulo={registro ? `Registro de ${data}` : "Registro"} />
 
       {carregando && <EstadoTela tipo="carregando" aoParar={parar} />}
@@ -88,7 +80,7 @@ export default function TelaRegistro({ id }) {
           key={tentativas}
           tipo="erro"
           aoTentarDeNovo={aoTentarDeNovo}
-          // Depois do "Parar de carregar", o foco vai para "Tentar de novo"
+          // O botão de parar some: o foco vai para "Tentar de novo", e a pessoa não se perde.
           focarAoMontar={tentativas > 0 || erro?.codigo === "interrompido"}
           interrompido={erro?.codigo === "interrompido"}
         />

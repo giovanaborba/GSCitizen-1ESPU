@@ -13,20 +13,6 @@ import { useMensagemDiario } from "@/hooks/useMensagemDiario";
 import { useRegistros } from "@/hooks/useRegistros";
 import { useResumoIndicadores } from "@/hooks/useResumoIndicadores";
 
-/*
-  TelaDiario — a tela /diario (seção 7.1).
-  Liga os hooks aos componentes de apresentação: os dados vêm do
-  useRegistros, os números do useResumoIndicadores e a mensagem
-  ("Registro salvo.", "Registro excluído." + Desfazer) do contexto
-  useMensagemDiario.
-
-  Estados (seção 11.2): carregando, erro, vazio ou com registros.
-
-  Fase 9 (seção 19.11): a mensagem pode trazer "idDestaque", o registro
-  que acabou de ser salvo ou restaurado. Ele chega na lista com o gesto
-  PULSO.
-  Sem a API, a lista mostra o erro de conexão.
-*/
 export default function TelaDiario() {
   const { registros, carregando, erro, recarregar, parar, restaurar } = useRegistros();
   const indicadores = useResumoIndicadores(registros);
@@ -40,14 +26,12 @@ export default function TelaDiario() {
     recarregar();
   }
 
-  // "Desfazer" (seção 7.5): recria o registro e anuncia "Registro restaurado."
   async function aoDesfazer() {
     if (restaurando || !mensagem?.registroExcluido) return;
     setRestaurando(true);
     try {
       const restaurado = await restaurar(mensagem.registroExcluido);
       setFalhasAoDesfazer(0);
-      // idDestaque: o cartão restaurado chega com o gesto PULSO (19.11)
       definirMensagem({ tipo: "sucesso", texto: "Registro restaurado.", idDestaque: restaurado.id });
     } catch {
       setFalhasAoDesfazer((anterior) => anterior + 1);
@@ -93,7 +77,7 @@ export default function TelaDiario() {
               mensagem.registroExcluido
                 ? {
                     texto: "Desfazer",
-                    icone: "ArrowCounterClockwise", // ICONE-ArrowCounterClockwise-AQUI
+                    icone: "ArrowCounterClockwise",
                     aoClicar: aoDesfazer,
                     ocupada: restaurando,
                   }
@@ -114,7 +98,7 @@ export default function TelaDiario() {
           key={tentativas}
           tipo="erro"
           aoTentarDeNovo={aoTentarDeNovo}
-          // Depois do "Parar de carregar", o foco vai para "Tentar de novo"
+          // O botão de parar some: o foco vai para "Tentar de novo", e a pessoa não se perde.
           focarAoMontar={tentativas > 0 || erro?.codigo === "interrompido"}
           interrompido={erro?.codigo === "interrompido"}
         />
@@ -124,7 +108,6 @@ export default function TelaDiario() {
         <>
           <ResumoIndicadores indicadores={indicadores} />
           <p className="mt-8">
-            {/* ICONE-Plus-AQUI */}
             <Botao href="/diario/novo" icone="Plus">
               Novo registro
             </Botao>

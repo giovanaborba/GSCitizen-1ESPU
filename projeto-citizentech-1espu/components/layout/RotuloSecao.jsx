@@ -2,17 +2,7 @@
 
 import { useLinhaRotulo } from "@/hooks/useLinhaRotulo";
 
-/*
-  RotuloSecao — rótulo mono das cabeças de seção (eyebrow, seção 18.5),
-  com a linha laranja antes dele (seção 19.6).
-
-  - A linha tem 24 × 3 px, em --cor-acao, e é decorativa (aria-hidden):
-    o leitor de tela lê só o texto do rótulo.
-  - Ela se desenha quando a seção chega (useLinhaRotulo). O rótulo e o
-    título não se mexem (19.6: "os títulos ficam sem efeito").
-  - "className": classes extras do parágrafo (ex.: posição na grade de
-    duas colunas).
-*/
+// Regra: só a linha se desenha; o rótulo e o título não se mexem (19.6).
 export default function RotuloSecao({ children, className = "" }) {
   const refLinha = useLinhaRotulo();
 

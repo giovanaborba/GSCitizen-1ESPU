@@ -4,15 +4,6 @@ export const metadata = {
   title: "Simulador",
 };
 
-/*
-  Simulador (/simulador) — seção 6.3.
-  O simulador está sendo feito por outro integrante da equipe. Enquanto
-  isso, a página mostra o "Espaço reservado".
-
-  Fase 8: cabeça com o rótulo mono "Experimente" e a textura de piso
-  tátil numa faixa à direita, no computador, que se apaga em direção ao
-  texto (seção 18.5 e opção B da equipe).
-*/
 export default function PaginaSimulador() {
   return (
     <div className="overflow-x-clip pb-8">

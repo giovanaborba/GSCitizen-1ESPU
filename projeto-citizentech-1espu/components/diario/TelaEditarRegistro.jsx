@@ -14,11 +14,6 @@ import { useTituloDaAba } from "@/hooks/useTituloDaAba";
 import { formatarData } from "@/lib/datas";
 import { valoresDoRegistro } from "@/lib/validacao";
 
-/*
-  TelaEditarRegistro — a tela /diario/[id]/editar (seção 7.3).
-  Busca o registro, preenche o formulário com as respostas atuais e, ao
-  salvar, volta para /diario com "Registro salvo.".
-*/
 export default function TelaEditarRegistro({ id }) {
   const router = useRouter();
   const { registro, carregando, erro, naoEncontrado, recarregar, parar } = useRegistro(id);
@@ -35,7 +30,6 @@ export default function TelaEditarRegistro({ id }) {
 
   async function aoSalvar(dados) {
     const atualizado = await atualizar(id, dados);
-    // idDestaque: na lista, o registro alterado chega com o gesto PULSO (19.11)
     definirMensagem({ tipo: "sucesso", texto: "Registro salvo.", idDestaque: atualizado.id });
     router.push("/diario");
   }
@@ -65,7 +59,7 @@ export default function TelaEditarRegistro({ id }) {
           key={tentativas}
           tipo="erro"
           aoTentarDeNovo={aoTentarDeNovo}
-          // Depois do "Parar de carregar", o foco vai para "Tentar de novo"
+          // O botão de parar some: o foco vai para "Tentar de novo", e a pessoa não se perde.
           focarAoMontar={tentativas > 0 || erro?.codigo === "interrompido"}
           interrompido={erro?.codigo === "interrompido"}
         />

@@ -1,11 +1,7 @@
 import TelaRegistro from "@/components/diario/TelaRegistro";
 
-/*
-  /diario/[id] — "Ver registro".
-  O título final ("Registro de DD/MM/AAAA — Pulse") depende da data, que
-  só chega quando a API responde no navegador. Até lá, a aba mostra
-  "Registro — Pulse", e a TelaRegistro troca o título depois.
-*/
+// A data só chega quando a API responde no navegador: até lá, a aba mostra
+// "Registro — Pulse", e a TelaRegistro troca o título depois.
 export const metadata = {
   title: "Registro",
 };

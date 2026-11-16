@@ -18,41 +18,6 @@ export const metadata = {
   title: "Início — Pulse",
 };
 
-/*
-  Início (/) — textos da seção 6.1, na ordem da seção 19.5:
-  capa (primeira visita) → abertura com a pulseira → faixa de texto →
-  "Nesta página" → Tema (banda) → frase que acende → O problema → Quem
-  vive o problema (banda) → Um trajeto com a Pulse → "Conheça a solução".
-  Responde às perguntas 02 (qual problema) e 01 (quem é o cidadão
-  beneficiado) do briefing da GS.
-
-  Rótulos mono: "CitizenTech", "O problema" (seção 19.5), "As pessoas"
-  (decisão da equipe na Fase 8) e "No caminho" (protótipo).
-
-  Fase 9:
-  - Tema e Quem vive o problema são "bandas" (19.5) e têm encaixe da
-    rolagem (19.6).
-  - Faixa de texto ("Pulse · um guia no pulso") logo depois da abertura
-    e antes do "Nesta página": "entre a abertura e o Tema" (19.5 e 19.6).
-  - Títulos novos de Tema e O problema. Os ids e os itens do "Nesta
-    página" continuam ("Tema CitizenTech", "O problema").
-  - Tema em duas colunas no computador.
-  - Texto que se constrói (gesto GUIA) em Tema, O problema e Quem vive.
-  - O problema (19.6, "Seções fixas"): no computador, com os efeitos
-    ligados, o rótulo, o título, o texto e a citação ficam fixos à
-    esquerda, e os dados, a ilustração e "O que a Pulse quer reduzir"
-    rolam à direita. A ordem no HTML continua a de leitura. Com zoom alto
-    ou com os efeitos desligados, é uma lista comum.
-  - Números que contam até o valor (o leitor de tela lê o valor real).
-  - Fotos de "Quem vive o problema" com o filtro e o parallax (19.6) e os
-    marcadores novos (19.14).
-  - "Um trajeto com a Pulse" (19.7) entra no "Nesta página" (é uma seção
-    com H2, como as outras).
-  - Subfase 9.8: o vídeo de "O problema" (com som) entra no lado que rola,
-    no lugar da ilustração de uma travessia (decisão da equipe: o
-    marcador IMAGEM-ilustração de uma travessia-AQUI saiu). O texto da
-    seção é a descrição dele (aria-describedby).
-*/
 const SECOES = [
   { id: "tema-citizentech", texto: "Tema CitizenTech" },
   { id: "o-problema", texto: "O problema" },
@@ -60,16 +25,13 @@ const SECOES = [
   { id: "um-trajeto-com-a-pulse", texto: "Um trajeto com a Pulse" },
 ];
 
-// Número grande dos cartões de dados (Anton, em --cor-destaque)
 const ESTILO_NUMERO = "block font-titulo text-[3.25rem] leading-none font-normal text-destaque uppercase";
 
 export default function PaginaInicio() {
   return (
     <>
-      {/* Capa, abertura com a pulseira 3D, H1 e resumo (seção 18.6) */}
       <AberturaPulseira />
 
-      {/* Faixa de texto entre a abertura e o Tema (seção 19.6, decorativa) */}
       <FaixaTexto />
 
       <PaginaComIndice
@@ -94,10 +56,8 @@ export default function PaginaInicio() {
           </TextoConstroi>
         </Secao>
 
-        {/* "Atravessar a rua não deveria depender de adivinhar." (19.7) */}
         <FraseAcende />
 
-        {/* O problema: seção fixa no computador (19.6) */}
         <section className="mt-20">
           {/* grid-cols-1 = minmax(0, 1fr): a coluna encolhe com a tela, em
               vez de crescer até o conteúdo mais largo (texto ampliado) */}
@@ -114,7 +74,6 @@ export default function PaginaInicio() {
                   atropelamento é diário.
                 </p>
               </TextoConstroi>
-              {/* Citação com borda laranja à esquerda (seções 18.6 e 19.3) */}
               <figure className="rounded-r-cartao border-l-4 border-acao bg-superficie p-5">
                 <blockquote>
                   <p className="text-h3 font-bold">
@@ -127,11 +86,7 @@ export default function PaginaInicio() {
               </figure>
             </div>
 
-            {/* Lado que rola. No modo fixo, começa mais abaixo e termina com
-                folga, como no protótipo. */}
             <div className="grid grid-cols-1 gap-7 efeitos-ligados:secao-fixa:pt-[24vh] efeitos-ligados:secao-fixa:pb-[12vh]">
-              {/* Cartões de dados: número grande que conta até o valor
-                  (aria-hidden) e o valor real para o leitor de tela */}
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                 <Cartao as="li">
                   <p>
@@ -166,10 +121,6 @@ export default function PaginaInicio() {
                 </Cartao>
               </ul>
 
-              {/* VIDEO-animacao-o-problema-AQUI
-                  Vídeo: public/videos/animacao-o-problema.mp4 (com som)
-                  Quadro parado: public/videos/animacao-o-problema-quadro-parado.jpg
-                  Legendas: public/videos/animacao-o-problema-legendas.vtt */}
               <VideoPulse
                 nome="animacao-o-problema"
                 comSom
@@ -198,12 +149,9 @@ export default function PaginaInicio() {
             </p>
           </TextoConstroi>
 
-          {/* No computador, o segundo cartão desce um pouco (protótipo) */}
           <ul className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <Cartao as="li" compacto className="grid grid-cols-1 content-start gap-3">
               <FotoFiltro velocidade={0.06} className="aspect-[4/3]">
-                {/* IMAGEM-pessoa cega usando o celular-AQUI
-                    alt sugerido (seção 19.14): "Pessoa cega usando o celular com leitor de tela." */}
                 <img
                   src="/imagens/pessoa-cega-celular.webp"
                   alt="Pessoa cega usando o celular com leitor de tela."
@@ -218,8 +166,6 @@ export default function PaginaInicio() {
             </Cartao>
             <Cartao as="li" compacto className="grid grid-cols-1 content-start gap-3 md:mt-16">
               <FotoFiltro velocidade={-0.06} className="aspect-[4/3]">
-                {/* IMAGEM-pessoa com baixa visão ampliando a tela-AQUI
-                    alt sugerido (seção 19.14): "Pessoa com baixa visão ampliando a tela do celular." */}
                 <img
                   src="/imagens/pessoa-baixa-visao-ampliando.webp"
                   alt="Pessoa com baixa visão ampliando a tela do celular."
@@ -235,7 +181,6 @@ export default function PaginaInicio() {
           </ul>
         </Secao>
 
-        {/* Um trajeto com a Pulse (19.7): mapa que se desenha e 5 paradas */}
         <TrajetoPulse />
       </PaginaComIndice>
     </>

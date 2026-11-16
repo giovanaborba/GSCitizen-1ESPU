@@ -3,34 +3,16 @@
 import { createContext, useContext, useState } from "react";
 import { usePathname } from "next/navigation";
 
-/*
-  useMensagemDiario — leva a mensagem de status de uma tela para outra.
-
-  Exemplo: em "Novo registro", depois de salvar, a pessoa volta para
-  /diario e lá aparece "Registro salvo.". A tela do formulário já foi
-  fechada, então a mensagem precisa ficar num lugar que sobrevive à troca
-  de página: este contexto, que fica no layout.
-
-  Regras (seções 7.5, 11.2 e 11.3):
-  - A mensagem não some sozinha: fica até a pessoa tocar em "Fechar".
-  - Cada mensagem pertence a uma página (padrão: /diario). Se a pessoa
-    for para outra página, ela é apagada, para não reaparecer depois.
-  - Depois de excluir, a mensagem guarda o registro excluído, usado pelo
-    "Desfazer".
-
-  Formato: { tipo: "sucesso", texto: "Registro excluído.", registroExcluido }
-  Fase 9 (seção 19.11): "idDestaque" (opcional) é o id do registro que
-  acabou de ser salvo ou restaurado; ele chega na lista com o gesto PULSO.
-*/
+// Fica no layout para sobreviver à troca de página. Regra: a mensagem não some
+// sozinha e é apagada ao ir para outra página (7.5, 11.2, 11.3).
 const ContextoMensagem = createContext(null);
 
 export function ProvedorMensagemDiario({ children }) {
   const caminho = usePathname();
   const [estado, setEstado] = useState({ mensagem: null, caminho });
 
-  // Ao trocar de página, só fica a mensagem que pertence à página nova.
-  // (Ajustar o estado durante a renderização é o jeito recomendado pelo
-  // React para "reiniciar" um valor quando outro muda.)
+  // Ajustar o estado durante a renderização é o jeito recomendado pelo React para
+  // reiniciar um valor quando outro muda.
   if (estado.caminho !== caminho) {
     setEstado({
       mensagem: estado.mensagem?.rota === caminho ? estado.mensagem : null,

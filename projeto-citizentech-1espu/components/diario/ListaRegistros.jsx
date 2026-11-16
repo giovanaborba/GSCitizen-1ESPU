@@ -4,22 +4,8 @@ import { AnimatePresence, motion } from "motion/react";
 import CartaoRegistro from "@/components/diario/CartaoRegistro";
 import { saida } from "@/lib/presetsMovimento";
 
-/*
-  ListaRegistros — H2 "Registros" + a lista de cartões, do mais recente
-  para o mais antigo (a ordem vem pronta do useRegistros).
-
-  Fase 9 (seção 19.11; decisão da equipe na 9.9):
-  - AnimatePresence mode="popLayout" (padrão de movimento: itens que saem
-    de uma lista): um cartão que sai da lista sai rápido (preset "saida")
-    e já deixa o lugar livre; os outros se reorganizam com "layout", sem
-    salto. Hoje a exclusão acontece na página do registro, então a saída
-    não aparece; a estrutura fica pronta.
-  - "idDestaque": o registro que acabou de ser salvo ou restaurado
-    ("Desfazer"). Ele chega com o gesto PULSO (CartaoRegistro). No Diário,
-    só esse registro anima (padrão de movimento, item 5): a lista não
-    entra em cascata (initial={false}).
-  - Com os efeitos desligados, o MotionConfig tira o layout e as escalas.
-*/
+// Regra: no Diário, só o registro em destaque anima; a lista não entra em cascata
+// (decisão da 9.9). popLayout libera o lugar de quem sai, sem salto.
 export default function ListaRegistros({ registros, idDestaque }) {
   return (
     <section className="mt-12">

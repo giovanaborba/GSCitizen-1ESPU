@@ -1,24 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useEfeitos } from "@/hooks/useEfeitos";
 
-/*
-  useRodapeRevelado — liga o "rodapé revelado" (seção 19.6).
-
-  Com o efeito, o conteúdo da página (<main>) é uma folha opaca que sobe e
-  revela o rodapé, preso embaixo (position: sticky). Quem desenha isso é o
-  CSS (globals.css, html[data-rodape-revela]); este hook só decide se o
-  efeito vale e marca a tag <html>.
-
-  O efeito vale quando:
-  - os efeitos estão ligados; e
-  - o rodapé tem menos de 80% da altura da tela. Um rodapé mais alto que
-    isso (ex.: tela deitada no celular, zoom alto, ou a faixa dos ODS na
-    Solução numa tela baixa) não caberia inteiro preso embaixo, e parte
-    dele nunca apareceria. Nesse caso, o rodapé é normal.
-
-  Recalcula quando o rodapé ou a janela mudam de tamanho. Devolve a ref
-  que vai no <footer>.
-*/
+// Só vale com o rodapé abaixo de 80% da altura da tela: um rodapé mais alto não
+// caberia preso embaixo, e parte dele nunca apareceria.
 const LIMITE = 0.8; // fração da altura da tela
 
 export function useRodapeRevelado() {
