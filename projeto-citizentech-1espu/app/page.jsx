@@ -151,10 +151,12 @@ export default function PaginaInicio() {
 
           <ul className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <Cartao as="li" compacto className="grid grid-cols-1 content-start gap-3">
-              <FotoFiltro velocidade={0.06} className="aspect-[4/3]">
+              <FotoFiltro className="aspect-[4/3]">
                 <img
                   src="/imagens/pessoa-cega-celular.webp"
                   alt="Pessoa cega usando o celular com leitor de tela."
+                  loading="lazy"
+                  decoding="async"
                   className="size-full object-cover"
                 />
               </FotoFiltro>
@@ -165,10 +167,12 @@ export default function PaginaInicio() {
               </p>
             </Cartao>
             <Cartao as="li" compacto className="grid grid-cols-1 content-start gap-3 md:mt-16">
-              <FotoFiltro velocidade={-0.06} className="aspect-[4/3]">
+              <FotoFiltro className="aspect-[4/3]">
                 <img
                   src="/imagens/pessoa-baixa-visao-ampliando.webp"
                   alt="Pessoa com baixa visão ampliando a tela do celular."
+                  loading="lazy"
+                  decoding="async"
                   className="size-full object-cover"
                 />
               </FotoFiltro>

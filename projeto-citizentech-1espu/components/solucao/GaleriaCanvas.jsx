@@ -67,7 +67,7 @@ function ConteudoFoto({ foto }) {
     <>
       <FotoFiltro className="aspect-[4/3]">
         {foto.src ? (
-          <img src={foto.src} alt={foto.alt} className="size-full object-cover" />
+          <img src={foto.src} alt={foto.alt} loading="lazy" decoding="async" className="size-full object-cover" />
         ) : (
           <EspacoImagem texto={foto.reserva} formato="livre" />
         )}

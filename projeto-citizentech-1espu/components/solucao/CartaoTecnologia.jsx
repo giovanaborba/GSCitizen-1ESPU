@@ -38,7 +38,7 @@ export default function CartaoTecnologia({ rotulo, nome, descricao, src, alt }) 
           className={`${ESTILO_FACE} overflow-hidden border-acao bg-superficie rotate-y-180`}
         >
           {src ? (
-            <img src={src} alt={alt} className="size-full object-cover" />
+            <img src={src} alt={alt} loading="lazy" decoding="async" className="size-full object-cover" />
           ) : (
             <EspacoImagem texto={`Foto da peça: ${nome} (a definir)`} formato="livre" className="rounded-none border-0" />
           )}

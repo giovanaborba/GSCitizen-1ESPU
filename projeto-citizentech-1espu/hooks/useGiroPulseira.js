@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useEfeitos } from "@/hooks/useEfeitos";
-import { VISTA_DAS_PARTES } from "@/lib/pulseira3d/modelo";
+import { VISTA_DAS_PARTES } from "@/lib/pulseira3d/partes";
 
 // Guarda só o destino do giro; quem anima é a cena, sem redesenhar o React.
 // Regra: nenhum jeito de girar depende só do mouse (WCAG 2.5.7).

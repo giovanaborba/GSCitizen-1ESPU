@@ -421,8 +421,8 @@ Ao salvar:
 | `atualizar(id, dados)` | Altera um registro | `PUT /registros/:id` | o registro atualizado |
 | `excluir(id)` | Exclui um registro | `DELETE /registros/:id` | nada |
 
-- **Dentro de cada função**, um bloco de comentário com o marcador **`API-EXTERNA-AQUI`**, explicando o que a API deve receber e devolver (como na tabela).
-- **URL base** em variável de ambiente (ex.: `NEXT_PUBLIC_API_URL`), também marcada com **`API-EXTERNA-AQUI`** no arquivo onde é lida.
+- ~~**Dentro de cada função**, um bloco de comentário com o marcador **`API-EXTERNA-AQUI`**, explicando o que a API deve receber e devolver (como na tabela).~~ **(Depois da Fase 9)** O marcador `API-EXTERNA-AQUI` saiu do código (commit `6c9a086`, decisão da equipe em 16/11/2026): a API já está ligada, e o que cada função recebe e devolve está na tabela acima. Os comentários seguem a regra da seção 14.1.
+- **URL base** em variável de ambiente (`NEXT_PUBLIC_API_URL`), ~~também marcada com **`API-EXTERNA-AQUI`** no arquivo onde é lida~~ lida só em `services/apiClient.js` **(Depois da Fase 9: sem marcador)**.
 - **Sem mock e sem dados provisórios.** Enquanto a API não existir, cada função **lança um erro de conexão** (`codigo: "conexao"`), e as telas mostram o estado de erro da seção 11 ("Não foi possível carregar os registros.") sem quebrar.
 - Erros de rede, quando a API existir, também viram esse erro de domínio (`codigo: "conexao"`), que a interface traduz para as mensagens da seção 11.
 - Sem login: qualquer pessoa vê, edita e exclui qualquer registro. Manter registros de exemplo prontos para recriar dados apagados durante a apresentação.
@@ -436,7 +436,7 @@ Ao salvar:
 - 404 em `obter` → `null` ("Registro não encontrado"). 404 em `atualizar`/`excluir` (o registro sumiu enquanto a pessoa estava na tela) → erro de conexão.
 - Todas as funções aceitam `{ sinal }` (`AbortSignal`), para o hook cancelar a busca se a pessoa sair da tela.
 - `registrosService` normaliza o registro recebido (por exemplo, `id` sempre texto) e envia só os campos do formulário (sem `id`, `criadoEm`, `atualizadoEm`).
-- Se a API usar outro formato (PATCH em vez de PUT, lista dentro de `{ "itens": [...] }`), o bloco `API-EXTERNA-AQUI` de cada função diz qual linha ajustar.
+- ~~Se a API usar outro formato (PATCH em vez de PUT, lista dentro de `{ "itens": [...] }`), o bloco `API-EXTERNA-AQUI` de cada função diz qual linha ajustar.~~ **(Depois da Fase 9)** O bloco saiu com o marcador. Se a API mudar de formato, o ajuste continua só em `registrosService.js`.
 
 ---
 
@@ -619,7 +619,7 @@ Aplica-se **só a Início e Solução, só abaixo de 768 px**:
 | 10 | `DialogoConfirmacao` | Excluir, Descartar respostas | `<dialog>` modal, `aria-labelledby`/`aria-describedby`, foco inicial na opção segura, foco volta ao fechar |
 | 11 | `ResumoIndicadores` | Topo do Diário | `<ul>` de 4 itens; números com `tabular-nums` |
 | 12 | `EstadoTela` (carregando, vazio, erro) | Diário, Ver registro | Carregando com `role="status"`; erro com `role="alert"` e botão "Tentar de novo" |
-| 13 | `EspacoImagem` | Início, Solução, Simulador | Espaço reservado tracejado com o marcador `IMAGEM-...-AQUI`; quando o Claude Code ligar a imagem, ele sai, e o `alt` é sempre preenchido (seção 13.2) |
+| 13 | `EspacoImagem` | Início, Solução, Simulador | Espaço reservado tracejado ~~com o marcador `IMAGEM-...-AQUI`~~ **(Depois da Fase 9: sem marcador)**; quando o Claude Code ligar a imagem, ele sai, e o `alt` é sempre preenchido (seção 13.2) |
 | 14 | `CartaoIntegrante` | Solução (Equipe) | Foto com `alt="Foto de (nome)"` + nome em `<h3>`; item de uma `<ul>` |
 
 Componentes extras de layout permitidos (ex.: `Rodape`, `CartaoRegistro`, `ListaRegistros`, `FormularioRegistro`).
@@ -628,7 +628,7 @@ Componentes extras de layout permitidos (ex.: `Rodape`, `CartaoRegistro`, `Lista
 
 | Componente extra | Para que serve |
 | --- | --- |
-| `EspacoIcone` | Desenha o ícone Phosphor pelo nome (24 px, peso Bold, `aria-hidden`); o marcador `ICONE-…-AQUI` fica em comentário ao lado de cada uso (seção 13.1) |
+| `EspacoIcone` | Desenha o ícone Phosphor pelo nome (24 px, peso Bold, `aria-hidden`); ~~o marcador `ICONE-…-AQUI` fica em comentário ao lado de cada uso~~ **(Depois da Fase 9)** sem marcador `ICONE-…-AQUI` no código (seção 13.1) |
 | `ErroCampo` | Mensagem de erro com ícone e texto (campo, botão Salvar, diálogo) |
 | `LinkVoltar` | "Voltar ao Diário" / "Voltar ao registro", passando pela guarda de saída |
 | `TituloPagina` | `<h1 tabIndex={-1}>` + resumo, em todas as páginas |
@@ -727,7 +727,7 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
   - O componente `EspacoIcone` desenha o ícone pelo prop `nome`, com `size={24}`, `weight="bold"` e `aria-hidden="true"`. Ele importa de `@phosphor-icons/react/ssr`, que funciona em Server e Client Components.
   - Só os ícones listados em `EspacoIcone` entram no site (mapa explícito, sem importar a biblioteca inteira). Para usar um ícone novo, importe-o e acrescente-o ao mapa.
   - Nome fora do mapa: o `EspacoIcone` volta o espaço vazio antigo, que não ocupa lugar (19.5). O texto continua centralizado e o site funciona.
-  - Os marcadores **`ICONE-(nome)-AQUI`** continuam no código, em comentário, ao lado de cada uso, como referência.
+  - ~~Os marcadores **`ICONE-(nome)-AQUI`** continuam no código, em comentário, ao lado de cada uso, como referência.~~ **(Depois da Fase 9)** Os marcadores `ICONE-…-AQUI` saíram do código (commit `6c9a086`, decisão da equipe em 16/11/2026). O nome do ícone já aparece no prop `nome` do `EspacoIcone`, e a tabela abaixo fica como referência.
 - Nomes de referência (conferidos na versão `2.1.10`: todos existem):
 
 | Uso | Ícone Phosphor |
@@ -755,10 +755,11 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 
 - **Quem faz o quê** (decisão da equipe em 14/11/2026, depois da Fase 9):
   - **A equipe** só coloca os arquivos das imagens na pasta `public/imagens/`.
-  - **O Claude Code** liga os caminhos no código: troca cada `EspacoImagem` pela imagem (`/imagens/…`), com o `alt` sugerido no comentário do marcador. Onde houver `FotoFiltro`, a imagem entra **dentro** dele (o filtro e o parallax só funcionam com uma `<img>`).
+  - **O Claude Code** liga os caminhos no código: troca cada `EspacoImagem` pela imagem (`/imagens/…`), com o `alt` sugerido ~~no comentário do marcador~~ **(Depois da Fase 9: nas tabelas desta seção, da 18.13 e da 19.14)**. Onde houver `FotoFiltro`, a imagem entra **dentro** dele ~~(o filtro e o parallax só funcionam com uma `<img>`)~~. **(Depois da Fase 9)** O `FotoFiltro` só recorta os cantos arredondados; não há mais filtro nem parallax (19.6).
   - **Quando:** só depois que **todas** as imagens estiverem na pasta, com os nomes certos, e a equipe avisar. Até lá, os espaços `EspacoImagem` continuam.
   - O Claude Code continua sem gerar imagens (18.13).
-- Enquanto a imagem não entra, o componente `EspacoImagem` ocupa o lugar dela, com o marcador **`IMAGEM-(descrição da imagem)-AQUI`**, por exemplo `IMAGEM-pessoa cega usando o celular-AQUI`. Os marcadores ficam em comentário, como referência, também depois que a imagem entrar.
+- Enquanto a imagem não entra, o componente `EspacoImagem` ocupa o lugar dela, ~~com o marcador **`IMAGEM-(descrição da imagem)-AQUI`**, por exemplo `IMAGEM-pessoa cega usando o celular-AQUI`. Os marcadores ficam em comentário, como referência, também depois que a imagem entrar.~~ **(Depois da Fase 9)** As 25 imagens já estão no código, e os marcadores `IMAGEM-…-AQUI` saíram (commit `6c9a086`, decisão da equipe em 16/11/2026). O `EspacoImagem` só aparece se faltar o `src`.
+- **(Depois da Fase 9, auditoria de 16/11/2026)** Toda `<img>` tem `loading="lazy"` e `decoding="async"`: nenhuma foto está na primeira tela, e a capa é vídeo. O espaço de cada foto é reservado pela moldura (`aspect-[4/3]` ou `aspect-square`), então nada pula de lugar quando ela chega. Fotos com no máximo 1200 × 900 px (1600 × 1200 só nas 2 de "Quem vive o problema").
 - **Todo `alt` é preenchido.** Não há imagens decorativas no site: se uma imagem não comunica nada, ela não entra.
 - Regras do texto alternativo (`alt`), para soar como o leitor de tela nativo do celular:
   - **simples, claro e direto**, em uma frase curta;
@@ -766,7 +767,7 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
   - **não começa com "imagem de" ou "figura de"**, porque o leitor de tela já anuncia "imagem";
   - sem repetir textos longos que já estão ao lado;
   - se a imagem tiver informação que não cabe numa frase (um diagrama, por exemplo), essa informação também aparece em texto na página.
-- Ao lado de cada marcador, deixar em comentário o `alt` sugerido:
+- ~~Ao lado de cada marcador, deixar em comentário o `alt` sugerido:~~ **(Depois da Fase 9)** O `alt` fica só no atributo da imagem, sem comentário. A tabela abaixo é histórica (os nomes dos marcadores servem só de referência):
 
 | Marcador | `alt` sugerido (ajustar quando a imagem existir) |
 | --- | --- |
@@ -777,7 +778,7 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 - **Ícones continuam ocultos para o leitor de tela** (`aria-hidden="true"`), porque o texto ao lado já diz o mesmo. Assim a leitura fica direta: "Início", e não "Ícone casa, Início".
 - **Sem texto dentro de imagens.** Imagens da pulseira são apresentadas como "ilustração conceitual".
 - **Não usar imagens geradas por IA.** **(Fase 8)** Vale para o Claude Code; a equipe pode colocá-las. Marcadores novos na seção 18.13.
-- Outras mídias, se houver, também são manuais: **`VIDEO-(descrição)-AQUI`** e **`AUDIO-(descrição)-AQUI`**. Sem animação ou vídeo automático de mais de 5 s sem botão de pausa; som só depois de uma ação da pessoa. **(Fase 9)** Os vídeos e o componente `VideoPulse` estão na seção 19.13.
+- Outras mídias, se houver, também são manuais: ~~**`VIDEO-(descrição)-AQUI`** e **`AUDIO-(descrição)-AQUI`**~~ **(Depois da Fase 9: sem marcadores; os vídeos já estão ligados)**. Sem animação ou vídeo automático de mais de 5 s sem botão de pausa; som só depois de uma ação da pessoa. **(Fase 9)** Os vídeos e o componente `VideoPulse` estão na seção 19.13.
 
 ---
 
@@ -849,19 +850,22 @@ projeto-citizentech-1espu/
 | Linguagem | **JavaScript** (`.js` e `.jsx`), componentes funcionais. **Sem TypeScript.** |
 | Nomes | Componentes, hooks e variáveis em **português**, como nesta especificação |
 | Parte lógica | **(Fase 9) Regra retirada a pedido da equipe:** o código não usa mais a marcação. Regra antiga: todo trecho lógico recebia, logo acima, o comentário **`// Esta parte é lógica`** (em JSX: `{/* Esta parte é lógica */}`). Vale para hooks, serviços, validação, cálculos e funções que tratam eventos dentro dos componentes. |
+| Comentários | **(Depois da Fase 9, decisão da equipe em 16/11/2026, commit `6c9a086`)** Um comentário só fica se disser o porquê de uma escolha, uma regra do projeto (começa com "Regra:" e cita a WCAG ou a seção da especificação) ou uma armadilha técnica, em até 2 linhas. Não descreve o que o código faz, não lista props nem formatos e não conta histórico. |
 | Pacotes e configuração | Não instalar pacotes nem mudar configurações. Se algo for necessário, informar à equipe o que instalar e por quê. |
 | Commits | Feitos **manualmente pela equipe**. Ao fim de cada fase, sugerir uma mensagem simples em português (ex.: `Adiciona layout comum e barra de navegação`). |
 | `prompts.md` | Mantido manualmente pela equipe. Não editar. |
 
 **Marcadores** (deixar no lugar exato de cada item, de forma bem visível):
 
+> **(Depois da Fase 9, decisão da equipe em 16/11/2026, commit `6c9a086`)** Os marcadores já resolvidos saíram do código. **Só o `SIMULADOR-AQUI` continua** (seção 6.3). As linhas riscadas ficam como histórico.
+
 | Item | Marcador | Onde |
 | --- | --- | --- |
-| Fonte | `FONTE-Atkinson Hyperlegible Next-AQUI` | `app/layout.jsx` ou CSS global (seção 8.2) |
-| Ícone | `ICONE-(nome)-AQUI`, ex.: `ICONE-House-AQUI` | Comentário ao lado de cada ícone, só como referência: o ícone já é desenhado pelo `EspacoIcone` (seção 13.1) |
-| Imagem | `IMAGEM-(descrição)-AQUI`, ex.: `IMAGEM-foto de Giovana-AQUI` | Dentro de cada `EspacoImagem`, incluindo as 5 fotos da equipe, sempre com o `alt` sugerido ao lado (seção 13.2) |
-| Vídeo e áudio | `VIDEO-(descrição)-AQUI`, `AUDIO-(descrição)-AQUI` | Onde houver (seção 13.2) |
-| API externa | `API-EXTERNA-AQUI` | Em cada função de `registrosService.js` e na URL base (seção 7.6) |
+| ~~Fonte~~ | ~~`FONTE-Atkinson Hyperlegible Next-AQUI`~~ | ~~`app/layout.jsx` ou CSS global (seção 8.2)~~ **(Fase 9: saiu; fontes por `next/font/google`, 19.4)** |
+| ~~Ícone~~ | ~~`ICONE-(nome)-AQUI`, ex.: `ICONE-House-AQUI`~~ | ~~Comentário ao lado de cada ícone, só como referência: o ícone já é desenhado pelo `EspacoIcone` (seção 13.1)~~ **(Depois da Fase 9: saiu)** |
+| ~~Imagem~~ | ~~`IMAGEM-(descrição)-AQUI`, ex.: `IMAGEM-foto de Giovana-AQUI`~~ | ~~Dentro de cada `EspacoImagem`, incluindo as 5 fotos da equipe, sempre com o `alt` sugerido ao lado (seção 13.2)~~ **(Depois da Fase 9: saiu; imagens ligadas)** |
+| ~~Vídeo e áudio~~ | ~~`VIDEO-(descrição)-AQUI`, `AUDIO-(descrição)-AQUI`~~ | ~~Onde houver (seção 13.2)~~ **(Depois da Fase 9: saiu; vídeos ligados)** |
+| ~~API externa~~ | ~~`API-EXTERNA-AQUI`~~ | ~~Em cada função de `registrosService.js` e na URL base (seção 7.6)~~ **(Depois da Fase 9: saiu; MockAPI ligado)** |
 | Simulador | `SIMULADOR-AQUI` | `app/simulador/page.jsx` (seção 6.3) |
 
 Os marcadores não podem quebrar o layout nem a acessibilidade: cada espaço mantém o tamanho final, e o texto visível já existe.
@@ -951,6 +955,9 @@ Os itens que só uma pessoa consegue testar (leitor de tela, aparelho real, alto
 - ~~**(Fase 6)** No computador, na Início e na Solução, o logo do cabeçalho (coluna de 40rem) não fica alinhado com a grade de 59rem.~~ **(Fase 8)** Resolvida: cabeçalho, rodapé, Início, Solução, Simulador e 404 usam a mesma área de 76rem.
 - **(Fase 7)** Com zoom de 400% e pouca altura, o cabeçalho fixo (64 px) ocupa cerca de 1/4 da tela. A seção 9.1 manda que ele fique fixo; avaliar.
 - **(Fase 0)** O registro do uso de IA está em `AI.md`, na raiz do repositório. Não existe `prompts.md`. A equipe decide o nome final.
+- **(Depois da Fase 9)** Aviso de espera ao salvar e excluir (> 10 s): hoje só o leitor de tela anuncia. A equipe decide se ele também aparece na tela, para quem tem baixa visão.
+- **(Depois da Fase 9)** Repetir o teste no iPhone (357 × 667) depois do commit `68a7531`.
+- **(Depois da Fase 9)** Repetir os testes manuais e rodar o Lighthouse (acessibilidade) nas 6 rotas, com ícones e imagens.
 
 **Suposições em uso até confirmação:**
 - Todas as perguntas do Diário são obrigatórias, exceto Observações.
@@ -1082,6 +1089,14 @@ Decisões tomadas durante as Fases 0 a 9 (e depois dela). **Equipe** = escolhida
 | Depois da 9 | `alt` de 4 imagens ajustados ao que a foto mostra: calçada com obstáculo, esquina com rampa, semáforo de pedestres e a peça das APIs | Equipe | 18.13, 19.14 |
 | Depois da 9 | Espera acima de 10 s (opção B): no carregando, aviso na região de status e botão "Parar de carregar", que leva a "Carregamento interrompido." com o foco em "Tentar de novo"; no "Salvando…" e no "Excluindo…", só o aviso "Aguarde mais um pouco.", sem botão de parar | Equipe | 11.1, 11.2 |
 | Depois da 9 | Espera longa: um hook `useEsperaLonga` (10 s) serve às três esperas; o "Carregamento interrompido." não tem a segunda linha do erro de conexão; "Parar de carregar" sem ícone; o aviso de "Salvando…" e "Excluindo…" é só para o leitor de tela, porque a região de status deles é `sr-only` | Implementação | 11.1, 14 |
+| Depois da 9 | Filtro, zoom e parallax das fotos retirados | Equipe | 19.6 |
+| Depois da 9 | Comentários mínimos (porquê, regra ou armadilha) e saída dos marcadores já resolvidos | Equipe | 14 |
+| Depois da 9 | Auditoria (16/11/2026), 5 correções escolhidas pela equipe: | Equipe | — |
+| Depois da 9 | `VISTA_DAS_PARTES` e `PULSE_EM_BRAILLE` saem de `modelo.js` para `lib/pulseira3d/partes.js`, sem `three`: o giro importava o modelo, e o Three.js (223 KB) entrava no carregamento inicial de Início e Solução, apesar do `next/dynamic` | Implementação | 19.12 |
+| Depois da 9 | Toda `<img>` com `loading="lazy"` e `decoding="async"` | Implementação | 13.2 |
+| Depois da 9 | Apagados `useFiltroFoto`, `useParallax`, o prop `velocidade` do `FotoFiltro` e do `CartaoIntegrante` e a regra de CSS `.polaroide:has([data-colorida])`, que sobraram da retirada do filtro | Implementação | 19.6, 19.15 |
+| Depois da 9 | Vídeos com `preload="none"` (antes, `metadata`): o quadro parado aparece até o vídeo tocar | Implementação | 19.13 |
+| Depois da 9 | As 4 fotos dos sinais reduzidas de 1920 × 1440 para 1200 × 900 (1.161 KB → 413 KB) | Implementação | 19.14 |
 
 
 ---
@@ -1107,9 +1122,9 @@ Na Fase 8, **o Claude Code instala os pacotes**, depois de mostrar o comando à 
 | `motion` | Microinterações | Importar de `motion/react`. `MotionConfig reducedMotion="user"` na raiz. Uso: diálogo, mensagens, barra e botões. |
 | `three` | Pulseira 3D | Só em componentes de cliente, carregados com `next/dynamic` e `ssr: false`. |
 
-- **Fontes: instaladas manualmente pela equipe**, como antes. No lugar onde cada uma será carregada (`app/layout.jsx` ou CSS global), deixar os marcadores **`FONTE-Anton-AQUI`** (peso 400), **`FONTE-Atkinson Hyperlegible Next-AQUI`** (400 e 700, já existe) e **`FONTE-JetBrains Mono-AQUI`** (500 e 700), com o passo a passo em comentário. Usar as variáveis `--fonte-titulo`, `--fonte-base` e `--fonte-mono` com as fontes de reserva da seção 18.4, para o site funcionar antes das fontes entrarem.
+- ~~**Fontes: instaladas manualmente pela equipe**, como antes. No lugar onde cada uma será carregada (`app/layout.jsx` ou CSS global), deixar os marcadores **`FONTE-Anton-AQUI`** (peso 400), **`FONTE-Atkinson Hyperlegible Next-AQUI`** (400 e 700, já existe) e **`FONTE-JetBrains Mono-AQUI`** (500 e 700), com o passo a passo em comentário.~~ **(Depois da Fase 9)** As fontes entram por `next/font/google` (19.4), e não há marcadores `FONTE-…-AQUI` nem passo a passo em comentário no código (commit `6c9a086`). Usar as variáveis `--fonte-titulo`, `--fonte-base` e `--fonte-mono` com as fontes de reserva da seção 18.4, para o site funcionar antes das fontes entrarem.
 - **21st.dev, Aceternity UI e React Bits:** não instalar agora. Só se a equipe pedir um bloco específico, sempre convertido para JavaScript e conferido quanto à acessibilidade. As dependências possíveis (`clsx`, `tailwind-merge`) só entram nesse caso.
-- **Fontes continuam manuais**, com os marcadores `FONTE-…-AQUI`. Os ícones são colocados pelo Claude Code (seção 13.1). Nas imagens (`IMAGEM-…-AQUI`), a equipe põe os arquivos em `public/imagens/`, e o Claude Code liga os caminhos (seção 13.2).
+- ~~**Fontes continuam manuais**, com os marcadores `FONTE-…-AQUI`.~~ **(Depois da Fase 9: fontes por `next/font/google`, sem marcadores.)** Os ícones são colocados pelo Claude Code (seção 13.1). Nas imagens ~~(`IMAGEM-…-AQUI`)~~, a equipe põe os arquivos em `public/imagens/`, e o Claude Code liga os caminhos (seção 13.2).
 
 ### 18.2 Piso de acessibilidade da nova identidade
 
@@ -1289,7 +1304,7 @@ Mudanças nos textos da seção 6.2:
 **Os sinais, em rolagem fixa (`SinaisRolagemFixa`)**
 - Rótulo "Linguagem da Pulse", H2 "Os sinais" e o texto "Cada comando tem um sinal próprio. Role a página para passar de um sinal para o outro."
 - No HTML: navegação "Sinais" (`<nav aria-label="Sinais">` com `<ol>` de 4 links para `#sinal-continuar`, `#sinal-parar`, `#sinal-virar` e `#sinal-aguardar`), a pulseira pequena, o botão de pausa e 4 `<article>`, cada um com a foto, o H3 do sinal e os pares em `<dl>` ("Modo tátil", "Modo sonoro" ou "Nos dois modos").
-- **Modo fixo** (só quando não há "reduzir movimento", a altura da janela é ≥ 560 px e a largura ≥ 340 px): o trilho tem `4 × 85svh + 100svh` de altura e o palco fica `position: sticky`. O progresso da rolagem (lido com ScrollTrigger, **sem `pin`**) escolhe o sinal ativo. O link ativo recebe `aria-current="step"` e fica marcado em dourado. Clicar num link rola até o meio do trecho daquele sinal.
+- **Modo fixo** (só quando não há "reduzir movimento", a altura da janela é ≥ 700 px e a largura ≥ 340 px; **Depois da Fase 9:** antes, ≥ 560 px): o trilho tem `4 × 85svh + 100svh` de altura e o palco fica `position: sticky`. O progresso da rolagem (lido com ScrollTrigger, **sem `pin`**) escolhe o sinal ativo. O link ativo recebe `aria-current="step"` e fica marcado em ~~dourado~~ laranja **(Fase 9:** borda de 3 px e ponto em `--cor-acao` `#FC4C02`, com o texto em `--cor-texto`**)**. Clicar num link rola até o meio do trecho daquele sinal.
 - Troca da foto com **piso tátil** (máscara de domos de 26 px, 0,7 s; propriedade `--d` registrada com `@property`). O texto esmaece e sobe 12 px.
 - Pulseira pequena (`Pulseira3D modo="sinal"`) **junto do índice**, nunca em cima da foto: 76 px no celular (ao lado do botão de pausa) e 132 px no computador (embaixo do índice, com o nome do movimento em mono).
 - Computador (≥ 1000 px): índice à esquerda (15rem); foto e texto lado a lado (1,5 : 1). Celular: índice como faixa no topo, depois a pulseira e o pausar, a foto e o texto.
@@ -1610,11 +1625,11 @@ Todos ficam parados ou somem com os efeitos desligados (19.2).
 | Seções fixas | "O problema" (Início) e "Como funciona" (Solução) | O título fica fixo de um lado e o conteúdo rola do outro, só no computador (≥ 64rem e altura ≥ 600 px) | A ordem do HTML continua a de leitura; com zoom alto, vira lista comum |
 | Texto que se constrói | Texto de Tema, O problema e Quem vive | O bloco aparece através de uma máscara de domos quando entra na tela (ScrollTrigger). **Fase 9 (decisão da equipe na 9.0):** entra com o gesto GUIA, sem a máscara | O texto está no HTML desde o início; com o foco, aparece na hora; sem máscara no alto contraste |
 | Contagem dos números | Cartões de dados de "O problema" | De 0 até o valor em 1,2 s, ao entrar na tela | O número animado tem `aria-hidden`, e um texto oculto lê o valor real ("Cerca de 90%", "7,9 milhões") |
-| Parallax | Fotos de "Quem vive", polaroides e textura das cabeças de página | Velocidades diferentes, até cerca de 60 px (`data-velocidade` de ±0,06) | O texto nunca se move |
+| ~~Parallax~~ | ~~Fotos de "Quem vive", polaroides e textura das cabeças de página~~ | ~~Velocidades diferentes, até cerca de 60 px (`data-velocidade` de ±0,06)~~ **(Depois da Fase 9)** Retirado com o filtro das fotos (decisão da equipe em 14/11/2026). O hook `useParallax` e o prop `velocidade` saíram do código na auditoria de 16/11/2026 | ~~O texto nunca se move~~ |
 | Faixa de texto | Entre a abertura e o Tema | "Pulse · um guia no pulso" em Anton, andando sem parar e acelerando um pouco com a rolagem | `aria-hidden`; parada com os efeitos desligados (WCAG 2.2.2) |
 | Linha antes do rótulo | Cabeças de seção | Uma linha laranja de 24 px se desenha antes do rótulo mono quando a seção chega. Os títulos ficam sem efeito | Decorativa |
 | Botão magnético | Só os botões laranja principais | O conteúdo do botão segue o mouse até 8 px; a área de clique fica parada | Só com `pointer: fine` |
-| Filtro nas fotos | Galeria, polaroides, "Quem vive" e Tecnologias | Foto em tons de cinza com pontilhado de domos; ao passar o mouse ou focar, ganha cor e zoom de 1,05 | No celular, ganha cor ao entrar na tela; com `prefers-contrast: more` e alto contraste, já aparece colorida |
+| ~~Filtro nas fotos~~ | ~~Galeria, polaroides, "Quem vive" e Tecnologias~~ | ~~Foto em tons de cinza com pontilhado de domos; ao passar o mouse ou focar, ganha cor e zoom de 1,05~~ **(Depois da Fase 9, decisão da equipe em 14/11/2026, commit `8f1e389`)** A foto aparece normal, sem tons de cinza, pontilhado, zoom ou parallax. O `FotoFiltro` só recorta os cantos | ~~No celular, ganha cor ao entrar na tela; com `prefers-contrast: more` e alto contraste, já aparece colorida~~ Nada a adaptar: a foto é sempre a mesma |
 | Rodapé revelado | Todas as páginas | O conteúdo sobe e revela o rodapé fixo por baixo, com "PULSE" gigante em laranja | "PULSE" com `aria-hidden`; sem o efeito, o rodapé é normal |
 
 ### 19.7 Interações novas
@@ -1679,7 +1694,7 @@ O Diário continua sem textura, palavra de fundo e cenas, mas ganha feedback nas
 
 ### 19.12 Pulseira 3D nova (substitui a 18.7; era da Fase 10 e foi antecipada)
 
-A geometria, os materiais e os sinais estão em `docs/prototipos/pulse-pulseira-3d.html` (função `criarPulseira()`). **O modelo é um módulo único** (`lib/pulseira3d/modelo.js`), usado pelo site e pelos vídeos.
+A geometria, os materiais e os sinais estão em `docs/prototipos/pulse-pulseira-3d.html` (função `criarPulseira()`). **O modelo é um módulo único** (`lib/pulseira3d/modelo.js`), usado pelo site e pelos vídeos. **(Depois da Fase 9)** O que os hooks leem sem desenhar (a vista de cada parte e as letras do Braille) fica em `lib/pulseira3d/partes.js`, que não importa `three`. Assim o Three.js só carrega quando a cena aparece (`next/dynamic`).
 
 | Parte | Como é |
 | --- | --- |
@@ -1723,10 +1738,10 @@ As luzes complementam o tato para quem tem baixa visão e para quem acompanha a 
 
 ### 19.13 Vídeos (novo)
 
-Os vídeos foram feitos pelo Claude fora do código do site, no padrão PADRAO_ANIMACOES_VIDEO_PULSE. **A equipe coloca os arquivos** em `public/videos/`. O Claude Code cria o componente e deixa um marcador `VIDEO-(nome)-AQUI` em cada lugar, com o caminho esperado em comentário.
+Os vídeos foram feitos pelo Claude fora do código do site, no padrão PADRAO_ANIMACOES_VIDEO_PULSE. **A equipe coloca os arquivos** em `public/videos/`. O Claude Code cria o componente ~~e deixa um marcador `VIDEO-(nome)-AQUI` em cada lugar, com o caminho esperado em comentário~~. **(Depois da Fase 9)** Os vídeos já estão ligados pelos caminhos reais, e os marcadores `VIDEO-…-AQUI` saíram do código (commit `6c9a086`, decisão da equipe em 16/11/2026).
 
 **Componente `VideoPulse`**
-- `<video playsinline muted loop preload="metadata" poster="…-quadro-parado.jpg">`. Toca só com os efeitos ligados e o vídeo na tela (`IntersectionObserver`); fora da tela, pausa.
+- `<video playsinline muted loop preload="metadata" poster="…-quadro-parado.jpg">` **(Depois da Fase 9: ~~`preload="metadata"`~~ `preload="none"`. Os 12 vídeos da Solução baixavam cerca de 0,9 MB de metadados ao abrir; o quadro parado aparece até o vídeo tocar)**. Toca só com os efeitos ligados e o vídeo na tela (`IntersectionObserver`); fora da tela, pausa.
 - **Botão de pausa:** "Pausar" / "Reproduzir", com ícone, texto e `aria-pressed`, sempre visível (WCAG 2.2.2). **(Fase 9, decisão da equipe na 9.8:** o texto diz a ação e troca junto com o ícone, **sem** `aria-pressed`. Os botões ficam logo abaixo do vídeo.**)**
 - **Vídeos com som:**
   - têm também o botão "Ativar som" / "Desativar som", com `aria-pressed` **(Fase 9: sem `aria-pressed`, como o botão de pausa)**;
@@ -1771,6 +1786,8 @@ As imagens continuam escolhidas pela equipe, que põe os arquivos em `public/ima
 | **Novo:** `IMAGEM-pessoa com baixa visão ampliando a tela-AQUI` | "Quem vive o problema", cartão "Pessoa com baixa visão". `alt`: "Pessoa com baixa visão ampliando a tela do celular." |
 | **Novo:** `IMAGEM-peça (nome)-AQUI` (8) | Verso dos cartões de Tecnologias. `alt`: "Foto da peça: (nome da tecnologia)." **(Depois da Fase 9)** Exceção: a peça das APIs é uma ilustração, com o `alt` "Ilustração de um chip com a palavra API, ligado a circuitos." |
 
+**(Depois da Fase 9, auditoria de 16/11/2026)** As 4 fotos dos sinais foram reduzidas de 1920 × 1440 para **1200 × 900** (WebP, qualidade 80), a mesma medida da galeria e das peças: de 1.161 KB para 413 KB no total.
+
 **Ícones novos** (`ICONE-…-AQUI`, Phosphor Bold): `ArrowsClockwise` (virar o cartão), `SpeakerHigh` e `SpeakerSlash` (som), `ArrowsOutCardinal` (centralizar a galeria), `ArrowUp` e `ArrowDown` (mover a galeria), `ArrowCounterClockwise` e `ArrowClockwise` (girar a pulseira), `Eye` (ver por dentro).
 
 ### 19.15 Componentes e hooks novos (complementa a 18.14)
@@ -1810,9 +1827,9 @@ As imagens continuam escolhidas pela equipe, que põe os arquivos em `public/ima
 `lib/presetsMovimento.js` (molas, saída, cascata, pulso, guia e tremor) segue o PADRAO_MOVIMENTO_PULSE.
 
 **(Fase 9, implementação)** Também entraram:
-- componentes `RotuloSecao` (rótulo com a linha que se desenha), `FotoFiltro` (filtro e parallax das fotos), `IconeAlternado` (troca de ícone com rotação), `CertoDesenhado` (o "certo" das mensagens de sucesso) e `Tremor` (gesto de erro nos campos);
-- hooks `useComoFuncionaFundo`, `useLinhaRotulo`, `useFaixaTexto`, `useTextoConstroi`, `useParallax`, `useFiltroFoto`, `useRodapeRevelado` e `useRolagemSuave`;
-- módulos `lib/efeitos.js` (o estado do interruptor), `lib/cortinaDomos.js` (a cortina em `<canvas>`) e `lib/pulseira3d/modelo.js` (o modelo único da pulseira).
+- componentes `RotuloSecao` (rótulo com a linha que se desenha), `FotoFiltro` (~~filtro e parallax das fotos~~ **depois da Fase 9:** só recorta os cantos da foto), `IconeAlternado` (troca de ícone com rotação), `CertoDesenhado` (o "certo" das mensagens de sucesso) e `Tremor` (gesto de erro nos campos);
+- hooks `useComoFuncionaFundo`, `useLinhaRotulo`, `useFaixaTexto`, `useTextoConstroi`, ~~`useParallax`, `useFiltroFoto`,~~ `useRodapeRevelado` e `useRolagemSuave` **(depois da Fase 9: `useParallax` e `useFiltroFoto` foram apagados na auditoria de 16/11/2026)**;
+- módulos `lib/efeitos.js` (o estado do interruptor), `lib/cortinaDomos.js` (a cortina em `<canvas>`) e `lib/pulseira3d/modelo.js` (o modelo único da pulseira). **(Depois da Fase 9)** Mais `lib/pulseira3d/partes.js` (vista de cada parte e letras do Braille, sem `three`).
 
 Saíram `Carrossel`, `useCarrossel`, `GaleriaHorizontal`, `useGaleriaHorizontal` e `useInclinacaoMouse`.
 

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { VISTA_DAS_PARTES } from "@/lib/pulseira3d/partes";
 
 // Regra: módulo único da pulseira (19.12). O site e as animações em vídeo usam
 // o mesmo modelo, que segue criarPulseira() do protótipo.
@@ -20,20 +21,6 @@ const LARGURA = 0.5;
 const ESPESSURA = 0.09;
 
 const LETRAS_BRAILLE = { p: [1, 2, 3, 4], u: [1, 3, 6], l: [1, 2, 3], s: [2, 3, 4], e: [1, 5] };
-export const PULSE_EM_BRAILLE = ["p", "u", "l", "s", "e"];
-
-export const VISTA_DAS_PARTES = {
-  destino: { angulo: 0 },
-  modo: { angulo: 0 },
-  braille: { angulo: 0 },
-  vibracao: { angulo: Math.PI - 0.75, inclinar: 0.5 },
-  pressao: { angulo: Math.PI - 0.45, inclinar: 0.1 },
-  luzes: { angulo: 0 },
-  carga: { angulo: 0, inclinar: -0.9 },
-  fecho: { angulo: Math.PI },
-  zonaEsquerda: { angulo: -1.25 },
-  zonaDireita: { angulo: 1.25 },
-};
 
 function naTira(angulo) {
   const ponto = new THREE.Vector3(0, RAIO_Y * Math.sin(angulo), RAIO_Z * Math.cos(angulo));

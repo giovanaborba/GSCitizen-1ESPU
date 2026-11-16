@@ -64,6 +64,8 @@ export default function VideoPulse({
   });
   const caminhos = caminhosDoVideo(nome);
 
+  // preload="none": a Solução tem 12 vídeos, e só os metadados já somavam cerca de
+  // 0,9 MB ao abrir. O quadro parado (poster) aparece até o vídeo tocar.
   const elementoVideo = (
     <video
       {...propsVideo(0)}
@@ -72,7 +74,7 @@ export default function VideoPulse({
       poster={caminhos.quadroParado}
       muted
       playsInline
-      preload="metadata"
+      preload="none"
       aria-labelledby={fundo ? undefined : idTitulo}
       aria-describedby={fundo ? undefined : idDescricao}
       className="size-full object-cover"

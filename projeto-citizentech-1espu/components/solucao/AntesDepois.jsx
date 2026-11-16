@@ -23,7 +23,7 @@ function LadoVideo({ caminhos, propsVideo, falhou, texto }) {
       poster={caminhos.quadroParado}
       muted
       playsInline
-      preload="metadata"
+      preload="none"
       className="size-full object-cover"
     />
   );

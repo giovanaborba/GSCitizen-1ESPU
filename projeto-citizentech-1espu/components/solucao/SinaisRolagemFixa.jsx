@@ -155,6 +155,8 @@ export default function SinaisRolagemFixa() {
                       <img
                         src={sinal.src}
                         alt={sinal.alt}
+                        loading="lazy"
+                        decoding="async"
                         className={`size-full rounded-cartao object-cover ${podeFixar ? "" : "aspect-[4/3]"}`}
                       />
                     ) : (

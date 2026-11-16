@@ -193,11 +193,11 @@ export default function PaginaSolucao() {
           Integrantes do grupo que criou a Pulse na Global Solution 2026 da FIAP.
         </p>
         <ul className="flex flex-wrap justify-center gap-x-4 gap-y-10 px-3 py-4 sm:gap-x-5">
-          <CartaoIntegrante nome="Giovana" src="/imagens/equipe-giovana.webp" alt="Foto de Giovana" inclinacao={-3} velocidade={0.06} className={LARGURA_POLAROIDE} />
-          <CartaoIntegrante nome="Giovane" src="/imagens/equipe-giovane.webp" alt="Foto de Giovane" inclinacao={2} velocidade={-0.06} className={LARGURA_POLAROIDE} />
-          <CartaoIntegrante nome="Mie" src="/imagens/equipe-mie.webp" alt="Foto de Mie" inclinacao={-1.5} velocidade={0.06} className={LARGURA_POLAROIDE} />
-          <CartaoIntegrante nome="Pedro" src="/imagens/equipe-pedro.webp" alt="Foto de Pedro" inclinacao={3} velocidade={-0.06} className={LARGURA_POLAROIDE} />
-          <CartaoIntegrante nome="Thiago" src="/imagens/equipe-thiago.webp" alt="Foto de Thiago" inclinacao={-2} velocidade={0.06} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Giovana" src="/imagens/equipe-giovana.webp" alt="Foto de Giovana" inclinacao={-3} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Giovane" src="/imagens/equipe-giovane.webp" alt="Foto de Giovane" inclinacao={2} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Mie" src="/imagens/equipe-mie.webp" alt="Foto de Mie" inclinacao={-1.5} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Pedro" src="/imagens/equipe-pedro.webp" alt="Foto de Pedro" inclinacao={3} className={LARGURA_POLAROIDE} />
+          <CartaoIntegrante nome="Thiago" src="/imagens/equipe-thiago.webp" alt="Foto de Thiago" inclinacao={-2} className={LARGURA_POLAROIDE} />
         </ul>
       </Secao>
     </PaginaComIndice>

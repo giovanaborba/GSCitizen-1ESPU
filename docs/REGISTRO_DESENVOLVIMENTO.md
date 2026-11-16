@@ -24,7 +24,7 @@
 | 8 | Nova identidade e movimento (seção 18): cores, fontes, capa, pulseira 3D, rolagens, carrossel, galeria, transição entre páginas, rodapé com os ODS, 404 | — (commits por subfase, feitos pela equipe) |
 | 9 | Efeitos, paleta nova, pulseira nova e vídeos (seção 19): interruptor "Efeitos", paleta laranja e grafite, fontes por `next/font/google`, polimento, efeitos e interações novos, Tecnologias em cartões que viram, Galeria em canvas, Equipe no varal, pulseira 3D nova, vídeos, microinterações do Diário e revisão | Por subfase, feitos pela equipe: de `4b4a510` (9.1) a `bbe23f9` (9.10) |
 
-**Em números (depois da Fase 9):** 7 rotas + página 404 · 65 componentes (o mínimo é 8) · 38 custom hooks (o mínimo é 2) · 2 serviços · 10 módulos em `lib/`: 3 de funções puras (`datas`, `rotulos`, `validacao`) e 7 de movimento, efeitos e 3D (`movimento`, `presetsMovimento`, `efeitos`, `cortinaDomos`, `pulseira3d/cena`, `pulseira3d/modelo` e `pulseira3d/sinais`).
+**Em números (depois da Fase 9):** 7 rotas + página 404 · 65 componentes (o mínimo é 8) · ~~38~~ **37** custom hooks (o mínimo é 2) · 2 serviços · ~~10~~ **11** módulos em `lib/`: 3 de funções puras (`datas`, `rotulos`, `validacao`) e ~~7~~ **8** de movimento, efeitos e 3D (`movimento`, `presetsMovimento`, `efeitos`, `cortinaDomos`, `pulseira3d/cena`, `pulseira3d/modelo`, `pulseira3d/partes` e `pulseira3d/sinais`). **(Contagem refeita em 16/11/2026: entrou o `useEsperaLonga`; saíram `useFiltroFoto` e `useParallax`; entrou `pulseira3d/partes`.)**
 
 **Como a aplicação é organizada:**
 
@@ -1158,7 +1158,7 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 | `components/ui/NumeroContado.jsx` e `hooks/useContagem.js` (novos) | Número que conta em 1,2 s (`aria-hidden`) e o valor real em texto escondido |
 | `components/abertura/FraseAcende.jsx` e `hooks/useFraseAcende.js` (novos) | Seção `aria-label="Frase de abertura"`; frase inteira para o leitor de tela; palavras visíveis com `aria-hidden` acendendo com a rolagem |
 | `components/abertura/TrajetoPulse.jsx` e `hooks/useTrajeto.js` (novos) | Mapa SVG decorativo (`stroke-dashoffset`), `<ol>` das 5 paradas com os textos do protótipo, modo fixo com trilho de 340svh |
-| `components/ui/FotoFiltro.jsx`, `hooks/useParallax.js` e `hooks/useFiltroFoto.js` (novos) | Filtro de cinza com pontilhado de domos (cor e zoom de 1,05 com o mouse, o foco ou, no celular, ao entrar na tela) e parallax da imagem dentro da moldura |
+| `components/ui/FotoFiltro.jsx`, `hooks/useParallax.js` e `hooks/useFiltroFoto.js` (novos) | Filtro de cinza com pontilhado de domos (cor e zoom de 1,05 com o mouse, o foco ou, no celular, ao entrar na tela) e parallax da imagem dentro da moldura. **(Depois da Fase 9)** Filtro e parallax retirados (item 1 de "Depois da Fase 9"); os dois hooks foram apagados na auditoria (item 7) |
 | `app/globals.css` | Variante `secao-fixa:`; estilos da frase, do filtro, do trajeto e do modo fixo; no alto contraste, foto sem filtro |
 | `hooks/useSecaoAtual.js` | Seções fixas (`data-secao-fixa`) contam a partir do começo, porque o título fica preso no meio da tela |
 | `components/layout/BarraNavegacao.jsx` | `pointer-events: none` na `<nav>` e `auto` na pílula |
@@ -1390,7 +1390,7 @@ As baterias de testes das subfases anteriores não foram rodadas de novo, porque
   - se o arquivo falhar antes de o React assumir a página, o evento `error` já passou, e o hook confere `video.error` quando o vídeo é registrado.
 - **Memória:** ao sair da página, cada vídeo pausa, perde o `src` e é recarregado vazio. No modo de desenvolvimento, o React liga e desliga a ref duas vezes, e o `src` volta pelo `data-src`.
 - **Galeria (correção da 9.7):** com os vídeos na página, a "volta da página" da 9.7 falhou: no primeiro Tab, a página pulou 430 px. A correção dependia do momento exato da rolagem e ainda podia desfazer uma rolagem legítima (a que mostra o botão "Esquerda"). Agora o hook trata o Tab e o Shift+Tab entre as fotos, e o Shift+Tab do botão "Esquerda" para a última foto, com `focus({ preventScroll: true })`. A mola leva a foto ao meio. Ficou só a conversão da rolagem da janela em posição do plano.
-- **Peso da página:** a Solução tem até 12 elementos de vídeo (`preload="metadata"`, como pede a 19.13), mas só os visíveis tocam. Ela ficou com uma cena 3D a menos (a pulseira pequena de "Os sinais").
+- **Peso da página:** a Solução tem até 12 elementos de vídeo (`preload="metadata"`, como pede a 19.13; **depois da Fase 9, `preload="none"`**, item 7), mas só os visíveis tocam. Ela ficou com uma cena 3D a menos (a pulseira pequena de "Os sinais").
 
 **Ambiente:** durante a 9.8, uma pasta temporária de teste apagou por engano parte do `node_modules` (a remoção seguiu um atalho de pasta). O `npm install` repôs exatamente as versões do `package-lock.json`, sem pacote novo. `package.json` e `package-lock.json` ficaram sem mudança, e o `npm ls` não mostra nada faltando. Depois disso, o `npm run dev` que estava aberto desde antes mostrava "Build Error: Error evaluating Node.js code" em todas as páginas: ele tinha guardado no cache a falha `Cannot find module …@tailwindcss/turbopack/dist/index.js` (o carregador do Tailwind, que compila o `globals.css`). O arquivo já tinha voltado, mas o servidor não se recupera sozinho. Solução: parar o servidor, apagar `.next/dev` (cache de desenvolvimento, que se recria) e rodar `npm run dev` de novo. Conferido: as 4 páginas carregam, com o CSS e as fontes, e sem erro.
 
@@ -1716,6 +1716,64 @@ A especificação foi atualizada nas tabelas da 18.13 e da 19.14 e na seção 17
 
 **Sugestão de commit:** `Adiciona o aviso e o "Parar de carregar" para esperas acima de 10 s`
 
+#### 5. Limpeza dos comentários (commit `6c9a086`, 16/11/2026)
+
+**Decisão da equipe (16/11/2026):** um comentário só fica se disser o porquê de uma escolha, uma regra do projeto (começa com "Regra:" e cita a WCAG ou a seção da especificação) ou uma armadilha técnica, em até 2 linhas. Não descreve o que o código faz, não lista props nem formatos e não conta histórico. A regra está na seção 14.1 da especificação.
+
+**O que mudou:**
+- Linhas de comentário: de **3.382 para 504**, ou seja, de **27% para 5,5%** de todas as linhas do código. Contagem refeita em 16/11/2026 nos 128 arquivos `.js`, `.jsx`, `.mjs` e `.css` de `projeto-citizentech-1espu/` (sem `public/`), contando só as linhas que são inteiramente comentário. O número muda com o método: contando também os comentários no fim de uma linha de código, fica de 3.786 para 555 (31% para 6%). Os valores citados antes (3.554 para 468) não foram reproduzidos.
+- Saíram os marcadores já resolvidos: `ICONE-…-AQUI`, `IMAGEM-…-AQUI`, `VIDEO-…-AQUI`, `FONTE-…-AQUI` e `API-EXTERNA-AQUI`.
+- **Continua só o `SIMULADOR-AQUI`**, em `app/simulador/page.jsx` (conferido: é o único `…-AQUI` no código).
+- O código não muda de comportamento: só comentários saíram.
+
+**Por quê:** comentários longos e desatualizados confundiam quem lia o código (por exemplo, "a API ainda não existe"). A história do projeto já fica no Git e neste registro.
+
+**Especificação atualizada:** seções 7.6, 10, 13.1, 13.2, 14.1, 17, 18.1 e 19.13 (texto antigo riscado, com a nota "Depois da Fase 9").
+
+#### 6. AI.md
+
+AI.md completado pela equipe (commit `0c78585`).
+
+#### 7. Auditoria e 5 correções de desempenho e limpeza (16/11/2026)
+
+**Origem:** auditoria do código em 3 critérios (código limpo, otimização de recursos, responsividade e compatibilidade). A equipe escolheu as 5 correções de mais impacto e menos risco. Textos, cores e layout não mudaram.
+
+**O que a auditoria confirmou que já estava bom:**
+- O único `fetch` está em `services/apiClient.js`, e as buscas têm cancelamento (`AbortController`).
+- Toda animação, listener e observer é limpo ao sair. A cena 3D é liberada (`dispose` e `forceContextLoss`) e para fora da tela e com os efeitos desligados.
+- Sem WebGL, a descrição em texto aparece no lugar da pulseira.
+- Nenhuma rolagem lateral e nenhum alvo de toque menor que 44 × 44 px, em 6 rotas e 9 telas (320 × 640, 375 × 667, 640 × 800, 768 × 1024, 1024 × 768, 1440 × 900, 667 × 375, 320 × 480 e 1280 × 600).
+
+**O que mudou:**
+1. **Three.js fora do carregamento inicial.** `hooks/useGiroPulseira.js` importava `VISTA_DAS_PARTES` de `lib/pulseira3d/modelo.js`, que começa com `import * as THREE`. Assim, um pedaço de 223 KB do Three.js entrava no carregamento de Início e Solução, apesar do `next/dynamic`. As constantes `VISTA_DAS_PARTES` e `PULSE_EM_BRAILLE` foram para `lib/pulseira3d/partes.js` (novo, sem `three`). `modelo.js`, `useGiroPulseira.js` e `usePulseira3D.js` importam de lá.
+2. **Fotos adiadas.** As 6 `<img>` (`app/page.jsx`, `SinaisRolagemFixa.jsx`, `GaleriaCanvas.jsx`, `CartaoTecnologia.jsx` e `CartaoIntegrante.jsx`) ganharam `loading="lazy"` e `decoding="async"`.
+3. **Código morto apagado:** `hooks/useFiltroFoto.js`, `hooks/useParallax.js`, o prop `velocidade` (2 vezes em `app/page.jsx`, 5 em `app/solucao/page.jsx` e o do `CartaoIntegrante`) e a regra `.polaroide:has([data-colorida])` de `app/globals.css`.
+4. **Vídeos adiados.** `VideoPulse.jsx` e `AntesDepois.jsx` passaram de `preload="metadata"` para `preload="none"`. O quadro parado (`poster`) aparece até o vídeo tocar.
+5. **Fotos dos sinais menores.** `sinal-continuar`, `-parar`, `-virar` e `-aguardar` foram de 1920 × 1440 para 1200 × 900 (WebP, qualidade 80, com o Pillow, que já estava instalado). Os originais ficaram guardados fora do projeto.
+
+**Resultado:**
+
+| | Antes | Depois |
+| --- | --- | --- |
+| JavaScript inicial da Início (gzip) | 391 KB | 330 KB |
+| JavaScript inicial da Solução (gzip) | 398 KB | 337 KB |
+| Fotos baixadas ao abrir a Solução no celular | 25 (cerca de 2,9 MB) | 0 (carregam ao rolar) |
+| Vídeos baixados ao abrir a Solução | 12 (cerca de 0,9 MB) | 0 (carregam quando tocam) |
+| 4 fotos dos sinais | 1.161 KB | 413 KB |
+
+**Conferido:**
+- `npm run lint` sem erros (os mesmos 6 avisos `no-img-element`) e `npm run build` sem erros (o aviso conhecido da fonte de reserva da Atkinson).
+- Chrome sem janela, a 375 × 667 e a 1440 × 900: depois de rolar, as 27 imagens da Solução carregaram, inclusive na galeria em canvas, e a pulseira 3D continuou desenhando na Início e na Solução.
+
+**Ficaram da auditoria, para a equipe decidir:** a base de GSAP, Motion e Lenis carregada em todas as rotas (cerca de 305 KB com gzip, inclusive no Diário); o estilo de botão em pílula repetido em 4 arquivos; os ramos de reserva "(a definir)" que nunca aparecem; o padrão de rolagem repetido em 4 hooks; a media query repetida em 4 hooks; o peso 500 da JetBrains Mono carregado sem uso; o `rotulo-mono` com 0,8rem (a especificação diz 0,875rem); e a falta de um `browserslist` no `package.json`.
+
+**Teste manual:**
+1. No Chrome, F12 → Lighthouse → Mobile → Performance e Acessibilidade em `/`, `/solucao` e `/diario`. Comparar LCP, Total Blocking Time e CLS com o commit anterior.
+2. No iPhone, com dados móveis, rolar a Solução devagar e conferir que as fotos dos sinais, da galeria, das peças e da equipe aparecem ao chegar na tela, e que os vídeos mostram o quadro parado e tocam ao aparecer.
+3. Na aba Network do DevTools, com "Slow 4G": abrir a Solução e conferir que nenhum `.mp4` e nenhuma foto baixa antes de rolar.
+
+**Sugestão de commit:** `Tira o Three.js do carregamento inicial, adia fotos e vídeos e remove código morto`
+
 ---
 
 ## Como os testes automáticos foram feitos
@@ -1770,6 +1828,9 @@ A especificação foi atualizada nas tabelas da 18.13 e da 19.14 e na seção 17
 | ~~Depois de colocar a Anton: conferir a 320 px os títulos longos e os números~~ Feita na subfase 9.2, com a Anton de verdade | — |
 | Frase da capa ("Um guia no pulso para atravessar a cidade.") é provisória | Equipe |
 | Confirmar ou mudar as decisões marcadas "Implementação" na seção 17 da especificação (21 da Fase 9) | Equipe |
+| Aviso de espera ao salvar e excluir (> 10 s): hoje só o leitor de tela anuncia. A equipe decide se ele também aparece na tela, para quem tem baixa visão | Equipe |
+| Repetir o teste no iPhone (357 × 667) depois do commit `68a7531` | Equipe |
+| Repetir os testes manuais e rodar o Lighthouse (acessibilidade) nas 6 rotas, com ícones e imagens | Equipe |
 
 ### Lista dos marcadores manuais (estado final da Fase 9)
 

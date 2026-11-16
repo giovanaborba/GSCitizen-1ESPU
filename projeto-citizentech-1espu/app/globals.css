@@ -541,10 +541,6 @@ html.lenis {
     }
   }
 
-  html[data-efeitos="ligados"] .polaroide:has([data-colorida]) .polaroide-nome {
-    background-size: 100% 40%;
-  }
-
   .trajeto-mapa .quadra {
     fill: color-mix(in srgb, var(--cor-borda) 16%, transparent);
   }

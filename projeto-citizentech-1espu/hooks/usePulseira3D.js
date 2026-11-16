@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { criarCena } from "@/lib/pulseira3d/cena";
-import { PULSE_EM_BRAILLE } from "@/lib/pulseira3d/modelo";
+import { PULSE_EM_BRAILLE } from "@/lib/pulseira3d/partes";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { DURACAO_DO_CICLO, MOVIMENTO_DO_SINAL, SINAIS_DA_ABERTURA } from "@/lib/pulseira3d/sinais";
 
