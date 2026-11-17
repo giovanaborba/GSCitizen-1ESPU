@@ -231,10 +231,20 @@ function Vitrine({ voltar }) {
 
 function TelaInicial({ pulso, nav, abrirVitrine, abrirRotas }) {
   return <main className="tela-inicial grid min-h-screen place-items-center">
-    <Pulseira modo={pulso.modo} menuAberto={pulso.menuAberto} alternarMenu={() => pulso.definirMenu(v => !v)} escolherModo={pulso.escolherModo} iniciarVoz={nav.iniciarVoz} estado={nav.estado} erro={nav.erro} lado="" numero={nav.segundos} mostrarFalante />
-    <button className="botao-simulacao-pronta" onClick={nav.iniciarSimulacao}>Testar simulação pronta</button>
-    <button className="botao-vitrine" onClick={abrirVitrine}>Conheça como cada comando é feito</button>
-    <button className="botao-rotas-salvas" onClick={abrirRotas}>Rotas salvas</button>
+    <section className="inicio-apresentacao">
+      <aside className="post-it post-it-esquerdo">
+        <p>Para armazenar um caminho recorrente, toque no botão de reconhecimento de voz e diga <strong>“salvar rota”</strong>. Será solicitado o início, destino e nome, você pode nomear como quiser, por exemplo <strong>“casa”</strong> ou <strong>“trabalho”</strong>. Depois, diga <strong>“destino [nome dado a rota]”</strong> para carregar a rota salva.</p>
+      </aside>
+      <Pulseira modo={pulso.modo} menuAberto={pulso.menuAberto} alternarMenu={() => pulso.definirMenu(v => !v)} escolherModo={pulso.escolherModo} iniciarVoz={nav.iniciarVoz} estado={nav.estado} erro={nav.erro} lado="" numero={nav.segundos} mostrarFalante />
+      <aside className="post-it post-it-direito">
+        <p>Para ir a um destino sem salvar a rota, toque no botão de reconhecimento de voz e diga o endereço de destino. A rota será carregada automaticamente.</p>
+      </aside>
+    </section>
+    <nav className="inicio-acoes" aria-label="Opções iniciais">
+      <button className="botao-rotas-salvas" onClick={abrirRotas}>Rotas salvas</button>
+      <button className="botao-vitrine" onClick={abrirVitrine}>Conheça como cada comando é feito</button>
+      <button className="botao-simulacao-pronta" onClick={nav.iniciarSimulacao}>Testar simulação pronta</button>
+    </nav>
   </main>;
 }
 
