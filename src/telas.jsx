@@ -140,7 +140,7 @@ function pontoNaRota(coords, progresso) {
 }
 
 function BotoesRota({ comando, bloqueados }) {
-  return <div className="botoes-rota grid grid-cols-4 gap-2">
+  return <div className="botoes-rota">
     {[
       ['continuar', 'CONTINUAR'], ['parar', 'PARAR'], ['esquerda', 'ESQUERDA'], ['direita', 'DIREITA']
     ].map(([id, texto]) => <button key={id} disabled={bloqueados && id !== 'continuar'} onClick={() => comando(id)}>{texto}</button>)}
@@ -230,7 +230,7 @@ function Vitrine({ voltar }) {
 }
 
 function TelaInicial({ pulso, nav, abrirVitrine, abrirRotas }) {
-  return <main className="tela-inicial grid min-h-screen place-items-center">
+  return <main className="tela-inicial">
     <section className="inicio-apresentacao">
       <aside className="post-it post-it-esquerdo">
         <p>Para armazenar um caminho recorrente, toque no botão de reconhecimento de voz e diga <strong>“salvar rota”</strong>. Será solicitado o início, destino e nome, você pode nomear como quiser, por exemplo <strong>“casa”</strong> ou <strong>“trabalho”</strong>. Depois, diga <strong>“destino [nome dado a rota]”</strong> para carregar a rota salva.</p>
