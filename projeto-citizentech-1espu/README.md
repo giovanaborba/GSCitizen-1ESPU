@@ -1,5 +1,5 @@
-## Repositório Github: https://github.com/othiandrade/GSCitizenTech
-## Deploy Vercel: https://gs-citizen-tech-1espu.vercel.app/
+- Repositório Github: https://github.com/othiandrade/GSCitizenTech
+- Deploy Vercel: https://gs-citizen-tech-1espu.vercel.app/
 
 # Pré-requisitos
 
