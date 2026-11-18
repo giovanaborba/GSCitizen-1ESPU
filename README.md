@@ -1,6 +1,16 @@
-- Repositório Github: https://github.com/othiandrade/GSCitizenTech
-- Deploy Vercel: https://gs-citizen-tech-1espu.vercel.app/
+- Repositório Github: https://github.com/giovanaborba/GSCitizen-1ESPU
+- Deploy Vercel: https://gscitizentech.vercel.app
 
+## Sobre o projeto
+
+A **Pulse** é uma solução de CitizenTech voltada à acessibilidade e à mobilidade urbana, desenvolvida com o propósito de promover mais autonomia, segurança e independência nos deslocamentos de pessoas com deficiência visual. A proposta consiste em uma pulseira inteligente de navegação que utiliza sinais sonoros e táteis para orientar o usuário durante seus trajetos.
+
+O projeto conta com três demonstrações principais:
+
+- **Simulador:** demonstra o funcionamento da pulseira em situações do dia a dia, permitindo simular deslocamentos por meio de rotas salvas ou da indicação de um destino específico. Também apresenta os recursos de orientação e auxílio durante o uso do transporte público.
+- **Vitrine:** apresenta os comandos e as respostas da pulseira em seus diferentes modos de funcionamento, explicando como cada sinal sonoro ou tátil orienta o usuário.
+- **Diário de Deslocamentos:** permite registrar e acompanhar os trajetos realizados, reunindo indicadores que ajudam a visualizar o uso da solução e seu impacto na autonomia e segurança dos deslocamentos.
+  
 # Pré-requisitos
 
 - Node.js 20.9 ou mais novo (o npm já vem junto): https://nodejs.org
@@ -20,8 +30,7 @@ Opção ZIP:
 
 Opção clone github:
 ```
-1. git clone https://github.com/othiandrade/GSCitizenTech.git
-2. cd GSCitizenTech/projeto-citizentech-1espu
+1. git clone https://github.com/giovanaborba/GSCitizen-1ESPU
 ```
 
 ## 2. Instalar as dependências
