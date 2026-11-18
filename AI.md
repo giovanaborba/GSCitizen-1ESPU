@@ -188,7 +188,7 @@ A especificação ainda diz 560 px no "Modo fixo" (ESPECIFICACAO_PULSE.md:1278).
 
 **Em números:** 7 rotas e a página 404, 65 componentes, 38 custom hooks, 2 serviços e 10 módulos em `lib/`.
 
-**Feito à mão pelo grupo:** ícones, imagens, conexão com o MockAPI, simulador e todos os commits.
+**Feito à mão pelo grupo:** imagens, conexão com o MockAPI, simulador e todos os commits.
 
 **Exemplo:** o hook `useFormularioRegistro` (validação do formulário do Diário só ao enviar, com o foco indo para o primeiro erro) foi escrito pelo Claude Code, a partir da regra de validação definida na especificação.
 
@@ -201,4 +201,5 @@ Após a execução da geração do código pela IA, testes eram realizado via de
 A IA acelera a execução do código e planejamento do que será feito, porém sem supervisão ou um atento acompanhamento do que está sendo gerado pode trazer uma composição que não é deseja ou esperada. No caso do Claude, a limitação está mais relacionada a limites para pesquisar e acessar sites na internet, com isso a pessoa precisa passar detalhadamente as decisões e referências para que ele consiga entender o que você realmente pretende desenvolver, e a dificuldade é a falta de acesso ao histórico das sessões do claude code que poderiam ser disponíveis para o desenvolvedor ter acesso de maneira mais fácil.
 
  ## Observação
- **As informações completas do projeto estão nos documentos: Pulse — Especificação para desenvolvimento e Pulse — Registro do desenvolvimento.**
+
+ As informações completas do projeto estão nos documentos: **ESPECIFICACAO_PULSE.md e REGISTRO_DESENVOLVIMENTO.md em docs**
