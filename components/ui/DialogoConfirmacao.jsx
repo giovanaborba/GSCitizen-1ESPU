@@ -7,6 +7,8 @@ import { useEsperaLonga } from "@/hooks/useEsperaLonga";
 
 // Regra: foco inicial na opção segura e de volta ao botão que abriu. Sem "Parar" no
 // "Excluindo…": o servidor pode excluir mesmo se a espera for interrompida.
+const AVISO_DEMORA = "Está demorando mais que o normal. Aguarde mais um pouco.";
+
 export default function DialogoConfirmacao({
   aberto,
   titulo,
@@ -87,7 +89,7 @@ export default function DialogoConfirmacao({
       <p role="status" className="sr-only">
         {processando && textoProcessando
           ? demorando
-            ? "Está demorando mais que o normal. Aguarde mais um pouco."
+            ? AVISO_DEMORA
             : textoProcessando.replace("…", "")
           : ""}
       </p>
@@ -104,6 +106,13 @@ export default function DialogoConfirmacao({
           {textoCancelar}
         </Botao>
       </div>
+
+      {processando && textoProcessando && demorando && (
+        // aria-hidden: o leitor de tela já ouve o aviso pela região de status (11.1).
+        <p aria-hidden="true" className="mt-3 text-auxiliar text-texto-2">
+          {AVISO_DEMORA}
+        </p>
+      )}
     </dialog>
   );
 }

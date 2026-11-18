@@ -65,10 +65,3 @@ Se o Diário mostra erro de conexão > Confira o .env.local, pare o servidor com
 `npm run dev`
 
 Abra http://localhost:3000 no navegador. Para parar, ``use Ctrl + C`` no terminal no VSCode que o servidor foi iniciado.
-
-Para rodar a versão de produção, que é mais rápida:
-
-```
-- npm run build
-- npm start
-```

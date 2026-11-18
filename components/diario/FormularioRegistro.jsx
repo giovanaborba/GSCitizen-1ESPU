@@ -13,6 +13,7 @@ import { OPCOES, PERGUNTAS } from "@/lib/rotulos";
 // Regra: sem "Parar" no "Salvando…": o servidor pode gravar mesmo se a espera for
 // interrompida (11.1).
 const GRUPOS = ["meio", "chegouSemSePerder", "precisouDeAjuda", "travessias", "orientacoes"];
+const AVISO_DEMORA = "Está demorando mais que o normal. Aguarde mais um pouco.";
 
 export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoCancelar }) {
   const { valores, erros, enviando, falhouAoSalvar, falhasAoSalvar, enviosComErro, alterar, enviar } =
@@ -73,7 +74,7 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
         )}
 
         <p role="status" className="sr-only">
-          {enviando ? (demorando ? "Está demorando mais que o normal. Aguarde mais um pouco." : "Salvando") : ""}
+          {enviando ? (demorando ? AVISO_DEMORA : "Salvando") : ""}
         </p>
 
         <div className="flex flex-wrap gap-4">
@@ -84,6 +85,13 @@ export default function FormularioRegistro({ valoresIniciais, aoSalvar, destinoC
             Cancelar
           </Botao>
         </div>
+
+        {demorando && (
+          // aria-hidden: o leitor de tela já ouve o aviso pela região de status (11.1).
+          <p aria-hidden="true" className="mt-3 text-auxiliar text-texto-2">
+            {AVISO_DEMORA}
+          </p>
+        )}
       </div>
     </form>
   );

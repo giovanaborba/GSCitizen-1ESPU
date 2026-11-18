@@ -3,14 +3,12 @@
 import { motion } from "motion/react";
 import RotuloSecao from "@/components/layout/RotuloSecao";
 import EspacoIcone from "@/components/ui/EspacoIcone";
-import EspacoImagem from "@/components/ui/EspacoImagem";
 import FotoFiltro from "@/components/ui/FotoFiltro";
 import { useGaleriaCanvas } from "@/hooks/useGaleriaCanvas";
 
 // x e y: onde cada foto fica no plano de 2400 × 1500 px (protótipo)
 const FOTOS = [
   {
-    reserva: "Foto: faixa de pedestres (a definir)",
     src: "/imagens/galeria-faixa-pedestres.webp",
     alt: "Faixa de pedestres numa avenida movimentada.",
     legenda: "Travessias sem sinal sonoro",
@@ -18,7 +16,6 @@ const FOTOS = [
     y: 120,
   },
   {
-    reserva: "Foto: calçada com obstáculo (a definir)",
     src: "/imagens/galeria-calcada-obstaculo.webp",
     alt: "Calçada com placas de concreto quebradas e desniveladas.",
     legenda: "Calçadas com obstáculos",
@@ -26,7 +23,6 @@ const FOTOS = [
     y: 330,
   },
   {
-    reserva: "Foto: semáforo de pedestres (a definir)",
     src: "/imagens/galeria-semaforo-pedestres.webp",
     alt: "Semáforo de pedestres com o boneco vermelho aceso.",
     legenda: "Semáforos de pedestres",
@@ -34,7 +30,6 @@ const FOTOS = [
     y: 90,
   },
   {
-    reserva: "Foto: ponto de ônibus (a definir)",
     src: "/imagens/galeria-ponto-onibus.webp",
     alt: "Pessoa esperando o ônibus no ponto.",
     legenda: "Embarque no transporte",
@@ -42,7 +37,6 @@ const FOTOS = [
     y: 380,
   },
   {
-    reserva: "Foto: plataforma do metrô (a definir)",
     src: "/imagens/galeria-plataforma-metro.webp",
     alt: "Plataforma do metrô com piso tátil na borda.",
     legenda: "Plataformas de metrô e trem",
@@ -50,7 +44,6 @@ const FOTOS = [
     y: 800,
   },
   {
-    reserva: "Foto: esquina com rampa (a definir)",
     src: "/imagens/galeria-esquina-rampa.webp",
     alt: "Esquina em ladeira, com calçada estreita e sem rampa de acesso.",
     legenda: "Esquinas e rampas",
@@ -66,11 +59,7 @@ function ConteudoFoto({ foto }) {
   return (
     <>
       <FotoFiltro className="aspect-[4/3]">
-        {foto.src ? (
-          <img src={foto.src} alt={foto.alt} loading="lazy" decoding="async" className="size-full object-cover" />
-        ) : (
-          <EspacoImagem texto={foto.reserva} formato="livre" />
-        )}
+        <img src={foto.src} alt={foto.alt} loading="lazy" decoding="async" className="size-full object-cover" />
       </FotoFiltro>
       <figcaption className="mx-1 text-auxiliar text-texto-2">{foto.legenda}</figcaption>
     </>

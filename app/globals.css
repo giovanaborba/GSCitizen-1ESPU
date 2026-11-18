@@ -361,7 +361,7 @@ html.lenis {
    uma informação (18.4). */
 @utility rotulo-mono {
   font-family: var(--fonte-mono);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   font-weight: 700;
   line-height: 1.4;
   letter-spacing: 0.14em;

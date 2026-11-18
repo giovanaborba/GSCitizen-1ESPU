@@ -5,7 +5,7 @@
 > - As regras completas estão em `docs/ESPECIFICACAO_PULSE.md`. A seção 17 dela reúne todas as decisões desta lista.
 > - O registro do uso de IA é mantido pela equipe em `AI.md`.
 >
-> Última atualização: 14/11/2026 (Fase 9 concluída; ícones colocados pelo Claude Code).
+> Última atualização: 18/11/2026 (repositório novo, projeto na raiz, deploy novo, Simulador integrado, aviso de espera visível e sobras da auditoria; ver "Depois da Fase 9", itens 8 a 11).
 
 ---
 
@@ -23,8 +23,11 @@
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
 | 8 | Nova identidade e movimento (seção 18): cores, fontes, capa, pulseira 3D, rolagens, carrossel, galeria, transição entre páginas, rodapé com os ODS, 404 | — (commits por subfase, feitos pela equipe) |
 | 9 | Efeitos, paleta nova, pulseira nova e vídeos (seção 19): interruptor "Efeitos", paleta laranja e grafite, fontes por `next/font/google`, polimento, efeitos e interações novos, Tecnologias em cartões que viram, Galeria em canvas, Equipe no varal, pulseira 3D nova, vídeos, microinterações do Diário e revisão | Por subfase, feitos pela equipe: de `4b4a510` (9.1) a `bbe23f9` (9.10) |
+| Depois da 9 | Ícones, imagens, ajustes do celular, `alt`, espera acima de 10 s, limpeza dos comentários, auditoria, repositório novo, Simulador, aviso de espera visível e sobras da auditoria (seção "Depois da Fase 9", itens 1 a 11) | Repositório antigo: de `8f1e389` a `4b8922f`. Repositório novo: `giovanaborba/GSCitizen-1ESPU` |
 
 **Em números (depois da Fase 9):** 7 rotas + página 404 · 65 componentes (o mínimo é 8) · ~~38~~ **37** custom hooks (o mínimo é 2) · 2 serviços · ~~10~~ **11** módulos em `lib/`: 3 de funções puras (`datas`, `rotulos`, `validacao`) e ~~7~~ **8** de movimento, efeitos e 3D (`movimento`, `presetsMovimento`, `efeitos`, `cortinaDomos`, `pulseira3d/cena`, `pulseira3d/modelo`, `pulseira3d/partes` e `pulseira3d/sinais`). **(Contagem refeita em 16/11/2026: entrou o `useEsperaLonga`; saíram `useFiltroFoto` e `useParallax`; entrou `pulseira3d/partes`.)**
+
+**Em números (com o Simulador, 18/11/2026):** 7 rotas + página 404 + a rota de API `app/api/rotas` · **73** componentes **(72 depois do item 11: saiu o `EspacoImagem`)** · **39** arquivos de hooks (40 hooks: `usePulseiraSimulador.js` exporta também o `useSomSemaforo`) · **3** serviços (`apiClient`, `registrosService` e `simuladorService`) · **12** módulos em `lib/` (entrou `simulador/dados`).
 
 **Como a aplicação é organizada:**
 
@@ -1690,7 +1693,7 @@ A especificação foi atualizada nas tabelas da 18.13 e da 19.14 e na seção 17
 
 **O que mudou para quem usa:**
 1. **Carregando** (lista, Ver registro e Editar registro): depois de 10 s, abaixo de "Carregando os registros…", aparece "Está demorando mais que o normal. Você pode esperar ou parar." e, embaixo, o botão secundário "Parar de carregar". Ao tocar, entra o erro "Carregamento interrompido." com o botão "Tentar de novo", que recebe o foco. O botão de parar some.
-2. **Salvando… e Excluindo…:** depois de 10 s, o leitor de tela anuncia "Está demorando mais que o normal. Aguarde mais um pouco.". O botão continua travado e com o foco. Não há botão de parar.
+2. **Salvando… e Excluindo…:** depois de 10 s, o leitor de tela anuncia "Está demorando mais que o normal. Aguarde mais um pouco.". O botão continua travado e com o foco. Não há botão de parar. **(18/11/2026, item 11: o aviso também aparece na tela.)**
 3. Com os efeitos desligados, o indicador continua parado (a regra geral de `data-efeitos` já zera as animações).
 
 **Como foi feito:**
@@ -1765,7 +1768,7 @@ AI.md completado pela equipe (commit `0c78585`).
 - `npm run lint` sem erros (os mesmos 6 avisos `no-img-element`) e `npm run build` sem erros (o aviso conhecido da fonte de reserva da Atkinson).
 - Chrome sem janela, a 375 × 667 e a 1440 × 900: depois de rolar, as 27 imagens da Solução carregaram, inclusive na galeria em canvas, e a pulseira 3D continuou desenhando na Início e na Solução.
 
-**Ficaram da auditoria, para a equipe decidir:** a base de GSAP, Motion e Lenis carregada em todas as rotas (cerca de 305 KB com gzip, inclusive no Diário); o estilo de botão em pílula repetido em 4 arquivos; os ramos de reserva "(a definir)" que nunca aparecem; o padrão de rolagem repetido em 4 hooks; a media query repetida em 4 hooks; o peso 500 da JetBrains Mono carregado sem uso; o `rotulo-mono` com 0,8rem (a especificação diz 0,875rem); e a falta de um `browserslist` no `package.json`.
+**Ficaram da auditoria, para a equipe decidir:** a base de GSAP, Motion e Lenis carregada em todas as rotas (cerca de 305 KB com gzip, inclusive no Diário); o estilo de botão em pílula repetido em 4 arquivos; os ramos de reserva "(a definir)" que nunca aparecem; o padrão de rolagem repetido em 4 hooks; a media query repetida em 4 hooks; o peso 500 da JetBrains Mono carregado sem uso; o `rotulo-mono` com 0,8rem (a especificação diz 0,875rem); e a falta de um `browserslist` no `package.json`. **(18/11/2026)** Os ramos "(a definir)", o peso 500, o `rotulo-mono` e o `browserslist` foram resolvidos no item 11.
 
 **Teste manual:**
 1. No Chrome, F12 → Lighthouse → Mobile → Performance e Acessibilidade em `/`, `/solucao` e `/diario`. Comparar LCP, Total Blocking Time e CLS com o commit anterior.
@@ -1773,6 +1776,105 @@ AI.md completado pela equipe (commit `0c78585`).
 3. Na aba Network do DevTools, com "Slow 4G": abrir a Solução e conferir que nenhum `.mp4` e nenhuma foto baixa antes de rolar.
 
 **Sugestão de commit:** `Tira o Three.js do carregamento inicial, adia fotos e vídeos e remove código morto`
+
+#### 8. Repositório novo e projeto na raiz (18/11/2026)
+
+**O que mudou:**
+- O código passou para o repositório **`giovanaborba/GSCitizen-1ESPU`** (privado). O antigo, `othiandrade/GSCitizenTech`, deixou de receber commits.
+- O projeto agora fica na **raiz do repositório**: a pasta `projeto-citizentech-1espu/` saiu, e `app/`, `components/`, `hooks/`, `lib/`, `services/`, `public/`, `docs/`, `AI.md`, `README.md` e `INTEGRANTES.txt` ficam lado a lado. Os caminhos citados neste registro com `projeto-citizentech-1espu/` valem agora a partir da raiz.
+- **Deploy novo:** `gscitizentech.vercel.app`, feito por uma integrante pelo perfil dela.
+- **README** novo: links, descrição do projeto (Simulador, Vitrine e Diário de Deslocamentos), pré-requisitos e instalação e execução pelo ZIP do GitHub e pelo clone.
+- **`.gitignore`** novo: `node_modules/`, `dist/`, `.vercel/`, `.env` e `.env.*` (menos o `.env.example`).
+
+**Conferido na pasta local (18/11/2026):** a ESPECIFICACAO e o REGISTRO vieram iguais aos do repositório antigo (commit `4b8922f`). Fora o Simulador, nenhum arquivo de código mudou, nem as imagens e os vídeos.
+
+**Pendente:**
+- **A pasta `.next/` está versionada** (256 arquivos), porque o `.gitignore` novo não tem a linha `.next/`. Ela vai junto no ZIP do GitHub, fica velha e pode levar dentro o endereço da API. Correção: acrescentar `.next/` ao `.gitignore` e rodar `git rm -r --cached .next` (a pasta continua no computador).
+- README: a Ficha da CitizenTech, pedida pelo documento da GS, e a decisão sobre manter ou não o endereço do MockAPI no README.
+
+#### 9. Simulador integrado (18/11/2026)
+
+**Origem:** feito pelo integrante responsável pelo simulador e trazido para o repositório novo. Ocupa o lugar do espaço reservado da 6.3; o marcador `SIMULADOR-AQUI` saiu, e o código não tem mais nenhum marcador `…-AQUI`.
+
+**O que a pessoa encontra em `/simulador`:**
+- **Tela inicial:** a pulseira, com o botão de voz e o de modo, e as notas de como **salvar uma rota** pela voz ("salvar rota", depois início, destino e nome) e de como ir a um destino dizendo o endereço. Botões "Rotas salvas", "Conheça como cada comando é feito" e "Testar simulação pronta".
+- **Rota no mapa:** mapa com a rota a pé; o sinal atual na pulseira e em texto; os botões CONTINUAR, PARAR, ESQUERDA e DIREITA; o aviso do semáforo ("FECHA EM … SEGUNDOS"); o botão "ÔNIBUS E TREM".
+- **Ônibus e trem:** 4 partidas simuladas, com os minutos em Braille e falados.
+- **Rotas salvas:** listar, editar e excluir. A "Rota 1" (Alameda Santos → FIAP Paulista) é o exemplo e não pode ser editada nem excluída.
+- **Vitrine:** 7 cartões com os comandos (5 táteis e 2 sonoros); o som só toca pelo botão "Som".
+- **Modos:** "Sonoro e tátil" e "Exclusivamente tátil" (padrão), guardados no navegador.
+- **O celular não vibra:** a vibração aparece na tela e no texto. Isso resolve a pendência da vibração (Fase 3).
+
+**Como foi feito:**
+- `components/simulador/`: `Simulador`, `TelaInicial`, `TelaRota`, `TelaTransporte`, `RotasSalvas`, `Vitrine`, `Pulseira` e `MapaRota`, mais `simulador.css` (visual próprio, dentro de `.simulador`) e `fonte.js` (DM Sans por `next/font/google`, só nessa página).
+- Hooks: `useNavegacaoSimulador` (telas, voz, rota, passos, semáforo, transporte e simulação pronta) e `usePulseiraSimulador.js` (`usePulseiraSimulador` e `useSomSemaforo`).
+- `lib/simulador/dados.js`: modos, rota de exemplo, partidas, origem de reserva e Braille de 0 a 6.
+- `services/simuladorService.js`: busca de endereço (Nominatim, do OpenStreetMap), rota a pé (`routing.openstreetmap.de`), rotas salvas, voz e fala (APIs do navegador, em `pt-BR`).
+- `app/api/rotas/route.js`: rotas salvas num banco **Neon** (Postgres), pela variável `DATABASE_URL` (ou `POSTGRES_URL` ou `NEON_DATABASE_URL`). Cria a tabela `rotas_salvas` se ela não existir. Sem login: cada navegador tem um identificador aleatório, enviado no cabeçalho `x-pulseira-usuario`.
+- **Sem banco:** no `npm run dev`, as rotas ficam no `localStorage`. Na versão de produção (`npm run build` e `npm start`), listar, salvar, editar e excluir rotas dá erro.
+- Pacotes novos: `leaflet` 1.9.4 (o mapa, carregado com `next/dynamic` e `ssr: false`) e `@neondatabase/serverless` 1.2.1.
+
+**Pontos a conferir** (leitura do código, sem teste no aparelho; detalhes na seção 20.6 da especificação):
+1. Algumas animações do Simulador rodam sem parar e sem botão de pausa. Duas regras do `simulador.css` usam `!important` e podem vencer a regra geral de "Efeitos desligados".
+2. Os botões da pulseira não têm texto visível, só `aria-label` e uma dica.
+3. Os nomes dos sinais na Vitrine ("Continue", "Pare") são diferentes dos do site ("Continuar", "Parar").
+4. O vermelho, a DM Sans e o contraste do Simulador não foram conferidos com a paleta e as regras do site.
+5. A voz só funciona no Chrome e no Edge; a alternativa é a simulação pronta.
+6. O aviso do semáforo usa `aria-live="assertive"`, que interrompe o leitor de tela a cada segundo.
+7. `RotasSalvas` chama o serviço direto, sem um hook no meio.
+8. `app/simulador/page.jsx` ficou com um `{}` vazio no lugar do comentário antigo.
+
+**Teste manual:**
+1. Abrir `/simulador` e usar "Testar simulação pronta": a rota aparece no mapa, e os sinais aparecem na pulseira e em texto.
+2. No Chrome, tocar no botão de voz e dizer um endereço de São Paulo; depois "salvar rota" e "destino [nome]".
+3. Abrir "Rotas salvas", editar e excluir uma rota; a "Rota 1" não pode ser editada nem excluída.
+4. Abrir a Vitrine e ligar o som de um sinal sonoro.
+5. Desligar os "Efeitos" no cabeçalho e conferir se as luzes e a simulação param.
+6. Com o NVDA ou o VoiceOver: ouvir o nome da região, os sinais em texto e o aviso do semáforo.
+
+#### 10. Documentação atualizada (18/11/2026)
+
+A especificação ganhou a **seção 20** (repositório novo, estrutura, deploy, Simulador, variáveis de ambiente e pontos a conferir) e notas **(Depois da Fase 9)** nas seções 6.3, 14, 14.1, 16, 17, 18.12, 19.9, 19.10, 19.14 e 19.17. As pendências já resolvidas da seção 16 foram riscadas.
+
+**Sugestão de commit:** `Atualiza a documentação com o repositório novo e o Simulador`
+
+#### 11. Aviso de espera visível e sobras da auditoria (18/11/2026)
+
+**Decisões da equipe (18/11/2026):** o aviso de espera ao salvar e ao excluir também aparece na tela (opção A); e 4 das 8 sobras da auditoria do item 7 foram escolhidas para resolver. A especificação foi atualizada nas seções 10, 11.1, 11.2, 13.2, 16 (as duas pendências riscadas), 17, 18.4, 19.4 e 19.13.
+
+**O que mudou para quem usa:**
+1. **Salvando… e Excluindo…:** depois de 10 s, além do anúncio do leitor de tela, o aviso "Está demorando mais que o normal. Aguarde mais um pouco." aparece **na tela**, logo abaixo dos botões, em cinza (`--cor-texto-2`), com 16 px, sem ícone e sem animação. O leitor de tela continua ouvindo o aviso **uma vez só**. "Salvando" e "Excluindo" são anunciados como antes, e o foco continua no botão ocupado.
+2. **Vídeo que não carrega:** no lugar de "Vídeo (nome) (a definir)", a caixa mostra o quadro parado do vídeo; se ele também não carregar, "Vídeo indisponível.". O leitor de tela não lê essa reserva, porque o texto da seção já descreve o vídeo.
+3. **Rótulos mono** ("A CIDADE", "FONTE: G1, 2019", rótulos dos cartões etc.): de 12,8 px para 14 px.
+
+**Como foi feito:**
+- **Aviso visível** (`FormularioRegistro.jsx` e `DialogoConfirmacao.jsx`): o texto virou a constante `AVISO_DEMORA`, usada na região de status e na tela. Depois da fila de botões entra um `<p aria-hidden="true" className="mt-3 text-auxiliar text-texto-2">`, só enquanto o `useEsperaLonga` devolve `true`. A região `role="status"` (`sr-only`) não mudou: é ela que anuncia. No diálogo, o aviso visível segue a mesma condição da região de status (`processando` e `textoProcessando`).
+  - Os dois botões ficam lado a lado e o aviso fica 12 px abaixo deles. No diálogo, numa tela estreita (375 px), os botões quebram em duas linhas, e o aviso aparece abaixo de "Manter registro".
+- **Reservas das imagens:** em `GaleriaCanvas.jsx`, `SinaisRolagemFixa.jsx` e `CartaoTecnologia.jsx` saíram os campos `reserva` e `imagem` e o ramo `src ? <img> : <EspacoImagem>`; fica só a `<img>`. `components/ui/EspacoImagem.jsx` ficou sem uso e foi apagado. O ícone `Image` continua no `EspacoIcone`, porque o `CartaoIntegrante` usa.
+- **Reserva dos vídeos:** `VideoPulse.jsx` ganhou o componente `ReservaVideo` (exportado): uma `<div aria-hidden="true">` com o quadro parado (`<img alt="">`, com `loading="lazy"` e `decoding="async"`) e, se ele falhar (`onError`), o texto "Vídeo indisponível." sobre `--cor-superficie`, em `text-auxiliar` e `--cor-texto-2`. O `VideoPulse` e o `LadoVideo` do `AntesDepois.jsx` usam esse componente (o `LadoVideo` perdeu o prop `texto`).
+- **`app/layout.jsx`:** JetBrains Mono com `weight: "700"`. Antes, a busca por `fonte-mono`, `font-mono`, `jetbrains`, `font-medium`, `font-weight: 500` e `fontWeight` (em `app/`, `components/`, `hooks/` e `lib/`) mostrou a mono só no `rotulo-mono` e nas regras `.trajeto-mapa .numero` e `.trajeto-paradas > li::before` de `globals.css`, todas em 700.
+- **`app/globals.css`:** `@utility rotulo-mono` com `font-size: 0.875rem`. As abas de "Os sinais" têm `text-[0.9rem]` próprio e não mudaram.
+- **`package.json`:** `"browserslist": ["chrome >= 111", "edge >= 111", "firefox >= 111", "safari >= 16.4"]`. Nada foi instalado.
+
+**Conferido:**
+- `npm run lint` sem erros, com **7** avisos `no-img-element`: os 6 de antes e 1 novo, do `<img>` do quadro parado em `VideoPulse.jsx`.
+- `npm run build` sem erros (o aviso conhecido da fonte de reserva da Atkinson e um aviso sobre um `package-lock.json` fora da pasta do repositório, no computador onde o build rodou).
+- **88 testes temporários, fora do projeto:** Chrome sem janela, controlado pelo protocolo de depuração, com uma API falsa que demorava 13 s para salvar e excluir. O endereço dela entrou só num build de teste; depois o build foi refeito sem ele. Nada disso entrou no projeto.
+  - **31 da espera longa** (375 px): ao salvar e ao excluir, aos 2 s, o botão "Salvando…"/"Excluindo…" travado, o status "Salvando"/"Excluindo", nenhum aviso na tela e o foco no botão; aos 11,5 s, o aviso visível abaixo dos botões, com 16 px, na cor de `--cor-texto-2`, sem ícone, sem animação e com `aria-hidden`; o status com o aviso; **1 só** nó com o aviso na árvore de acessibilidade; o foco ainda no botão. Depois da resposta, a lista (salvar) e o diálogo fechado (excluir), sem o aviso.
+  - **48 de layout:** 6 rotas (`/`, `/solucao`, `/diario`, `/diario/1`, `/simulador` e a 404) em 4 telas (320 × 640; 1280 × 800 com zoom de 200%; celular 375 × 667; 1440 × 900), rolando a página inteira: nenhuma rolagem lateral, e os rótulos mono (14 px) sem corte e sem sair da caixa.
+  - **9 dos vídeos:** com os `.mp4` bloqueados, 5 caixas na Solução e 1 na Início mostram o quadro parado; bloqueando também os quadros parados, "Vídeo indisponível."; nenhum "(a definir)" na página; a reserva fora da árvore de acessibilidade. Com os vídeos, nenhuma reserva.
+
+**Teste manual:**
+1. Com a API configurada, abrir um registro em "Editar registro" e deixar a página carregar. No DevTools (F12), aba **Network**, em **No throttling**, escolher **Add…** e criar um perfil com **Latency** de `15000` ms; ligar o perfil.
+2. Tocar em "Salvar registro". Aos 10 s, conferir o aviso abaixo dos botões, em cinza e sem ícone, e o foco ainda em "Salvando…". Com o NVDA, ouvir "Salvando" e, aos 10 s, o aviso **uma vez só**.
+3. Fazer o mesmo com "Excluir registro", no diálogo de confirmação.
+4. Com zoom de 200%, numa janela de 320 px e no celular: na Início, na Solução (índice "Nesta página", abas de "Os sinais", rótulos dos cartões de Tecnologias) e no Diário, conferir que nenhum rótulo fica cortado e que nada rola para o lado.
+5. Na aba **Network**, abrir **Network request blocking**, bloquear `*.mp4` e recarregar a Solução: as caixas mostram o quadro parado, sem botões. Bloquear também `*quadro-parado.jpg`: aparece "Vídeo indisponível.". Tirar os bloqueios no fim.
+6. Voltar para **No throttling**.
+
+**Ficam da auditoria, sem escolha da equipe:** a base de GSAP, Motion e Lenis em todas as rotas, o estilo de botão em pílula repetido em 4 arquivos, o padrão de rolagem repetido em 4 hooks e a media query repetida em 4 hooks.
+
+**Sugestão de commit:** `Mostra o aviso de espera longa na tela e resolve 4 sobras da auditoria`
 
 ---
 
@@ -1808,6 +1910,9 @@ AI.md completado pela equipe (commit `0c78585`).
 | GSAP / ScrollTrigger | Biblioteca de animação / plugin dela que liga uma animação à rolagem (Fase 8) |
 | Motion | Biblioteca de microinterações para React (Fase 8) |
 | Relógio (`ticker`) | Função chamada a cada quadro da tela, cerca de 60 vezes por segundo, que faz as animações andarem |
+| Leaflet | Biblioteca de mapas usada no Simulador (depois da Fase 9) |
+| Neon | Serviço de banco de dados Postgres na nuvem, usado nas rotas salvas do Simulador (depois da Fase 9) |
+| Rota de API (`route.js`) | Arquivo do Next.js que responde a pedidos no servidor, como `/api/rotas` |
 
 ---
 
@@ -1815,11 +1920,11 @@ AI.md completado pela equipe (commit `0c78585`).
 
 | Pendência | Quem resolve |
 | --- | --- |
-| Gerar as imagens com os prompts do documento "Prompts das imagens da Pulse" e pôr **todos** os arquivos em `public/imagens/` (lista completa logo abaixo); avisar quando terminar. As 3 fontes já entram por `next/font/google` (9.2), e os ícones já foram colocados pelo Claude Code depois da Fase 9 | Equipe |
-| Ligar os caminhos das imagens no código (trocar cada `EspacoImagem` pela imagem, com o `alt` sugerido), depois do aviso da equipe | Claude Code |
+| ~~Gerar as imagens com os prompts do documento "Prompts das imagens da Pulse" e pôr **todos** os arquivos em `public/imagens/`~~ Feita (14/11/2026) | — |
+| ~~Ligar os caminhos das imagens no código~~ Feita (commit `8f1e389`) | — |
 | ~~Colocar os vídeos, os quadros parados e as legendas em `public/videos/`~~ Já estão lá (9.8). Opcional: trocar `animacao-a-pulseira.mp4` pela versão com a voz "Trianon-Masp", com o mesmo nome | Equipe |
-| Conectar a API externa: a equipe escolheu o **MockAPI** (9.9). Criar o projeto e o recurso `registros`, pôr a URL no `.env.local` e na hospedagem (passo a passo na 9.9) | Equipe |
-| Fazer o simulador (`SIMULADOR-AQUI`) e decidir sobre a vibração do celular | Integrante do simulador + equipe |
+| ~~Conectar a API externa (MockAPI)~~ Feita e testada no site publicado (13/11/2026). **No deploy novo**, conferir a variável `NEXT_PUBLIC_API_URL` | Equipe |
+| ~~Fazer o simulador (`SIMULADOR-AQUI`) e decidir sobre a vibração do celular~~ Simulador integrado e sem vibração do celular (item 9). Falta avaliá-lo com as WCAG e as heurísticas (pontos a conferir no item 9) | Equipe |
 | ~~Textos da página 404 em português~~ Feita na subfase 8.7 (`app/not-found.jsx`) | — |
 | ~~Textos para esperas acima de 10 s (aviso + cancelar)~~ Feita depois da Fase 9 (opção B, 15/11/2026) | — |
 | ~~Alinhamento do logo com a grade no computador~~ Resolvido na Fase 8 (área de 76rem em tudo). Cabeçalho fixo com zoom de 400% | Equipe avalia |
@@ -1828,11 +1933,17 @@ AI.md completado pela equipe (commit `0c78585`).
 | ~~Depois de colocar a Anton: conferir a 320 px os títulos longos e os números~~ Feita na subfase 9.2, com a Anton de verdade | — |
 | Frase da capa ("Um guia no pulso para atravessar a cidade.") é provisória | Equipe |
 | Confirmar ou mudar as decisões marcadas "Implementação" na seção 17 da especificação (21 da Fase 9) | Equipe |
-| Aviso de espera ao salvar e excluir (> 10 s): hoje só o leitor de tela anuncia. A equipe decide se ele também aparece na tela, para quem tem baixa visão | Equipe |
+| ~~Aviso de espera ao salvar e excluir (> 10 s): hoje só o leitor de tela anuncia. A equipe decide se ele também aparece na tela, para quem tem baixa visão~~ Feita: aparece na tela (opção A, item 11, 18/11/2026) | — |
+| ~~Sobras da auditoria (item 7), para a equipe decidir~~ Feitas as 4 escolhidas: ramos "(a definir)", peso 500 da mono, `rotulo-mono` e `browserslist` (item 11, 18/11/2026). As outras 4 não foram escolhidas | — |
 | Repetir o teste no iPhone (357 × 667) depois do commit `68a7531` | Equipe |
 | Repetir os testes manuais e rodar o Lighthouse (acessibilidade) nas 6 rotas, com ícones e imagens | Equipe |
+| Tirar a pasta `.next/` do Git (`.next/` no `.gitignore` e `git rm -r --cached .next`) | Equipe |
+| No deploy novo, configurar a `DATABASE_URL` (rotas salvas do Simulador) | Equipe |
+| README: Ficha da CitizenTech e decisão sobre o endereço do MockAPI | Equipe |
 
 ### Lista dos marcadores manuais (estado final da Fase 9)
+
+> **(Depois da Fase 9)** Todos os marcadores saíram do código: os de mídia e de API na limpeza dos comentários (item 5) e o `SIMULADOR-AQUI` com o Simulador (item 9). A lista abaixo fica como histórico.
 
 **Como colocar:**
 - **Ícone:** nada a fazer. O `EspacoIcone` já desenha o ícone (colocado pelo Claude Code depois da Fase 9). A tabela de ícones abaixo fica como referência de onde cada um aparece.

@@ -1,6 +1,5 @@
 "use client";
 
-import EspacoImagem from "@/components/ui/EspacoImagem";
 import VideoPulse from "@/components/ui/VideoPulse";
 import { useRolagemFixa } from "@/hooks/useRolagemFixa";
 import RotuloSecao from "@/components/layout/RotuloSecao";
@@ -18,7 +17,6 @@ const SINAIS = [
       ["Modo tátil:", "pressão contínua no pulso até você andar."],
       ["Modo sonoro:", "som grave e curto."],
     ],
-    imagem: "Foto do sinal continuar (a definir)",
     src: "/imagens/sinal-continuar.webp",
     alt: "Pessoa cega com bengala atravessando a faixa de pedestres.",
   },
@@ -31,7 +29,6 @@ const SINAIS = [
       ["Modo tátil:", "vibração contínua até você parar."],
       ["Modo sonoro:", "som agudo e contínuo."],
     ],
-    imagem: "Foto do sinal parar (a definir)",
     src: "/imagens/sinal-parar.webp",
     alt: "Pessoa parada no meio-fio diante do semáforo fechado.",
   },
@@ -41,7 +38,6 @@ const SINAIS = [
     link: "Virar",
     titulo: "Virar à esquerda ou à direita",
     pares: [["Nos dois modos:", "vibração no lado correspondente."]],
-    imagem: "Foto do sinal virar (a definir)",
     src: "/imagens/sinal-virar.webp",
     alt: "Esquina de calçada com piso tátil indicando a curva.",
   },
@@ -51,7 +47,6 @@ const SINAIS = [
     link: "Aguardar",
     titulo: "Aguardar",
     pares: [["Nos dois modos:", "três vibrações curtas, repetidas em intervalos."]],
-    imagem: "Foto do sinal aguardar (a definir)",
     src: "/imagens/sinal-aguardar.webp",
     alt: "Pessoa esperando no ponto de ônibus.",
   },
@@ -151,17 +146,13 @@ export default function SinaisRolagemFixa() {
                   }
                 >
                   <div className={`foto-sinal min-h-0 ${podeFixar ? "min-[62.5rem]:self-stretch" : ""}`}>
-                    {sinal.src ? (
-                      <img
-                        src={sinal.src}
-                        alt={sinal.alt}
-                        loading="lazy"
-                        decoding="async"
-                        className={`size-full rounded-cartao object-cover ${podeFixar ? "" : "aspect-[4/3]"}`}
-                      />
-                    ) : (
-                      <EspacoImagem texto={sinal.imagem} formato={podeFixar ? "livre" : "paisagem"} />
-                    )}
+                    <img
+                      src={sinal.src}
+                      alt={sinal.alt}
+                      loading="lazy"
+                      decoding="async"
+                      className={`size-full rounded-cartao object-cover ${podeFixar ? "" : "aspect-[4/3]"}`}
+                    />
                   </div>
                   <div className="texto-sinal grid gap-3">
                     <h3

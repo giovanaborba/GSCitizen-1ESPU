@@ -26,7 +26,7 @@ const atkinson = Atkinson_Hyperlegible_Next({
   variable: "--fonte-atkinson",
 });
 const mono = JetBrains_Mono({
-  weight: ["500", "700"],
+  weight: "700",
   subsets: ["latin", "latin-ext"],
   display: "swap",
   variable: "--fonte-jetbrains",

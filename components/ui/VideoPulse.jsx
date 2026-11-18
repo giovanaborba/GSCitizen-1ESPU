@@ -1,9 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "motion/react";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 import IconeAlternado from "@/components/ui/IconeAlternado";
-import EspacoImagem from "@/components/ui/EspacoImagem";
 import { useVideoPulse } from "@/hooks/useVideoPulse";
 
 // Regra: "Pausar" sempre visível (WCAG 2.2.2); o texto do botão diz a ação, sem
@@ -18,6 +18,31 @@ export function caminhosDoVideo(nome) {
     quadroParado: `/videos/${nome}-quadro-parado.jpg`,
     legendas: `/videos/${nome}-legendas.vtt`,
   };
+}
+
+// Se o vídeo falhar, fica o quadro parado; sem ele, "Vídeo indisponível.". aria-hidden:
+// o texto da seção já descreve o vídeo (WCAG 1.2.1).
+export function ReservaVideo({ quadroParado, className = "" }) {
+  const [semQuadro, setSemQuadro] = useState(false);
+
+  return (
+    <div aria-hidden="true" className={`size-full ${className}`}>
+      {semQuadro ? (
+        <p className="grid size-full place-items-center bg-superficie p-6 text-center text-auxiliar text-texto-2">
+          Vídeo indisponível.
+        </p>
+      ) : (
+        <img
+          src={quadroParado}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={() => setSemQuadro(true)}
+          className="size-full object-cover"
+        />
+      )}
+    </div>
+  );
 }
 
 export function ControlesVideo({ tocando, aoAlternarPausa, comSom = false, somLigado = false, aoAlternarSom, className = "" }) {
@@ -95,7 +120,7 @@ export default function VideoPulse({
     <div ref={refContainer} className={`grid gap-3 ${className}`}>
       <div className={`relative aspect-video overflow-hidden rounded-cartao bg-[var(--cor-cortina)] ${classeCaixa}`}>
         {falhou ? (
-          <EspacoImagem texto={`Vídeo ${nome} (a definir)`} formato="livre" className="absolute inset-0" />
+          <ReservaVideo quadroParado={caminhos.quadroParado} className="absolute inset-0" />
         ) : (
           elementoVideo
         )}

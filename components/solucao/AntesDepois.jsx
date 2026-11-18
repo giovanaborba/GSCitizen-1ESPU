@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Cartao from "@/components/ui/Cartao";
 import EspacoIcone from "@/components/ui/EspacoIcone";
-import EspacoImagem from "@/components/ui/EspacoImagem";
-import { ControlesVideo, caminhosDoVideo } from "@/components/ui/VideoPulse";
+import { ControlesVideo, ReservaVideo, caminhosDoVideo } from "@/components/ui/VideoPulse";
 import { useVideoPulse } from "@/hooks/useVideoPulse";
 
 // Um <input type="range"> de verdade move a divisória: mouse, dedo, setas e leitor de
@@ -13,8 +12,8 @@ import { useVideoPulse } from "@/hooks/useVideoPulse";
 const SEM = caminhosDoVideo("animacao-antes-sem");
 const COM = caminhosDoVideo("animacao-antes-com");
 
-function LadoVideo({ caminhos, propsVideo, falhou, texto }) {
-  if (falhou) return <EspacoImagem texto={texto} formato="livre" className="rounded-none border-0" />;
+function LadoVideo({ caminhos, propsVideo, falhou }) {
+  if (falhou) return <ReservaVideo quadroParado={caminhos.quadroParado} />;
   return (
     <video
       {...propsVideo}
@@ -55,12 +54,12 @@ export default function AntesDepois() {
         className="relative aspect-video w-full max-w-[56rem] touch-pan-y overflow-hidden rounded-[1.5rem] border-2 border-borda bg-[var(--cor-cortina)] has-[input:focus-visible]:outline-3 has-[input:focus-visible]:outline-offset-3 has-[input:focus-visible]:outline-marca"
       >
         <div aria-hidden="true" className="absolute inset-0">
-          <LadoVideo caminhos={SEM} propsVideo={propsVideo(0)} falhou={falhou} texto="Vídeo animacao-antes-sem (a definir)" />
+          <LadoVideo caminhos={SEM} propsVideo={propsVideo(0)} falhou={falhou} />
           <span className={`${ESTILO_ETIQUETA} left-3 bg-[#FFFFFF]`}>Sem a Pulse</span>
         </div>
 
         <div aria-hidden="true" className="absolute inset-0 [clip-path:inset(0_0_0_var(--posicao))]">
-          <LadoVideo caminhos={COM} propsVideo={propsVideo(1)} falhou={falhou} texto="Vídeo animacao-antes-com (a definir)" />
+          <LadoVideo caminhos={COM} propsVideo={propsVideo(1)} falhou={falhou} />
           <span className={`${ESTILO_ETIQUETA} right-3 bg-[#FC4C02]`}>Com a Pulse</span>
         </div>
 

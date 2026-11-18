@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import EspacoIcone from "@/components/ui/EspacoIcone";
-import EspacoImagem from "@/components/ui/EspacoImagem";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { spring } from "@/lib/presetsMovimento";
 
@@ -37,11 +36,7 @@ export default function CartaoTecnologia({ rotulo, nome, descricao, src, alt }) 
           inert={!virado}
           className={`${ESTILO_FACE} overflow-hidden border-acao bg-superficie rotate-y-180`}
         >
-          {src ? (
-            <img src={src} alt={alt} loading="lazy" decoding="async" className="size-full object-cover" />
-          ) : (
-            <EspacoImagem texto={`Foto da peça: ${nome} (a definir)`} formato="livre" className="rounded-none border-0" />
-          )}
+          <img src={src} alt={alt} loading="lazy" decoding="async" className="size-full object-cover" />
         </div>
       </motion.div>
 
