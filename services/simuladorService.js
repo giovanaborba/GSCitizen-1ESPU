@@ -1,6 +1,3 @@
-// Serviços do simulador: mapa, rota, voz e rotas salvas.
-// Regra do site: o apiClient.js é o único que fala com a API do Diário. Este arquivo
-// fala com outros serviços (OpenStreetMap, rota a pé e /api/rotas) e é só do simulador.
 import { origemReserva, rotaExemplo } from "@/lib/simulador/dados";
 
 const baseMapa = "https://nominatim.openstreetmap.org/search";
@@ -8,7 +5,7 @@ const baseRota = "https://routing.openstreetmap.de/routed-foot/route/v1/driving"
 const chaveUsuario = "pulseira-usuario-id";
 const chaveRotas = "pulseira-rotas-salvas";
 
-// Em desenvolvimento, sem banco configurado, as rotas ficam no navegador.
+//temporario enquanto o banco n esta linkado
 const emDesenvolvimento = process.env.NODE_ENV !== "production";
 
 function obterIdUsuario() {
