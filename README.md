@@ -13,49 +13,58 @@ O projeto conta com três demonstrações principais:
   
 # Pré-requisitos
 
+- VSCode
 - Node.js 20.9 ou mais novo (o npm já vem junto): https://nodejs.org
 - Git, só pra clonar.
-- Para conferir as versões: node -v e npm -v.
+
+**Para conferir as versões: node -v e npm -v no terminal.**
 
 # Instalação e execução
 
 ## 1. Obter o projeto
 
-Opção ZIP:
+**Opção ZIP:**
 
-1. Extraia o arquivo GSCitizenTech-main.zip.
-2. Abra o terminal na pasta que contém projeto-citizentech-1espu:
+- Extraia o arquivo GSCitizen-1ESPU-main.zip no local desejado.
+- Abra o VSCODE
+- Terminal > Novo Terminal (ou CTRL+J)
+- Escolha a opção do terminal >bash<
+- Se ainda não estiver, entre na pasta que contém o projeto "GSCitizen-1ESPU" com o comando no terminal: ``cd GSCitizen-1ESPU``
 
-``cd GSCitizenTech-main/projeto-citizentech-1espu``
+**Opção Clone Github:**
 
-Opção clone github:
-```
-1. git clone https://github.com/giovanaborba/GSCitizen-1ESPU
-```
+- Copie "https://github.com/giovanaborba/GSCitizen-1ESPU.git", no Repositório Github apertando "<> CODE" na cor verde.
+- Abra o VS Code
+- Terminal > Novo Terminal (ou CTRL+J)
+- Escolha a opção do terminal >bash<
+- Git clone + endereço copiado do Github
+- digite: ``cd GSCitizen-1ESPU``
+
 
 ## 2. Instalar as dependências
-- ``npm ci``
+- digite no terminal ``npm ci``
+- digite: ``code .`` (Abre o projeto no VS Code)
 
-Esse comando instala exatamente as versões do package-lock.json. Se der erro, use **``npm install``**.
+``"npm ci"`` instala exatamente as versões do package-lock.json. Se der erro, use **``npm install``**.
 
 ## 3. Ligar a API do Diário
 
-Crie o arquivo .env.local dentro de projeto-citizentech-1espu com:
+Crie o arquivo .env.local dentro de "GSCitizen-1ESPU" e coloque dentro dela:
 ``NEXT_PUBLIC_API_URL=https://6af795c99bdd097c326e26be.mockapi.io/api/v1``
 
 ### Observação:
 
-Ao salvar escolha "todos os arquivos” ou crie o arquivo pelo VS Code.
+Se criar o arquivo fora do VSCODE, ao salvar, escolha: "todos os arquivos".
 
 Sem esse arquivo, o site funciona normalmente, e só o Diário mostra a mensagem de erro de conexão.
 
-Se o Diário mostra erro de conexão > Confira o .env.local, pare o servidor com Ctrl + C e rode npm run dev de novo”
+Se o Diário mostra erro de conexão > Confira o .env.local, pare o servidor com Ctrl + C no terminal no VSCode que o servidor foi iniciado, e rode ``npm run dev`` de novo”
 
 ##  4. Rodar o projeto
 
 `npm run dev`
 
-Abra http://localhost:3000 no navegador. Para parar, use Ctrl + C.
+Abra http://localhost:3000 no navegador. Para parar, ``use Ctrl + C`` no terminal no VSCode que o servidor foi iniciado.
 
 Para rodar a versão de produção, que é mais rápida:
 
