@@ -108,19 +108,41 @@ export function obterOrigem() {
   });
 }
 
+const limitesEstadoSP = "-53.11,-19.78,-44.16,-25.31"; // estado SP
+// const limitesCidadeSP = "-46.83,-23.36,-46.36,-24.01"; // só a cidade de SP
+
+function distanciaKm(a, b) {
+  const rad = (g) => (g * Math.PI) / 180;
+  const dLat = rad(b.lat - a.lat);
+  const dLon = rad(b.lon - a.lon);
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon / 2) ** 2;
+  return 6371 * 2 * Math.asin(Math.sqrt(h));
+}
+
 export async function buscarDestino(endereco) {
   const consulta = new URLSearchParams({
     format: "jsonv2",
-    limit: "1",
+    limit: "5",
     "accept-language": "pt-BR",
+    countrycodes: "br",
+    viewbox: limitesEstadoSP,
+    bounded: "1",
     q: endereco,
   });
   const lugares = await obterJson(`${baseMapa}?${consulta}`);
-  if (!lugares.length) throw new Error("Endereço não encontrado. Tente falar novamente.");
+  if (!lugares.length) throw new Error("Endereço não encontrado em SP.");
+
+  const origem = await obterOrigem();
+  const [melhor] = lugares
+    .map((l) => ({ l, km: distanciaKm(origem, { lat: Number(l.lat), lon: Number(l.lon) }) }))
+    .sort((a, b) => a.km - b.km);
+
   return {
-    lat: Number(lugares[0].lat),
-    lon: Number(lugares[0].lon),
-    nome: lugares[0].display_name.split(",").slice(0, 3).join(","),
+    lat: Number(melhor.l.lat),
+    lon: Number(melhor.l.lon),
+    nome: melhor.l.display_name.split(",").slice(0, 3).join(","),
   };
 }
 
