@@ -13,7 +13,7 @@ O projeto conta com três demonstrações principais:
   
 # Pré-requisitos
 
-- VSCode
+- VS Code
 - Node.js 20.9 ou mais novo (npm já vem junto): https://nodejs.org
 - Git, só pra clonar.
 
