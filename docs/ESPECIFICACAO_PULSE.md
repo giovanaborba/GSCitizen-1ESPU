@@ -464,7 +464,7 @@ As cores, as fontes e a linguagem visual estão nas seções 18.4, 18.5 e 19.3. 
 
 - Fundo `--cor-superficie` e borda inferior `--cor-borda`, na área de 76rem. Contém o link "Pulse" (ícone `Pulse` + nome em Anton), o rótulo mono "GS 2026.2 · CitizenTech" e o botão "Efeitos" (seção 19.2). Abaixo de 640 px, o rótulo desce para uma segunda linha.
 - Embaixo dele fica a barra de progresso da leitura (seção 19.6).
-- Fica preso no topo (`sticky`). Em Início e Solução, no celular, some ao rolar (ver 9.3).
+- Fica preso no topo (`sticky`). Em Início, Solução, Simulador e Diário, no celular, some ao rolar (ver 9.3).
 - Mede a própria altura e guarda em `--altura-cabecalho`. As âncoras usam esse valor para parar logo abaixo dele.
 
 ### 9.2 Barra flutuante (`<nav aria-label="Navegação principal">`)
@@ -486,14 +486,14 @@ As cores, as fontes e a linguagem visual estão nas seções 18.4, 18.5 e 19.3. 
 
 ### 9.3 Barras que somem ao rolar (custom hook `useDirecaoRolagem`)
 
-Aplica-se **só a Início e Solução, só abaixo de 768 px**:
+Aplica-se **a Início, Solução, Simulador e Diário (com as subrotas), só abaixo de 768 px**:
 - Rolou para baixo mais que uma distância mínima (≈ altura do cabeçalho, 64 px) → cabeçalho e barra deslizam para fora da tela.
 - Continuam escondidos quando a rolagem para.
 - Rolou para cima mais que 64 px → voltam.
 - **Voltam também**: no topo da página, perto do fim da página, e quando qualquer elemento delas recebe foco.
 - Esconder **só visualmente** (`transform: translateY`), nunca com `display: none`/`hidden`: elas continuam acessíveis ao leitor de tela.
 - Com os efeitos desligados: **sempre visíveis**.
-- Em Simulador e Diário, e em telas a partir de 768 px: sempre visíveis.
+- Na página 404 e em telas a partir de 768 px: sempre visíveis.
 
 ### 9.4 Índice "Nesta página"
 
@@ -602,7 +602,7 @@ Pontos de quebra do Tailwind: **`md` = 768 px** (tablet) e **`lg` = 1024 px** (c
 | Elemento | Celular (< 768 px) | Tablet (≥ 768) | Computador (≥ 1024) |
 | --- | --- | --- | --- |
 | Barra flutuante | Ícone em cima, texto embaixo; largura pelo texto em 1 linha, 2 × 2 quando não couber | Ícone e texto lado a lado | Igual ao tablet |
-| Barras que somem ao rolar | Início e Solução | Não | Não |
+| Barras que somem ao rolar | Início, Solução, Simulador e Diário | Não | Não |
 | Coluna de texto | Largura total | Até ~40rem | Até ~40rem |
 | "Nesta página" | Pílulas paradas | Pílulas paradas | Pílulas presas embaixo do cabeçalho (com altura ≥ 700 px) |
 | Cartões repetidos (inclusive os registros do Diário) | 1 por linha | 2 por linha | 2 por linha |

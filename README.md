@@ -33,7 +33,7 @@ O projeto conta com três demonstrações principais:
 
 **Opção Clone Github:**
 
-- Copie "https://github.com/giovanaborba/GSCitizen-1ESPU.git", no Repositório Github apertando "<> CODE" na cor verde.
+- Copie "https://github.com/giovanaborba/GSCitizen-1ESPU.git", no Repositório Github apertando o botão "<> CODE".
 - Abra o VSCode
 - Terminal > Novo Terminal (ou CTRL+J)
 - Escolha a opção do terminal >bash<
@@ -52,13 +52,15 @@ O projeto conta com três demonstrações principais:
 Crie o arquivo .env.local dentro de "GSCitizen-1ESPU" e coloque dentro dela:
 ``NEXT_PUBLIC_API_URL=https://6af795c99bdd097c326e26be.mockapi.io/api/v1``
 
+**Observação: No deploy na Vercel a API está configurada corretamente, ou seja o registro no diário está funcionando normalmente lá.**
+
 ### Observação:
 
 Se criar o arquivo fora do VSCODE, ao salvar, escolha: "todos os arquivos".
 
 Sem esse arquivo, o site funciona normalmente, e só o Diário mostra a mensagem de erro de conexão.
 
-Se o Diário mostra erro de conexão > Confira o .env.local, pare o servidor com Ctrl + C no terminal no VSCode que o servidor foi iniciado, e rode ``npm run dev`` de novo”
+Se o Diário mostra erro de conexão > Confira o .env.local, pare o servidor com Ctrl + C no terminal no VSCode que o servidor foi iniciado, e rode ``npm run dev`` de novo
 
 ##  4. Rodar o projeto
 

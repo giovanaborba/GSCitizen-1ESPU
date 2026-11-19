@@ -3,14 +3,22 @@ import { usePathname } from "next/navigation";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { CONSULTA_CELULAR } from "@/lib/tela";
 
-// Regra (9.3): só em Início e Solução, abaixo de 768 px. Quem usa esconde só com
-// transform, nunca display: none, para o leitor de tela alcançar as barras.
-const ROTAS_COM_BARRAS_QUE_SOMEM = ["/", "/solucao"];
+// Regra (9.3): Início, Solução, Simulador e Diário (com subrotas), abaixo de 768 px.
+// Quem usa esconde só com transform, nunca display: none, para o leitor de tela alcançar as barras.
+const ROTAS_EXATAS = ["/", "/solucao", "/simulador"];
+const ROTAS_COM_SUBROTAS = ["/diario"];
+
+function temBarrasQueSomem(caminho) {
+  return (
+    ROTAS_EXATAS.includes(caminho) ||
+    ROTAS_COM_SUBROTAS.some((rota) => caminho === rota || caminho.startsWith(`${rota}/`))
+  );
+}
 
 export function useDirecaoRolagem() {
   const caminho = usePathname();
   const { efeitosLigados } = useEfeitos();
-  const ativo = ROTAS_COM_BARRAS_QUE_SOMEM.includes(caminho);
+  const ativo = temBarrasQueSomem(caminho);
 
   // Guarda EM QUAL rota as barras foram escondidas. Ao trocar de página,
   // a rota nova é diferente, então as barras voltam sozinhas.
