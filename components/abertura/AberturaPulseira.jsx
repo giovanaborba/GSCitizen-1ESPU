@@ -85,7 +85,7 @@ export default function AberturaPulseira() {
         <motion.div {...revelacao()} className="grid justify-items-center gap-3 text-center">
           <p className="rotulo-mono text-destaque">Pulseira de navegação</p>
           <h1 id="titulo-inicio" tabIndex={-1} className="max-w-[18ch] text-h1-abertura">
-            Inovação que chega a quem precisa
+            No seu ritmo, no seu espaço, com a segurança de quem guia cada passo
           </h1>
           <p className="max-w-[46ch] text-texto-2">
             A Pulse é uma pulseira que guia pessoas cegas e com baixa visão pela cidade.

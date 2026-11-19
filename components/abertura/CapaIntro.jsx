@@ -44,7 +44,7 @@ export default function CapaIntro({ refCapa, saindo, aoTocar }) {
       </div>
 
       <div className="capa-conteudo absolute inset-0 grid content-center justify-items-center gap-4 overflow-hidden px-[max(1rem,env(safe-area-inset-left))] py-6 text-center">
-        <span className="rotulo-mono rounded-[0.625rem] bg-[#1A1A1D] px-3 py-1.5 text-[#FC4C02]">GS 2026.2 · CitizenTech</span>
+        <span className="rotulo-mono rounded-[0.625rem] bg-[#1A1A1D] px-3 py-1.5 text-[#FC4C02]">GS 2026 · CitizenTech</span>
         <span className="font-titulo text-[clamp(5.5rem,24vw,17rem)] leading-[0.85] tracking-[0.01em] uppercase">
           Pulse
         </span>

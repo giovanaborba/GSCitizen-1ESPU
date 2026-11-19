@@ -47,7 +47,7 @@ export default function Cabecalho() {
           <span>Pulse</span>
         </LinkInterno>
         <p className="rotulo-mono text-texto-2 max-sm:order-last max-sm:basis-full max-sm:pb-1 max-sm:text-right sm:ml-auto">
-          GS 2026.2 · CitizenTech
+          GS 2026 · CitizenTech
         </p>
         <div className="ml-auto sm:ml-0">
           <InterruptorEfeitos />

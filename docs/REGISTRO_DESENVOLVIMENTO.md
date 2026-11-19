@@ -2,10 +2,10 @@
 
 > Resumo de cada fase do desenvolvimento da aplicação web da Pulse (Global Solution 2026.2, CitizenTech, FIAP): o que foi feito, as decisões técnicas em linguagem simples, como testar e o que ficou pendente.
 >
-> - As regras completas estão em `docs/ESPECIFICACAO_PULSE.md`. A seção 17 dela reúne todas as decisões desta lista.
+> - As regras completas, e cada decisão com o porquê, estão em `docs/ESPECIFICACAO_PULSE.md`.
 > - O registro do uso de IA é mantido pela equipe em `AI.md`.
 >
-> Última atualização: 18/11/2026 (repositório novo, projeto na raiz, deploy novo, Simulador integrado, aviso de espera visível e sobras da auditoria; ver "Depois da Fase 9", itens 8 a 11).
+> Última atualização: 18/11/2026.
 
 ---
 
@@ -23,11 +23,9 @@
 | 7 | Revisão de acessibilidade e correções | `f13241a` |
 | 8 | Nova identidade e movimento (seção 18): cores, fontes, capa, pulseira 3D, rolagens, carrossel, galeria, transição entre páginas, rodapé com os ODS, 404 | — (commits por subfase, feitos pela equipe) |
 | 9 | Efeitos, paleta nova, pulseira nova e vídeos (seção 19): interruptor "Efeitos", paleta laranja e grafite, fontes por `next/font/google`, polimento, efeitos e interações novos, Tecnologias em cartões que viram, Galeria em canvas, Equipe no varal, pulseira 3D nova, vídeos, microinterações do Diário e revisão | Por subfase, feitos pela equipe: de `4b4a510` (9.1) a `bbe23f9` (9.10) |
-| Depois da 9 | Ícones, imagens, ajustes do celular, `alt`, espera acima de 10 s, limpeza dos comentários, auditoria, repositório novo, Simulador, aviso de espera visível e sobras da auditoria (seção "Depois da Fase 9", itens 1 a 11) | Repositório antigo: de `8f1e389` a `4b8922f`. Repositório novo: `giovanaborba/GSCitizen-1ESPU` |
+| Depois da 9 | Ícones, imagens, ajustes do celular, `alt`, espera acima de 10 s, limpeza dos comentários, auditoria, repositório novo, Simulador, aviso de espera visível e sobras da auditoria (seção "Depois da Fase 9") | Repositório antigo: de `8f1e389` a `4b8922f`. Repositório novo: `giovanaborba/GSCitizen-1ESPU` |
 
-**Em números (depois da Fase 9):** 7 rotas + página 404 · 65 componentes (o mínimo é 8) · ~~38~~ **37** custom hooks (o mínimo é 2) · 2 serviços · ~~10~~ **11** módulos em `lib/`: 3 de funções puras (`datas`, `rotulos`, `validacao`) e ~~7~~ **8** de movimento, efeitos e 3D (`movimento`, `presetsMovimento`, `efeitos`, `cortinaDomos`, `pulseira3d/cena`, `pulseira3d/modelo`, `pulseira3d/partes` e `pulseira3d/sinais`). **(Contagem refeita em 16/11/2026: entrou o `useEsperaLonga`; saíram `useFiltroFoto` e `useParallax`; entrou `pulseira3d/partes`.)**
-
-**Em números (com o Simulador, 18/11/2026):** 7 rotas + página 404 + a rota de API `app/api/rotas` · **73** componentes **(72 depois do item 11: saiu o `EspacoImagem`)** · **39** arquivos de hooks (40 hooks: `usePulseiraSimulador.js` exporta também o `useSomSemaforo`) · **3** serviços (`apiClient`, `registrosService` e `simuladorService`) · **12** módulos em `lib/` (entrou `simulador/dados`).
+**Em números:** 7 rotas + página 404 + a rota de API `app/api/rotas` · **72** componentes (o mínimo é 8) · **39** arquivos de hooks (40 hooks, o mínimo é 2: `usePulseiraSimulador.js` exporta também o `useSomSemaforo`) · **3** serviços (`apiClient`, `registrosService` e `simuladorService`) · **12** módulos em `lib/` (entrou `simulador/dados`).
 
 **Como a aplicação é organizada:**
 
@@ -36,7 +34,7 @@ Tela (componente)  →  hook (estado)  →  serviço  →  apiClient  →  fetch
 TelaDiario            useRegistros       registrosService.listar()    (único fetch do site)
 ```
 
-Os componentes de apresentação só recebem dados e funções por props. Quando a API chegar, só a pasta `services/` precisa de ajuste.
+Os componentes de apresentação só recebem dados e funções por props. Se a API mudar, só a pasta `services/` precisa de ajuste.
 
 **Movimento e 3D (Fase 8)** seguem a mesma separação: os componentes só desenham; quem anima são hooks (`usePulseira3D`, `useRolagemFixa`, `useTransicaoPagina`…) e módulos em `lib/`. Nenhum deles chama `fetch`.
 
@@ -65,7 +63,6 @@ Componente (ex.: SinaisRolagemFixa) →  hook (ex.: useRolagemFixa) →  GSAP + 
 | `layout.js` e `page.js` em vez de `.jsx` | Renomear para `.jsx` |
 | Projeto ainda com o código de exemplo do Next (fontes Geist, `lang="en"`) | Limpar o código e manter `public/` |
 | A especificação pede "mudança leve de fundo" no hover, mas não define cores | Usar só cores que já estão na paleta |
-| Não existe `prompts.md`, só `AI.md` | Não mexer em nenhum dos dois |
 
 ---
 
@@ -77,8 +74,7 @@ Componente (ex.: SinaisRolagemFixa) →  hook (ex.: useRolagemFixa) →  GSAP + 
 - todas as cores dos dois temas como variáveis CSS, que trocam sozinhas no modo escuro do aparelho;
 - a ligação das cores com o Tailwind, para usar classes como `bg-fundo` e `text-texto`;
 - a escala de tipografia, os cantos, as sombras e o contorno de foco (3 px, afastado 2 px);
-- regras para o alto contraste do Windows e para "reduzir movimento";
-- o marcador da fonte Atkinson, com o passo a passo para ligar.
+- regras para o alto contraste do Windows e para "reduzir movimento".
 
 **Decisões, em linguagem simples:**
 - **Token** é um nome para um valor de design (`--cor-texto` = `#1E0F4A`). Muda num lugar só e vale para o site todo.
@@ -89,8 +85,6 @@ Componente (ex.: SinaisRolagemFixa) →  hook (ex.: useRolagemFixa) →  GSAP + 
   - botão principal claro `#3B1D8B` → `#2A1366`;
   - botão principal escuro `#FFFFFF` → `#EDE8FC`;
   - botões secundários e itens da barra ganham o fundo do cartão.
-
-**Marcador:** `FONTE-Atkinson Hyperlegible Next-AQUI`, em `app/layout.jsx`.
 
 ---
 
@@ -109,8 +103,6 @@ Componente (ex.: SinaisRolagemFixa) →  hook (ex.: useRolagemFixa) →  GSAP + 
 - **Foco ao trocar de página:** vai para o `<h1>`. No primeiro carregamento, não, para "Pular para o conteúdo" ser o primeiro foco.
 - **Título da aba:** `"%s — Pulse"` no layout. A Início escreve o título completo, porque o modelo do layout não vale para a página da mesma pasta.
 
-**Marcadores:** `ICONE-Pulse/House/Watch/Play/Notebook-AQUI`.
-
 ---
 
 ## Fase 3 — Páginas de conteúdo
@@ -119,21 +111,12 @@ Componente (ex.: SinaisRolagemFixa) →  hook (ex.: useRolagemFixa) →  GSAP + 
 - as páginas Início, Solução e Simulador, com os textos exatos da seção 6;
 - os componentes `Cartao`, `EspacoImagem`, `IndiceNestaPagina`, `CartaoIntegrante`, `TituloPagina` e `Secao`;
 - na Solução, a seção Equipe com os 5 integrantes;
-- no Simulador, o bloco `SIMULADOR-AQUI`, com os requisitos para quem for fazer o simulador.
+- no Simulador, um espaço reservado com os requisitos do simulador.
 
 **Decisões, em linguagem simples:**
 - **"Principal" dentro do título do ODS 10:** quem navega de título em título com o leitor de tela ouve "Principal, ODS 10…".
 - **Os sinais em lista de definições (`<dl>`):** o leitor de tela entende "Modo tátil" e a explicação como um par.
 - **Espaço explícito no JSX (`{" "}`):** sem ele, o leitor de tela leria "90%dos" grudado.
-
-**Ponto para o grupo decidir:** a seção 6.3 cita a vibração do celular no simulador, e a seção 3 proíbe vibração do celular. A dúvida está registrada no bloco `SIMULADOR-AQUI`.
-
-**Marcadores:**
-- `IMAGEM-ilustração de uma travessia-AQUI`;
-- `IMAGEM-ilustração conceitual da pulseira-AQUI`;
-- 5 × `IMAGEM-foto de (nome)-AQUI`, com o `alt` sugerido ao lado;
-- `ICONE-Image-AQUI`;
-- `SIMULADOR-AQUI`.
 
 ---
 
@@ -146,16 +129,12 @@ Componente (ex.: SinaisRolagemFixa) →  hook (ex.: useRolagemFixa) →  GSAP + 
 
 **Decisões, em linguagem simples:**
 - **Sem mock.** Enquanto `NEXT_PUBLIC_API_URL` não estiver configurada, toda função lança o erro `{ codigo: "conexao" }`, e as telas mostram "Não foi possível carregar os registros.".
-- **O `fetch` já está escrito** seguindo o contrato da seção 7.6. Cada função tem um bloco `API-EXTERNA-AQUI` explicando o que a API recebe, o que devolve e qual linha ajustar se a API for diferente.
+- **O `fetch` já está escrito** seguindo o contrato da seção 7.6.
 - **Função pura:** recebe valores e devolve um resultado, sem chamar API nem mexer na tela. Por exemplo, `formatarData("2026-11-05")` devolve sempre `"05/11/2026"`.
 - **Datas como texto:** `new Date("2026-11-05")` lê a data em UTC, e no Brasil viraria o dia 04.
 - **Registros de exemplo:** não criados agora (decisão da equipe).
 
-**Para ligar a API:**
-1. Crie `projeto-citizentech-1espu/.env.local` com `NEXT_PUBLIC_API_URL=https://endereco-da-api.com`.
-2. Reinicie o `npm run dev`.
-
-**Marcadores:** `API-EXTERNA-AQUI` (a URL base + as 5 funções).
+**Para ligar a API:** seção 7.6 da especificação.
 
 ---
 
@@ -180,8 +159,6 @@ Componente (ex.: SinaisRolagemFixa) →  hook (ex.: useRolagemFixa) →  GSAP + 
 - **Textos (decisão da equipe):**
   - Ver e Editar usam "Carregando os registros…" e "Não foi possível carregar os registros." (no plural);
   - a aba de registro inexistente é "Registro não encontrado".
-
-**Marcadores:** `ICONE-Plus`, `ArrowCounterClockwise`, `ArrowClockwise`, `ArrowLeft`, `PencilSimple`, `Trash`, `CheckCircle`, `Warning`, `WarningCircle` e `X`, todos no formato `ICONE-(nome)-AQUI`.
 
 ---
 
@@ -244,30 +221,27 @@ Componente (ex.: SinaisRolagemFixa) →  hook (ex.: useRolagemFixa) →  GSAP + 
 7. **Teclado e toque num aparelho real.**
    - Teclado: `Tab`, as setas nos radios, `Esc` no diálogo.
    - Celular: a barra sai da frente do teclado ao digitar.
-8. **Quando a fonte, os ícones, as imagens e a API entrarem,** repita os testes acima.
 
 ---
 
 ## Fase 8 — Nova identidade e movimento
 
-A equipe aprovou uma identidade visual e de movimento nova (seção 18 da especificação, com os protótipos em `docs/prototipos/`). A fase foi feita em 9 subfases (8.0 a 8.8), com uma pausa para aprovação no fim de cada uma. **Cada mudança está registrada aqui.** As decisões estão na seção 17 da especificação, marcadas como **Equipe** ou **Implementação**.
+A equipe aprovou uma identidade visual e de movimento nova (seção 18 da especificação). A fase foi feita em 9 subfases (8.0 a 8.8), com uma pausa para aprovação no fim de cada uma. **Cada mudança está registrada aqui.**
 
 ### 8.0 — Leitura e plano (sem código)
 
-**O que foi feito:** leitura da seção 18, das notas (Fase 8) das outras seções e dos 3 protótipos; exame do projeto; plano das subfases 8.1 a 8.8, com o comando de instalação e os riscos.
+**O que foi feito:** leitura da seção 18 e das notas (Fase 8) das outras seções; exame do projeto; plano das subfases 8.1 a 8.8, com o comando de instalação e os riscos.
 
-**Decisões da equipe** (vão para a seção 17 da especificação como **Equipe**):
+**Decisões da equipe**:
 
 | # | Decisão |
 | --- | --- |
 | 1 | "Nesta página" em pílulas, depois do resumo (Solução) ou da abertura (Início). A coluna lateral da 9.4 sai. No computador (≥ 1024 px e altura ≥ 700 px), o índice gruda embaixo do cabeçalho ao rolar, e a pílula da seção atual fica dourada (`aria-current="true"`). |
-| 2 | Valem os textos da especificação ("O problema", "Cerca de 90%", "7,9 milhões"). Entra a introdução de Tecnologias do protótipo. Com "reduzir movimento", a abertura mostra "Sinais da Pulse" e "Veja cada sinal explicado na página Solução." (a frase do protótipo pedia para desligar uma configuração de acessibilidade). |
-| 3 | Rótulos mono: os da 18.5 e os dos protótipos, mais "As pessoas", "No trajeto", "Ecossistema", "Próximos passos" e "Por que a Pulse". O Diário fica sem rótulo. |
-| 4 | Cabeçalho: "Pulse" com o marcador `ICONE-Pulse-AQUI` e "GS 2026.2 · CitizenTech" em mono à direita. |
+| 2 | Valem os textos da especificação ("O problema", "Cerca de 90%", "7,9 milhões"). Entra uma introdução em Tecnologias. Com "reduzir movimento", a abertura mostra "Sinais da Pulse" e "Veja cada sinal explicado na página Solução." (uma frase que pedisse para desligar uma configuração de acessibilidade não serve). |
+| 3 | Rótulos mono: os da 18.5, mais "Como usar", "Por dentro", "Quem fez" e "Experimente", e também "As pessoas", "No trajeto", "Ecossistema", "Próximos passos" e "Por que a Pulse". O Diário fica sem rótulo. |
+| 4 | Cabeçalho: "Pulse" com o ícone e "GS 2026.2 · CitizenTech" em mono à direita. |
 | 5 | A cortina de piso tátil aparece só ao entrar e ao sair do Diário; entre as páginas internas do Diário não há cortina. O diálogo e as mensagens continuam sem animação. |
 | 6 | Capa: uma camada sólida, criada por um script no `<head>`, evita que a página apareça por um instante antes da capa. Só existe quando a chave `pulse-capa-vista` não existe; some quando a capa monta ou em no máximo 2 s. |
-
-**Onde o protótipo discorda e a especificação vence:** barra com largura pelo texto e fundo sólido; botões do carrossel com ícone e texto; rodapé com "Protótipo acadêmico com dados públicos e simulados."; densidade de pixels máxima de 1,75; ODS só no rodapé da Solução; textos dos sinais da 6.2.
 
 ### 8.1 — Instalação e base do movimento
 
@@ -294,10 +268,10 @@ O `npm audit` mostra 7 avisos moderados. Eles já existiam e vêm do `minimatch`
 | `package.json` e `package-lock.json` | Os 5 pacotes acima |
 | `lib/movimento.js` (novo) | Registra o ScrollTrigger uma vez (só no navegador) e liga o Lenis ao relógio do GSAP |
 | `components/layout/ProvedorMovimento.jsx` (novo) | Lenis na raiz (`anchors: true`, `autoRaf: false`) + `MotionConfig reducedMotion="user"` |
-| `app/layout.jsx` | `ProvedorMovimento` em volta do site; marcadores `FONTE-Anton-AQUI`, `FONTE-Atkinson Hyperlegible Next-AQUI` e `FONTE-JetBrains Mono-AQUI`, com o passo a passo |
+| `app/layout.jsx` | `ProvedorMovimento` em volta do site |
 | `app/globals.css` | Variáveis `--fonte-titulo`, `--fonte-base` e `--fonte-mono` com as fontes de reserva; classes `font-titulo` e `font-mono`; CSS do Lenis; `scroll-behavior: auto` quando o Lenis está ativo |
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **Um relógio só.** O Lenis não usa o próprio relógio (`autoRaf: false`): o do GSAP chama o Lenis a cada quadro e avisa o ScrollTrigger a cada passo da rolagem. Assim as animações ligadas à rolagem nunca ficam um quadro atrasadas.
 - **Âncoras sem desconto extra.** O Lenis já desconta o `scroll-padding-top` do `<html>` (altura do cabeçalho + 16 px). O clique continua sendo um link normal, então o navegador leva o foco para o destino.
 - **"Reduzir movimento" na roda do mouse.** O Lenis respeita a configuração, mas ainda amortecia a roda por cerca de 0,1 s (o teste mediu 397 px em 60 ms e 400 px depois). Como a 18.2 pede que nada se mova, com "reduzir movimento" a suavização da roda é desligada (`smoothWheel: false`).
@@ -322,27 +296,23 @@ Observação sobre o teste: o gesto pronto de rolagem do Chrome sem janela (`syn
 5. Ligue "reduzir movimento" (Windows: Configurações > Acessibilidade > Efeitos visuais > Efeitos de animação desligado) e repita: tudo instantâneo.
 6. No celular (ou no modo celular do navegador), na Início ou na Solução: rolar para baixo esconde o cabeçalho e a barra; rolar para cima mostra.
 
-**Marcadores desta subfase:** `FONTE-Anton-AQUI`, `FONTE-Atkinson Hyperlegible Next-AQUI` e `FONTE-JetBrains Mono-AQUI`, todos em `app/layout.jsx`.
-
-**Sugestão de commit:** `Instala pacotes de movimento e adiciona provedor de rolagem suave`
-
 ### 8.2 — Cores, tipografia e linguagem visual
 
 **Arquivos:**
 
 | Arquivo | Mudança |
 | --- | --- |
-| `app/globals.css` | Tokens da 18.3 nos dois temas, mais decoração, 3D, cortina e rodapé; tokens antigos removidos; H1 e H2 em Anton com maiúsculas só por CSS; corpo com altura de linha 1,55; links e foco na cor da marca; utilitários `textura-piso`, `rotulo-mono` e `palavra-fundo`; textura e palavra de fundo desligadas no alto contraste do Windows |
+| `app/globals.css` | Tokens da paleta da Fase 8 (roxo, lilás, dourado e creme) nos dois temas, mais decoração, 3D, cortina e rodapé; tokens antigos removidos; H1 e H2 em Anton com maiúsculas só por CSS; corpo com altura de linha 1,55; links e foco na cor da marca; utilitários `textura-piso`, `rotulo-mono` e `palavra-fundo`; textura e palavra de fundo desligadas no alto contraste do Windows |
 | `components/ui/PalavraFundo.jsx` (novo) | Palavra gigante decorativa (`aria-hidden`), com tamanho `min(21rem, 150vw ÷ letras)` |
 | `components/ui/Botao.jsx` | Pílula de 56 px; principal dourado (no hover: sombra e subida de 2 px, sem trocar a cor); secundário com contorno de 2 px na cor da marca |
 | `components/ui/Cartao.jsx`, `Campo.jsx`, `GrupoOpcoes.jsx`, `EspacoImagem.jsx`, `DialogoConfirmacao.jsx` | Fundo `--cor-superficie` no lugar de `--cor-cartao` e `--cor-cromo`; campos e opções com canto de 12 px; título do diálogo no menor tamanho do H2 |
 | `components/layout/BarraNavegacao.jsx`, `ItemBarra.jsx`, `Cabecalho.jsx`, `IndiceNestaPagina.jsx`, `LinkPular.jsx` | Cores novas: item ativo e "Pular para o conteúdo" em dourado com texto `#120B24` |
 | `components/solucao/CartaoIntegrante.jsx`, `components/diario/CartaoRegistro.jsx`, `app/solucao/page.jsx` | Só a troca das classes de cor e de canto |
 
-**Tokens removidos:** `--cor-cromo`, `--cor-cartao`, `--cor-botao`, `--cor-botao-texto`, `--cor-botao-hover`, `--cor-link` e `--cor-foco`, e as cores `#3B1D8B`, `#2E1670` e `#2A1366` como fundo. O `#2A1366` continua só como texto do botão de perigo no tema escuro, como manda a 18.3.
+**Tokens removidos:** `--cor-cromo`, `--cor-cartao`, `--cor-botao`, `--cor-botao-texto`, `--cor-botao-hover`, `--cor-link` e `--cor-foco`, e as cores `#3B1D8B`, `#2E1670` e `#2A1366` como fundo. O `#2A1366` continua só como texto do botão de perigo no tema escuro, como manda a paleta da Fase 8.
 
-**Decisões da implementação** (seção 17 como **Implementação**):
-- **Hover e borda dos itens da barra calculados a partir da marca.** `--cor-hover` é a marca a 12% (como manda a 18.3). `--cor-linha-item` é a marca a 70%: 4,3:1 no claro e 5,3:1 no escuro (mínimo de 3:1). Como os dois são calculados, acompanham o tema sozinhos.
+**Decisões da implementação**:
+- **Hover e borda dos itens da barra calculados a partir da marca.** `--cor-hover` é a marca a 12%. `--cor-linha-item` é a marca a 70%: 4,3:1 no claro e 5,3:1 no escuro (mínimo de 3:1). Como os dois são calculados, acompanham o tema sozinhos.
 - **Cantos.** Cartões, fotos e mensagens com 18 px (18.5). Campos, opções do formulário e etiquetas continuam com 12 px (seção 8.3), porque a 18.5 não fala deles. Botões em pílula. O diálogo continua com 16 px. A barra vira pílula na 8.3.
 - **Título do diálogo.** É um H2, então usa a Anton, mas no menor tamanho do H2 (2,2rem). O tamanho normal chegaria a 4rem num diálogo estreito.
 - **Rótulo mono sem cor fixa.** O utilitário `rotulo-mono` define fonte, tamanho e espaçamento; a cor vem de quem usa (`text-destaque` na página, dourado no rodapé).
@@ -352,7 +322,7 @@ Observação sobre o teste: o gesto pronto de rolagem do Chrome sem janela (`syn
 
 **Verificação automática:**
 - ESLint sem problemas e `next build` sem erros.
-- **Contraste calculado:** 67 de 67 pares (texto ≥ 7:1; bordas e foco ≥ 3:1), nos dois temas, no rodapé, no hover, nos status, no botão de perigo e no polaroide. Os valores batem com a tabela da 18.3.
+- **Contraste calculado:** 67 de 67 pares (texto ≥ 7:1; bordas e foco ≥ 3:1), nos dois temas, no rodapé, no hover, nos status, no botão de perigo e no polaroide. Os valores batem com a tabela de cores da Fase 8.
 - **axe-core** (WCAG 2.2 AA + contraste 7:1): 0 violações em Início, Solução, Simulador, Diário e Novo registro, nos dois temas.
 - **320 px:** nenhuma rolagem lateral nas 5 páginas, nos dois temas.
 - Nenhum erro no console.
@@ -363,10 +333,6 @@ Observação sobre o teste: o gesto pronto de rolagem do Chrome sem janela (`syn
 3. Passe o mouse num botão dourado (ex.: "Conheça a solução"): aparece uma sombra e o botão sobe 2 px. Com "reduzir movimento" ligado, só a sombra aparece.
 4. Navegue com `Tab`: o contorno de foco tem 3 px, na cor da marca.
 5. Selecione um título com o mouse e copie: o texto colado vem normal ("Tema CitizenTech"), porque as maiúsculas são só visuais.
-
-**Marcadores desta subfase:** nenhum novo.
-
-**Sugestão de commit:** `Aplica cores, tipografia e botões da nova identidade`
 
 **Decisão da equipe depois da 8.2 — tamanho dos títulos (opção C).** Os tamanhos da 18.4 usavam `vw`, uma unidade que acompanha a largura da tela. Com zoom de 200% (ou texto em 200% nas configurações do navegador), o H1 crescia só 1,14× e o H2 1,2×. Isso falhava a WCAG 1.4.4 (falha F94), que faz parte do piso do projeto. A equipe escolheu deixar o termo do meio mais inclinado, para o título chegar ao tamanho máximo já em 640 px:
 
@@ -392,7 +358,7 @@ O mínimo e o máximo continuam os da 18.4. Com isso, os títulos dobram de tama
 | `hooks/useGuardaDeSaida.jsx` | Se a saída estiver livre, passa a navegação para a transição; "Descartar respostas" também |
 | `components/layout/Provedores.jsx` | `TransicaoPagina` por fora da guarda de saída |
 | `components/layout/Rodape.jsx` | Rodapé escuro em todas as páginas: 4 links de 48 px, créditos e a faixa dos ODS na Solução; o espaço do fim da página fica dentro dele |
-| `components/layout/Cabecalho.jsx` | "Pulse" em Anton com `ICONE-Pulse-AQUI`, rótulo "GS 2026.2 · CitizenTech" à direita, largura de 76rem; mede a própria altura |
+| `components/layout/Cabecalho.jsx` | "Pulse" em Anton com o ícone, rótulo "GS 2026.2 · CitizenTech" à direita, largura de 76rem; mede a própria altura |
 | `components/layout/BarraNavegacao.jsx` e `ItemBarra.jsx` | Barra em pílula com item ativo dourado |
 | `components/layout/FocoNaTroca.jsx` | Com âncora no endereço (ex.: `/solucao#os-sinais`), o foco vai para o título da âncora, e não para o H1 |
 | `components/ui/Botao.jsx`, `components/diario/CartaoRegistro.jsx`, `app/solucao/page.jsx` | Links internos passam a usar `LinkInterno` |
@@ -410,7 +376,7 @@ Link (LinkInterno, barra, logo, Voltar, Cancelar)
 
 A cortina **não** anima: com "reduzir movimento" ou alto contraste do Windows; quando a origem e o destino estão dentro do Diário (decisão da equipe); quando o destino é a mesma página. Voltar e Avançar do navegador fazem só a saída.
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **A guarda de saída é a porta de entrada de todo link interno.** Ela decide primeiro e só depois chama a transição. Assim, nunca há cortina com o diálogo aberto.
 - **Trava de segurança de 3 s.** Se a página nova não chegar, a cortina some mesmo assim.
 - **Saída no Voltar do navegador com `useLayoutEffect`.** Ele roda antes de a tela ser pintada, então a cortina já aparece cobrindo, sem a página nova "piscar".
@@ -444,10 +410,6 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 6. Ligue "reduzir movimento": as trocas de página ficam instantâneas, e os ODS ficam parados, um embaixo do outro.
 7. Com um leitor de tela, foque um ODS: ele lê o nome e a frase completa.
 
-**Marcadores desta subfase:** `ICONE-Pause-AQUI` e `ICONE-Play-AQUI` (botão Pausar/Retomar), em `components/solucao/FaixaODS.jsx`. O `ICONE-Pulse-AQUI` do cabeçalho continua.
-
-**Sugestão de commit:** `Adiciona transição entre páginas, rodapé novo e faixa dos ODS`
-
 ### 8.4 — Pulseira 3D
 
 **Arquivos:**
@@ -465,11 +427,11 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 
 **Explicando em linguagem simples:** o Three.js desenha em 3D dentro de um `<canvas>`, usando o WebGL (a parte da placa de vídeo que o navegador libera para as páginas). Cada peça da pulseira é uma "malha" = forma (geometria) + aparência (material). Formas e materiais ocupam memória da placa de vídeo e precisam ser liberados à mão quando a pessoa sai da página.
 
-**Decisões da implementação** (seção 17 como **Implementação**):
-- **Ritmo do "Parar": um anel a cada 0,35 s** (no protótipo, 0,32 s). Assim nenhum sinal passa de 3 anéis por segundo (WCAG 2.3.1).
+**Decisões da implementação**:
+- **Ritmo do "Parar": um anel a cada 0,35 s**. Assim nenhum sinal passa de 3 anéis por segundo (WCAG 2.3.1).
 - **404 sem anéis sobrando:** os últimos anéis do modo `parar` saem até 3,7 s, para tudo terminar até 4,6 s (WCAG 2.2.2).
 - **O `<canvas>` é criado pelo hook, não no JSX.** No modo de desenvolvimento, o React monta, desmonta e monta de novo cada componente; um canvas cujo WebGL já foi liberado não pode ser reaproveitado.
-- **A descrição fica na caixa, não no canvas.** A caixa tem `role="img"` e o `aria-label` da 18.7, e só ganha esse papel quando o primeiro quadro fica pronto. Antes disso, quem descreve é o texto de reserva. Assim o leitor de tela nunca lê a descrição duas vezes.
+- **A descrição fica na caixa, não no canvas.** A caixa tem `role="img"` e o `aria-label` com a descrição, e só ganha esse papel quando o primeiro quadro fica pronto. Antes disso, quem descreve é o texto de reserva. Assim o leitor de tela nunca lê a descrição duas vezes.
 - **Sem WebGL, sem erro no console.** O código pede o WebGL2 antes de chamar o Three.js. Se não houver, aparece a descrição, sem a mensagem de erro que o Three.js escreveria.
 - **Legenda parada** ("Sinais da Pulse" / "Veja cada sinal explicado na página Solução.") e sem botão de pausa também enquanto a cena carrega, sem JavaScript e sem WebGL. Nesses casos nada se move, e um botão sem efeito confundiria. É o mesmo texto aprovado para "reduzir movimento".
 - **Reserva no fluxo normal:** se o texto ampliado não couber na caixa da pulseira, a caixa cresce, em vez de cortar o texto ou criar uma rolagem interna.
@@ -498,10 +460,6 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 
 **Achado para a 8.5 (contraste sobre a textura):** a textura de piso tátil vai atrás da abertura. O contraste do texto sobre o domo mais escuro (claro) e sobre o brilho do domo (escuro) é: claro, marca 7,07:1 e texto secundário 7,82:1; escuro, **rótulo dourado 6,69:1** (abaixo de 7:1). Por isso a textura ainda não entrou na abertura; a forma de aplicar fica para a equipe decidir.
 
-**Marcadores desta subfase:** `ICONE-Pause-AQUI` e `ICONE-Play-AQUI` (botão da abertura), em `components/abertura/AberturaPulseira.jsx`. A pulseira é código, não tem marcador.
-
-**Sugestão de commit:** `Adiciona pulseira 3D na abertura`
-
 **Decisão da equipe depois da 8.4 — textura atrás do texto (opção B).** A textura de piso tátil só aparece no meio da área (atrás da pulseira) e se apaga em direção às bordas, onde fica o texto. Assim nenhum texto fica sobre os domos (seção 18.2, item 1). Vale também para as cabeças de página das próximas subfases.
 
 ### 8.5 — Início
@@ -511,7 +469,7 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | Arquivo | Mudança |
 | --- | --- |
 | `hooks/useCapaIntro.js` (novo) | Primeira visita da sessão (`sessionStorage`, chave `pulse-capa-vista`, com `try/catch`), saída por clique, roda, toque, tecla ou foco, saída em piso tátil (1 s), Lenis parado com a capa na tela |
-| `components/abertura/CapaIntro.jsx` (novo) | Capa (`aria-hidden`, nada focável): logo que pulsa uma vez, rótulo, "PULSE", frase sobre faixa sólida, dica com seta e os marcadores das duas imagens |
+| `components/abertura/CapaIntro.jsx` (novo) | Capa (`aria-hidden`, nada focável): logo que pulsa uma vez, rótulo, "PULSE", frase sobre faixa sólida e dica com seta |
 | `app/layout.jsx` | Script mínimo no `<head>` com a camada de espera da capa (decisão 6) e `suppressHydrationWarning` na tag `<html>` |
 | `hooks/useLinhasPartes.js` (novo) | Linhas tracejadas da abertura: da parte da pulseira (posição 3D projetada na tela) até o nó de cada link, a cada quadro |
 | `components/abertura/PartesSolucao.jsx` (novo) | "Partes da solução": `<nav>` com H2 oculto e 1 lista de 6 links; cartões no celular, 3 de cada lado no computador |
@@ -524,17 +482,17 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | `app/page.jsx` | Início na ordem da 18.6, com os rótulos "Tema", "O problema" e "As pessoas", citação com borda dourada e cartões de dados com o número em Anton |
 | `app/globals.css` | Variantes `faixa-fixa` e `abertura-larga`; `scroll-padding-top` com a faixa do índice; textura que some nas bordas; CSS da capa e da camada de espera; alto contraste para `aria-current="true"` e `"step"` |
 
-**Decisões da implementação** (seção 17 como **Implementação**):
-- **O logo pulsa sobre o fundo escuro da capa**, e não sobre o fundo da página como no protótipo. A camada de espera já é escura, e trocar para o creme por 1 s e voltar ao escuro piscaria.
-- **Capa sem imagem, por enquanto, com fundo sólido `#120B24`.** Todo texto da capa tem contraste de 7:1 ou mais. O marcador explica como colocar o `<picture>` e pede para conferir o contraste depois.
-- **Tamanho de "PULSE" na capa** com `vw`, como no protótipo. É decoração (`aria-hidden`) e some com qualquer tecla ou toque. A frase e a dica usam `rem`, para crescerem com o zoom.
+**Decisões da implementação**:
+- **O logo pulsa sobre o fundo escuro da capa**, e não sobre o fundo da página. A camada de espera já é escura, e trocar para o creme por 1 s e voltar ao escuro piscaria.
+- **Capa sem imagem, por enquanto, com fundo sólido `#120B24`.** Todo texto da capa tem contraste de 7:1 ou mais. Na Fase 9, a capa passou a usar vídeo (9.8).
+- **Tamanho de "PULSE" na capa** com `vw`. É decoração (`aria-hidden`) e some com qualquer tecla ou toque. A frase e a dica usam `rem`, para crescerem com o zoom.
 - **Revelação com Motion:** com a capa na tela, os títulos e os links ficam escondidos; ao sair, aparecem (0,6 s). Na primeira pintura e sem JavaScript, já aparecem no lugar. Com "reduzir movimento", na hora.
-- **A palavra de fundo tem a altura da pulseira e a largura da tela.** No computador, ela passa por trás dos textos dos links, como no protótipo e no tamanho da 18.6. Contraste desses textos sobre ela: texto 13,6:1 (claro) e 14,1:1 (escuro); texto secundário 8,1:1 e 10,8:1. O rótulo dourado do sinal ficaria em 6,84:1 no escuro, por isso a palavra nunca desce até a linha dele.
+- **A palavra de fundo tem a altura da pulseira e a largura da tela.** No computador, ela passa por trás dos textos dos links, no tamanho da 18.6. Contraste desses textos sobre ela: texto 13,6:1 (claro) e 14,1:1 (escuro); texto secundário 8,1:1 e 10,8:1. O rótulo dourado do sinal ficaria em 6,84:1 no escuro, por isso a palavra nunca desce até a linha dele.
 - **Uma lista só com os 6 links**, posicionados com `subgrid` no computador: a ordem no HTML não muda, e o leitor de tela anuncia "lista, 6 links" em qualquer tela.
 - **Linhas escritas direto no SVG**, sem passar pelo estado do React, porque mudam a cada quadro. Elas são redesenhadas também quando a janela muda de tamanho com a pulseira parada.
 - **Pílulas do índice sem sublinhado**, como os itens da barra: são controles de navegação em formato de botão, não links no meio do texto.
 - **Margem de rolagem nos títulos com rótulo** (`scroll-margin-top` de 40 px): ao pular para a seção, o rótulo aparece junto, em vez de ficar atrás da faixa do índice. A seção atual do índice também desconta essa margem.
-- **Número dos cartões de dados em `rem` (3,25rem), não em `vw`.** O protótipo usava `vw`, que teria o mesmo problema de zoom da opção C.
+- **Número dos cartões de dados em `rem` (3,25rem), não em `vw`.** Com `vw`, teria o mesmo problema de zoom da opção C.
 
 **Verificação automática** (Chrome sem janela, servidor de produção): ESLint sem problemas, `next build` sem erros e **49 de 49 testes**, mais as baterias anteriores de novo (8.1: 17; 8.3: 45; 8.4: 30), sem regressão:
 - Capa na primeira visita, `aria-hidden`, nada focável, com os textos da 18.6. A camada de espera sai quando a capa monta, e a abertura fica escondida enquanto ela está na tela.
@@ -558,14 +516,6 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 6. Celular: pulseira em cima, links em cartões; o índice não gruda.
 7. Leitor de tela: a capa não é lida. A ordem é: H1, resumo, pulseira (descrição), "Pausar animação", "Partes da solução, lista, 6 links", "Nesta página".
 
-**Marcadores desta subfase:**
-- `IMAGEM-capa versão computador (horizontal)-AQUI` e `IMAGEM-capa versão celular (vertical)-AQUI` (alt: "Capa da Pulse."), em `components/abertura/CapaIntro.jsx`.
-- `ICONE-ArrowDown-AQUI` (dica da capa), em `components/abertura/CapaIntro.jsx`.
-- `ICONE-ArrowRight-AQUI` (6 links da abertura), em `components/abertura/PartesSolucao.jsx`.
-- `IMAGEM-ilustração de uma travessia-AQUI` continua em `app/page.jsx`.
-
-**Sugestão de commit:** `Adiciona capa e abertura com links da solução no Início`
-
 ### 8.6 — Solução
 
 **Arquivos:**
@@ -582,11 +532,11 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | `components/ui/EspacoImagem.jsx` | Formatos "retrato" (4:5) e "livre" |
 | `app/globals.css` | `@property --d`; troca de foto e de texto de "Os sinais"; textura lateral das cabeças de página |
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **Modo fixo pela mesma condição no React e no GSAP.** A 18.1 sugere `gsap.matchMedia()`. Usamos a mesma media query num hook (`useConsultaMidia`) e ligamos o ScrollTrigger com `useGSAP` só quando ela vale, porque o React também precisa dela para trocar o layout (palco fixo × lista).
 - **Palco abaixo do cabeçalho e da faixa do índice.** O palco de "Os sinais" e o da galeria grudam em `--altura-cabecalho + --altura-indice`, e o ScrollTrigger começa a contar a partir desse ponto.
-- **H3 do "Virar" com o texto da 6.2** ("Virar à esquerda ou à direita"); no índice "Sinais", o link é "Virar", como no protótipo.
-- **Nome do movimento na pulseira pequena** com os textos do protótipo: "Pressão contínua", "Vibração contínua", "Vira à esquerda"/"Vira à direita" e "Três vibrações curtas".
+- **H3 do "Virar" com o texto da 6.2** ("Virar à esquerda ou à direita"); no índice "Sinais", o link é só "Virar", para caber na faixa.
+- **Nome do movimento na pulseira pequena** com os textos curtos "Pressão contínua", "Vibração contínua", "Vira à esquerda"/"Vira à direita" e "Três vibrações curtas".
 - **Tamanho do nome do sinal:** `clamp(2.2rem, 10vw, 3.5rem)`, com a mesma regra da opção C (chega ao máximo cedo, para crescer com o zoom).
 - **Carrossel:** a lista recebe o foco pelo Tab e rola com as setas (sem isso, o axe acusaria uma área rolável sem acesso pelo teclado). A contagem é anunciada com educação (`aria-live="polite"`). Os botões e a contagem só aparecem depois que o JavaScript mede a lista. O botão desabilitado ganha borda tracejada, sem perder contraste e sem trocar o cursor (18.9).
 - **Galeria:** as fotos não têm nada focável hoje. Mesmo assim, se no futuro algo focável entrar numa foto, a página rola até ela (18.8).
@@ -616,16 +566,6 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 7. "Reduzir movimento": tudo em lista e em grade, sem nada se mexer.
 8. Celular: o índice "Sinais" vira uma faixa no topo do palco, com a pulseira de 76 px ao lado de "Pausar".
 
-**Marcadores desta subfase:**
-- `IMAGEM-sinal continuar-AQUI`, `IMAGEM-sinal parar-AQUI`, `IMAGEM-sinal virar-AQUI` e `IMAGEM-sinal aguardar-AQUI`, com os alts da 18.13, em `components/solucao/SinaisRolagemFixa.jsx`.
-- `IMAGEM-galeria faixa de pedestres-AQUI`, `IMAGEM-galeria calçada com obstáculo-AQUI`, `IMAGEM-galeria semáforo de pedestres-AQUI`, `IMAGEM-galeria ponto de ônibus-AQUI`, `IMAGEM-galeria plataforma do metrô-AQUI` e `IMAGEM-galeria esquina com rampa-AQUI`, com os alts da 18.13, em `components/solucao/GaleriaHorizontal.jsx`.
-- `ICONE-CaretLeft-AQUI` e `ICONE-CaretRight-AQUI` (carrossel), em `components/ui/Carrossel.jsx`.
-- `ICONE-Pause-AQUI` e `ICONE-Play-AQUI` (pulseira pequena), em `components/solucao/SinaisRolagemFixa.jsx`.
-- `ICONE-Image-AQUI` (espaço da foto do polaroide), em `components/solucao/CartaoIntegrante.jsx`.
-- Continuam: `IMAGEM-ilustração conceitual da pulseira-AQUI` e `IMAGEM-foto de (nome)-AQUI` (5), em `app/solucao/page.jsx`.
-
-**Sugestão de commit:** `Reorganiza a Solução com sinais em rolagem fixa, carrossel, galeria e polaroides`
-
 ### 8.7 — Página 404 e Diário
 
 **Arquivos:**
@@ -636,13 +576,13 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | `hooks/usePulseira3D.js` | O modo `parar` passa a contar o tempo real (ver abaixo) |
 | `components/ui/PalavraFundo.jsx` | Opção `tamanho`, para a palavra caber numa coluna em vez da tela inteira |
 | `components/diario/ResumoIndicadores.jsx` | Números grandes em Anton, na cor de destaque (só cor e fonte) |
-| `app/simulador/page.jsx` | Rótulo mono "Experimente" e textura numa faixa à direita da cabeça; o marcador `SIMULADOR-AQUI` e o "Espaço reservado" continuam iguais |
+| `app/simulador/page.jsx` | Rótulo mono "Experimente" e textura numa faixa à direita da cabeça; o "Espaço reservado" continua igual |
 
 **Diário:** conferido em `/diario`, `/diario/novo`, `/diario/[id]` e `/diario/[id]/editar`. Nenhuma textura, palavra de fundo, rótulo mono, cena 3D ou animação. Recebeu só as cores e as fontes (nas subfases 8.2 e 8.7), e o título do diálogo usa o menor tamanho do H2. Entre as páginas do Diário, a troca continua instantânea (decisão 5). A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não foi tocada.
 
 **Defeito encontrado e corrigido:** na 404, a pulseira continuava se mexendo depois de 5,5 s no teste. O relógio da animação limita cada passo a 0,05 s, para não dar saltos quando o navegador engasga. Num aparelho lento (o WebGL por software do teste faz cerca de 15 quadros por segundo), o tempo da animação anda mais devagar que o real, e os 4,6 s viravam mais de 6 s de verdade. Agora o modo `parar` mede o tempo real (relógio do navegador) desde o primeiro quadro animado. A WCAG 2.2.2 conta segundos de verdade.
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **"Parar" e textura só na coluna da pulseira.** O tamanho da palavra acompanha a largura dessa coluna (unidade `cqw`, a largura do "contêiner"). Assim nenhum texto da 404 fica sobre a palavra ou os domos (18.2, item 1). No tema escuro, o rótulo dourado sobre a palavra ficaria em 6,84:1.
 - **Reserva da pulseira na 404 decorativa**, como a pulseira e a legenda (`aria-hidden`): o texto da página já explica a situação.
 - **Números do resumo do Diário com 2,5rem** (em `rem`, para crescerem com o zoom).
@@ -664,10 +604,6 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 5. Diário: tudo com as cores e as fontes novas, sem nada se mexendo. Quando a API existir, confira os números do Resumo em Anton.
 6. Simulador: rótulo "Experimente" acima do título.
 
-**Marcadores desta subfase:** nenhum novo. A 404 não tem imagens (a pulseira é código).
-
-**Sugestão de commit:** `Adiciona página 404 e aplica a nova identidade no Diário e no Simulador`
-
 ### 8.8 — Revisão
 
 **Arquivos:**
@@ -677,10 +613,8 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | `hooks/useFaixaODS.js` e `components/solucao/FaixaODS.jsx` | A faixa volta ao começo quando o foco sai de um botão para fora dela; a lógica saiu da `<div>` da faixa (que não é interativa) e foi para os botões |
 | `hooks/useGaleriaHorizontal.js` e `components/solucao/GaleriaHorizontal.jsx` | O cuidado com o foco dentro de uma foto virou um ouvinte criado no hook, só no modo horizontal (a lista não tem mais um `onFocus`) |
 | `components/ui/Carrossel.jsx` | Comentário explicando por que a lista recebe o foco |
-| `docs/ESPECIFICACAO_PULSE.md` | Seção 17 com as decisões da Fase 8 (Equipe e Implementação); notas (Fase 8) nas seções 9.4 e 18.4; pendências da seção 16 atualizadas |
-| `docs/REGISTRO_DESENVOLVIMENTO.md` | Visão geral, números, esta revisão e as pendências |
 
-**Critérios de aceite da 18.16:**
+**Critérios de aceite da Fase 8:**
 
 | Critério | Resultado | Como foi verificado |
 | --- | --- | --- |
@@ -688,12 +622,11 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | "Reduzir movimento": nada se move | ok | Em todas as 7 páginas: nenhuma animação rodando (`document.getAnimations()`) e nenhum desenho novo na cena 3D; sem rolagens fixas; capa e trocas de página instantâneas |
 | 320 px; zoom de 400%; polaroides | ok | Nenhuma página com rolagem lateral a 320 px, com zoom de 400% (320 × 180), com texto em 200% e com espaçamento de texto aumentado (1.4.12); com zoom de 400%, sinais e galeria em lista e índice e barra parados; nenhum polaroide cortado |
 | Teclado | ok | Tab do começo ao fim em 7 páginas (de 10 a 33 focos cada): todo elemento focado está visível, tem contorno, não está transparente, não está dentro de `aria-hidden` e não fica coberto por cabeçalho, barra ou índice. A capa nunca prende o foco |
-| Contraste com os tokens da 18.3 | ok | 67 de 67 pares (dois temas e rodapé), mais o texto sobre a textura e sobre a palavra de fundo (os pares abaixo de 7:1 foram evitados: ver 8.4, 8.5 e 8.7) |
+| Contraste com os tokens da Fase 8 | ok | 67 de 67 pares (dois temas e rodapé), mais o texto sobre a textura e sobre a palavra de fundo (os pares abaixo de 7:1 foram evitados: ver 8.4, 8.5 e 8.7) |
 | WebGL desligado | ok | Início e 404: descrição em texto, sem erro no console; Solução: a pulseira pequena some |
 | Uma cena 3D por vez; memória | ok | 1 canvas por página; em 5 idas e voltas, todos os contextos WebGL liberados |
 | ESLint `jsx-a11y` e axe | ok, com 1 exceção registrada | ESLint do projeto: 0 problemas. Varredura com as 33 regras do `jsx-a11y`: 1 aviso conhecido (ver abaixo). axe (WCAG 2.2 AA + contraste 7:1): 0 violações em 10 estados × 2 temas |
 | Diário sem efeitos | ok | 4 páginas sem textura, palavra de fundo, rótulo mono, 3D ou cortina interna |
-| Marcadores da 18.13 | ok | Todos no lugar (lista abaixo) |
 
 **A exceção do `jsx-a11y`:** a lista do carrossel recebe o foco (`tabIndex={0}`). A regra `no-noninteractive-tabindex` não gosta disso, mas a lista é uma área rolável sem nada focável dentro: sem o foco, quem usa só o teclado não consegue rolá-la, e o axe acusaria `scrollable-region-focusable` (WCAG 2.1.1). O ESLint do projeto não liga essa regra; o motivo está escrito no código.
 
@@ -715,11 +648,10 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | Alto contraste do Windows | ok (simulado: textura e palavra desligadas, item ativo com a cor do sistema, trocas instantâneas); **manual** no Windows real |
 | Alvos de toque ≥ 48 × 48 px | ok (axe `target-size` e medidas dos componentes) |
 | Nada só por cor; ícone com texto | ok |
-| Toda imagem com `alt` | ok (marcadores com o `alt` ao lado; decorações com `aria-hidden`) |
+| Toda imagem com `alt` | ok (decorações com `aria-hidden`) |
 | ESLint `jsx-a11y` e axe | ok (com a exceção explicada) |
 | Sem a API: Diário com erro de conexão | ok |
 | CRUD com a API | **pendente** (a API ainda não existe) |
-| Marcadores no lugar e listados | ok |
 
 **Defeitos corrigidos nesta subfase:** os 3 pontos do `jsx-a11y` acima (2 corrigidos, 1 exceção explicada). Nos testes, duas travas eram do próprio script: medidas que esperavam um quadro de animação em abas fora de primeiro plano, e o aviso "Sair do site?" do formulário preenchido, que estava funcionando e esperando resposta. Na regressão final (todas as baterias seguidas, no mesmo navegador), 1 teste da 8.5 falhou porque dezenas de abas abertas atrasaram o evento de foco. Num navegador limpo, a 8.5 passou inteira (49 de 49).
 
@@ -743,43 +675,36 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 6. **Zoom de 400%** (janela de 1280 px, `Ctrl` + `+` até 400%). Esperado: sem rolagem lateral; "Os sinais" e a galeria em lista; o índice e a barra não grudam.
 7. **Texto ampliado no celular** (Android: tamanho da fonte no máximo; iPhone: "aA" → 200% no Safari). Esperado: nada cortado; os títulos crescem junto.
 8. **WebGL desligado** (Chrome: `chrome://settings/system` → desligar "Usar aceleração gráfica" e reiniciar). Esperado: descrição em texto no lugar da pulseira, na Início e na 404.
-9. **Depois de colocar fontes, ícones e imagens:** repita os itens 1, 6 e 7, e confira o contraste do texto da capa sobre a imagem.
-
-**Sugestão de commit:** `Revisa acessibilidade da Fase 8 e atualiza a documentação`
 
 ---
 
 ## Fase 9 — Efeitos, paleta nova, pulseira nova e vídeos
 
-A equipe aprovou a Fase 9 (seção 19 da especificação, com os protótipos `pulse-efeitos.html` e `pulse-pulseira-3d.html` e os padrões `PADRAO_MOVIMENTO_PULSE.md` e `PADRAO_ANIMACOES_VIDEO_PULSE.md`). A fase é feita em 11 subfases (9.0 a 9.10), com uma pausa para aprovação no fim de cada uma. **Cada mudança está registrada aqui.** As decisões vão para a seção 17 da especificação, marcadas como **Equipe** ou **Implementação**.
+A equipe aprovou a Fase 9 (seção 19 da especificação e o padrão `PADRAO_MOVIMENTO_PULSE.md`). A fase é feita em 11 subfases (9.0 a 9.10), com uma pausa para aprovação no fim de cada uma. **Cada mudança está registrada aqui.**
 
 ### 9.0 — Leitura e plano (sem código)
 
-**O que foi feito:** leitura da seção 19, das notas (Fase 9) das outras seções, dos 2 protótipos e dos 2 padrões; exame do projeto; plano das subfases 9.1 a 9.10; inventário dos lugares que conferem "reduzir movimento"; riscos.
+**O que foi feito:** leitura da seção 19, das notas (Fase 9) das outras seções e do padrão de movimento; exame do projeto; plano das subfases 9.1 a 9.10; inventário dos lugares que conferem "reduzir movimento"; riscos.
 
 **Conferido no projeto:** nenhum pacote novo é necessário (`next/font` vem com o Next; `SplitText` e `ScrollTrigger` vêm no `gsap` 3.15; `RoundedBoxGeometry` e `RoomEnvironment` vêm no `three`). Os 15 vídeos, os quadros parados e as legendas já estão em `public/videos/` (17 MB no total).
 
 **Inventário de "reduzir movimento"** (a 19.2 estimou cerca de 20 lugares; a contagem real é 22): o hook `usePrefereMovimentoReduzido` em 4 lugares, 10 consultas diretas a `matchMedia`, 5 classes `motion-safe:`/`motion-reduce:` e 3 blocos `@media (prefers-reduced-motion)`, mais o `MotionConfig`. Todos passam para a preferência única na 9.1.
 
-**Decisões da equipe** (vão para a seção 17 da especificação como **Equipe**):
+**Decisões da equipe**:
 
 | # | Decisão |
 | --- | --- |
-| 1 | **Granulado atrás do conteúdo.** A conta prévia mostrou que o grão cinza por cima de tudo (como no protótipo) baixa 3 pares para menos de 4,5:1, mesmo com o mínimo de 4% (laranja `#CC4200` na faixa clara: 4,44; laranja `#FC4C02` na faixa escura e texto do botão principal: 4,25). Por isso o grão fica só no fundo da página e das faixas (cartões, botões e campos o cobrem), com a cor por tema: clara no tema claro e escura no escuro. Assim o contraste nunca cai. |
-| 2 | **Vídeos com os caminhos ligados.** Como os arquivos já estão em `public/videos/`, o `VideoPulse` usa os caminhos reais. O marcador `VIDEO-(nome)-AQUI` fica em comentário, e, sem o arquivo, a caixa mostra o marcador, sem erro. |
+| 1 | **Granulado atrás do conteúdo.** A conta prévia mostrou que um grão cinza por cima de tudo baixa 3 pares para menos de 4,5:1, mesmo com o mínimo de 4% (laranja `#CC4200` na faixa clara: 4,44; laranja `#FC4C02` na faixa escura e texto do botão principal: 4,25). Por isso o grão fica só no fundo da página e das faixas (cartões, botões e campos o cobrem), com a cor por tema: clara no tema claro e escura no escuro. Assim o contraste nunca cai. |
+| 2 | **Vídeos com os caminhos ligados.** Como os arquivos já estão em `public/videos/`, o `VideoPulse` usa os caminhos reais. Sem o arquivo, a caixa mostra uma reserva, sem erro. |
 | 3 | **O padrão de movimento vence** nos 3 pontos em que discorda da seção 19: preloader de 1,4 s (e não 1,2 s); cartão de Tecnologias com `spring.suave` (0,42 s, e não 0,55 s em CSS); "texto que se constrói" com o gesto GUIA, sem a máscara de domos (os domos ficam só na capa, na cortina e na troca de foto). |
 | 4 | **Espaço vazio de ícone some em todo o site** até o ícone entrar, para a barra e os botões ficarem com o texto centralizado. Revê a regra antiga "mantém o tamanho final". |
 
-**Propostas da implementação aceitas no plano** (seção 17 como **Implementação**):
+**Propostas da implementação aceitas no plano**:
 - **Lenis sem `stop()`.** A 19.2 pede `stop()` com os efeitos desligados, mas o `stop()` põe no `<html>` uma classe com `overflow: clip` (do CSS do próprio Lenis) e cancela a roda do mouse: a página deixaria de rolar. Com os efeitos desligados, o Lenis nem é criado; ao religar, é criado de novo.
 - **Abertura:** "Pausar o giro" para também a passagem automática dos sinais (WCAG 2.2.2), e a caixa da pulseira recebe foco para as setas do teclado.
 - **Seções fixas com `position: sticky`** do CSS (o GSAP só lê o progresso), para não desalinhar as âncoras e o Lenis.
 
-**Onde o protótipo discorda e a especificação vence:** valores `"ligados"`/`"desligados"` no `localStorage`; sem capa nem preloader com os efeitos desligados; encaixe a menos de 30% da altura; tamanhos do H1 e do H2 e `hyphens: manual` da 19.5; a abertura usa a pulseira nova; nada do que é "só da prévia".
-
-**Onde fica a documentação:** na pasta `docs/` da raiz do repositório (especificação, padrões, registro e protótipos).
-
-**Também vence a especificação:** a linha antes do rótulo tem 24 px (19.6), e não os 32 px do protótipo; o tema segue só o aparelho, sem o `data-theme` do protótipo.
+**Também vence a especificação:** a linha antes do rótulo tem 24 px (19.6); o tema segue só o aparelho, sem um botão de tema.
 
 ### 9.1 — Base: preferência de movimento única e o interruptor "Efeitos"
 
@@ -806,7 +731,7 @@ A equipe aprovou a Fase 9 (seção 19 da especificação, com os protótipos `pu
 | `hooks/usePrefereMovimentoReduzido.js` | Continua, mas só o `ProvedorMovimento` usa (valor inicial e mudança do aparelho) |
 | Comentários em 11 arquivos | "reduzir movimento" → "efeitos desligados" |
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **O estado mora no `<html>`.** O script do `<head>` grava `data-efeitos` antes de a página aparecer. Assim o CSS, o texto do botão e as cores do trilho já nascem certos, sem "piscar". O React lê o mesmo atributo.
 - **No servidor, o estado é "desconhecido"** e conta como desligado. Por isso nada (Lenis, GSAP, 3D) começa antes de o React ler o valor real, e nada precisa ser desfeito logo depois.
 - **Sem JavaScript, nada se move.** Sem o atributo, as regras de "efeitos desligados" valem (`:root:not([data-efeitos="ligados"])`), então a faixa dos ODS fica parada em lista. Sem JavaScript o botão de pausa não funcionaria, então a faixa não pode andar.
@@ -833,14 +758,6 @@ A equipe aprovou a Fase 9 (seção 19 da especificação, com os protótipos `pu
 6. Leitor de tela (NVDA): no botão, ele diz algo como "Efeitos: ligados, botão de alternância, pressionado".
 7. No modo celular do navegador (320 px): "Pulse" e o botão na primeira linha e o rótulo na segunda, sem rolagem lateral.
 
-**Marcadores desta subfase:** nenhum novo. O `ICONE-Pulse-AQUI` do cabeçalho continua onde estava.
-
-**Sugestão de commit:** `Adiciona interruptor de efeitos e preferência de movimento única`
-
-### Conferência da 9.1 (depois da conversa perdida)
-
-A 9.1 foi conferida no código contra a 19.2, item por item, e está completa. Ficaram para as próximas subfases, de propósito: o trilho do botão no token `--cor-acao` (9.2), a inércia do Lenis (9.4) e os vídeos (9.8). O `node_modules` não estava instalado: `npm ci` (só as versões travadas, nenhum pacote novo), depois ESLint e `next build` sem problemas.
-
 ### 9.2 — Fontes e paleta
 
 **O que mudou para quem usa:** o site ficou laranja e grafite, nos dois temas, e as 3 fontes de verdade (Anton, Atkinson Hyperlegible Next e JetBrains Mono) aparecem em todas as páginas. As fontes vêm do próprio site, sem nenhum pedido ao Google quando a página abre.
@@ -849,7 +766,7 @@ A 9.1 foi conferida no código contra a 19.2, item por item, e está completa. F
 
 | Arquivo | Mudança |
 | --- | --- |
-| `app/layout.jsx` | Fontes por `next/font/google` (código da 19.4); as 3 variáveis na tag `<html>`. Saem os marcadores `FONTE-…-AQUI` e o passo a passo antigo |
+| `app/layout.jsx` | Fontes por `next/font/google` (código da 19.4); as 3 variáveis na tag `<html>`. Sai o passo a passo antigo de instalação manual |
 | `app/globals.css` | Tokens da 19.3 nos dois temas e no rodapé: entram `--cor-faixa`, `--cor-apagada`, `--cor-ponto-sombra` e `--grao-opacidade`; `--cor-ouro`/`--cor-sobre-ouro` → `--cor-acao`/`--cor-sobre-acao`; `--cor-rodape-ouro` → `--cor-rodape-destaque`. Saem os roxos, o lilás, o dourado e o creme. Capa, camada de espera e foco do rodapé na paleta nova |
 | `components/ui/Botao.jsx` | Principal laranja com texto grafite; secundário com texto grafite no hover |
 | `components/abertura/CapaIntro.jsx` | Capa em `#1A1A1D`, branco e laranja |
@@ -858,14 +775,14 @@ A 9.1 foi conferida no código contra a 19.2, item por item, e está completa. F
 | `app/page.jsx`, `PartesSolucao.jsx`, `IndiceNestaPagina.jsx`, `InterruptorEfeitos.jsx`, `ItemBarra.jsx`, `LinkPular.jsx`, `FaixaODS.jsx`, `SinaisRolagemFixa.jsx` | Classes `…-ouro` → `…-acao` e `rodape-ouro` → `rodape-destaque` |
 | Comentários em 7 arquivos | "dourado", "roxo" e "lilás" → as cores novas |
 
-**Decisões da equipe** (seção 17 como **Equipe**):
-- **Palavra de fundo:** grafite suave, `rgba(36,36,40,.06)` no claro e `rgba(255,255,255,.05)` no escuro (a 19.3 e os protótipos não davam valor).
+**Decisões da equipe**:
+- **Palavra de fundo:** grafite suave, `rgba(36,36,40,.06)` no claro e `rgba(255,255,255,.05)` no escuro (a 19.3 não dava valor).
 - **Botões dos ODS no rodapé (`--cor-rodape-cartao`):** o tom vizinho da paleta, `#1A1A1D` no claro e `#242428` no escuro.
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **Hover do botão secundário com texto grafite.** O texto laranja sobre o fundo de hover (laranja a 12%) ficaria em 4,07:1 no claro e 4,00:1 no escuro, abaixo de 4,5:1. Com o grafite, fica em 13:1 (como nos itens da barra).
 - **Borda dos itens não selecionados da barra em `--cor-borda`** até a 9.3 tirá-la (19.5). A marca a 70% ficaria entre 2,84:1 e 3,07:1, abaixo de 3:1.
-- **Pulseira atual na paleta nova até a 9.5:** tira `#FC4C02`, módulo `#CC4200` (o corpo do módulo novo, 19.12), botões, motores e atuador em grafite, que acendem em laranja; luz de contorno `#FFB088` (a do protótipo). A descrição em texto trocou só as cores ("tira laranja", "módulo laranja-escuro", "botão grafite"); a descrição nova entra com o modelo novo.
+- **Pulseira atual na paleta nova até a 9.5:** tira `#FC4C02`, módulo `#CC4200` (o corpo do módulo novo, 19.12), botões, motores e atuador em grafite, que acendem em laranja; luz de contorno `#FFB088`. A descrição em texto trocou só as cores ("tira laranja", "módulo laranja-escuro", "botão grafite"); a descrição nova entra com o modelo novo.
 - **Aviso conhecido no build:** "Failed to find font override values for font Atkinson Hyperlegible Next". O Next 16.4 ainda não tem as medidas dessa família para criar a reserva ajustada e só pula essa etapa; a reserva continua a Verdana. Não é erro (a opção `adjustFontFallback: false` não tira o aviso no Turbopack, então ficou o código da 19.4).
 
 **Contraste recalculado** (script fora do projeto, 81 pares, **nenhum abaixo do mínimo**). O granulado segue a decisão 1 da 9.0 (atrás do conteúdo, claro no tema claro e escuro no escuro): a conta usou o fundo misturado com a cor do grão na opacidade máxima (6% e 8%), a pior combinação. Com essa cor, ele nunca baixa o contraste. Principais pares:
@@ -883,7 +800,7 @@ A 9.1 foi conferida no código contra a 19.2, item por item, e está completa. F
 | Botões dos ODS: texto / destaque | 17,4 / 5,1 | 15,5 / 4,55 | 7 / 4,5 |
 | Capa: texto / frase / laranja sobre `#1A1A1D` | 17,4 / 10,5 / 5,1 | igual | 7 / 7 / 4,5 |
 
-Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca na faixa cairia para 4,05:1 (claro) e 3,54:1 (escuro), o que confirma a decisão 1. **A conta é refeita na 9.4**, quando o `Granulado` entrar, com a cor real dele.
+Se o grão fosse da cor contrária (cinza por cima de tudo), a marca na faixa cairia para 4,05:1 (claro) e 3,54:1 (escuro), o que confirma a decisão 1. **A conta é refeita na 9.4**, quando o `Granulado` entrar, com a cor real dele.
 
 **Verificação automática** (Chrome sem janela, servidor de produção): ESLint sem problemas, `next build` sem erros (só o aviso conhecido acima) e **60 de 60 testes**:
 - as 3 fontes carregadas e usadas (H1 em Anton, corpo em Atkinson, rótulo em JetBrains Mono); os arquivos `.woff2` vêm de `/_next/static/media/`; **nenhum pedido a `fonts.googleapis.com` ou `fonts.gstatic.com`**;
@@ -899,10 +816,6 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 4. Modo celular do DevTools a 320 px: "Diário de deslocamentos" em duas linhas, sem palavra cortada, e sem rolagem lateral.
 5. Passe o mouse num botão secundário (ex.: "Ir para a Solução" na 404, ou "Cancelar" no formulário do Diário): fundo laranja claro e texto grafite.
 6. Desligue os efeitos no cabeçalho e repita os passos 2 e 4: as cores são as mesmas.
-
-**Marcadores desta subfase:** nenhum novo. Saíram os 3 marcadores `FONTE-…-AQUI`.
-
-**Sugestão de commit:** `Aplica a paleta laranja e grafite e carrega as fontes pelo next/font`
 
 ### 9.3 — Polimento com os 4 pilares
 
@@ -924,11 +837,11 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 | `components/layout/ItemBarra.jsx` | Itens não selecionados com borda transparente (sem borda visível; aparece no alto contraste do Windows) |
 | `components/abertura/AberturaPulseira.jsx`, `app/not-found.jsx` | Ordem das camadas: textura → palavra de fundo → pulseira |
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **`overflow-wrap: break-word` nos títulos, em vez do `normal` escrito na 19.5.** A 19.5 pede, ao mesmo tempo, `overflow-wrap: normal` e que a palavra possa quebrar "só nesse caso", se não couber. Com `normal`, ela nunca quebra. Com o texto ampliado a 200% a 320 px, os títulos passavam da tela: 239 px de rolagem lateral no Diário, e no Início os títulos ficavam cortados pelo `overflow-x-clip` (WCAG 1.4.10). O `break-word` quebra a palavra só quando ela não cabe sozinha na linha e, diferente do `anywhere` do corpo, não deixa a palavra encolher para caber ao lado de outra. No tamanho normal, nenhum título quebra no meio da palavra (testado nas 6 rotas, a 320 px, nos dois temas).
-- **Bandas da Solução: A pulseira e Equipe**, como na amostra da Solução do protótipo `pulse-efeitos.html` (a 19.5 dá a ordem só do Início). "Antes e depois" vira banda quando entrar (9.7).
-- **Espaço das bandas:** 72 px em cima e embaixo (o `padding` das seções do protótipo), e os 80 px de antes entre as seções.
-- **Duas colunas a partir de 64rem** (a 19.5), e não a partir de 1000 px, como no protótipo. O texto começa na altura do título, e não do rótulo.
+- **Bandas da Solução: A pulseira e Equipe** (a 19.5 dá a ordem só do Início). "Antes e depois" vira banda quando entrar (9.7).
+- **Espaço das bandas:** 72 px em cima e embaixo, e os 80 px de antes entre as seções.
+- **Duas colunas a partir de 64rem** (a 19.5). O texto começa na altura do título, e não do rótulo.
 
 **Contraste com a palavra de fundo na frente da textura:**
 - **Abertura (links dos lados):** o texto passa sobre a palavra, mas fora dos domos. Texto: 13,8:1 (claro) e 15,2:1 (escuro). Texto secundário: 7,34:1 e 9,22:1.
@@ -949,8 +862,6 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 - 6 rotas com o texto ampliado a 200% a 320 px: sem rolagem lateral e nenhum título transbordando;
 - nenhum erro ou aviso no console, com os efeitos ligados e desligados.
 
-**Antes e depois:** capturas de página inteira das 6 rotas, a 320 px e a 1280 px, numa página de comparação local, feita para a revisão e fora do projeto.
-
 **Como testar à mão:**
 1. `npm run dev` e abra a Início.
 2. Role até o Tema: fundo cinza claro de ponta a ponta, a linha tracejada no topo, o rótulo "CitizenTech" e o título "Tecnologia que nasce de uma necessidade real" à esquerda, com o texto à direita. Diminua a janela para menos de 1024 px: tudo em uma coluna.
@@ -960,10 +871,6 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 6. Modo celular a 320 px: nenhum título corta palavra. Aumente o texto do navegador (Chrome: Configurações > Aparência > Tamanho da fonte > Muito grande): os títulos podem quebrar uma palavra muito longa, mas nada passa da tela.
 7. Tema escuro do aparelho: as bandas ficam em grafite `#242428`, e os cartões dentro delas mantêm a borda.
 8. Desligue os efeitos no cabeçalho e repita: o visual é o mesmo.
-
-**Marcadores desta subfase:** nenhum novo. Os `ICONE-…-AQUI` continuam onde estavam; só o espaço vazio deles deixou de ocupar lugar.
-
-**Sugestão de commit:** `Aplica o polimento com bandas, títulos novos e barra sem bordas`
 
 ### 9.4 — Efeitos globais
 
@@ -995,22 +902,22 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 | `components/layout/Rodape.jsx` e `hooks/useRodapeRevelado.js` (novo) | "PULSE" gigante (`aria-hidden`) e o rodapé revelado |
 | `components/solucao/SinaisRolagemFixa.jsx`, `GaleriaHorizontal.jsx` | Rótulos com `RotuloSecao` |
 
-**Decisões da implementação** (seção 17 como **Implementação**):
-- **Granulado em duas camadas.** Para ficar atrás do conteúdo (decisão 1 da 9.0), o grão da página fica no `<main>` com `z-index: -1`, e as bandas, que têm fundo opaco, têm a própria camada de grão por cima do fundo delas. A camada se move só por `transform` (6 passos por segundo) e é só 12% maior que a tela (o protótipo usava 200%, pesado demais para o celular).
-- **Capa e preloader no `<body>` (portal).** O rodapé revelado põe o `<main>` numa camada própria (`z-index: 1`, como no protótipo); dentro dele, a capa ficaria atrás do cabeçalho.
-- **Linha do rótulo com `scaleX` e `spring.padrao`**, em vez de animar a largura em 0,6 s (protótipo). O padrão de movimento só permite `transform` e `opacity`. A linha nasce desenhada (no servidor e sem JavaScript) e só se apaga para se desenhar se a seção estiver abaixo da tela.
-- **Cortina em `<canvas>`.** Uma máscara de CSS tem um raio só para todos os domos; a varredura diagonal precisa de um raio por domo. Duração de 0,42 s em cada sentido (padrão, item 5c, e protótipo). Densidade de pixels limitada a 1,75.
+**Decisões da implementação**:
+- **Granulado em duas camadas.** Para ficar atrás do conteúdo (decisão 1 da 9.0), o grão da página fica no `<main>` com `z-index: -1`, e as bandas, que têm fundo opaco, têm a própria camada de grão por cima do fundo delas. A camada se move só por `transform` (6 passos por segundo) e é só 12% maior que a tela (com 200%, ficaria pesado demais para o celular).
+- **Capa e preloader no `<body>` (portal).** O rodapé revelado põe o `<main>` numa camada própria (`z-index: 1`); dentro dele, a capa ficaria atrás do cabeçalho.
+- **Linha do rótulo com `scaleX` e `spring.padrao`**, em vez de animar a largura. O padrão de movimento só permite `transform` e `opacity`. A linha nasce desenhada (no servidor e sem JavaScript) e só se apaga para se desenhar se a seção estiver abaixo da tela.
+- **Cortina em `<canvas>`.** Uma máscara de CSS tem um raio só para todos os domos; a varredura diagonal precisa de um raio por domo. Duração de 0,42 s em cada sentido (padrão, item 5c). Densidade de pixels limitada a 1,75.
 - **Preloader de 1,4 s** (decisão 3 da 9.0), na mesma camada de espera da capa. Uma tecla, um gesto ou um foco durante a contagem o tira na hora, para o foco nunca ficar atrás dele.
 - **Encaixe só a partir de 64rem e 600 px de altura** (o limite das seções fixas da 19.6, que também desliga o encaixe com zoom alto), só depois da roda do mouse e nunca com o foco num campo. "Topo" = cabeçalho + "Nesta página" fixo (as mesmas medidas das âncoras).
 - **Faixa de texto antes do "Nesta página"**: fica "entre a abertura e o Tema", e o índice continua logo antes das seções. Fundo `--cor-marca` e letras `--cor-fundo` (4,8:1 no claro; 5,1:1 no escuro). O controle de pausa dela é o botão "Efeitos" do cabeçalho (19.6). Ela só anda quando está na tela.
 - **Barra de progresso escondida** com os efeitos desligados (a 19.6 diz "parada"; uma barra parada em 0 não aparece).
-- **Rodapé revelado só quando o rodapé tem menos de 80% da altura da tela** (protótipo). A 1280 × 900, vale em todas as páginas menos a Solução (com a faixa dos ODS, o rodapé tem 897 px).
+- **Rodapé revelado só quando o rodapé tem menos de 80% da altura da tela**. A 1280 × 900, vale em todas as páginas menos a Solução (com a faixa dos ODS, o rodapé tem 897 px).
 
 **Contraste com o granulado (refeito com o grão real):**
 - O grão é branco no tema claro e preto no escuro e fica atrás do conteúdo, então **nenhum par baixa**: no claro, o branco não muda o fundo branco; no escuro, o preto só escurece o fundo (a marca na faixa sobe de 4,55:1 para 4,71:1).
 - A opacidade mínima de 4% não foi necessária.
 - **Consequência visual:** o grão quase não aparecia. No claro, variava no máximo 0,3 nível de cor na faixa e nada no branco; no escuro, no máximo 2 a 3 níveis.
-- **Decisão da equipe (opção B, seção 17 como Equipe):**
+- **Decisão da equipe (opção B):**
   - **Escuro:** o grão preto passa a 25% (`--grao-opacidade: 0.25`; a 19.3 dizia 0,08) e varia 7 a 9 níveis. Como só escurece o fundo, o contraste sobe: marca 5,43:1 no fundo e 5,05:1 na faixa; texto secundário 11,2:1 e 10,4:1; palavras apagadas 6,6:1 e 6,2:1.
   - **Claro:** continua como estava (grão branco, 6%).
   - **Opções descartadas:** A (manter) e C (grão cinza no claro: o laranja cairia para 4,34:1 nas bandas).
@@ -1053,10 +960,6 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 5. Desligue os efeitos: a faixa para, a barra de progresso some, o rodapé fica normal, a troca de página é instantânea e o encaixe não acontece.
 6. Alto contraste do Windows (`Alt + Shift + Print Screen`): o grão some.
 
-**Marcadores desta subfase:** nenhum novo.
-
-**Sugestão de commit:** `Adiciona granulado, preloader, varredura, progresso, encaixe, faixa e rodapé revelado`
-
 ### 9.5 — Pulseira 3D nova
 
 **O que mudou para quem usa:**
@@ -1072,21 +975,21 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 
 | Arquivo | Mudança |
 | --- | --- |
-| `lib/pulseira3d/modelo.js` (novo) | O modelo como módulo único, portado de `criarPulseira()` do protótipo (geometria, materiais, Braille, sinais e luzes); `VISTA_DAS_PARTES` (para onde girar em cada parte); âncoras dos 6 links (as zonas de vibração no lugar dos motores; o fecho no lugar da parte de baixo da tira) |
-| `lib/pulseira3d/cena.js` | Reescrito: renderizador (densidade de pixels até 1,75, tons ACES), ambiente `RoomEnvironment`, luz principal e de contorno do protótipo, câmera por modo, pivô do giro e liberação de tudo da memória (geometrias, materiais, textura do brilho, ambiente, `forceContextLoss`). `criarCena` é assíncrona e compila os shaders em paralelo (opção B) |
+| `lib/pulseira3d/modelo.js` (novo) | O modelo como módulo único, com a pulseira aprovada pela equipe (geometria, materiais, Braille, sinais e luzes); `VISTA_DAS_PARTES` (para onde girar em cada parte); âncoras dos 6 links (as zonas de vibração no lugar dos motores; o fecho no lugar da parte de baixo da tira) |
+| `lib/pulseira3d/cena.js` | Reescrito: renderizador (densidade de pixels até 1,75, tons ACES), ambiente `RoomEnvironment`, luz principal e de contorno, câmera por modo, pivô do giro e liberação de tudo da memória (geometrias, materiais, textura do brilho, ambiente, `forceContextLoss`). `criarCena` é assíncrona e compila os shaders em paralelo (opção B) |
 | `lib/pulseira3d/sinais.js` | Só os dados (ordem e textos dos sinais da abertura, nome do movimento, ciclo). Saem os anéis de "pulso" da Fase 8: os sinais agora são as luzes |
 | `hooks/useGiroPulseira.js` (novo) | Giro automático, arrasto (no toque, só o horizontal: `touch-action: pan-y`), setas, botões, ir até uma parte, ver um sinal |
 | `hooks/usePulseira3D.js` | Reescrito para os modos `abertura`, `explorar`, `sinal` e `parar` com o modelo novo; anima só visível e só quando algo se move; quadro parado com os efeitos desligados |
-| `components/pulseira/Pulseira3D.jsx`, `CenaPulseira.jsx` | Palco (abertura e explorar): `role="group"`, `aria-roledescription="modelo 3D"`, nome "Pulseira Pulse em 3D. Use as setas do teclado para girar.", `aria-describedby` na descrição nova (a do protótipo) e foco; prop `adiar` |
-| `components/pulseira/ExplorarPulseira.jsx` (novo) | Palco com a textura em relevo, "Arraste para girar", grupo "Girar a pulseira", "Partes da pulseira" (8) e "Os sinais no pulso" (5) com `aria-pressed` e explicação em `aria-live="polite"`, textos do protótipo |
+| `components/pulseira/Pulseira3D.jsx`, `CenaPulseira.jsx` | Palco (abertura e explorar): `role="group"`, `aria-roledescription="modelo 3D"`, nome "Pulseira Pulse em 3D. Use as setas do teclado para girar.", `aria-describedby` na descrição nova e foco; prop `adiar` |
+| `components/pulseira/ExplorarPulseira.jsx` (novo) | Palco com a textura em relevo, "Arraste para girar", grupo "Girar a pulseira", "Partes da pulseira" (8) e "Os sinais no pulso" (5) com `aria-pressed` e explicação em `aria-live="polite"` |
 | `components/abertura/AberturaPulseira.jsx` | "Pausar animação" sai; entra o grupo "Girar a pulseira"; a cena só é montada depois do preloader |
 | `app/solucao/page.jsx` | `ExplorarPulseira` em "A pulseira", depois dos 3 passos |
 
-**Decisão da equipe** (seção 17 como **Equipe**): o botão de giro tem **texto fixo "Girar sozinha"**, com `aria-pressed="true"` enquanto gira; só o ícone troca (pausa ↔ play). A 19.12 pedia o texto trocando entre "Pausar o giro" e "Girar sozinha" junto com o `aria-pressed`, e o leitor de tela diria "Pausar o giro, pressionado" enquanto a pulseira gira.
+**Decisão da equipe**: o botão de giro tem **texto fixo "Girar sozinha"**, com `aria-pressed="true"` enquanto gira; só o ícone troca (pausa ↔ play). A 19.12 pedia o texto trocando entre "Pausar o giro" e "Girar sozinha" junto com o `aria-pressed`, e o leitor de tela diria "Pausar o giro, pressionado" enquanto a pulseira gira.
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **"Girar sozinha" para também os sinais e o Braille** na abertura (decisão da 9.0): o sinal da vez fica aceso e parado. No explorar, "Girar sozinha" para o giro e o Braille; um sinal ou uma parte escolhidos continuam animando até serem desmarcados (foram pedidos pela pessoa).
-- **Zonas de vibração acesas**: no protótipo, o sinal apagava o destaque das zonas e do atuador escolhidos na lista de partes. Aqui, o destaque da parte vem por último.
+- **Zonas de vibração acesas**: na versão aprovada, o sinal apagava o destaque das zonas e do atuador escolhidos na lista de partes. Aqui, o destaque da parte vem por último.
 - **Botões de giro só com a cena pronta**; com os efeitos desligados, "Girar sozinha" some e os outros giram sem animação, como pede a 19.12.
 - **Sem WebGL** (ou sem JavaScript), a descrição aparece no lugar do palco e os botões de giro somem. As listas de partes e de sinais continuam e explicam cada um.
 - **Cena montada depois do preloader**: compilar os shaders da cena nova trava a página por um instante, e a contagem do preloader pulava para o fim.
@@ -1094,7 +997,7 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 - **Entrada da abertura só depois da capa** (cresce de 0,35 para 1); sem capa, a pulseira já aparece no tamanho final.
 - **Até a 9.8, "Os sinais" ainda usa a pulseira pequena** (modo `sinal`, com o modelo novo). A 1280 × 900, nunca há mais de uma cena visível ao mesmo tempo.
 
-**Desempenho (opção B da equipe, seção 17 como Equipe):** na primeira carga da Início, criar a cena travava a página por **1,6 s** de uma vez (placa de vídeo do Windows), por causa da compilação dos shaders dos materiais e do ambiente de reflexos. A equipe escolheu compilar sem travar, mantendo o visual:
+**Desempenho (opção B da equipe):** na primeira carga da Início, criar a cena travava a página por **1,6 s** de uma vez (placa de vídeo do Windows), por causa da compilação dos shaders dos materiais e do ambiente de reflexos. A equipe escolheu compilar sem travar, mantendo o visual:
 - `criarCena` passou a ser assíncrona. Ela compila os materiais em paralelo (`compileAsync`, extensão `KHR_parallel_shader_compile`) e só devolve a cena quando estão prontos; enquanto isso, fica a descrição em texto.
 - Os dois shaders internos do gerador de reflexos (desfoque e reflexo) e os materiais da sala também são compilados antes, em paralelo, com a textura intermediária como destino. Isso usa campos internos do Three.js 0.186.1 (`_setSize`, `_allocateTargets`, `_blurMaterial`, `_ggxMaterial`) dentro de um `try/catch`: se um dia mudarem, o ambiente é gerado do jeito normal.
 - Sem a extensão no navegador, nada disso é pedido, e o Three.js não escreve aviso no console.
@@ -1112,7 +1015,7 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
   - a seta para a esquerda e o botão giram; arrastar para o giro automático.
 - **Efeitos desligados:** quadro parado, sem "Girar sozinha"; o botão gira na hora, sem animação; `document.getAnimations()` vazio.
 - **Explorar:**
-  - palco, os 5 controles, as 8 partes e os 5 sinais com os nomes do protótipo, e 2 áreas `aria-live`;
+  - palco, os 5 controles, as 8 partes e os 5 sinais, e 2 áreas `aria-live`;
   - escolher uma parte marca o botão, gira até ela, explica e para o giro; tocar de novo desmarca;
   - escolher um sinal marca e explica.
 - **Sem WebGL:** a descrição aparece, sem palco e sem botões de giro; na Solução, as partes e os sinais continuam.
@@ -1136,10 +1039,6 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 4. Leitor de tela (NVDA): no palco, algo como "Pulseira Pulse em 3D. Use as setas do teclado para girar, modelo 3D" e a descrição; em "Girar sozinha", "botão de alternância, pressionado".
 5. WebGL desligado (`chrome://settings/system` → "Usar aceleração gráfica" desligado): aparece a descrição em texto.
 
-**Marcadores desta subfase:** `ICONE-ArrowCounterClockwise-AQUI` e `ICONE-ArrowClockwise-AQUI` (girar, na Início e no explorar), `ICONE-Eye-AQUI` ("Ver por dentro") e `ICONE-Pause-AQUI` / `ICONE-Play-AQUI` ("Girar sozinha"), em `components/abertura/AberturaPulseira.jsx` e `components/pulseira/ExplorarPulseira.jsx`.
-
-**Sugestão de commit:** `Adiciona a pulseira 3D nova com giro, partes e sinais`
-
 ### 9.6 — Início
 
 **O que mudou para quem usa** (ordem da 19.5: abertura → faixa de texto → "Nesta página" → Tema → frase que acende → O problema → Quem vive → Um trajeto com a Pulse → "Conheça a solução"):
@@ -1156,25 +1055,25 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 
 | Arquivo | Mudança |
 | --- | --- |
-| `app/page.jsx` | Ordem da 19.5; O problema como seção fixa (CSS sticky, só com os efeitos ligados, a partir de 64rem e 600 px de altura); `TextoConstroi`, `NumeroContado`, `FotoFiltro` com os marcadores novos; `FraseAcende` e `TrajetoPulse`; "Um trajeto com a Pulse" no "Nesta página"; "Quem vive" na largura da página (como no protótipo) |
+| `app/page.jsx` | Ordem da 19.5; O problema como seção fixa (CSS sticky, só com os efeitos ligados, a partir de 64rem e 600 px de altura); `TextoConstroi`, `NumeroContado`, `FotoFiltro` com os espaços das fotos novas; `FraseAcende` e `TrajetoPulse`; "Um trajeto com a Pulse" no "Nesta página"; "Quem vive" na largura da página |
 | `components/ui/TextoConstroi.jsx` e `hooks/useTextoConstroi.js` (novos) | Gesto GUIA (opacidade e 14 px, `spring.padrao`) na primeira vez que o bloco chega; com o foco dentro, aparece na hora |
 | `components/ui/NumeroContado.jsx` e `hooks/useContagem.js` (novos) | Número que conta em 1,2 s (`aria-hidden`) e o valor real em texto escondido |
 | `components/abertura/FraseAcende.jsx` e `hooks/useFraseAcende.js` (novos) | Seção `aria-label="Frase de abertura"`; frase inteira para o leitor de tela; palavras visíveis com `aria-hidden` acendendo com a rolagem |
-| `components/abertura/TrajetoPulse.jsx` e `hooks/useTrajeto.js` (novos) | Mapa SVG decorativo (`stroke-dashoffset`), `<ol>` das 5 paradas com os textos do protótipo, modo fixo com trilho de 340svh |
-| `components/ui/FotoFiltro.jsx`, `hooks/useParallax.js` e `hooks/useFiltroFoto.js` (novos) | Filtro de cinza com pontilhado de domos (cor e zoom de 1,05 com o mouse, o foco ou, no celular, ao entrar na tela) e parallax da imagem dentro da moldura. **(Depois da Fase 9)** Filtro e parallax retirados (item 1 de "Depois da Fase 9"); os dois hooks foram apagados na auditoria (item 7) |
+| `components/abertura/TrajetoPulse.jsx` e `hooks/useTrajeto.js` (novos) | Mapa SVG decorativo (`stroke-dashoffset`), `<ol>` das 5 paradas, modo fixo com trilho de 340svh |
+| `components/ui/FotoFiltro.jsx`, `hooks/useParallax.js` e `hooks/useFiltroFoto.js` (novos) | Filtro de cinza com pontilhado de domos (cor e zoom de 1,05 com o mouse, o foco ou, no celular, ao entrar na tela) e parallax da imagem dentro da moldura. **(Depois da Fase 9)** Filtro e parallax retirados (item 1 de "Depois da Fase 9"); os dois hooks foram apagados na auditoria (item 6) |
 | `app/globals.css` | Variante `secao-fixa:`; estilos da frase, do filtro, do trajeto e do modo fixo; no alto contraste, foto sem filtro |
 | `hooks/useSecaoAtual.js` | Seções fixas (`data-secao-fixa`) contam a partir do começo, porque o título fica preso no meio da tela |
 | `components/layout/BarraNavegacao.jsx` | `pointer-events: none` na `<nav>` e `auto` na pílula |
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **Parallax só da imagem, dentro da moldura parada.** Mover a foto inteira (até 60 px) cobriria o título e o texto do cartão. A imagem fica 12% maior que a moldura e anda só dentro dessa folga (no máximo 6% da altura e 60 px).
-- **Filtro e parallax só com uma imagem de verdade** (`:has(img)`). Enquanto o espaço é o marcador, nada muda, e o texto do marcador não fica atrás do pontilhado.
+- **Filtro e parallax só com uma imagem de verdade** (`:has(img)`). Enquanto o espaço está vazio, nada muda.
 - **Com os efeitos desligados, a foto fica colorida e parada** (19.6: "todos ficam parados ou somem").
 - **Texto que se constrói, números e linha do rótulo nascem visíveis** (servidor e sem JavaScript). Eles só se escondem para entrar se estiverem abaixo da tela ao carregar.
 - **"Um trajeto com a Pulse" no "Nesta página"**, por ser uma seção com H2 como as outras.
-- **Trajeto em modo fixo só no computador** (64rem e 600 px, como as seções fixas da 19.6) e só se o palco couber na tela. Fora disso, a rota anda enquanto o palco passa pela tela. O protótipo também prendia o palco no celular.
+- **Trajeto em modo fixo só no computador** (64rem e 600 px, como as seções fixas da 19.6) e só se o palco couber na tela. Fora disso, a rota anda enquanto o palco passa pela tela.
 - **Mapa do trajeto já certo no servidor:** as posições das 5 paradas foram calculadas a partir do caminho (770 unidades), sem precisar de JavaScript.
-- **A ilustração de uma travessia continua** no lado que rola de "O problema" até a equipe decidir (19.14); o vídeo dessa seção entra na 9.8.
+- **A ilustração de uma travessia continua** no lado que rola de "O problema" até a equipe decidir; o vídeo dessa seção entra na 9.8.
 - **Colunas `grid-cols-1` (`minmax(0, 1fr)`) nas grades novas:** sem isso, com o texto ampliado a 200%, a coluna crescia até o conteúdo e criava 249 px de rolagem lateral.
 
 **Contraste:** as palavras ainda apagadas da frase (`--cor-apagada`) são texto grande em negrito, com 5,0:1 (claro) e 6,2:1 (escuro); "adivinhar." em `--cor-destaque`, 4,8:1. No mapa, o número da parada alcançada fica em grafite sobre laranja (4,55:1); o mapa é decorativo.
@@ -1195,7 +1094,7 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
   - a foto fica em cinza e, com o mouse, ganha cor;
   - o parallax move a imagem dentro da folga, e o título do cartão não se move;
   - com "mais contraste", a foto aparece colorida; com os efeitos desligados, colorida e parada;
-  - sem imagem, o marcador fica sem filtro.
+  - sem imagem, o espaço fica sem filtro.
 - **Efeitos desligados:** `document.getAnimations()` vazio.
 - **320 px, nos dois temas, e zoom de 400%:** sem rolagem lateral.
 - **Console:** nenhum erro ou aviso.
@@ -1214,13 +1113,6 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
    - no celular, ganham cor ao entrar na tela;
    - ao rolar, a imagem se move um pouco dentro da moldura.
 
-**Marcadores desta subfase:**
-- `IMAGEM-pessoa cega usando o celular-AQUI`, com o `alt` "Pessoa cega usando o celular com leitor de tela.";
-- `IMAGEM-pessoa com baixa visão ampliando a tela-AQUI`, com o `alt` "Pessoa com baixa visão ampliando a tela do celular.";
-- os dois em `app/page.jsx`, dentro do `FotoFiltro`. O `<img>` entra no lugar do `EspacoImagem`.
-
-**Sugestão de commit:** `Adiciona seção fixa, frase que acende, trajeto e números que contam na Início`
-
 ### 9.7 — Solução
 
 **O que mudou para quem usa** (ordem da Solução: A pulseira → Os sinais → Como funciona → **Antes e depois** → Tecnologias → Galeria → Quem participa → Como ampliar o impacto → O diferencial → Equipe):
@@ -1237,32 +1129,32 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 | --- | --- |
 | `hooks/useMagnetico.js` e `components/ui/BotaoMagnetico.jsx` (novos), `components/ui/Botao.jsx` | Conteúdo magnético (mola `spring.rapida`, até 8 px, só com `pointer: fine` e os efeitos ligados). O `Botao` usa o `BotaoMagnetico` sozinho na variante `principal` |
 | `components/solucao/ComoFuncionaFundo.jsx` e `hooks/useComoFuncionaFundo.js` (novos) | Fundo preso (`position: sticky`) com os 4 quadros parados trocando por opacidade (`spring.suave`); item ativo pelo mouse, pelo foco e pela rolagem (faixa do meio da tela); miniaturas na lista comum. Textos da 6.2 e âncoras `semaforos`, `dois-modos` e `transporte-publico` |
-| `components/solucao/AntesDepois.jsx` (novo) | Duas imagens sobrepostas, a de cima recortada por `clip-path`; `<input type="range">` transparente por cima, com `aria-label`, `aria-describedby` e `aria-valuetext` (textos do protótipo) |
+| `components/solucao/AntesDepois.jsx` (novo) | Duas imagens sobrepostas, a de cima recortada por `clip-path`; `<input type="range">` transparente por cima, com `aria-label`, `aria-describedby` e `aria-valuetext` |
 | `components/solucao/CartaoTecnologia.jsx` (novo) | Cartão que vira (`rotateY`, `spring.suave`), verso com `inert`, botão "Ver a peça" com `aria-pressed` e `whileTap` |
 | `components/solucao/GaleriaCanvas.jsx` e `hooks/useGaleriaCanvas.js` (novos) | Plano de 2400 × 1500 px movido por `transform`; arrasto com inércia; setas, botões e foco nas fotos; grade fora do computador |
 | `components/solucao/CartaoIntegrante.jsx` | Reescrito: polaroide no varal, com Motion (`whileHover` só com os efeitos ligados), `FotoFiltro` com parallax e o nome no traço laranja |
 | `app/globals.css` | Fio do varal (`.varal-trecho`), prendedor (`.polaroide::before`) e traço no nome (`.polaroide-nome`) |
-| `app/solucao/page.jsx` | Ordem nova; "Antes e depois" no "Nesta página"; os 8 marcadores das peças; o varal |
+| `app/solucao/page.jsx` | Ordem nova; "Antes e depois" no "Nesta página"; os 8 espaços das fotos das peças; o varal |
 | Apagados | `components/ui/Carrossel.jsx`, `hooks/useCarrossel.js`, `components/solucao/GaleriaHorizontal.jsx`, `hooks/useGaleriaHorizontal.js` e `hooks/useInclinacaoMouse.js` (sem uso em mais nenhum lugar) |
 
-**Decisões da equipe** (seção 17 como **Equipe**; perguntadas antes do código, porque a especificação, o protótipo e o padrão discordavam):
-1. **Como funciona no celular, como o protótipo:** lista comum com miniaturas; o fundo que troca existe só no computador, onde troca com o mouse, o foco e a rolagem. A 19.13 dizia "com a rolagem (no celular)", mas a 19.6 diz que as seções fixas são só no computador, e o protótipo não tem fundo no celular.
+**Decisões da equipe** (perguntadas antes do código, porque a especificação e o padrão de movimento discordavam):
+1. **Como funciona no celular:** lista comum com miniaturas; o fundo que troca existe só no computador, onde troca com o mouse, o foco e a rolagem. A 19.13 dizia "com a rolagem (no celular)", mas a 19.6 diz que as seções fixas são só no computador.
 2. **Botão "Ver a peça" com texto fixo** e `aria-pressed="true"` com o cartão virado, como o "Girar sozinha" da 9.5. A 19.8 pedia o texto trocando para "Ver o texto" junto com o `aria-pressed`, e o leitor de tela diria "Ver o texto, pressionado".
-3. **Polaroides como o protótipo:** com o mouse, ele se endireita e sobe 6 px com a mola (o "balanço leve"), sem acompanhar o mouse. A inclinação que seguia o mouse (18.8) saiu, e o `useInclinacaoMouse` foi apagado.
+3. **Polaroides:** com o mouse, ele se endireita e sobe 6 px com a mola (o "balanço leve"), sem acompanhar o mouse. A inclinação que seguia o mouse (18.8) saiu, e o `useInclinacaoMouse` foi apagado.
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **Botão magnético em todos os botões laranja principais**, inclusive no Diário e na 404 (19.6: "Só os botões laranja principais"). Fica dentro do próprio `Botao`, então ninguém precisa trocar de componente.
 - **"Antes e depois" no "Nesta página"**, por ser uma seção com H2 (como "Um trajeto com a Pulse" na 9.6).
 - **Os vídeos entram na 9.8.** Nesta subfase, o fundo de "Como funciona", as miniaturas e os dois lados de "Antes e depois" usam os quadros parados que já estão em `public/videos/`.
-- **Textos de "Como funciona" da 6.2**, com os cartões de "Dois modos" e a lista de "Transporte público". O protótipo resumia os dois em uma frase cada.
+- **Textos de "Como funciona" da 6.2**, com os cartões de "Dois modos" e a lista de "Transporte público".
 - **Miniaturas e fundo como decoração:** ficam dentro de `aria-hidden`, com `alt=""`, porque o texto de cada item diz o mesmo (19.13: "o texto da seção diz o mesmo que o vídeo").
 - **Cartões de Tecnologias:**
   - as duas faces ficam na mesma célula da grade (e não em posição absoluta), então o cartão cresce com o texto ampliado, em vez de cortar o texto;
   - com os efeitos desligados, o giro tem duração 0. O `MotionConfig` só tira as animações de posição e de escala, e não a rotação;
-  - a foto da peça aparece colorida, como no protótipo, porque só aparece quando a pessoa pede.
+  - a foto da peça aparece colorida, porque só aparece quando a pessoa pede.
 - **Galeria:**
-  - modo canvas a partir de 64rem e 600 px de altura (19.9), e não 1000 px (protótipo);
-  - fotos em 4:3, como no protótipo (antes eram 4:5);
+  - modo canvas a partir de 64rem e 600 px de altura (19.9);
+  - fotos em 4:3 (antes eram 4:5);
   - no toque, a janela deixa passar a rolagem vertical da página (`touch-action: pan-y`), para o dedo não ficar preso numa área de 72% da tela;
   - as fotos recebem o foco pelo Tab só no modo canvas, e o plano as leva ao meio da janela;
   - **página sem pulo no foco:** o Chrome rola a página antes do evento de foco, para mostrar a foto onde ela estava, às vezes mais de 900 px. O hook devolve a página à última rolagem conhecida, antes de a tela ser pintada. Se o navegador rolou a própria janela, esse deslocamento vira posição do plano. **(Revisto na 9.8:** a volta da página dependia do momento exato da rolagem e falhou com os vídeos na página; agora o Tab e o Shift+Tab entre as fotos são tratados pelo hook, com `preventScroll`.**)**
@@ -1271,7 +1163,7 @@ Se o grão fosse da cor contrária (cinza por cima, como no protótipo), a marca
 - **Varal:** cada polaroide desenha o seu trecho do fio, com uma leve curva para baixo onde fica o prendedor. Os trechos vizinhos se emendam, e o fio funciona com 2, 3 + 2 ou 5 por linha.
 - **Parallax leve nos polaroides** (19.6, "polaroides"), só quando a foto entrar.
 - **Fundo de "Como funciona" em 0,42 s** (`spring.suave`), o preset mais perto dos 0,4 s da 19.13.
-- **Antes e depois:** até 56rem de largura (a 16:10, a área toda ficaria com 760 px de altura) e 4:5 abaixo de 32,5rem (protótipo). Etiquetas "Sem a Pulse" e "Com a Pulse" com cores fixas sobre a imagem: grafite sobre branco (17,4:1) e sobre laranja (5,1:1).
+- **Antes e depois:** até 56rem de largura (a 16:10, a área toda ficaria com 760 px de altura) e 4:5 abaixo de 32,5rem. Etiquetas "Sem a Pulse" e "Com a Pulse" com cores fixas sobre a imagem: grafite sobre branco (17,4:1) e sobre laranja (5,1:1).
 
 **Contraste:** nada novo baixa. Os textos de "Como funciona" ficam sempre sobre o cartão sólido (`--cor-superficie`); o botão "Ver a peça" é laranja `--cor-marca` sobre a superfície (4,8:1 no claro; 5,1:1 no escuro); o traço do nome é grafite sobre laranja (4,55:1); o polaroide é grafite sobre branco nos dois temas (15,5:1).
 
@@ -1328,21 +1220,6 @@ As baterias de testes das subfases anteriores não foram rodadas de novo, porque
 9. **Celular** (modo celular do DevTools, 375 px): "Como funciona" em lista com miniaturas, Tecnologias em 1 coluna, Galeria em grade, Equipe 2 + 2 + 1.
 10. **Depois de colocar as fotos:** com os efeitos ligados, as fotos da Galeria e dos polaroides ficam em cinza com pontilhado e ganham cor com o mouse ou o foco (no celular, ao entrar na tela).
 
-**Marcadores desta subfase:**
-- **Ícones:**
-  - `ICONE-ArrowsClockwise-AQUI` ("Ver a peça"), em `components/solucao/CartaoTecnologia.jsx`;
-  - `ICONE-ArrowLeft-AQUI`, `ICONE-ArrowUp-AQUI`, `ICONE-ArrowDown-AQUI`, `ICONE-ArrowRight-AQUI` e `ICONE-ArrowsOutCardinal-AQUI` ("Mover a galeria"), em `components/solucao/GaleriaCanvas.jsx`. O `ArrowLeft` não está nas listas da 18.13 e da 19.14; é o par do `ArrowRight` da 18.13;
-  - `ICONE-CaretLeft-AQUI` e `ICONE-CaretRight-AQUI` (alça da divisória), em `components/solucao/AntesDepois.jsx`. Antes eram do carrossel, que saiu.
-- **Imagens:**
-  - **novos:** `IMAGEM-peça (GPS)-AQUI`, `IMAGEM-peça (Reconhecimento de voz)-AQUI`, `IMAGEM-peça (ESP32 ou equivalente)-AQUI`, `IMAGEM-peça (Motores de vibração)-AQUI`, `IMAGEM-peça (Atuadores de pressão)-AQUI`, `IMAGEM-peça (Alto-falante)-AQUI`, `IMAGEM-peça (APIs de mapas, semáforos e transporte)-AQUI` e `IMAGEM-peça (Módulo de conectividade)-AQUI`, com o `alt` "Foto da peça: (nome).", na lista `TECNOLOGIAS` de `app/solucao/page.jsx`. A imagem entra no `EspacoImagem` do verso, em `CartaoTecnologia.jsx`;
-  - **mudaram de arquivo:** os 6 `IMAGEM-galeria …-AQUI`, com os `alt` da 18.13, agora em `components/solucao/GaleriaCanvas.jsx`;
-  - **continuam:** os 5 `IMAGEM-foto de (nome)-AQUI`, em `app/solucao/page.jsx`.
-- **Vídeos** (os arquivos já estão em `public/videos/`; o caminho está em comentário):
-  - `VIDEO-animacao-vibracoes-AQUI`, `VIDEO-animacao-semaforos-AQUI`, `VIDEO-animacao-dois-modos-AQUI` e `VIDEO-animacao-transporte-AQUI`, em `components/solucao/ComoFuncionaFundo.jsx`;
-  - `VIDEO-animacao-antes-sem-AQUI` e `VIDEO-animacao-antes-com-AQUI`, em `components/solucao/AntesDepois.jsx`.
-
-**Sugestão de commit:** `Adiciona Como funciona fixo, Antes e depois, cartões que viram, galeria em canvas e varal da Equipe`
-
 ### 9.8 — Vídeos
 
 **O que mudou para quem usa:**
@@ -1365,22 +1242,22 @@ As baterias de testes das subfases anteriores não foram rodadas de novo, porque
 | --- | --- |
 | `hooks/useVideoPulse.js` (novo) | Quando tocar e pausar (`IntersectionObserver`, interruptor, pausa da pessoa, `ativo`), som e legendas, "tocar uma vez" com os efeitos desligados, volta ao quadro parado ao desligar, gêmeos sincronizados, falha sem o arquivo e liberação da memória |
 | `components/ui/VideoPulse.jsx` (novo) | Vídeo de conteúdo (caixa 16:9 + `ControlesVideo`) ou de fundo (`aria-hidden`, sem botões); caminhos a partir do nome (`caminhosDoVideo`) |
-| `app/page.jsx` | Vídeo de "O problema" com som; sai o marcador da ilustração de uma travessia; o texto da seção ganha o id da descrição |
+| `app/page.jsx` | Vídeo de "O problema" com som; sai a ilustração de uma travessia; o texto da seção ganha o id da descrição |
 | `app/solucao/page.jsx` | Vídeos de "A pulseira" (sai a ilustração conceitual) e de "Apenas dois botões" |
 | `components/solucao/SinaisRolagemFixa.jsx` | Sai a pulseira 3D pequena e o "Pausar animação". No modo fixo, o vídeo do sinal atual fica junto do índice; na lista comum, cada sinal tem o seu vídeo. Os H3 e as `<dl>` ganharam ids para o nome e a descrição |
 | `components/solucao/ComoFuncionaFundo.jsx` | Fundo com 4 `VideoPulse` de fundo; só o do item ativo toca |
 | `components/solucao/AntesDepois.jsx` | Os dois vídeos gêmeos e um botão "Pausar"/"Reproduzir" para o par |
-| `components/abertura/CapaIntro.jsx` | Vídeo da capa (horizontal ou vertical, pela orientação), véu de 60% e rótulo numa faixa sólida; saem os marcadores das imagens da capa |
+| `components/abertura/CapaIntro.jsx` | Vídeo da capa (horizontal ou vertical, pela orientação), véu de 60% e rótulo numa faixa sólida; saem as imagens da capa |
 | `hooks/useGaleriaCanvas.js`, `components/solucao/GaleriaCanvas.jsx` | Correção da 9.7: Tab e Shift+Tab entre as fotos com `preventScroll` (ver abaixo) |
 
-**Decisões da equipe** (seção 17 como **Equipe**):
+**Decisões da equipe**:
 1. **Botões dos vídeos com o texto que diz a ação, sem `aria-pressed`:** "Pausar" ↔ "Reproduzir" e "Ativar som" ↔ "Desativar som", como nos tocadores de vídeo. O leitor diz "Reproduzir, botão". A 19.13 pedia o texto trocando e também `aria-pressed`, e o leitor diria "Reproduzir, pressionado" com o vídeo parado.
 2. **"Os sinais":** no modo fixo, o vídeo do sinal atual fica junto do índice: no computador, na coluna do índice (15rem, 16:9), com os 2 botões embaixo; no celular, com 8rem, ao lado dos 2 botões empilhados. Na lista comum (efeitos desligados, tela baixa), cada sinal mostra o seu vídeo depois da foto e do texto. A pulseira pequena (132 e 76 px) era pequena demais para um vídeo com botões.
-3. **Sai o marcador `IMAGEM-ilustração de uma travessia-AQUI`** (19.14): o vídeo de "O problema" ocupa o lugar dele.
+3. **Sai a ilustração de uma travessia:** o vídeo de "O problema" ocupa o lugar dele.
 4. **Capa: véu grafite `#1A1A1D` a 60% sobre o vídeo e o rótulo numa faixa sólida.** Sem nada, "PULSE" caía a 2,5:1 e o rótulo laranja a 1,0:1 (medido em 8 momentos do loop, de 375 a 1440 px). Com o véu, "PULSE" fica com 7,8:1 ou mais. O laranja nunca passaria de 4,5:1 sobre o vídeo, nem com véu de 70%, e na faixa fica com 5,1:1.
 
-**Decisões da implementação** (seção 17 como **Implementação**):
-- **Botões embaixo do vídeo**, e não por cima, como no protótipo. Com zoom de 400% (320 × 225), dois botões por cima cobririam o vídeo inteiro.
+**Decisões da implementação**:
+- **Botões embaixo do vídeo**, e não por cima. Com zoom de 400% (320 × 225), dois botões por cima cobririam o vídeo inteiro.
 - **Vídeos de fundo sem botões** (capa e "Como funciona", 19.13: "`aria-hidden`, sem foco"). Quem os pausa é o botão "Efeitos" do cabeçalho, como a faixa de texto da 9.4. A capa some com qualquer tecla, toque ou foco.
 - **"Antes e depois" com um botão para o par**, logo abaixo da comparação. Os gêmeos andam mais de 5 s (WCAG 2.2.2) e não são fundo.
 - **Nome dos vídeos de conteúdo** pelo `aria-labelledby` no título que já existe ("O problema", "A pulseira", "Apenas dois botões" e o H3 de cada sinal), sem texto novo. A descrição (`aria-describedby`) aponta para o texto que diz o mesmo (WCAG 1.2.1).
@@ -1393,7 +1270,7 @@ As baterias de testes das subfases anteriores não foram rodadas de novo, porque
   - se o arquivo falhar antes de o React assumir a página, o evento `error` já passou, e o hook confere `video.error` quando o vídeo é registrado.
 - **Memória:** ao sair da página, cada vídeo pausa, perde o `src` e é recarregado vazio. No modo de desenvolvimento, o React liga e desliga a ref duas vezes, e o `src` volta pelo `data-src`.
 - **Galeria (correção da 9.7):** com os vídeos na página, a "volta da página" da 9.7 falhou: no primeiro Tab, a página pulou 430 px. A correção dependia do momento exato da rolagem e ainda podia desfazer uma rolagem legítima (a que mostra o botão "Esquerda"). Agora o hook trata o Tab e o Shift+Tab entre as fotos, e o Shift+Tab do botão "Esquerda" para a última foto, com `focus({ preventScroll: true })`. A mola leva a foto ao meio. Ficou só a conversão da rolagem da janela em posição do plano.
-- **Peso da página:** a Solução tem até 12 elementos de vídeo (`preload="metadata"`, como pede a 19.13; **depois da Fase 9, `preload="none"`**, item 7), mas só os visíveis tocam. Ela ficou com uma cena 3D a menos (a pulseira pequena de "Os sinais").
+- **Peso da página:** a Solução tem até 12 elementos de vídeo (`preload="metadata"`, como pede a 19.13; **depois da Fase 9, `preload="none"`**, item 6), mas só os visíveis tocam. Ela ficou com uma cena 3D a menos (a pulseira pequena de "Os sinais").
 
 **Ambiente:** durante a 9.8, uma pasta temporária de teste apagou por engano parte do `node_modules` (a remoção seguiu um atalho de pasta). O `npm install` repôs exatamente as versões do `package-lock.json`, sem pacote novo. `package.json` e `package-lock.json` ficaram sem mudança, e o `npm ls` não mostra nada faltando. Depois disso, o `npm run dev` que estava aberto desde antes mostrava "Build Error: Error evaluating Node.js code" em todas as páginas: ele tinha guardado no cache a falha `Cannot find module …@tailwindcss/turbopack/dist/index.js` (o carregador do Tailwind, que compila o `globals.css`). O arquivo já tinha voltado, mas o servidor não se recupera sozinho. Solução: parar o servidor, apagar `.next/dev` (cache de desenvolvimento, que se recria) e rodar `npm run dev` de novo. Conferido: as 4 páginas carregam, com o CSS e as fontes, e sem erro.
 
@@ -1425,8 +1302,8 @@ As baterias de testes das subfases anteriores não foram rodadas de novo, porque
 - **320 px** (Início e Solução, nos dois temas, com os efeitos ligados e desligados) e **zoom de 400%:** sem rolagem lateral.
 - **Sem os arquivos** (o 404 simulado no navegador):
   - a capa aparece sem vídeo;
-  - "O problema" vira a caixa 16:9 com o marcador, sem botões;
-  - na Solução, nenhum vídeo quebrado e 5 marcadores visíveis;
+  - "O problema" vira a caixa 16:9 de reserva, sem botões;
+  - na Solução, nenhum vídeo quebrado e 5 reservas visíveis;
   - nenhum erro de JavaScript.
 - **Console:** nenhum erro ou aviso, fora os 404 do teste sem arquivos.
 
@@ -1443,21 +1320,9 @@ As baterias de testes das subfases anteriores não foram rodadas de novo, porque
 6. **Leitor de tela (NVDA):** no vídeo de "O problema", ele lê o nome e a descrição; nos botões, "Pausar, botão" e "Ativar som, botão".
 7. **Sem os arquivos:** renomeie `public/videos` para outro nome, recarregue a página e confira as caixas com "Vídeo … (a definir)", sem erro. Depois volte o nome.
 
-**Marcadores desta subfase:**
-- **Vídeos** (os arquivos já estão em `public/videos/`; os caminhos do vídeo, do quadro parado e das legendas estão em comentário em cada lugar):
-  - `VIDEO-animacao-capa-AQUI` e `VIDEO-animacao-capa-vertical-AQUI`, em `components/abertura/CapaIntro.jsx`;
-  - `VIDEO-animacao-o-problema-AQUI`, em `app/page.jsx`;
-  - `VIDEO-animacao-a-pulseira-AQUI` e `VIDEO-animacao-dois-botoes-AQUI`, em `app/solucao/page.jsx`;
-  - `VIDEO-animacao-sinal-continuar-AQUI`, `-parar-AQUI`, `-virar-AQUI` e `-aguardar-AQUI`, em `components/solucao/SinaisRolagemFixa.jsx`;
-  - continuam os da 9.7: os 4 de "Como funciona" e os 2 de "Antes e depois".
-- **Ícones:** novos `ICONE-SpeakerHigh-AQUI` e `ICONE-SpeakerSlash-AQUI` ("Ativar som" e "Desativar som"); `ICONE-Pause-AQUI` e `ICONE-Play-AQUI` ("Pausar" e "Reproduzir"). Todos em `components/ui/VideoPulse.jsx`. Os de "Pausar animação" saíram de "Os sinais".
-- **Saíram:** `IMAGEM-ilustração de uma travessia-AQUI`, `IMAGEM-ilustração conceitual da pulseira-AQUI`, `IMAGEM-capa versão computador (horizontal)-AQUI` e `IMAGEM-capa versão celular (vertical)-AQUI`.
-
-**Sugestão de commit:** `Adiciona os vídeos com pausa, som, legendas e quadro parado`
-
 ### Depois da 9.8 — marcações retiradas
 
-A pedido da equipe, as marcações `// Esta parte é lógica` e `{/* Esta parte é lógica */}` saíram de todo o código (418 linhas em 105 arquivos; só essas linhas, conferido no diff). O código novo não as usa mais. Os documentos continuam citando a regra antiga.
+A pedido da equipe, as marcações `// Esta parte é lógica` e `{/* Esta parte é lógica */}` saíram de todo o código (418 linhas em 105 arquivos; só essas linhas, conferido no diff). O código novo não as usa mais.
 
 ### 9.9 — Diário: microinterações
 
@@ -1475,22 +1340,22 @@ A pedido da equipe, as marcações `// Esta parte é lógica` e `{/* Esta parte 
 | `components/ui/Tremor.jsx` (novo) | Gesto de ERRO (`tremor` do padrão: ±4 px, 0,3 s) quando muda o número de envios com erro e o campo tem erro |
 | `hooks/useFormularioRegistro.js` | Conta os envios com erro (`enviosComErro`); a validação e o envio não mudaram |
 | `components/ui/Campo.jsx`, `components/ui/GrupoOpcoes.jsx`, `components/diario/FormularioRegistro.jsx` | O controle (ou as opções) dentro do `Tremor`; prop `tremer` |
-| `components/ui/CertoDesenhado.jsx` (novo), `components/ui/MensagemStatus.jsx` | "Certo" em SVG que se desenha (`pathLength` de 0 a 1, `spring.padrao`) nas mensagens de sucesso, de novo a cada texto; sai o marcador `ICONE-CheckCircle-AQUI` das mensagens de sucesso |
+| `components/ui/CertoDesenhado.jsx` (novo), `components/ui/MensagemStatus.jsx` | "Certo" em SVG que se desenha (`pathLength` de 0 a 1, `spring.padrao`) nas mensagens de sucesso, de novo a cada texto; sai o ícone `CheckCircle` das mensagens de sucesso |
 | `components/diario/ListaRegistros.jsx`, `components/diario/CartaoRegistro.jsx` | `AnimatePresence mode="popLayout"` (sem cascata), `layout` nos itens, saída com o preset `saida`; PULSO no cartão em destaque (`useAnimate`) |
 | `components/diario/TelaDiario.jsx`, `TelaNovoRegistro.jsx`, `TelaEditarRegistro.jsx`, `hooks/useMensagemDiario.jsx` | A mensagem leva `idDestaque` (o registro salvo, alterado ou restaurado) |
 | `components/ui/IconeAlternado.jsx` (novo) | Troca de ícone com rotação curta (`AnimatePresence mode="wait"`, `spring.rapida` e `saida`); não ocupa lugar enquanto o ícone é o espaço vazio |
-| `components/solucao/FaixaODS.jsx`, `components/abertura/AberturaPulseira.jsx`, `components/pulseira/ExplorarPulseira.jsx`, `components/ui/VideoPulse.jsx` | Ícones de pausa e de reprodução dentro do `IconeAlternado` (os marcadores continuam no mesmo lugar) |
+| `components/solucao/FaixaODS.jsx`, `components/abertura/AberturaPulseira.jsx`, `components/pulseira/ExplorarPulseira.jsx`, `components/ui/VideoPulse.jsx` | Ícones de pausa e de reprodução dentro do `IconeAlternado` |
 
 A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 
-**Decisões da equipe** (seção 17 como **Equipe**):
+**Decisões da equipe**:
 1. **API externa do Diário: MockAPI** (mockapi.io). Ela atende ao requisito "consumir uma API externa com CRUD completo" (seção 2). O formato dela (`GET`/`POST` em `/registros`; `GET`/`PUT`/`DELETE` em `/registros/:id`; lista como array; id em texto) é o que o `registrosService.js` já espera, então o código não muda. O passo a passo está abaixo.
 2. **"Certo" na mensagem, e não no botão:** a 19.11 pedia o botão se preenchendo, com o "certo", depois do sucesso. Mas o site vai direto para `/diario`, e mostrar o botão exigiria segurar a tela por ~0,5 s, atrasando o anúncio "Registro salvo.". O padrão proíbe que o anúncio espere uma animação. O "certo" se desenha na mensagem de sucesso, e o anúncio não atrasa.
 3. **Excluir: só a volta com o PULSO.** A exclusão acontece na página do registro (no diálogo), e o cartão já não está na lista quando a pessoa volta. A lista fica pronta para saídas (`popLayout`), e o cartão restaurado no "Desfazer" volta com o PULSO.
 
-**Decisões da implementação** (seção 17 como **Implementação**):
+**Decisões da implementação**:
 - **PULSO também no registro salvo e no alterado**, além do restaurado. Padrão de movimento: "PULSO (confirmar): registro salvo" e "no Diário, só o registro novo anima". A lista não entra em cascata.
-- **O "certo" é desenho feito por código** (como o logo da capa), e não um ícone da equipe. Por isso ele substitui o marcador `ICONE-CheckCircle-AQUI` só nas mensagens de sucesso; os de erro e aviso continuam.
+- **O "certo" é desenho feito por código** (como o logo da capa), e não um ícone da equipe. Por isso ele substitui o ícone `CheckCircle` só nas mensagens de sucesso; os de erro e aviso continuam.
 - **O tremor vale para todos os campos com erro** daquele envio, e não só para o primeiro. Cada um tem a sua mensagem.
 - **Com os efeitos desligados:** o `MotionConfig` só tira posição, escala e rotação, então o "certo" e o PULSO conferem o interruptor: o "certo" já aparece desenhado, e não há batida nem tremor. Na troca de ícone, fica só a opacidade (19.11).
 
@@ -1501,7 +1366,7 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
   - um novo envio treme de novo; o campo já respondido não treme.
 - **Salvar:**
   - vai direto para `/diario`, e "Registro salvo." está na região de status em 33 ms;
-  - o "certo" é decorativo, sem marcador, e termina desenhado;
+  - o "certo" é decorativo e termina desenhado;
   - o cartão do registro novo bate (escala até ~1,03), e a lista fica com 3 registros, o novo primeiro.
 - **Excluir e Desfazer:**
   - excluir volta a `/diario` com "Registro excluído." e 2 registros;
@@ -1527,7 +1392,7 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
    - Tirar os campos de exemplo que o MockAPI cria sozinho (como `name` e `avatar`).
 3. **Não gerar dados de exemplo automáticos** (a barra cinza embaixo do recurso): eles vêm com valores aleatórios que o site não reconhece. Se gerar sem querer, apague esses registros no painel.
 4. Copiar o endereço do projeto, **tudo antes de `/registros`**, sem barra no final. Exemplo: `https://abc123.mockapi.io/api/v1`.
-5. Em `projeto-citizentech-1espu/.env.local` (já ignorado pelo Git): `NEXT_PUBLIC_API_URL=https://abc123.mockapi.io/api/v1`. Depois, parar e rodar de novo o `npm run dev`.
+5. Em `.env.local`, na raiz do projeto (já ignorado pelo Git): `NEXT_PUBLIC_API_URL=https://abc123.mockapi.io/api/v1`. Depois, parar e rodar de novo o `npm run dev`.
 6. Conferir: `/diario` deve mostrar "Nenhum registro ainda" (e não mais o erro de conexão). Criar, ver, editar, excluir e desfazer.
 7. **Hospedagem** (Vercel ou outra): criar a mesma variável no painel do projeto e publicar de novo. Variáveis `NEXT_PUBLIC_` entram no código no momento do build.
 8. Cuidados:
@@ -1535,15 +1400,9 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
    - nada de dados pessoais reais nas observações;
    - o plano gratuito tem limites de quantidade, e um projeto com um recurso basta.
 
-**Marcadores desta subfase:**
-- **Saiu:** `ICONE-CheckCircle-AQUI` das mensagens de sucesso (agora o "certo" é desenhado).
-- **Mudaram de lugar, sem mudar de nome:** `ICONE-Pause-AQUI` e `ICONE-Play-AQUI`, agora dentro do `IconeAlternado`, nos mesmos arquivos.
-
-**Sugestão de commit:** `Adiciona as microinterações do Diário e a troca de ícone de pausa`
-
 ### 9.10 — Revisão
 
-**O que foi feito:** a revisão dos critérios de aceite da 19.17 e do checklist da seção 15, com os efeitos ligados e desligados, "reduzir movimento" no aparelho, 320 px, zoom de 400%, texto em 200%, só teclado, os dois temas, alto contraste, WebGL desligado e sem os arquivos de vídeo. A revisão achou e corrigiu um problema de contraste. A seção 17 da especificação ganhou as 40 decisões da Fase 9 (19 da equipe e 21 da implementação), e a 19.17 ganhou o resultado.
+**O que foi feito:** a revisão dos critérios de aceite da 19.17 e do checklist da seção 15, com os efeitos ligados e desligados, "reduzir movimento" no aparelho, 320 px, zoom de 400%, texto em 200%, só teclado, os dois temas, alto contraste, WebGL desligado e sem os arquivos de vídeo. A revisão achou e corrigiu um problema de contraste. A 19.17 da especificação ganhou o resultado.
 
 **Correção feita na revisão:**
 
@@ -1555,7 +1414,7 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 - **O problema:** o laranja `#CC4200` dos botões secundários, com fundo transparente, ficava sobre os fundos claros de status. Dava 4,22:1 no fundo de erro (`#FDECEC`, achado pelo axe) e 4,3:1 no de sucesso (`#E7F6EC`), abaixo de 4,5:1, só no tema claro.
 - **Com o fundo branco da superfície:** 4,8:1. No escuro, fica igual a antes (4,55:1).
 
-**Decisão da implementação** (seção 17 como **Implementação**): a configuração `strict` do `jsx-a11y` acusa 4 pontos na Galeria (a janela com `tabIndex`, as fotos focáveis e o teclado na janela e nos botões). Eles ficam como exceção, porque a 19.9 pede exatamente esse comportamento. É a mesma exceção que o carrossel tinha na Fase 7.
+**Decisão da implementação**: a configuração `strict` do `jsx-a11y` acusa 4 pontos na Galeria (a janela com `tabIndex`, as fotos focáveis e o teclado na janela e nos botões). Eles ficam como exceção, porque a 19.9 pede exatamente esse comportamento. É a mesma exceção que o carrossel tinha na Fase 7.
 
 **Verificado automaticamente** (Chrome sem janela, servidor de produção; scripts temporários fora do projeto):
 
@@ -1601,28 +1460,17 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 7. **Zoom de 400% no computador** (`Ctrl` + `+` até 400%): "O problema" e "Como funciona" em lista, Galeria em grade, sem rolagem lateral.
 8. **Só teclado:** passar por todas as páginas com `Tab`. Na Galeria, usar as setas, os 5 botões e o `Tab` nas fotos; na pulseira, as setas; no "Antes e depois", as setas, `Home` e `End`.
 9. **Com o MockAPI configurado (9.9):** criar, ver, editar, excluir e "Desfazer"; sair do formulário com respostas preenchidas (aviso "Descartar as respostas?").
-10. **Depois de colocar os ícones e as imagens:**
-    - os textos dos botões continuam centralizados;
-    - as fotos ganham o filtro (cinza com pontilhado) com os efeitos ligados e cor com o mouse;
-    - rodar o Lighthouse (DevTools > Lighthouse > Accessibility) nas 6 rotas.
 
-**Marcadores e tarefas manuais:** a lista completa, com o arquivo de cada marcador, está em "Pendências", no fim deste registro.
-
-**Sugestão de commit:** `Revisa a Fase 9 e corrige o contraste dos botões sobre fundos de status`
-
-### Depois da Fase 9 — ícones colocados pelo Claude Code
-
-**Decisão da equipe (14/11/2026):** os ícones deixam de ser manuais. O Claude Code coloca os ícones, e a seção 13.1 da especificação foi atualizada.
+### Depois da Fase 9 — ícones
 
 **O que mudou para quem usa:** todos os ícones aparecem ao lado do texto (Phosphor, peso Bold, 24 px), em todo o site. Para o leitor de tela, nada muda: os ícones continuam ocultos (`aria-hidden="true"`). Textos, cores e layout continuam iguais. Os espaços entre ícone e texto (`gap`) já existiam.
 
 **Como foi feito:**
 - Pacote `@phosphor-icons/react` instalado com versão fixa (`2.1.10`), depois da confirmação da equipe.
 - `components/ui/EspacoIcone.jsx` passou a desenhar o ícone pelo prop `nome` (`size={24}`, `weight="bold"`, `aria-hidden="true"`), importando de `@phosphor-icons/react/ssr` (funciona em Server e Client Components). Ele usa um mapa explícito com os 26 ícones do site, e o build só leva esses.
-- Nenhum outro arquivo precisou de troca: todos os marcadores já chegavam ao `EspacoIcone`, de forma direta ou indireta. É o caso do `Botao` e do `BotaoMagnetico` (prop `icone`), da `ItemBarra` (lista da `BarraNavegacao`), da `MensagemStatus` (tabela `ESTILOS` e a ação "Desfazer" da `TelaDiario`) e do `IconeAlternado` (os filhos).
+- Nenhum outro arquivo precisou de troca: todos os usos já chegavam ao `EspacoIcone`, de forma direta ou indireta. É o caso do `Botao` e do `BotaoMagnetico` (prop `icone`), da `ItemBarra` (lista da `BarraNavegacao`), da `MensagemStatus` (tabela `ESTILOS` e a ação "Desfazer" da `TelaDiario`) e do `IconeAlternado` (os filhos).
 - `IconeAlternado`: o código não mudou, só o comentário. O ícone de verdade não tem `data-icone`, então o invólucro aparece e gira na troca Pausar ↔ Retomar.
 - Nome que não estiver no mapa: volta o espaço vazio antigo, que não ocupa lugar.
-- Os comentários `ICONE-…-AQUI` continuam no código, como referência.
 
 **Ícones colocados (26):** `Pulse`, `House`, `Watch`, `Play`, `Notebook`, `Pause`, `ArrowCounterClockwise`, `ArrowClockwise`, `ArrowsClockwise`, `ArrowLeft`, `ArrowRight`, `ArrowUp`, `ArrowDown`, `ArrowsOutCardinal`, `CaretLeft`, `CaretRight`, `Eye`, `SpeakerHigh`, `SpeakerSlash`, `Plus`, `PencilSimple`, `Trash`, `X`, `Warning`, `WarningCircle` e `Image`. Todos existem no Phosphor 2.1.10. O `CheckCircle` não entra: o "certo" das mensagens de sucesso continua sendo o `CertoDesenhado` (9.9).
 
@@ -1630,25 +1478,18 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 
 **Teste manual:** abrir as 6 rotas e conferir os ícones ao lado dos textos; na barra, o texto continua centralizado; em "Pausar"/"Retomar", o ícone gira na troca (com os efeitos ligados); no NVDA, os botões continuam sendo lidos só pelo texto.
 
-**Sugestão de commit:** `Adiciona os ícones Phosphor no EspacoIcone`
-
-### Depois da Fase 9 — caminhos das imagens
-
-**Decisão da equipe (14/11/2026):** a equipe só coloca os arquivos das imagens em `public/imagens/`. O Claude Code liga os caminhos no código: troca cada `EspacoImagem` pela imagem, com o `alt` sugerido. Isso só acontece **depois que todas as imagens estiverem na pasta**, com os nomes certos, e a equipe avisar. A seção 13.2 da especificação foi atualizada. Nenhum código mudou ainda.
-
 ### Depois da Fase 9
 
 #### 1. Imagens ligadas no código (commit `8f1e389`, 14/11/2026)
 
-**Origem:** a equipe pôs todos os arquivos em `public/imagens/` (seção "caminhos das imagens", acima).
+**Origem:** a equipe pôs todos os arquivos em `public/imagens/`.
 
-**O que mudou:** cada `EspacoImagem` virou uma `<img>` com o `src` do arquivo e o `alt` sugerido no comentário do marcador. Os comentários `IMAGEM-…-AQUI` continuam no código, como referência.
+**O que mudou:** cada espaço de imagem (`EspacoImagem`) virou uma `<img>` com o `src` do arquivo e o `alt` da especificação.
 - **Início** (`app/page.jsx`): as 2 fotos de "Quem vive o problema", dentro do `FotoFiltro`.
 - **Os sinais** (`SinaisRolagemFixa.jsx`): as 4 fotos, pelos campos `src` e `alt` de cada sinal.
 - **Galeria** (`GaleriaCanvas.jsx`): as 6 fotos, pelos campos `src` e `alt` da lista `FOTOS`.
 - **Tecnologias** (`app/solucao/page.jsx` e `CartaoTecnologia.jsx`): as 8 peças, pelos campos `src` e `alt` da lista `TECNOLOGIAS`, passados ao cartão.
 - **Equipe** (`app/solucao/page.jsx` e `CartaoIntegrante.jsx`): as 5 fotos dos polaroides, pelos props `src` e `alt`.
-- Nos componentes, o espaço antigo só volta quando falta o `src`.
 - No mesmo commit, o `FotoFiltro` passou a só recortar a imagem: sem filtro em tons de cinza, sem pontilhado, sem zoom e sem parallax (decisão da equipe, anotada no comentário do componente).
 
 #### 2. Correções do teste no iPhone (commit `68a7531`, 14/11/2026)
@@ -1664,13 +1505,11 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 
 **Conferido:** `npm run lint` sem erros (6 avisos `no-img-element`, que já existiam desde a ligação das imagens) e `npm run build` sem erros.
 
-**Pendente:** a seção 18.8 da especificação (`docs/ESPECIFICACAO_PULSE.md`, linha do "Modo fixo") ainda diz 560 px.
-
 **Teste manual:** no iPhone, abrir `/solucao` e conferir: os Sinais em lista, com as fotos inteiras; a moldura do Antes e depois sem faixas nem cortes nos vídeos; os números dos ODS inteiros, numa linha só. Num computador (janela com 700 px de altura ou mais), o modo fixo dos Sinais continua funcionando.
 
 #### 3. `alt` de 4 imagens ajustados (15/11/2026)
 
-**Decisão da equipe (15/11/2026):** o `alt` deve descrever o que cada foto mostra de verdade. Mudaram o `alt` no código e o "alt sugerido" do comentário do marcador; nada mais mudou.
+**Decisão da equipe (15/11/2026):** o `alt` deve descrever o que cada foto mostra de verdade. Só o `alt` mudou.
 
 | Imagem | Onde | `alt` antigo | `alt` novo |
 | --- | --- | --- | --- |
@@ -1679,21 +1518,17 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 | `galeria-semaforo-pedestres` | `GaleriaCanvas.jsx`, lista `FOTOS` | "Semáforo de pedestres com botão de acionamento." | "Semáforo de pedestres com o boneco vermelho aceso." |
 | `peca-apis` | `app/solucao/page.jsx`, lista `TECNOLOGIAS` | "Foto da peça: APIs de mapas, semáforos e transporte." | "Ilustração de um chip com a palavra API, ligado a circuitos." |
 
-A especificação foi atualizada nas tabelas da 18.13 e da 19.14 e na seção 17.
-
 **Conferido:** `npm run lint` sem erros (os mesmos 6 avisos `no-img-element` de antes) e `npm run build` sem erros (só um aviso do Turbopack: não achou os valores da fonte de reserva da Atkinson Hyperlegible Next).
 
 **Teste manual:** com o NVDA, na Galeria da Solução, ouvir os 3 `alt` novos; em Tecnologias, virar o cartão das APIs e ouvir o `alt` da ilustração.
 
-**Sugestão de commit:** `Ajusta o alt de 4 imagens ao que cada foto mostra`
-
 #### 4. Espera acima de 10 s (15/11/2026)
 
-**Decisão da equipe (15/11/2026, opção B):** resolve a pendência da seção 11.1. No carregamento, a pessoa pode parar. Ao salvar e ao excluir, ela só é avisada, porque o servidor pode gravar mesmo se a espera for interrompida. A especificação foi atualizada na 11.1, na 11.2, na 16 (pendência riscada) e na 17.
+**Decisão da equipe (15/11/2026, opção B):** resolve a pendência da seção 11.1. No carregamento, a pessoa pode parar. Ao salvar e ao excluir, ela só é avisada, porque o servidor pode gravar mesmo se a espera for interrompida.
 
 **O que mudou para quem usa:**
 1. **Carregando** (lista, Ver registro e Editar registro): depois de 10 s, abaixo de "Carregando os registros…", aparece "Está demorando mais que o normal. Você pode esperar ou parar." e, embaixo, o botão secundário "Parar de carregar". Ao tocar, entra o erro "Carregamento interrompido." com o botão "Tentar de novo", que recebe o foco. O botão de parar some.
-2. **Salvando… e Excluindo…:** depois de 10 s, o leitor de tela anuncia "Está demorando mais que o normal. Aguarde mais um pouco.". O botão continua travado e com o foco. Não há botão de parar. **(18/11/2026, item 11: o aviso também aparece na tela.)**
+2. **Salvando… e Excluindo…:** depois de 10 s, o leitor de tela anuncia "Está demorando mais que o normal. Aguarde mais um pouco.". O botão continua travado e com o foco. Não há botão de parar. (No item 9, o aviso também passou a aparecer na tela.)
 3. Com os efeitos desligados, o indicador continua parado (a regra geral de `data-efeitos` já zera as animações).
 
 **Como foi feito:**
@@ -1717,8 +1552,6 @@ A especificação foi atualizada nas tabelas da 18.13 e da 19.14 e na seção 17
 4. Desligar os efeitos (botão "Efeitos" do cabeçalho) e conferir que o indicador fica parado.
 5. Voltar para **No throttling** no fim.
 
-**Sugestão de commit:** `Adiciona o aviso e o "Parar de carregar" para esperas acima de 10 s`
-
 #### 5. Limpeza dos comentários (commit `6c9a086`, 16/11/2026)
 
 **Decisão da equipe (16/11/2026):** um comentário só fica se disser o porquê de uma escolha, uma regra do projeto (começa com "Regra:" e cita a WCAG ou a seção da especificação) ou uma armadilha técnica, em até 2 linhas. Não descreve o que o código faz, não lista props nem formatos e não conta histórico. A regra está na seção 14.1 da especificação.
@@ -1726,18 +1559,11 @@ A especificação foi atualizada nas tabelas da 18.13 e da 19.14 e na seção 17
 **O que mudou:**
 - Linhas de comentário: de **3.382 para 504**, ou seja, de **27% para 5,5%** de todas as linhas do código. Contagem refeita em 16/11/2026 nos 128 arquivos `.js`, `.jsx`, `.mjs` e `.css` de `projeto-citizentech-1espu/` (sem `public/`), contando só as linhas que são inteiramente comentário. O número muda com o método: contando também os comentários no fim de uma linha de código, fica de 3.786 para 555 (31% para 6%). Os valores citados antes (3.554 para 468) não foram reproduzidos.
 - Saíram os marcadores já resolvidos: `ICONE-…-AQUI`, `IMAGEM-…-AQUI`, `VIDEO-…-AQUI`, `FONTE-…-AQUI` e `API-EXTERNA-AQUI`.
-- **Continua só o `SIMULADOR-AQUI`**, em `app/simulador/page.jsx` (conferido: é o único `…-AQUI` no código).
 - O código não muda de comportamento: só comentários saíram.
 
 **Por quê:** comentários longos e desatualizados confundiam quem lia o código (por exemplo, "a API ainda não existe"). A história do projeto já fica no Git e neste registro.
 
-**Especificação atualizada:** seções 7.6, 10, 13.1, 13.2, 14.1, 17, 18.1 e 19.13 (texto antigo riscado, com a nota "Depois da Fase 9").
-
-#### 6. AI.md
-
-AI.md completado pela equipe (commit `0c78585`).
-
-#### 7. Auditoria e 5 correções de desempenho e limpeza (16/11/2026)
+#### 6. Auditoria e 5 correções de desempenho e limpeza (16/11/2026)
 
 **Origem:** auditoria do código em 3 critérios (código limpo, otimização de recursos, responsividade e compatibilidade). A equipe escolheu as 5 correções de mais impacto e menos risco. Textos, cores e layout não mudaram.
 
@@ -1768,16 +1594,16 @@ AI.md completado pela equipe (commit `0c78585`).
 - `npm run lint` sem erros (os mesmos 6 avisos `no-img-element`) e `npm run build` sem erros (o aviso conhecido da fonte de reserva da Atkinson).
 - Chrome sem janela, a 375 × 667 e a 1440 × 900: depois de rolar, as 27 imagens da Solução carregaram, inclusive na galeria em canvas, e a pulseira 3D continuou desenhando na Início e na Solução.
 
-**Ficaram da auditoria, para a equipe decidir:** a base de GSAP, Motion e Lenis carregada em todas as rotas (cerca de 305 KB com gzip, inclusive no Diário); o estilo de botão em pílula repetido em 4 arquivos; os ramos de reserva "(a definir)" que nunca aparecem; o padrão de rolagem repetido em 4 hooks; a media query repetida em 4 hooks; o peso 500 da JetBrains Mono carregado sem uso; o `rotulo-mono` com 0,8rem (a especificação diz 0,875rem); e a falta de um `browserslist` no `package.json`. **(18/11/2026)** Os ramos "(a definir)", o peso 500, o `rotulo-mono` e o `browserslist` foram resolvidos no item 11.
+**Ficaram da auditoria, para a equipe decidir:** a base de GSAP, Motion e Lenis carregada em todas as rotas (cerca de 305 KB com gzip, inclusive no Diário); o estilo de botão em pílula repetido em 4 arquivos; os ramos de reserva "(a definir)" que nunca aparecem; o padrão de rolagem repetido em 4 hooks; a media query repetida em 4 hooks; o peso 500 da JetBrains Mono carregado sem uso; o `rotulo-mono` com 0,8rem (a especificação diz 0,875rem); e a falta de um `browserslist` no `package.json`.
+
+**Decisão da equipe (18/11/2026):** corrigir os textos "(a definir)", o peso 500 da JetBrains Mono, o tamanho dos rótulos mono (0,875rem) e acrescentar o `browserslist` (feito no item 9). Os outros (bibliotecas de movimento em todas as rotas, botão em pílula repetido e código repetido nos hooks) ficam como estão.
 
 **Teste manual:**
 1. No Chrome, F12 → Lighthouse → Mobile → Performance e Acessibilidade em `/`, `/solucao` e `/diario`. Comparar LCP, Total Blocking Time e CLS com o commit anterior.
 2. No iPhone, com dados móveis, rolar a Solução devagar e conferir que as fotos dos sinais, da galeria, das peças e da equipe aparecem ao chegar na tela, e que os vídeos mostram o quadro parado e tocam ao aparecer.
 3. Na aba Network do DevTools, com "Slow 4G": abrir a Solução e conferir que nenhum `.mp4` e nenhuma foto baixa antes de rolar.
 
-**Sugestão de commit:** `Tira o Three.js do carregamento inicial, adia fotos e vídeos e remove código morto`
-
-#### 8. Repositório novo e projeto na raiz (18/11/2026)
+#### 7. Repositório novo e projeto na raiz (18/11/2026)
 
 **O que mudou:**
 - O código passou para o repositório **`giovanaborba/GSCitizen-1ESPU`** (privado). O antigo, `othiandrade/GSCitizenTech`, deixou de receber commits.
@@ -1788,13 +1614,11 @@ AI.md completado pela equipe (commit `0c78585`).
 
 **Conferido na pasta local (18/11/2026):** a ESPECIFICACAO e o REGISTRO vieram iguais aos do repositório antigo (commit `4b8922f`). Fora o Simulador, nenhum arquivo de código mudou, nem as imagens e os vídeos.
 
-**Pendente:**
-- **A pasta `.next/` está versionada** (256 arquivos), porque o `.gitignore` novo não tem a linha `.next/`. Ela vai junto no ZIP do GitHub, fica velha e pode levar dentro o endereço da API. Correção: acrescentar `.next/` ao `.gitignore` e rodar `git rm -r --cached .next` (a pasta continua no computador).
-- README: a Ficha da CitizenTech, pedida pelo documento da GS, e a decisão sobre manter ou não o endereço do MockAPI no README.
+**Depois:** a pasta `.next/`, que estava versionada, saiu do Git e entrou no `.gitignore`; ela não deve ir para o repositório nem para o ZIP.
 
-#### 9. Simulador integrado (18/11/2026)
+#### 8. Simulador integrado (18/11/2026)
 
-**Origem:** feito pelo integrante responsável pelo simulador e trazido para o repositório novo. Ocupa o lugar do espaço reservado da 6.3; o marcador `SIMULADOR-AQUI` saiu, e o código não tem mais nenhum marcador `…-AQUI`.
+**Origem:** feito pelo integrante responsável pelo simulador e trazido para o repositório novo. Ocupa o lugar do espaço reservado da 6.3.
 
 **O que a pessoa encontra em `/simulador`:**
 - **Tela inicial:** a pulseira, com o botão de voz e o de modo, e as notas de como **salvar uma rota** pela voz ("salvar rota", depois início, destino e nome) e de como ir a um destino dizendo o endereço. Botões "Rotas salvas", "Conheça como cada comando é feito" e "Testar simulação pronta".
@@ -1803,7 +1627,7 @@ AI.md completado pela equipe (commit `0c78585`).
 - **Rotas salvas:** listar, editar e excluir. A "Rota 1" (Alameda Santos → FIAP Paulista) é o exemplo e não pode ser editada nem excluída.
 - **Vitrine:** 7 cartões com os comandos (5 táteis e 2 sonoros); o som só toca pelo botão "Som".
 - **Modos:** "Sonoro e tátil" e "Exclusivamente tátil" (padrão), guardados no navegador.
-- **O celular não vibra:** a vibração aparece na tela e no texto. Isso resolve a pendência da vibração (Fase 3).
+- **O celular não vibra:** a vibração aparece na tela e no texto.
 
 **Como foi feito:**
 - `components/simulador/`: `Simulador`, `TelaInicial`, `TelaRota`, `TelaTransporte`, `RotasSalvas`, `Vitrine`, `Pulseira` e `MapaRota`, mais `simulador.css` (visual próprio, dentro de `.simulador`) e `fonte.js` (DM Sans por `next/font/google`, só nessa página).
@@ -1814,67 +1638,32 @@ AI.md completado pela equipe (commit `0c78585`).
 - **Sem banco:** no `npm run dev`, as rotas ficam no `localStorage`. Na versão de produção (`npm run build` e `npm start`), listar, salvar, editar e excluir rotas dá erro.
 - Pacotes novos: `leaflet` 1.9.4 (o mapa, carregado com `next/dynamic` e `ssr: false`) e `@neondatabase/serverless` 1.2.1.
 
-**Pontos a conferir** (leitura do código, sem teste no aparelho; detalhes na seção 20.6 da especificação):
-1. Algumas animações do Simulador rodam sem parar e sem botão de pausa. Duas regras do `simulador.css` usam `!important` e podem vencer a regra geral de "Efeitos desligados".
-2. Os botões da pulseira não têm texto visível, só `aria-label` e uma dica.
-3. Os nomes dos sinais na Vitrine ("Continue", "Pare") são diferentes dos do site ("Continuar", "Parar").
-4. O vermelho, a DM Sans e o contraste do Simulador não foram conferidos com a paleta e as regras do site.
-5. A voz só funciona no Chrome e no Edge; a alternativa é a simulação pronta.
-6. O aviso do semáforo usa `aria-live="assertive"`, que interrompe o leitor de tela a cada segundo.
-7. `RotasSalvas` chama o serviço direto, sem um hook no meio.
-8. `app/simulador/page.jsx` ficou com um `{}` vazio no lugar do comentário antigo.
+#### 9. Aviso de espera visível e sobras da auditoria (18/11/2026)
 
-**Teste manual:**
-1. Abrir `/simulador` e usar "Testar simulação pronta": a rota aparece no mapa, e os sinais aparecem na pulseira e em texto.
-2. No Chrome, tocar no botão de voz e dizer um endereço de São Paulo; depois "salvar rota" e "destino [nome]".
-3. Abrir "Rotas salvas", editar e excluir uma rota; a "Rota 1" não pode ser editada nem excluída.
-4. Abrir a Vitrine e ligar o som de um sinal sonoro.
-5. Desligar os "Efeitos" no cabeçalho e conferir se as luzes e a simulação param.
-6. Com o NVDA ou o VoiceOver: ouvir o nome da região, os sinais em texto e o aviso do semáforo.
-
-#### 10. Documentação atualizada (18/11/2026)
-
-A especificação ganhou a **seção 20** (repositório novo, estrutura, deploy, Simulador, variáveis de ambiente e pontos a conferir) e notas **(Depois da Fase 9)** nas seções 6.3, 14, 14.1, 16, 17, 18.12, 19.9, 19.10, 19.14 e 19.17. As pendências já resolvidas da seção 16 foram riscadas.
-
-**Sugestão de commit:** `Atualiza a documentação com o repositório novo e o Simulador`
-
-#### 11. Aviso de espera visível e sobras da auditoria (18/11/2026)
-
-**Decisões da equipe (18/11/2026):** o aviso de espera ao salvar e ao excluir também aparece na tela (opção A); e 4 das 8 sobras da auditoria do item 7 foram escolhidas para resolver. A especificação foi atualizada nas seções 10, 11.1, 11.2, 13.2, 16 (as duas pendências riscadas), 17, 18.4, 19.4 e 19.13.
+**Decisões da equipe (18/11/2026):** o aviso de espera ao salvar e ao excluir também aparece na tela (opção A), e 4 das sobras da auditoria do item 6 foram corrigidas.
 
 **O que mudou para quem usa:**
-1. **Salvando… e Excluindo…:** depois de 10 s, além do anúncio do leitor de tela, o aviso "Está demorando mais que o normal. Aguarde mais um pouco." aparece **na tela**, logo abaixo dos botões, em cinza (`--cor-texto-2`), com 16 px, sem ícone e sem animação. O leitor de tela continua ouvindo o aviso **uma vez só**. "Salvando" e "Excluindo" são anunciados como antes, e o foco continua no botão ocupado.
-2. **Vídeo que não carrega:** no lugar de "Vídeo (nome) (a definir)", a caixa mostra o quadro parado do vídeo; se ele também não carregar, "Vídeo indisponível.". O leitor de tela não lê essa reserva, porque o texto da seção já descreve o vídeo.
-3. **Rótulos mono** ("A CIDADE", "FONTE: G1, 2019", rótulos dos cartões etc.): de 12,8 px para 14 px.
+1. **Salvando… e Excluindo…:** depois de 10 s, o aviso "Está demorando mais que o normal. Aguarde mais um pouco." aparece **na tela**, logo abaixo dos botões, em `--cor-texto-2`, com 16 px, sem ícone e sem animação. O leitor de tela continua ouvindo o aviso **uma vez só**, pela região de status (o texto visível tem `aria-hidden`). "Salvando" e "Excluindo" são anunciados como antes, e o foco continua no botão ocupado.
+2. **Vídeo que não carrega:** no lugar de "Vídeo (nome) (a definir)", a caixa mostra o quadro parado do vídeo; se ele também não carregar, "Vídeo indisponível." (`aria-hidden`, porque o texto da seção já descreve o vídeo).
+3. **Rótulos mono:** de 12,8 px para 14 px.
 
 **Como foi feito:**
-- **Aviso visível** (`FormularioRegistro.jsx` e `DialogoConfirmacao.jsx`): o texto virou a constante `AVISO_DEMORA`, usada na região de status e na tela. Depois da fila de botões entra um `<p aria-hidden="true" className="mt-3 text-auxiliar text-texto-2">`, só enquanto o `useEsperaLonga` devolve `true`. A região `role="status"` (`sr-only`) não mudou: é ela que anuncia. No diálogo, o aviso visível segue a mesma condição da região de status (`processando` e `textoProcessando`).
-  - Os dois botões ficam lado a lado e o aviso fica 12 px abaixo deles. No diálogo, numa tela estreita (375 px), os botões quebram em duas linhas, e o aviso aparece abaixo de "Manter registro".
-- **Reservas das imagens:** em `GaleriaCanvas.jsx`, `SinaisRolagemFixa.jsx` e `CartaoTecnologia.jsx` saíram os campos `reserva` e `imagem` e o ramo `src ? <img> : <EspacoImagem>`; fica só a `<img>`. `components/ui/EspacoImagem.jsx` ficou sem uso e foi apagado. O ícone `Image` continua no `EspacoIcone`, porque o `CartaoIntegrante` usa.
-- **Reserva dos vídeos:** `VideoPulse.jsx` ganhou o componente `ReservaVideo` (exportado): uma `<div aria-hidden="true">` com o quadro parado (`<img alt="">`, com `loading="lazy"` e `decoding="async"`) e, se ele falhar (`onError`), o texto "Vídeo indisponível." sobre `--cor-superficie`, em `text-auxiliar` e `--cor-texto-2`. O `VideoPulse` e o `LadoVideo` do `AntesDepois.jsx` usam esse componente (o `LadoVideo` perdeu o prop `texto`).
-- **`app/layout.jsx`:** JetBrains Mono com `weight: "700"`. Antes, a busca por `fonte-mono`, `font-mono`, `jetbrains`, `font-medium`, `font-weight: 500` e `fontWeight` (em `app/`, `components/`, `hooks/` e `lib/`) mostrou a mono só no `rotulo-mono` e nas regras `.trajeto-mapa .numero` e `.trajeto-paradas > li::before` de `globals.css`, todas em 700.
-- **`app/globals.css`:** `@utility rotulo-mono` com `font-size: 0.875rem`. As abas de "Os sinais" têm `text-[0.9rem]` próprio e não mudaram.
-- **`package.json`:** `"browserslist": ["chrome >= 111", "edge >= 111", "firefox >= 111", "safari >= 16.4"]`. Nada foi instalado.
+- `FormularioRegistro.jsx` e `DialogoConfirmacao.jsx`: o texto virou a constante `AVISO_DEMORA`, usada na região de status e num `<p aria-hidden="true">` depois da fila de botões, só enquanto o `useEsperaLonga` devolve `true`.
+- `GaleriaCanvas.jsx`, `SinaisRolagemFixa.jsx` e `CartaoTecnologia.jsx`: saíram os ramos de reserva das imagens, que nunca apareciam (todas as imagens existem). `components/ui/EspacoImagem.jsx` ficou sem uso e foi apagado.
+- `VideoPulse.jsx`: novo componente `ReservaVideo` (quadro parado e, se ele falhar, o texto), usado pelo `VideoPulse` e pelo `AntesDepois`.
+- `app/layout.jsx`: JetBrains Mono só no peso 700 (uma busca confirmou que o 500 não era usado). `app/globals.css`: `rotulo-mono` com `font-size: 0.875rem`. `package.json`: `browserslist` com os navegadores do Next.js 16.
 
 **Conferido:**
-- `npm run lint` sem erros, com **7** avisos `no-img-element`: os 6 de antes e 1 novo, do `<img>` do quadro parado em `VideoPulse.jsx`.
-- `npm run build` sem erros (o aviso conhecido da fonte de reserva da Atkinson e um aviso sobre um `package-lock.json` fora da pasta do repositório, no computador onde o build rodou).
-- **88 testes temporários, fora do projeto:** Chrome sem janela, controlado pelo protocolo de depuração, com uma API falsa que demorava 13 s para salvar e excluir. O endereço dela entrou só num build de teste; depois o build foi refeito sem ele. Nada disso entrou no projeto.
-  - **31 da espera longa** (375 px): ao salvar e ao excluir, aos 2 s, o botão "Salvando…"/"Excluindo…" travado, o status "Salvando"/"Excluindo", nenhum aviso na tela e o foco no botão; aos 11,5 s, o aviso visível abaixo dos botões, com 16 px, na cor de `--cor-texto-2`, sem ícone, sem animação e com `aria-hidden`; o status com o aviso; **1 só** nó com o aviso na árvore de acessibilidade; o foco ainda no botão. Depois da resposta, a lista (salvar) e o diálogo fechado (excluir), sem o aviso.
-  - **48 de layout:** 6 rotas (`/`, `/solucao`, `/diario`, `/diario/1`, `/simulador` e a 404) em 4 telas (320 × 640; 1280 × 800 com zoom de 200%; celular 375 × 667; 1440 × 900), rolando a página inteira: nenhuma rolagem lateral, e os rótulos mono (14 px) sem corte e sem sair da caixa.
-  - **9 dos vídeos:** com os `.mp4` bloqueados, 5 caixas na Solução e 1 na Início mostram o quadro parado; bloqueando também os quadros parados, "Vídeo indisponível."; nenhum "(a definir)" na página; a reserva fora da árvore de acessibilidade. Com os vídeos, nenhuma reserva.
+- `npm run lint` sem erros (7 avisos `no-img-element`: os 6 de antes e o `<img>` do quadro parado) e `npm run build` sem erros (o aviso conhecido da Atkinson).
+- 88 testes temporários, fora do projeto, no Chrome sem janela, com uma API falsa que demorava 13 s para salvar e excluir:
+  - **31 da espera longa:** aos 2 s, o botão travado, o status "Salvando"/"Excluindo", nenhum aviso na tela e o foco no botão; aos 11,5 s, o aviso visível abaixo dos botões, com 16 px, na cor de `--cor-texto-2`, sem ícone, sem animação e com `aria-hidden`, o status com o aviso, **1 só** nó com o aviso na árvore de acessibilidade e o foco ainda no botão;
+  - **48 de layout:** 6 rotas em 4 telas (320 × 640; 1280 × 800 com zoom de 200%; celular 375 × 667; 1440 × 900): nenhuma rolagem lateral e os rótulos mono sem corte;
+  - **9 dos vídeos:** com os `.mp4` bloqueados, o quadro parado; bloqueando também os quadros, "Vídeo indisponível."; a reserva fora da árvore de acessibilidade.
 
 **Teste manual:**
-1. Com a API configurada, abrir um registro em "Editar registro" e deixar a página carregar. No DevTools (F12), aba **Network**, em **No throttling**, escolher **Add…** e criar um perfil com **Latency** de `15000` ms; ligar o perfil.
-2. Tocar em "Salvar registro". Aos 10 s, conferir o aviso abaixo dos botões, em cinza e sem ícone, e o foco ainda em "Salvando…". Com o NVDA, ouvir "Salvando" e, aos 10 s, o aviso **uma vez só**.
-3. Fazer o mesmo com "Excluir registro", no diálogo de confirmação.
-4. Com zoom de 200%, numa janela de 320 px e no celular: na Início, na Solução (índice "Nesta página", abas de "Os sinais", rótulos dos cartões de Tecnologias) e no Diário, conferir que nenhum rótulo fica cortado e que nada rola para o lado.
-5. Na aba **Network**, abrir **Network request blocking**, bloquear `*.mp4` e recarregar a Solução: as caixas mostram o quadro parado, sem botões. Bloquear também `*quadro-parado.jpg`: aparece "Vídeo indisponível.". Tirar os bloqueios no fim.
-6. Voltar para **No throttling**.
-
-**Ficam da auditoria, sem escolha da equipe:** a base de GSAP, Motion e Lenis em todas as rotas, o estilo de botão em pílula repetido em 4 arquivos, o padrão de rolagem repetido em 4 hooks e a media query repetida em 4 hooks.
-
-**Sugestão de commit:** `Mostra o aviso de espera longa na tela e resolve 4 sobras da auditoria`
+1. Com a API configurada, abrir um registro em "Editar registro" e deixar a página carregar. No DevTools (F12), aba **Network**, em **No throttling**, escolher **Add…**, criar um perfil com **Latency** de `15000` ms e ligá-lo.
+2. Tocar em "Salvar registro". Aos 10 s, conferir o aviso abaixo dos botões e o foco ainda em "Salvando…". Com o NVDA, ouvir "Salvando" e, aos 10 s, o aviso uma vez só. Fazer o mesmo com "Excluir registro", no diálogo.
+3. Na aba **Network**, em **Network request blocking**, bloquear `*.mp4` e recarregar a Solução: as caixas mostram o quadro parado. Bloquear também `*quadro-parado.jpg`: aparece "Vídeo indisponível.". Tirar os bloqueios e voltar para **No throttling** no fim.
 
 ---
 
@@ -1920,72 +1709,5 @@ A especificação ganhou a **seção 20** (repositório novo, estrutura, deploy,
 
 | Pendência | Quem resolve |
 | --- | --- |
-| ~~Gerar as imagens com os prompts do documento "Prompts das imagens da Pulse" e pôr **todos** os arquivos em `public/imagens/`~~ Feita (14/11/2026) | — |
-| ~~Ligar os caminhos das imagens no código~~ Feita (commit `8f1e389`) | — |
-| ~~Colocar os vídeos, os quadros parados e as legendas em `public/videos/`~~ Já estão lá (9.8). Opcional: trocar `animacao-a-pulseira.mp4` pela versão com a voz "Trianon-Masp", com o mesmo nome | Equipe |
-| ~~Conectar a API externa (MockAPI)~~ Feita e testada no site publicado (13/11/2026). **No deploy novo**, conferir a variável `NEXT_PUBLIC_API_URL` | Equipe |
-| ~~Fazer o simulador (`SIMULADOR-AQUI`) e decidir sobre a vibração do celular~~ Simulador integrado e sem vibração do celular (item 9). Falta avaliá-lo com as WCAG e as heurísticas (pontos a conferir no item 9) | Equipe |
-| ~~Textos da página 404 em português~~ Feita na subfase 8.7 (`app/not-found.jsx`) | — |
-| ~~Textos para esperas acima de 10 s (aviso + cancelar)~~ Feita depois da Fase 9 (opção B, 15/11/2026) | — |
-| ~~Alinhamento do logo com a grade no computador~~ Resolvido na Fase 8 (área de 76rem em tudo). Cabeçalho fixo com zoom de 400% | Equipe avalia |
-| Testes manuais das Fases 7, 8 e 9 (passo a passo da Fase 9 na subfase 9.10) | Equipe |
-| ~~Depois de colocar a imagem da capa: conferir o contraste~~ Na Fase 9, a capa usa vídeo, com a frase sobre a faixa sólida | — |
-| ~~Depois de colocar a Anton: conferir a 320 px os títulos longos e os números~~ Feita na subfase 9.2, com a Anton de verdade | — |
+| Nome definitivo da pulseira ("Pulse" é provisório) | Equipe |
 | Frase da capa ("Um guia no pulso para atravessar a cidade.") é provisória | Equipe |
-| Confirmar ou mudar as decisões marcadas "Implementação" na seção 17 da especificação (21 da Fase 9) | Equipe |
-| ~~Aviso de espera ao salvar e excluir (> 10 s): hoje só o leitor de tela anuncia. A equipe decide se ele também aparece na tela, para quem tem baixa visão~~ Feita: aparece na tela (opção A, item 11, 18/11/2026) | — |
-| ~~Sobras da auditoria (item 7), para a equipe decidir~~ Feitas as 4 escolhidas: ramos "(a definir)", peso 500 da mono, `rotulo-mono` e `browserslist` (item 11, 18/11/2026). As outras 4 não foram escolhidas | — |
-| Repetir o teste no iPhone (357 × 667) depois do commit `68a7531` | Equipe |
-| Repetir os testes manuais e rodar o Lighthouse (acessibilidade) nas 6 rotas, com ícones e imagens | Equipe |
-| Tirar a pasta `.next/` do Git (`.next/` no `.gitignore` e `git rm -r --cached .next`) | Equipe |
-| No deploy novo, configurar a `DATABASE_URL` (rotas salvas do Simulador) | Equipe |
-| README: Ficha da CitizenTech e decisão sobre o endereço do MockAPI | Equipe |
-
-### Lista dos marcadores manuais (estado final da Fase 9)
-
-> **(Depois da Fase 9)** Todos os marcadores saíram do código: os de mídia e de API na limpeza dos comentários (item 5) e o `SIMULADOR-AQUI` com o Simulador (item 9). A lista abaixo fica como histórico.
-
-**Como colocar:**
-- **Ícone:** nada a fazer. O `EspacoIcone` já desenha o ícone (colocado pelo Claude Code depois da Fase 9). A tabela de ícones abaixo fica como referência de onde cada um aparece.
-- **Imagem:** a equipe só põe o arquivo em `public/imagens/`. Quando todas estiverem lá, a equipe avisa, e o Claude Code troca cada `EspacoImagem` pela imagem, com o `alt` sugerido no comentário. Onde houver `FotoFiltro`, a imagem entra **dentro** dele: o filtro e o parallax só funcionam com uma `<img>`.
-- **Vídeos:** já estão em `public/videos/`; não há nada a fazer.
-
-**Ícones (Phosphor, peso Bold):**
-
-| Ícone | Arquivos |
-| --- | --- |
-| `Pulse` (logo) | `components/layout/Cabecalho.jsx` |
-| `House`, `Watch`, `Play`, `Notebook` (itens da barra) | `components/layout/BarraNavegacao.jsx` |
-| `ArrowCounterClockwise`, `ArrowClockwise` (girar a pulseira) | `components/abertura/AberturaPulseira.jsx`, `components/pulseira/ExplorarPulseira.jsx` |
-| `Pause`, `Play` (pausar e retomar ou reproduzir, dentro do `IconeAlternado`) | `AberturaPulseira.jsx`, `ExplorarPulseira.jsx`, `components/solucao/FaixaODS.jsx`, `components/ui/VideoPulse.jsx` |
-| `Eye` ("Ver por dentro") | `components/pulseira/ExplorarPulseira.jsx` |
-| `ArrowRight` (links da abertura e "Direita") | `components/abertura/PartesSolucao.jsx`, `components/solucao/GaleriaCanvas.jsx` |
-| `ArrowLeft`, `ArrowUp`, `ArrowDown`, `ArrowsOutCardinal` (mover a galeria) | `components/solucao/GaleriaCanvas.jsx` |
-| `ArrowLeft` ("Voltar") | `components/ui/LinkVoltar.jsx` |
-| `ArrowDown` (dica da capa) | `components/abertura/CapaIntro.jsx` |
-| `ArrowsClockwise` ("Ver a peça") | `components/solucao/CartaoTecnologia.jsx` |
-| `CaretLeft`, `CaretRight` (alça do "Antes e depois") | `components/solucao/AntesDepois.jsx` |
-| `SpeakerHigh`, `SpeakerSlash` (som dos vídeos) | `components/ui/VideoPulse.jsx` |
-| `Plus` ("Novo registro") | `components/diario/TelaDiario.jsx`, `components/ui/EstadoTela.jsx` |
-| `PencilSimple`, `Trash` (editar e excluir) | `components/diario/DetalheRegistro.jsx` |
-| `ArrowCounterClockwise` ("Desfazer") | `components/diario/TelaDiario.jsx` |
-| `ArrowClockwise` ("Tentar de novo") | `components/ui/EstadoTela.jsx` |
-| `X` ("Fechar"), `Warning`, `WarningCircle` (mensagens) | `components/ui/MensagemStatus.jsx`, `components/ui/ErroCampo.jsx` |
-| `Image` (só nos espaços de imagem vazios; some quando as imagens entram) | `components/ui/EspacoImagem.jsx`, `components/solucao/CartaoIntegrante.jsx` |
-
-**Imagens** (com o `alt` sugerido no comentário de cada uma):
-
-| Marcadores | Arquivo |
-| --- | --- |
-| `IMAGEM-pessoa cega usando o celular-AQUI` e `IMAGEM-pessoa com baixa visão ampliando a tela-AQUI` ("Quem vive o problema") | `app/page.jsx` |
-| `IMAGEM-sinal continuar-AQUI`, `…parar-AQUI`, `…virar-AQUI`, `…aguardar-AQUI` ("Os sinais") | `components/solucao/SinaisRolagemFixa.jsx` (lista `SINAIS`) |
-| 8 × `IMAGEM-peça (nome)-AQUI` (verso dos cartões de Tecnologias) | `app/solucao/page.jsx` (lista `TECNOLOGIAS`); a imagem entra no `EspacoImagem` do verso, em `components/solucao/CartaoTecnologia.jsx` |
-| 6 × `IMAGEM-galeria …-AQUI` (Galeria) | `components/solucao/GaleriaCanvas.jsx` (lista `FOTOS`); a imagem entra em `ConteudoFoto`, no mesmo arquivo |
-| 5 × `IMAGEM-foto de (nome)-AQUI` (Equipe) | `app/solucao/page.jsx`; a foto entra no espaço do `FotoFiltro` de `components/solucao/CartaoIntegrante.jsx` |
-
-**Outras tarefas manuais:**
-- **API (MockAPI):** passo a passo na 9.9 (projeto, recurso `registros`, `.env.local`, variável na hospedagem).
-- **Simulador:** `SIMULADOR-AQUI`, em `app/simulador/page.jsx`.
-- **Registros de exemplo para a apresentação** (decisão da Fase 4): criar no MockAPI, com dados fictícios.
-- **Uso de IA:** registro manual no `prompts.md` e no `AI.md`.
-- **Commits:** feitos pela equipe, com as mensagens sugeridas em cada subfase.
