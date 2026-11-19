@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useEfeitos } from "@/hooks/useEfeitos";
+import { CONSULTA_CELULAR } from "@/lib/tela";
 
 // Regra (9.3): só em Início e Solução, abaixo de 768 px. Quem usa esconde só com
 // transform, nunca display: none, para o leitor de tela alcançar as barras.
 const ROTAS_COM_BARRAS_QUE_SOMEM = ["/", "/solucao"];
-const CONSULTA_CELULAR = "(max-width: 47.99rem)";
 
 export function useDirecaoRolagem() {
   const caminho = usePathname();

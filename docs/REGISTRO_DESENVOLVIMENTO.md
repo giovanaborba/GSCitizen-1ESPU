@@ -651,7 +651,7 @@ Ainda não testado: link de outra página com âncora (`/solucao#os-sinais`). Es
 | Toda imagem com `alt` | ok (decorações com `aria-hidden`) |
 | ESLint `jsx-a11y` e axe | ok (com a exceção explicada) |
 | Sem a API: Diário com erro de conexão | ok |
-| CRUD com a API | **pendente** (a API ainda não existe) |
+| CRUD com a API | ok (resolvido na 9.9, com o MockAPI) |
 
 **Defeitos corrigidos nesta subfase:** os 3 pontos do `jsx-a11y` acima (2 corrigidos, 1 exceção explicada). Nos testes, duas travas eram do próprio script: medidas que esperavam um quadro de animação em abas fora de primeiro plano, e o aviso "Sair do site?" do formulário preenchido, que estava funcionando e esperando resposta. Na regressão final (todas as baterias seguidas, no mesmo navegador), 1 teste da 8.5 falhou porque dezenas de abas abertas atrasaram o evento de foco. Num navegador limpo, a 8.5 passou inteira (49 de 49).
 
@@ -1665,6 +1665,41 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 2. Tocar em "Salvar registro". Aos 10 s, conferir o aviso abaixo dos botões e o foco ainda em "Salvando…". Com o NVDA, ouvir "Salvando" e, aos 10 s, o aviso uma vez só. Fazer o mesmo com "Excluir registro", no diálogo.
 3. Na aba **Network**, em **Network request blocking**, bloquear `*.mp4` e recarregar a Solução: as caixas mostram o quadro parado. Bloquear também `*quadro-parado.jpg`: aparece "Vídeo indisponível.". Tirar os bloqueios e voltar para **No throttling** no fim.
 
+#### 10. Título da abertura em duas linhas e limpeza de código (18/11/2026)
+
+**Título da abertura do Início.** O H1 passou a ser **"No seu ritmo, no seu espaço, com a segurança de quem guia cada passo"**, em duas linhas: "No seu ritmo, no seu espaço," e "com a segurança de quem guia cada passo". Cada parte fica num `<span>` em bloco, com espaço de 0,3em entre elas. O leitor de tela lê a frase inteira. O token `--text-h1-abertura` foi para `clamp(1.9rem, 4.6vw, 3.2rem)`, com altura de linha 1,1, para a segunda linha caber inteira no computador. Em telas estreitas, cada parte pode quebrar em mais linhas.
+
+**Pendências resolvidas.** Nome **Pulse** e frase da capa "Um guia no pulso para atravessar a cidade." são definitivos. O CRUD com o MockAPI já funcionava desde a 9.9; a linha "pendente" da tabela da Fase 8 foi atualizada.
+
+**Código repetido, unificado** (sem mudar o que aparece na tela):
+
+| Antes | Agora |
+| --- | --- |
+| A media query `(min-width: 64rem) and (min-height: 37.5rem)` escrita em 4 hooks (`useComoFuncionaFundo`, `useEncaixe`, `useGaleriaCanvas`, `useTrajeto`) e a de celular em 2 (`useDigitandoNoCelular`, `useDirecaoRolagem`) | `CONSULTA_TELA_GRANDE` e `CONSULTA_CELULAR` em `lib/tela.js` |
+| `alturaDoTopo()` (cabeçalho + índice) copiada em `useEncaixe` e `useTrajeto` | Uma só, em `lib/tela.js` |
+| O ouvinte de rolagem "um quadro por vez" (`requestAnimationFrame` + `scroll` + `resize`) repetido em `useFraseAcende`, `useProgressoLeitura`, `useSecaoAtual` e `useTrajeto` | `ouvirRolagem(atualizar, aoMudarTamanho)` em `lib/tela.js`, que devolve `{ pedir, parar }` |
+| `usePrefereMovimentoReduzido` refazia o `useConsultaMidia` | Chama o `useConsultaMidia` |
+| O estilo do botão de controle em pílula repetido em 4 arquivos (`AberturaPulseira`, `ExplorarPulseira`, `GaleriaCanvas`, `VideoPulse`) | `ESTILO_BOTAO_CONTROLE` em `lib/estilos.js`. Os botões de giro da abertura ganharam `text-center`, como os outros |
+| Os botões "Girar para a esquerda/direita" e "Girar sozinha" copiados na abertura e na Solução | Componente `components/pulseira/BotoesGiro.jsx`. Os botões só da Solução ("Ver por dentro" e "Vista da frente") entram como filhos |
+
+**Código morto retirado:**
+- `useCapaIntro`: a função `terminar()`, que nunca era chamada, e o `refAnimacao`, trocado por uma variável local.
+- `useGaleriaCanvas`: o `export` do `TAMANHO_PLANO`, que só o próprio arquivo usa.
+- `globals.css`: os tokens `--color-apagada`, `--text-numero` e `--radius-polaroide`, que nenhuma classe usava. O `--cor-apagada` continua, porque é lido direto no CSS.
+
+**Ficou como está:** GSAP, Motion e Lenis carregados em todas as rotas. Não é código morto, e tirar mudaria o carregamento das páginas. O Simulador (`components/simulador/`, `hooks/useNavegacaoSimulador.js` e `lib/simulador/`) ficou fora da limpeza, a pedido da equipe.
+
+**Conferido:**
+- `npm run lint` sem erros (os 7 avisos `no-img-element` de antes) e `npm run build` sem erros (o aviso conhecido da Atkinson).
+- Nenhum arquivo de código ficou sem uso, e todos os ícones da lista do `EspacoIcone` são usados.
+- No CSS gerado, as classes do `ESTILO_BOTAO_CONTROLE` e as variantes `aria-pressed:` continuam presentes.
+- Chrome sem janela, no build de produção: as 5 rotas respondem 200 e a rota inexistente, 404; no Início, a frase acende, o trajeto liga e o H1 sai em duas partes; na Solução (com WebGL por software), os botões de giro aparecem com "Ver por dentro" no meio, o índice marca a seção atual e a barra de progresso anda.
+
+**Teste manual:**
+1. No Início, conferir o título em duas linhas no computador e em 320 px, e girar a pulseira com os 3 botões.
+2. Na Solução, usar os 5 botões da pulseira ("Girar sozinha" fica laranja quando ligado), rolar a página (índice, barra de progresso e trajeto) e mover a galeria pelos botões.
+3. No celular, rolar Início e Solução para ver as barras sumirem e voltarem, e tocar num campo do Diário para a barra sair da frente do teclado.
+
 ---
 
 ## Como os testes automáticos foram feitos
@@ -1707,7 +1742,9 @@ A camada de dados (`services/`, `lib/validacao.js`, `lib/datas.js`) não mudou.
 
 ## Pendências
 
-| Pendência | Quem resolve |
+Nenhuma. As duas últimas foram resolvidas pela equipe em 18/11/2026:
+
+| Pendência | Decisão |
 | --- | --- |
-| Nome definitivo da pulseira ("Pulse" é provisório) | Equipe |
-| Frase da capa ("Um guia no pulso para atravessar a cidade.") é provisória | Equipe |
+| Nome definitivo da pulseira | **Pulse** |
+| Frase da capa | "Um guia no pulso para atravessar a cidade." |

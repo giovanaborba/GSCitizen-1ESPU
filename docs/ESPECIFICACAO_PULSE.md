@@ -40,7 +40,7 @@
 | --- | --- |
 | Projeto | Global Solution FIAP 2026.2, tema **CitizenTech** |
 | Problema | Pessoas cegas e com baixa visão dependem da audição para atravessar ruas, e muitos semáforos não têm sinal sonoro. Cerca de 90% dos paulistanos consideram as calçadas não acessíveis (G1, 2019). No Brasil, 7,9 milhões de pessoas têm dificuldade para enxergar (IBGE, Censo 2022). |
-| Solução | **Pulse** (nome provisório): pulseira que guia pelo pulso com vibrações direcionais, sinais de parar, continuar e aguardar, dados de semáforos e de transporte público. Funciona sem celular. |
+| Solução | **Pulse**: pulseira que guia pelo pulso com vibrações direcionais, sinais de parar, continuar e aguardar, dados de semáforos e de transporte público. Funciona sem celular. |
 | Papel do site | (1) **Apresentação** que liga tema, problema e solução; (2) **Simulador** da pulseira (seção 20); (3) **Diário de deslocamentos**, um CRUD que mede o impacto da Pulse. |
 | Público | Pessoas cegas (leitor de tela no celular), pessoas com baixa visão (ampliação, alto contraste, modo escuro) e pessoas sem deficiência (familiares, instrutores). Nenhum perfil é secundário. |
 | Avaliação | O site será apresentado aos professores, mas é desenhado para o público real. |
@@ -146,7 +146,7 @@ Use estes textos como estão. Tom de voz: próximo, sério, respeitoso e objetiv
 
 A ordem da página, a capa e a abertura estão na seção 18.6.
 
-**H1:** Inovação que chega a quem precisa
+**H1:** No seu ritmo, no seu espaço, com a segurança de quem guia cada passo
 **Resumo:** A Pulse é uma pulseira que guia pessoas cegas e com baixa visão pela cidade. Conheça o problema que ela resolve.
 
 **Nesta página:** Tema CitizenTech · O problema · Quem vive o problema · Um trajeto com a Pulse
@@ -707,7 +707,7 @@ components/
   ui/         # botões, cartões, campos, mensagens, diálogo, estados, ícones, vídeo, efeitos de texto
   diario/     # telas e partes do Diário
   abertura/   # capa, preloader e abertura do Início
-  pulseira/   # pulseira 3D
+  pulseira/   # pulseira 3D e os botões de giro (BotoesGiro)
   solucao/    # partes da Solução
   simulador/  # Simulador (seção 20.3)
 hooks/        # estado e lógica (CRUD, formulário, navegação, movimento, 3D, vídeos, Simulador)
@@ -718,6 +718,8 @@ services/
 lib/
   datas.js, rotulos.js, validacao.js        # funções puras do Diário
   movimento.js, presetsMovimento.js, efeitos.js, cortinaDomos.js
+  tela.js       # media queries comuns, altura do topo e ouvinte de rolagem (um quadro por vez)
+  estilos.js    # estilo do botão de controle em pílula
   pulseira3d/   # cena, modelo, partes e sinais da pulseira 3D
   simulador/    # dados do Simulador
 public/
@@ -800,11 +802,11 @@ O resultado da revisão automática está na seção 19.17. Os testes que só um
 
 ## 16. Pendências, decisões e riscos aceitos
 
-**Pendências:**
-- Nome definitivo da pulseira ("Pulse" é provisório).
-- Frase da capa provisória: "Um guia no pulso para atravessar a cidade."
+**Pendências:** nenhuma.
 
 **Decisões da equipe:**
+- O nome da pulseira é **Pulse** (definitivo, 18/11/2026).
+- A frase da capa é "Um guia no pulso para atravessar a cidade." (definitiva, 18/11/2026).
 - Todas as perguntas do Diário são obrigatórias, exceto Observações.
 - O Diário mostra o aviso de privacidade (7.1).
 - Na confirmação de exclusão, o foco começa em "Manter registro".
@@ -812,7 +814,7 @@ O resultado da revisão automática está na seção 19.17. Os testes que só um
 **Riscos aceitos na avaliação heurística (não corrigir sem decisão da equipe):**
 - Termos técnicos da seção Tecnologias sem explicação extra (H2).
 - Diário sem filtro (H7), por enquanto.
-- Código aceito como está: GSAP, Motion e Lenis carregados em todas as rotas (cerca de 305 KB com gzip); o estilo de botão em pílula repetido em 4 arquivos; o padrão de rolagem e a media query repetidos em 4 hooks.
+- Código aceito como está: GSAP, Motion e Lenis carregados em todas as rotas (cerca de 305 KB com gzip). O botão em pílula, o padrão de rolagem e a media query repetidos foram unificados em 18/11/2026 (`lib/estilos.js`, `lib/tela.js` e `BotoesGiro`).
 
 ---
 
@@ -837,7 +839,7 @@ Substituído pela seção 19.1, que vale para todo o site e mantém a numeraçã
 
 | Família | Papel | Tamanho | Regras |
 | --- | --- | --- | --- |
-| **Anton** (`--fonte-titulo`, reserva `Impact, "Arial Narrow", sans-serif`) | H1, H2, nomes dos sinais, palavras de fundo, números grandes, nome "Pulse" | H1 `clamp(2.6rem, 14vw, 5.6rem)`; H1 da abertura do Início `clamp(2.1rem, 9vw, 3.6rem)`; H2 `clamp(2rem, 9vw, 3.2rem)`; título do diálogo 2rem; nome do sinal `clamp(2.2rem, 10vw, 3.5rem)`; números dos cartões de dados 3,25rem e do resumo do Diário 2,5rem; altura de linha 1 | Só títulos curtos. Maiúsculas **só por CSS** (`text-transform: uppercase`); no código o texto fica normal, para o leitor de tela não soletrar |
+| **Anton** (`--fonte-titulo`, reserva `Impact, "Arial Narrow", sans-serif`) | H1, H2, nomes dos sinais, palavras de fundo, números grandes, nome "Pulse" | H1 `clamp(2.6rem, 14vw, 5.6rem)`; H1 da abertura do Início `clamp(1.9rem, 4.6vw, 3.2rem)` com altura de linha 1,1 (frase longa em duas linhas); H2 `clamp(2rem, 9vw, 3.2rem)`; título do diálogo 2rem; nome do sinal `clamp(2.2rem, 10vw, 3.5rem)`; números dos cartões de dados 3,25rem e do resumo do Diário 2,5rem; altura de linha 1 | Só títulos curtos. Maiúsculas **só por CSS** (`text-transform: uppercase`); no código o texto fica normal, para o leitor de tela não soletrar |
 | **Atkinson Hyperlegible Next** (`--fonte-base`, reserva Verdana), pesos 400 e 700 | Texto corrido, botões, links, H3, H4 e formulário | Texto 1,125rem (18 px), altura de linha 1,55; H3 1,25rem negrito; nunca menor que 16 px | Todo texto longo |
 | **JetBrains Mono** (`--fonte-mono`, reserva `ui-monospace, "Courier New"`), peso 700 | Rótulos curtos: "MODO TÁTIL", "FONTE: G1, 2019", contagens | `rotulo-mono`: 0,875rem (14 px), letras espaçadas (0,14em), maiúsculas por CSS; as abas de "Os sinais" usam 0,9rem | Única exceção à regra dos 16 px: por isso são curtos e nunca carregam sozinhos uma informação |
 
@@ -864,13 +866,14 @@ Ordem: preloader e capa (primeira visita da sessão) → abertura com a pulseira
 - Aparecem só na **primeira visita de cada sessão** e só com os efeitos ligados (`sessionStorage`, chave `pulse-capa-vista`, com `try/catch`; se o armazenamento falhar, a capa aparece). São criados **só no navegador**, depois da hidratação: sem JavaScript, não existem.
 - **Sem a página piscar antes da capa:** o script do `<head>` cria uma camada sólida, que some quando a capa monta ou em no máximo 2 s.
 - O preloader conta de 0 a 100 em 1,4 s ("Pulse · carregando") e revela a capa (seção 19.6).
-- Conteúdo da capa: rótulo mono "GS 2026.2 · CitizenTech" numa faixa sólida, "PULSE" gigante, a frase provisória **"Um guia no pulso para atravessar a cidade."** sobre uma faixa sólida e a dica "Toque, role ou aperte uma tecla" (com seta). Atrás, o vídeo da capa com um véu (seção 19.13).
+- Conteúdo da capa: rótulo mono "GS 2026.2 · CitizenTech" numa faixa sólida, "PULSE" gigante, a frase **"Um guia no pulso para atravessar a cidade."** sobre uma faixa sólida e a dica "Toque, role ou aperte uma tecla" (com seta). Atrás, o vídeo da capa com um véu (seção 19.13).
 - A capa inteira tem `aria-hidden="true"` e nenhum elemento focável. Sai com clique, rolagem, toque arrastado, qualquer tecla ou foco. O primeiro Tab (no "Pular para o conteúdo") já abre o site.
 - Saída em **piso tátil**: a capa se desfaz nos domos em 1 segundo. Ao sair, os títulos e os links da abertura aparecem com o gesto GUIA, e a pulseira entra.
 - Capa e preloader são desenhados no `<body>` (portal), para ficarem na frente do cabeçalho mesmo com o rodapé revelado (seção 19.6).
 
 **Abertura com a pulseira (`AberturaPulseira`)**
-- Rótulo mono "Pulseira de navegação", H1 "Inovação que chega a quem precisa" e o resumo.
+- Rótulo mono "Pulseira de navegação", H1 "No seu ritmo, no seu espaço, com a segurança de quem guia cada passo" e o resumo.
+- O H1 fica em **duas linhas**, cada uma num `<span>` em bloco: "No seu ritmo, no seu espaço," e "com a segurança de quem guia cada passo". Espaço de 0,3em entre elas (`gap`). O leitor de tela lê a frase inteira, sem pausa. Em telas estreitas, cada parte pode quebrar em mais linhas.
 - `Pulseira3D` no centro, no modo `abertura` (seção 19.12), com os botões de giro e "Pausar o giro".
 - Embaixo dela: o nome do sinal atual em mono e a descrição curta (ambos `aria-hidden`, porque mudam sozinhos).
 - Atrás, a palavra gigante acompanha o sinal: **Esquerda, Direita, Aguardar, Parar, Continuar** (troca com esmaecimento de 0,35 s; com os efeitos desligados, fica "Pulse").
@@ -1449,7 +1452,7 @@ O Simulador fica em `/simulador`, abaixo do H1 "Simulador" e do resumo da 6.3, n
 
 - **Mapa:** o `MapaRota` usa o Leaflet com `next/dynamic` e `ssr: false`, porque o Leaflet só funciona no navegador. Enquanto carrega, aparece "Carregando mapa…" (`role="status"`). Os mapas são do OpenStreetMap, com o crédito "© OpenStreetMap".
 - **Serviços externos, sem chave:** Nominatim, do OpenStreetMap (busca de endereço), e `routing.openstreetmap.de` (rota a pé). O Simulador precisa de internet.
-- **Contagem do site inteiro:** 72 componentes, 3 serviços, 12 módulos em `lib/` e 39 arquivos de hooks (40 hooks, porque `usePulseiraSimulador.js` exporta dois).
+- **Contagem do site inteiro:** 73 componentes, 3 serviços, 14 módulos em `lib/` e 39 arquivos de hooks (40 hooks, porque `usePulseiraSimulador.js` exporta dois).
 
 ### 20.4 Variáveis de ambiente e rotas salvas
 

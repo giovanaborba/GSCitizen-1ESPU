@@ -5,6 +5,7 @@ import RotuloSecao from "@/components/layout/RotuloSecao";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 import FotoFiltro from "@/components/ui/FotoFiltro";
 import { useGaleriaCanvas } from "@/hooks/useGaleriaCanvas";
+import { ESTILO_BOTAO_CONTROLE } from "@/lib/estilos";
 
 // x e y: onde cada foto fica no plano de 2400 × 1500 px (protótipo)
 const FOTOS = [
@@ -51,9 +52,6 @@ const FOTOS = [
     y: 860,
   },
 ];
-
-const ESTILO_BOTAO =
-  "inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-borda bg-superficie px-4 text-center font-bold text-texto hover:border-marca";
 
 function ConteudoFoto({ foto }) {
   return (
@@ -118,23 +116,23 @@ export default function GaleriaCanvas() {
 
           {/* Alternativas ao arrasto (WCAG 2.5.7) */}
           <div role="group" aria-label="Mover a galeria" onKeyDown={aoTeclarControles} className="flex flex-wrap gap-2">
-            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => mover(-1, 0)} className={ESTILO_BOTAO}>
+            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => mover(-1, 0)} className={ESTILO_BOTAO_CONTROLE}>
               <EspacoIcone nome="ArrowLeft" />
               Esquerda
             </motion.button>
-            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => mover(0, -1)} className={ESTILO_BOTAO}>
+            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => mover(0, -1)} className={ESTILO_BOTAO_CONTROLE}>
               <EspacoIcone nome="ArrowUp" />
               Cima
             </motion.button>
-            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => mover(0, 1)} className={ESTILO_BOTAO}>
+            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => mover(0, 1)} className={ESTILO_BOTAO_CONTROLE}>
               <EspacoIcone nome="ArrowDown" />
               Baixo
             </motion.button>
-            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => mover(1, 0)} className={ESTILO_BOTAO}>
+            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={() => mover(1, 0)} className={ESTILO_BOTAO_CONTROLE}>
               <EspacoIcone nome="ArrowRight" />
               Direita
             </motion.button>
-            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={centralizar} className={ESTILO_BOTAO}>
+            <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={centralizar} className={ESTILO_BOTAO_CONTROLE}>
               <EspacoIcone nome="ArrowsOutCardinal" />
               Centralizar
             </motion.button>

@@ -38,18 +38,12 @@ export function useCapaIntro() {
   const refCapa = useRef(null);
   const refPreloader = useRef(null);
   const refContador = useRef(null);
-  const refAnimacao = useRef(null);
   const lenis = useRolagemSuave();
   const { efeitosLigados, efeitosConhecidos } = useEfeitos();
 
   const capaNaTela = precisa && efeitosLigados && fase !== "fim";
   const saindo = capaNaTela && fase === "saindo";
   const preloaderNaTela = capaNaTela && fase === "preloader";
-
-  function terminar() {
-    marcarCapaVista();
-    setFase("fim");
-  }
 
   function sair() {
     if (!capaNaTela || (fase !== "ativa" && fase !== "preloader")) return;
@@ -114,7 +108,7 @@ export function useCapaIntro() {
   useEffect(() => {
     const capa = refCapa.current;
     if (!saindo || !capa) return;
-    refAnimacao.current = gsap.fromTo(
+    const animacao = gsap.fromTo(
       capa,
       { "--d": `${RAIO_INICIAL}px` },
       {
@@ -127,7 +121,7 @@ export function useCapaIntro() {
         },
       },
     );
-    return () => refAnimacao.current?.kill();
+    return () => animacao.kill();
   }, [saindo]);
 
   return { capaNaTela, preloaderNaTela, saindo, refCapa, refPreloader, refContador, sair };

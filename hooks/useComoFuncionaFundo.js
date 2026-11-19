@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useConsultaMidia } from "@/hooks/useConsultaMidia";
+import { CONSULTA_TELA_GRANDE } from "@/lib/tela";
 
 // Regra: modo fixo só a partir de 64rem × 600 px e com os efeitos ligados (9.7).
 // Com o mouse em cima de um item, a rolagem não troca o ativo, como no protótipo.
-const CONSULTA_FIXA = "(min-width: 64rem) and (min-height: 37.5rem)";
 
 export function useComoFuncionaFundo() {
   const { efeitosLigados } = useEfeitos();
-  const telaFixa = useConsultaMidia(CONSULTA_FIXA);
+  const telaFixa = useConsultaMidia(CONSULTA_TELA_GRANDE);
   const modoFixo = efeitosLigados && telaFixa;
   const [ativo, setAtivo] = useState(0);
   const refLista = useRef(null);

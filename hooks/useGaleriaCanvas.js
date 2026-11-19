@@ -3,11 +3,11 @@ import { animate, useMotionValue } from "motion/react";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useConsultaMidia } from "@/hooks/useConsultaMidia";
 import { spring } from "@/lib/presetsMovimento";
+import { CONSULTA_TELA_GRANDE } from "@/lib/tela";
 
 // Regra: arrastar sempre tem alternativa: setas, botões e foco (WCAG 2.5.7).
 // No toque, pan-y deixa a página rolar, para o dedo não ficar preso na galeria.
-const CONSULTA_CANVAS = "(min-width: 64rem) and (min-height: 37.5rem)";
-export const TAMANHO_PLANO = { largura: 2400, altura: 1500 };
+const TAMANHO_PLANO = { largura: 2400, altura: 1500 };
 const PASSO_TECLA = 200;
 const PASSO_BOTAO = { x: 320, y: 260 };
 const JANELA_VELOCIDADE = 100; // ms
@@ -42,7 +42,7 @@ function absorverRolagemDaJanela(janela, x, y) {
 
 export function useGaleriaCanvas() {
   const { efeitosLigados } = useEfeitos();
-  const telaGrande = useConsultaMidia(CONSULTA_CANVAS);
+  const telaGrande = useConsultaMidia(CONSULTA_TELA_GRANDE);
   const modoCanvas = efeitosLigados && telaGrande;
   const refJanela = useRef(null);
   const x = useMotionValue(0);

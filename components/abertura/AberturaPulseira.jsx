@@ -8,8 +8,7 @@ import CapaIntro from "@/components/abertura/CapaIntro";
 import Preloader from "@/components/abertura/Preloader";
 import PartesSolucao, { PARTES_DA_SOLUCAO } from "@/components/abertura/PartesSolucao";
 import PalavraFundo from "@/components/ui/PalavraFundo";
-import EspacoIcone from "@/components/ui/EspacoIcone";
-import IconeAlternado from "@/components/ui/IconeAlternado";
+import BotoesGiro from "@/components/pulseira/BotoesGiro";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useCapaIntro } from "@/hooks/useCapaIntro";
 import { useEncaixe } from "@/hooks/useEncaixe";
@@ -17,12 +16,11 @@ import { useGiroPulseira } from "@/hooks/useGiroPulseira";
 import { useLinhasPartes } from "@/hooks/useLinhasPartes";
 import { SINAIS_DA_ABERTURA } from "@/lib/pulseira3d/sinais";
 import { spring } from "@/lib/presetsMovimento";
+import { ESTILO_BOTAO_CONTROLE } from "@/lib/estilos";
 
 // Regra: "Girar sozinha" para o giro, os sinais e o Braille (WCAG 2.2.2, decisão da 9.0).
 // Ordem no HTML = ordem do leitor de tela (18.15): H1 → resumo → palco → giro → links.
 
-const ESTILO_BOTAO_GIRO =
-  "inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-borda bg-superficie px-4 font-bold text-texto hover:border-marca";
 export default function AberturaPulseira() {
   const [sinalAtual, setSinalAtual] = useState(SINAIS_DA_ABERTURA[0]);
   const [cenaPronta, setCenaPronta] = useState(false);
@@ -84,8 +82,9 @@ export default function AberturaPulseira() {
       <div className="relative mx-auto grid max-w-pagina gap-2">
         <motion.div {...revelacao()} className="grid justify-items-center gap-3 text-center">
           <p className="rotulo-mono text-destaque">Pulseira de navegação</p>
-          <h1 id="titulo-inicio" tabIndex={-1} className="max-w-[18ch] text-h1-abertura">
-            No seu ritmo, no seu espaço, com a segurança de quem guia cada passo
+          <h1 id="titulo-inicio" tabIndex={-1} className="grid gap-[0.1em] text-h1-abertura">
+            <span className="block text-balance">No seu ritmo, no seu espaço,</span>{' '}
+            <span className="block text-balance">com a segurança de quem guia cada passo</span>
           </h1>
           <p className="max-w-[46ch] text-texto-2">
             A Pulse é uma pulseira que guia pessoas cegas e com baixa visão pela cidade.
@@ -147,33 +146,12 @@ export default function AberturaPulseira() {
             </span>
             {/* Só com a cena pronta: sem cena, não há o que girar. */}
             {cenaPronta && (
-              <div role="group" aria-label="Girar a pulseira" className="flex flex-wrap justify-center gap-2">
-                <button type="button" onClick={() => giro.girar(-45)} className={ESTILO_BOTAO_GIRO}>
-                  <EspacoIcone nome="ArrowCounterClockwise" />
-                  Girar para a esquerda
-                </button>
-                <button type="button" onClick={() => giro.girar(45)} className={ESTILO_BOTAO_GIRO}>
-                  <EspacoIcone nome="ArrowClockwise" />
-                  Girar para a direita
-                </button>
-                {efeitosLigados && (
-                  <button
-                    type="button"
-                    aria-pressed={giro.girando}
-                    onClick={giro.alternarGiro}
-                    className={ESTILO_BOTAO_GIRO}
-                  >
-                    <IconeAlternado chave={giro.girando ? "pausar" : "girar"}>
-                      {giro.girando ? (
-                        <EspacoIcone nome="Pause" />
-                      ) : (
-                        <EspacoIcone nome="Play" />
-                      )}
-                    </IconeAlternado>
-                    Girar sozinha
-                  </button>
-                )}
-              </div>
+              <BotoesGiro
+                giro={giro}
+                efeitosLigados={efeitosLigados}
+                estiloBotao={ESTILO_BOTAO_CONTROLE}
+                className="flex flex-wrap justify-center gap-2"
+              />
             )}
           </motion.div>
 

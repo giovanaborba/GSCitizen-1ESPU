@@ -1,19 +1,12 @@
 import { useEffect } from "react";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useRolagemSuave } from "@/hooks/useRolagemSuave";
+import { CONSULTA_TELA_GRANDE, alturaDoTopo } from "@/lib/tela";
 
 // Regra: encaixe só por proximidade e só depois da roda do mouse; nunca com zoom
 // alto, arrasto, teclado ou foco num campo (19.6).
 const ESPERA = 160; // ms
 const LIMITE = 0.3; // fração da altura da tela
-const CONSULTA = "(min-width: 64rem) and (min-height: 37.5rem)";
-
-function alturaDoTopo() {
-  const estilo = getComputedStyle(document.documentElement);
-  const cabecalho = parseFloat(estilo.getPropertyValue("--altura-cabecalho")) || 0;
-  const indice = parseFloat(estilo.getPropertyValue("--altura-indice")) || 0;
-  return cabecalho + indice;
-}
 
 export function useEncaixe() {
   const { efeitosLigados } = useEfeitos();
@@ -21,7 +14,7 @@ export function useEncaixe() {
 
   useEffect(() => {
     if (!efeitosLigados || !lenis) return;
-    const consulta = window.matchMedia(CONSULTA);
+    const consulta = window.matchMedia(CONSULTA_TELA_GRANDE);
     let ultimaEntrada = "nenhuma";
     let espera = 0;
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { CONSULTA_CELULAR } from "@/lib/tela";
 
 // Regra: a barra flutuante sai da frente do teclado do celular (7.3).
-const CONSULTA_CELULAR = "(max-width: 47.99rem)";
 const TIPOS_QUE_NAO_ABREM_TECLADO = ["radio", "checkbox", "button", "submit", "reset"];
 
 function ehCampoDeDigitacao(elemento) {

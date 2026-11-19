@@ -5,12 +5,10 @@ import { motion } from "motion/react";
 import EspacoIcone from "@/components/ui/EspacoIcone";
 import IconeAlternado from "@/components/ui/IconeAlternado";
 import { useVideoPulse } from "@/hooks/useVideoPulse";
+import { ESTILO_BOTAO_CONTROLE } from "@/lib/estilos";
 
 // Regra: "Pausar" sempre visível (WCAG 2.2.2); o texto do botão diz a ação, sem
 // aria-pressed (decisão da 9.8).
-
-const ESTILO_BOTAO =
-  "inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-borda bg-superficie px-4 text-center font-bold text-texto hover:border-marca";
 
 export function caminhosDoVideo(nome) {
   return {
@@ -48,7 +46,7 @@ export function ReservaVideo({ quadroParado, className = "" }) {
 export function ControlesVideo({ tocando, aoAlternarPausa, comSom = false, somLigado = false, aoAlternarSom, className = "" }) {
   return (
     <div className={`flex flex-wrap gap-2 ${className}`}>
-      <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={aoAlternarPausa} className={ESTILO_BOTAO}>
+      <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={aoAlternarPausa} className={ESTILO_BOTAO_CONTROLE}>
         <IconeAlternado chave={tocando ? "pausar" : "reproduzir"}>
           {tocando ? (
             <EspacoIcone nome="Pause" />
@@ -59,7 +57,7 @@ export function ControlesVideo({ tocando, aoAlternarPausa, comSom = false, somLi
         {tocando ? "Pausar" : "Reproduzir"}
       </motion.button>
       {comSom && (
-        <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={aoAlternarSom} className={ESTILO_BOTAO}>
+        <motion.button type="button" whileTap={{ scale: 0.97 }} onClick={aoAlternarSom} className={ESTILO_BOTAO_CONTROLE}>
           {somLigado ? (
             <EspacoIcone nome="SpeakerSlash" />
           ) : (

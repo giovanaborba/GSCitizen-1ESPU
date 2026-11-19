@@ -3,9 +3,10 @@
 import { useState } from "react";
 import Pulseira3D from "@/components/pulseira/Pulseira3D";
 import EspacoIcone from "@/components/ui/EspacoIcone";
-import IconeAlternado from "@/components/ui/IconeAlternado";
+import BotoesGiro from "@/components/pulseira/BotoesGiro";
 import { useEfeitos } from "@/hooks/useEfeitos";
 import { useGiroPulseira } from "@/hooks/useGiroPulseira";
+import { ESTILO_BOTAO_CONTROLE } from "@/lib/estilos";
 
 // Regra: "Girar sozinha" tem texto fixo e aria-pressed; só o ícone troca (decisão da 9.5).
 
@@ -31,9 +32,7 @@ const SINAIS = [
 const EXPLICACAO_PARTE = { nome: "Escolha uma parte", texto: "A pulseira gira até ela e a parte acende." };
 const EXPLICACAO_SINAL = { nome: "Escolha um sinal", texto: "Veja onde a pulseira vibra ou aperta." };
 
-const ESTILO_BOTAO =
-  "inline-flex min-h-12 items-center gap-2 rounded-full border-2 px-4 text-center font-bold hover:border-marca aria-pressed:border-acao aria-pressed:bg-acao aria-pressed:text-sobre-acao";
-const BOTAO_SOLTO = "border-borda bg-superficie text-texto";
+const ESTILO_BOTAO = `${ESTILO_BOTAO_CONTROLE} aria-pressed:border-acao aria-pressed:bg-acao aria-pressed:text-sobre-acao`;
 
 export default function ExplorarPulseira() {
   const giro = useGiroPulseira();
@@ -81,40 +80,20 @@ export default function ExplorarPulseira() {
         </div>
 
         {cenaPronta && (
-          <div role="group" aria-label="Girar a pulseira" className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => giro.girar(-45)} className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}>
-              <EspacoIcone nome="ArrowCounterClockwise" />
-              Girar para a esquerda
-            </button>
-            <button type="button" onClick={() => giro.girar(45)} className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}>
-              <EspacoIcone nome="ArrowClockwise" />
-              Girar para a direita
-            </button>
-            <button type="button" onClick={giro.verPorDentro} className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}>
+          <BotoesGiro
+            giro={giro}
+            efeitosLigados={efeitosLigados}
+            estiloBotao={ESTILO_BOTAO}
+            className="flex flex-wrap gap-2"
+          >
+            <button type="button" onClick={giro.verPorDentro} className={ESTILO_BOTAO}>
               <EspacoIcone nome="Eye" />
               Ver por dentro
             </button>
-            <button type="button" onClick={giro.verFrente} className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}>
+            <button type="button" onClick={giro.verFrente} className={ESTILO_BOTAO}>
               Vista da frente
             </button>
-            {efeitosLigados && (
-              <button
-                type="button"
-                aria-pressed={giro.girando}
-                onClick={giro.alternarGiro}
-                className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}
-              >
-                <IconeAlternado chave={giro.girando ? "pausar" : "girar"}>
-                  {giro.girando ? (
-                    <EspacoIcone nome="Pause" />
-                  ) : (
-                    <EspacoIcone nome="Play" />
-                  )}
-                </IconeAlternado>
-                Girar sozinha
-              </button>
-            )}
-          </div>
+          </BotoesGiro>
         )}
       </div>
 
@@ -128,7 +107,7 @@ export default function ExplorarPulseira() {
                   type="button"
                   aria-pressed={parteAtiva === parte.id}
                   onClick={() => escolherParte(parte.id)}
-                  className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}
+                  className={ESTILO_BOTAO}
                 >
                   {parte.nome}
                 </button>
@@ -150,7 +129,7 @@ export default function ExplorarPulseira() {
                   type="button"
                   aria-pressed={sinalAtivo === item.id}
                   onClick={() => escolherSinal(item.id)}
-                  className={`${ESTILO_BOTAO} ${BOTAO_SOLTO}`}
+                  className={ESTILO_BOTAO}
                 >
                   {item.nome}
                 </button>

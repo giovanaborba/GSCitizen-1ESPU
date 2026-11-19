@@ -1,14 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useEfeitos } from "@/hooks/useEfeitos";
+import { CONSULTA_TELA_GRANDE, alturaDoTopo, ouvirRolagem } from "@/lib/tela";
 
 // Sem data-trajeto-ligado (sem JavaScript ou sem efeitos), a rota aparece inteira,
 // com o ponto no destino.
-const CONSULTA_FIXA = "(min-width: 64rem) and (min-height: 37.5rem)";
-
-function alturaDoTopo() {
-  const estilo = getComputedStyle(document.documentElement);
-  return (parseFloat(estilo.getPropertyValue("--altura-cabecalho")) || 0) + (parseFloat(estilo.getPropertyValue("--altura-indice")) || 0);
-}
 
 export function useTrajeto(fracoes) {
   const refSecao = useRef(null);
@@ -31,8 +26,7 @@ export function useTrajeto(fracoes) {
     const comprimento = caminho.getTotalLength();
     const paradasNoMapa = [...secao.querySelectorAll("[data-parada-mapa]")];
     const paradasNaLista = [...lista.children];
-    const consulta = window.matchMedia(CONSULTA_FIXA);
-    let quadro = 0;
+    const consulta = window.matchMedia(CONSULTA_TELA_GRANDE);
 
     function decidirModo() {
       secao.removeAttribute("data-trajeto-fixo");
@@ -58,7 +52,6 @@ export function useTrajeto(fracoes) {
     }
 
     function atualizar() {
-      quadro = 0;
       const altura = window.innerHeight;
       let fracao;
       if (secao.hasAttribute("data-trajeto-fixo")) {
@@ -72,27 +65,19 @@ export function useTrajeto(fracoes) {
       desenhar(Math.max(0, Math.min(1, fracao)));
     }
 
-    function pedirAtualizacao() {
-      if (!quadro) quadro = requestAnimationFrame(atualizar);
-    }
-
-    function aoMudarTamanho() {
-      decidirModo();
-      pedirAtualizacao();
-    }
-
     secao.setAttribute("data-trajeto-ligado", "");
     decidirModo();
     atualizar();
-    window.addEventListener("scroll", pedirAtualizacao, { passive: true });
-    window.addEventListener("resize", aoMudarTamanho);
-    consulta.addEventListener("change", aoMudarTamanho);
+    const rolagem = ouvirRolagem(atualizar, decidirModo);
+    function aoMudarConsulta() {
+      decidirModo();
+      rolagem.pedir();
+    }
+    consulta.addEventListener("change", aoMudarConsulta);
 
     return () => {
-      cancelAnimationFrame(quadro);
-      window.removeEventListener("scroll", pedirAtualizacao);
-      window.removeEventListener("resize", aoMudarTamanho);
-      consulta.removeEventListener("change", aoMudarTamanho);
+      rolagem.parar();
+      consulta.removeEventListener("change", aoMudarConsulta);
       secao.removeAttribute("data-trajeto-ligado");
       secao.removeAttribute("data-trajeto-fixo");
       caminho.style.strokeDasharray = "";

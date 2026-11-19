@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ouvirRolagem } from "@/lib/tela";
 
 // Seções fixas (data-secao-fixa): o título fica preso no meio da tela e nunca
 // chega à linha de leitura, então elas contam a partir do começo.
@@ -27,24 +28,9 @@ export function useSecaoAtual(itens) {
 
   useEffect(() => {
     const ids = itens.map((item) => item.id);
-    let quadro = 0;
-
-    function medir() {
-      quadro = 0;
-      setAtual(medirSecaoAtual(ids));
-    }
-    function agendar() {
-      if (!quadro) quadro = requestAnimationFrame(medir);
-    }
-
-    agendar();
-    window.addEventListener("scroll", agendar, { passive: true });
-    window.addEventListener("resize", agendar);
-    return () => {
-      cancelAnimationFrame(quadro);
-      window.removeEventListener("scroll", agendar);
-      window.removeEventListener("resize", agendar);
-    };
+    const rolagem = ouvirRolagem(() => setAtual(medirSecaoAtual(ids)));
+    rolagem.pedir();
+    return rolagem.parar;
   }, [itens]);
 
   return atual;
