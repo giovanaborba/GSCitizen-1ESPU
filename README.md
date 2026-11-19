@@ -34,7 +34,7 @@ O projeto conta com três demonstrações principais:
 **Opção Clone Github:**
 
 - Copie "https://github.com/giovanaborba/GSCitizen-1ESPU.git", no Repositório Github apertando "<> CODE" na cor verde.
-- Abra o VS Code
+- Abra o VSCode
 - Terminal > Novo Terminal (ou CTRL+J)
 - Escolha a opção do terminal >bash<
 - Git clone + endereço copiado do Github
